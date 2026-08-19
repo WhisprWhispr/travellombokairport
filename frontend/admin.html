@@ -49,6 +49,7 @@
           <li><a href="#" onclick="showTab('web-bookings')"><i class="fa-solid fa-laptop"></i> Booking Web</a></li>
           <li><a href="#" onclick="showTab('bookings')"><i class="fa-solid fa-calendar-alt"></i> Jadwal Manual</a></li>
           <li><a href="#" onclick="showTab('gallery')"><i class="fa-solid fa-camera"></i> Kelola Galeri</a></li>
+          <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
@@ -192,6 +193,39 @@
               </thead>
               <tbody id="gallery-list">
                 <!-- Gallery populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+        
+        <!-- Withdrawal Section -->
+        <section id="withdrawal-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <div>
+              <h2 style="margin: 0;">Penarikan Dana</h2>
+              <p style="margin: 5px 0 0 0; color: var(--text-gray);">Minimal penarikan Rp 100.000 | Biaya Admin Rp 0 | Maksimal proses 3 hari</p>
+            </div>
+            <div style="background: var(--primary-green); color: white; padding: 15px 25px; border-radius: 10px; text-align: center;">
+              <span style="font-size: 0.9rem; opacity: 0.9;">Total Saldo Aktif</span>
+              <h3 id="total-balance-display" style="margin: 5px 0 0 0; font-size: 1.5rem;">Rp 0</h3>
+            </div>
+          </div>
+          
+          <button id="btn-request-withdrawal" class="btn btn-primary mb-4" style="background: #10b981; width: 100%;"><i class="fa-solid fa-hand-holding-dollar"></i> Ajukan Penarikan</button>
+          
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>ID Penarikan</th>
+                  <th>Tanggal</th>
+                  <th>Bank & Rekening</th>
+                  <th>Jumlah</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="withdrawal-list">
+                <!-- Data populated via JS -->
               </tbody>
             </table>
           </div>

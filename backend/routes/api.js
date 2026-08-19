@@ -168,4 +168,38 @@ router.delete('/gallery/:id', verifyToken, async (req, res) => {
     }
 });
 
+// GET all withdrawals (protected)
+router.get('/withdrawals', verifyToken, async (req, res) => {
+    try {
+        const snapshot = await db.collection('withdrawals').orderBy('createdAt', 'desc').get();
+        let withdrawals = [];
+        snapshot.forEach(doc => {
+            withdrawals.push({ id: doc.id, ...doc.data() });
+        });
+        res.json(withdrawals);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST a new withdrawal (protected)
+router.post('/withdrawals', verifyToken, async (req, res) => {
+    try {
+        const withdrawalData = req.body;
+        // Basic validation
+        if (withdrawalData.amount < 100000) {
+            return res.status(400).json({ error: 'Minimal penarikan adalah Rp 100.000' });
+        }
+        
+        const newDoc = await db.collection('withdrawals').add({
+            ...withdrawalData,
+            status: 'PENDING',
+            createdAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+        res.status(201).json({ id: newDoc.id, ...withdrawalData, status: 'PENDING' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;

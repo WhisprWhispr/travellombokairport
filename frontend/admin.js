@@ -307,6 +307,7 @@ window.showTab = (tab) => {
     document.getElementById("orders-section").style.display = "none";
     document.getElementById("web-bookings-section").style.display = "none";
     document.getElementById("gallery-section").style.display = "none";
+    document.getElementById("withdrawal-section").style.display = "none";
     document.getElementById("add-item-btn").style.display = "none";
     document.getElementById("add-booking-btn").style.display = "none";
     document.getElementById("add-gallery-btn").style.display = "none";
@@ -331,6 +332,9 @@ window.showTab = (tab) => {
         document.getElementById("gallery-section").style.display = "block";
         document.getElementById("add-gallery-btn").style.display = "inline-block";
         fetchAdminGallery();
+    } else if (tab === "withdrawals") {
+        document.getElementById("withdrawal-section").style.display = "block";
+        fetchWithdrawals();
     }
 };
 
@@ -613,3 +617,120 @@ window.deleteGallery = async (id) => {
         }
     });
 };
+
+// Withdrawal Logic
+let currentBalance = 0;
+
+window.fetchWithdrawals = async () => {
+    try {
+        // Fetch all bookings to calculate revenue
+        const bReq = await fetch(`${API_URL}/bookings`, { headers: getAuthHeaders() });
+        const bookings = await bReq.json();
+        
+        let totalRevenue = 0;
+        bookings.forEach(b => {
+            if (b.status === 'PAID' || b.status === 'COMPLETED') {
+                totalRevenue += (b.price || 0);
+            }
+        });
+        
+        // Fetch withdrawals
+        const wReq = await fetch(`${API_URL}/withdrawals`, { headers: getAuthHeaders() });
+        const withdrawals = await wReq.json();
+        
+        let totalWithdrawn = 0;
+        const list = document.getElementById("withdrawal-list");
+        list.innerHTML = "";
+        
+        if (withdrawals.length === 0) {
+            list.innerHTML = `<tr><td colspan="5" class="text-center">Belum ada riwayat penarikan.</td></tr>`;
+        } else {
+            withdrawals.forEach(w => {
+                if (w.status !== 'REJECTED') totalWithdrawn += (w.amount || 0);
+                
+                let statusBadge = '';
+                if (w.status === 'PENDING') statusBadge = '<span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Pending</span>';
+                if (w.status === 'COMPLETED') statusBadge = '<span style="background: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Selesai</span>';
+                if (w.status === 'REJECTED') statusBadge = '<span style="background: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Ditolak</span>';
+                
+                list.innerHTML += `
+                    <tr>
+                        <td>${w.id.substring(0,8)}</td>
+                        <td>${new Date(w.createdAt?._seconds ? w.createdAt._seconds * 1000 : Date.now()).toLocaleDateString('id-ID')}</td>
+                        <td><strong>${w.bankName}</strong><br><small>${w.accountNumber}</small></td>
+                        <td>Rp ${w.amount.toLocaleString('id-ID')}</td>
+                        <td>${statusBadge}</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        currentBalance = totalRevenue - totalWithdrawn;
+        document.getElementById("total-balance-display").innerText = `Rp ${currentBalance.toLocaleString('id-ID')}`;
+        
+    } catch (e) {
+        console.error("Error fetching withdrawals:", e);
+    }
+};
+
+document.getElementById("btn-request-withdrawal").addEventListener("click", () => {
+    if (currentBalance < 100000) {
+        return Swal.fire({icon: 'warning', title: 'Saldo Tidak Cukup', text: 'Minimal penarikan adalah Rp 100.000', confirmButtonColor: '#22c55e'});
+    }
+    
+    Swal.fire({
+        title: 'Ajukan Penarikan Dana',
+        html: `
+            <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">Saldo maksimal yang bisa ditarik: <strong>Rp ${currentBalance.toLocaleString('id-ID')}</strong></p>
+            <input id="swal-w-bank" class="swal2-input" placeholder="Nama Bank (misal: BCA, Mandiri)">
+            <input id="swal-w-acc" class="swal2-input" placeholder="Nomor Rekening">
+            <input id="swal-w-name" class="swal2-input" placeholder="Nama Pemilik Rekening">
+            <input id="swal-w-amount" type="number" class="swal2-input" placeholder="Jumlah Penarikan (Min: 100000)">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Ajukan',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#10b981',
+        preConfirm: () => {
+            const bankName = document.getElementById('swal-w-bank').value;
+            const accountNumber = document.getElementById('swal-w-acc').value;
+            const accountName = document.getElementById('swal-w-name').value;
+            const amount = parseInt(document.getElementById('swal-w-amount').value);
+            
+            if (!bankName || !accountNumber || !accountName || !amount) {
+                Swal.showValidationMessage('Semua kolom harus diisi!');
+                return false;
+            }
+            if (amount < 100000) {
+                Swal.showValidationMessage('Minimal penarikan Rp 100.000!');
+                return false;
+            }
+            if (amount > currentBalance) {
+                Swal.showValidationMessage('Saldo tidak mencukupi!');
+                return false;
+            }
+            return { bankName, accountNumber, accountName, amount };
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            Swal.fire({title: 'Memproses...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+            try {
+                const res = await fetch(`${API_URL}/withdrawals`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(result.value)
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    Swal.fire({icon: 'success', title: 'Berhasil Diajukan', text: 'Penarikan dana Anda akan diproses maksimal dalam 3 hari kerja.', confirmButtonColor: '#22c55e'});
+                    fetchWithdrawals();
+                } else {
+                    throw new Error(data.error || 'Gagal mengajukan penarikan');
+                }
+            } catch (e) {
+                Swal.fire({icon: 'error', title: 'Gagal', text: e.message, confirmButtonColor: '#22c55e'});
+            }
+        }
+    });
+});
