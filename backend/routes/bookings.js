@@ -1,0 +1,125 @@
+const express = require('express');
+const router = express.Router();
+const { db, admin } = require('../config/firebase');
+
+// Middleware for auth (optional for POST if public booking, required for GET if admin)
+const verifyToken = async (req, res, next) => {
+    const authHeader = req.headers.authorization;
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(401).json({ message: 'Unauthorized: No token provided' });
+    }
+    
+    const token = authHeader.split('Bearer ')[1];
+    try {
+        if (!admin.auth) {
+            return next();
+        }
+        const decodedToken = await admin.auth.verifyIdToken(token);
+        req.user = decodedToken;
+        next();
+    } catch (error) {
+        console.error('Token verification error:', error);
+        return res.status(403).json({ message: 'Unauthorized: Invalid token' });
+    }
+};
+
+// GET all bookings (public for fetching booked dates, but we should probably just return dates and itemIds for public, and full details for admin)
+router.get('/', async (req, res) => {
+    try {
+        const { itemId, public: isPublic } = req.query;
+        let query = db.collection('bookings');
+        
+        if (itemId) {
+            query = query.where('itemId', '==', itemId);
+        }
+        
+        const snapshot = await query.get();
+        let bookings = [];
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (isPublic === 'true') {
+                // Only return non-sensitive info if public request
+                bookings.push({
+                    id: doc.id,
+                    itemId: data.itemId,
+                    startDate: data.startDate,
+                    endDate: data.endDate,
+                    status: data.status
+                });
+            } else {
+                bookings.push({ id: doc.id, ...data });
+            }
+        });
+        
+        res.json(bookings);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST new booking
+router.post('/', async (req, res) => {
+    try {
+        const newBooking = {
+            ...req.body,
+            createdAt: new Date().toISOString()
+        };
+        const docRef = await db.collection('bookings').add(newBooking);
+        res.status(201).json({ id: docRef.id, ...newBooking });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE booking
+router.delete('/:id', verifyToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.collection('bookings').doc(id).delete();
+        res.json({ message: 'Booking deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// GET specific booking for check status (public)
+router.get('/check/:transactionId', async (req, res) => {
+    try {
+        const { transactionId } = req.params;
+        const snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        
+        if (snapshot.empty) {
+            return res.status(404).json({ message: 'Booking tidak ditemukan' });
+        }
+        
+        // Return only safe details
+        const data = snapshot.docs[0].data();
+        res.json({
+            transactionId: data.transactionId,
+            itemName: data.itemName,
+            customerName: data.customerName,
+            startDate: data.startDate,
+            endDate: data.endDate,
+            status: data.status
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+// PUT update booking status
+router.put('/:id/status', verifyToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { status } = req.body;
+        
+        if (!status) {
+            return res.status(400).json({ message: 'Status is required' });
+        }
+        
+        await db.collection('bookings').doc(id).update({ status });
+        res.json({ message: 'Booking status updated successfully', status });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+module.exports = router;

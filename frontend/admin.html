@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Travel Lombok Airport</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+  </head>
+  <body class="admin-body bg-light">
+    
+    <!-- Login Overlay -->
+    <div id="login-container" style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; background: var(--bg-light); z-index: 1000;">
+      <div class="glass-panel" style="padding: 40px; width: 100%; max-width: 400px; text-align: center;">
+        <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Admin Login</h2>
+        <form id="login-form">
+          <div class="form-group mb-3 text-start">
+            <label>Email</label>
+            <input type="email" id="login-email" class="form-control" required placeholder="admin@example.com">
+          </div>
+          <div class="form-group mb-4 text-start">
+            <label>Password</label>
+            <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+          </div>
+          <button type="submit" class="btn btn-primary w-100" id="login-btn">
+            Login
+          </button>
+        </form>
+        <p id="login-error" class="text-danger mt-3" style="display: none; font-size: 0.9rem;"></p>
+      </div>
+    </div>
+
+    <div class="admin-container" id="admin-dashboard" style="display: none;">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar glass-panel">
+        <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>Admin Panel</h2>
+          <button class="mobile-admin-toggle" onclick="document.querySelector('.admin-sidebar').classList.remove('active')" style="display: none; background: none; border: none; font-size: 1.5rem; color: var(--text-gray); cursor: pointer;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#" class="active" onclick="showTab('items')"><i class="fa-solid fa-list"></i> Manage Items</a></li>
+          <li><a href="#" onclick="showTab('orders')"><i class="fa-solid fa-shopping-cart"></i> Pesanan Web</a></li>
+          <li><a href="#" onclick="showTab('web-bookings')"><i class="fa-solid fa-laptop"></i> Booking Web</a></li>
+          <li><a href="#" onclick="showTab('bookings')"><i class="fa-solid fa-calendar-alt"></i> Jadwal Manual</a></li>
+          <li><a href="#" onclick="showTab('gallery')"><i class="fa-solid fa-camera"></i> Kelola Galeri</a></li>
+          <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
+          <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
+          <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
+          <li style="margin-top: 5px;"><a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="admin-main">
+        <header class="admin-header glass-panel">
+          <div style="display: flex; align-items: center; width: 100%; position: relative; justify-content: center;">
+            <button class="mobile-admin-toggle" onclick="document.querySelector('.admin-sidebar').classList.add('active')" style="display: none; position: absolute; left: 0; background: none; border: none; font-size: 1.5rem; color: var(--primary-blue); cursor: pointer;"><i class="fa-solid fa-bars"></i></button>
+            <h1 style="margin: 0;">Dashboard</h1>
+          </div>
+          <div>
+            <button id="add-item-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add New Item</button>
+            <button id="add-booking-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Jadwal Manual</button>
+            <button id="add-gallery-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Foto Galeri</button>
+          </div>
+        </header>
+
+        <section id="items-section" class="admin-content glass-panel mt-4">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-items-table">
+                <!-- Data populated by JS -->
+                <tr><td colspan="5" class="text-center">Loading items...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Bookings Section -->
+        <section id="bookings-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Jadwal Manual</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Item / Paket</th>
+                  <th>Pelanggan</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-bookings-table">
+                <tr><td colspan="5" class="text-center">Loading bookings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Orders Section (Web) -->
+        <section id="orders-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Pesanan Web (Order)</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Detail</th>
+                  <th>Item / Paket</th>
+                  <th>Pelanggan / Kontak</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-table">
+                <tr><td colspan="5" class="text-center">Loading orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Web Bookings Section -->
+        <section id="web-bookings-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Booking Web (Quick Booking)</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Detail</th>
+                  <th>Item / Layanan</th>
+                  <th>Pelanggan / Kontak</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-web-bookings-table">
+                <tr><td colspan="5" class="text-center">Loading web bookings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="stats-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Pengaturan Statistik Website</h2>
+          <form id="stats-form" style="margin-top: 20px;">
+            <div class="form-group mb-3">
+              <label>Customer Puas</label>
+              <input type="text" id="stat-customers" class="form-control" placeholder="e.g. 500+">
+            </div>
+            <div class="form-group mb-3">
+              <label>Armada Terawat</label>
+              <input type="text" id="stat-fleet" class="form-control" placeholder="e.g. 20+">
+            </div>
+            <div class="form-group mb-3">
+              <label>Trip Selesai</label>
+              <input type="text" id="stat-trips" class="form-control" placeholder="e.g. 100+">
+            </div>
+            <div class="form-group mb-4">
+              <label>Customer Support</label>
+              <input type="text" id="stat-support" class="form-control" placeholder="e.g. 24/7">
+            </div>
+            <button type="submit" class="btn btn-green w-100">SIMPAN STATISTIK</button>
+          </form>
+        </section>
+        
+        <!-- Gallery Section -->
+        <section id="gallery-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Kelola Galeri Perjalanan</h2>
+          <div class="table-container" style="margin-top: 20px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Thumbnail</th>
+                  <th>Judul / Keterangan</th>
+                  <th>Tanggal Foto</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="gallery-list">
+                <!-- Gallery populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="item-modal" class="modal-overlay">
+      <div class="modal-content glass-panel">
+        <div class="modal-header" style="max-width: 800px; margin: 0 auto 30px auto;">
+          <h2 id="modal-title">Add New Item</h2>
+          <button id="close-modal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="item-form" class="admin-form" style="max-width: 800px; margin: 0 auto; background: #f8fafc; padding: 40px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          <input type="hidden" id="item-id">
+          <div class="form-group">
+            <label>Category</label>
+            <select id="item-category" required>
+              <option value="transfer">Jasa Antar Jemput</option>
+              <option value="package">Paket Liburan</option>
+              <option value="car">Sewa Mobil</option>
+              <option value="motorcycle">Sewa Motor</option>
+              <option value="drone">Dokumentasi Drone</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Title</label>
+            <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci">
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="item-description" rows="3" required placeholder="Deskripsi layanan..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Price</label>
+            <input type="text" id="item-price" required placeholder="e.g. Rp 250.000 / hari">
+          </div>
+
+          <div class="form-group">
+            <label>Image URL</label>
+            <input type="url" id="item-image" required placeholder="https://example.com/image.jpg">
+          </div>
+
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Detail Tour (Khusus Paket Tour)</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Abaikan kolom di bawah ini jika item ini bukan paket tour.</p>
+          
+          <div class="form-group">
+            <label>Tipe Paket</label>
+            <input type="text" id="item-packageType" placeholder="e.g. PAKET - B">
+          </div>
+          
+          <div class="form-group">
+            <label>Durasi</label>
+            <input type="text" id="item-duration" placeholder="e.g. 3H 2M">
+          </div>
+          
+          <div class="form-group">
+            <label>Itinerary (Format: Judul di baris pertama, lalu list dengan strip -)</label>
+            <textarea id="item-itinerary" rows="5" placeholder="DAY 1: Sasak Tour&#10;- Desa Sade&#10;- Pantai Kuta&#10;&#10;DAY 2: Gili Trawangan&#10;- Gili Trawangan"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Include (Satu item per baris)</label>
+            <textarea id="item-include" rows="4" placeholder="Transportasi Private Full AC&#10;Driver profesional&#10;BBM"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Exclude (Satu item per baris)</label>
+            <textarea id="item-exclude" rows="4" placeholder="Tiket pesawat&#10;Hotel/Penginapan&#10;Makan & minum"></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary w-100" id="save-item-btn">Save Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for Add Booking -->
+    <div id="booking-modal" class="modal-overlay">
+      <div class="modal-content glass-panel">
+        <div class="modal-header" style="max-width: 800px; margin: 0 auto 30px auto;">
+          <h2 id="booking-modal-title">Tambah Jadwal Booking Manual</h2>
+          <button id="close-booking-modal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="booking-form" class="admin-form" style="max-width: 800px; margin: 0 auto; background: #f8fafc; padding: 40px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          
+          <div class="form-group">
+            <label>Item / Paket</label>
+            <select id="booking-item-name" class="form-control" required>
+              <option value="">Pilih Item...</option>
+              <!-- Will be populated by JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Nama Pelanggan (opsional)</label>
+            <input type="text" id="booking-customer" placeholder="e.g. Bpk. Budi">
+          </div>
+
+          <div class="form-group">
+            <label>Nomor WA (opsional)</label>
+            <input type="text" id="booking-phone" placeholder="e.g. 0812345678">
+          </div>
+
+          <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 1;">
+              <label>Tanggal Mulai</label>
+              <input type="date" id="booking-start" required class="form-control">
+            </div>
+            <div style="flex: 1;">
+              <label>Tanggal Selesai</label>
+              <input type="date" id="booking-end" required class="form-control">
+            </div>
+          </div>
+
+          <div class="form-actions" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary w-100">Simpan Jadwal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script type="module" src="./admin.js"></script>
+  <script src="/pwa.js"></script>
+</body>
+</html>
+

@@ -1,0 +1,14 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Karena aplikasi ini menggunakan Node.js Backend (Admin SDK),
+    // seluruh akses baca/tulis langsung dari Frontend (Client SDK) ditutup (false).
+    // Admin SDK secara otomatis mem-bypass rules ini, sehingga data Anda
+    // 100% aman dari pihak luar yang mencoba menembak database langsung.
+    match /{document=**} {
+      allow read, write: if false;
+    }
+    
+  }
+}

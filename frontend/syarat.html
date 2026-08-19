@@ -1,0 +1,235 @@
+﻿<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Syarat & Ketentuan | Travel Lombok Airport</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="./style.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#2563eb">
+  </head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="container nav-content">
+      <a href="#" class="logo">
+        <img src="/logo.png" alt="Logo" class="logo-img">
+        <div class="logo-text">
+          <span class="logo-title" style="color: var(--primary-blue);">
+            Travel <span class="text-green">Lombok</span> Airport
+          </span>
+          <span class="logo-subtitle">
+            Tour & Travel Lombok
+          </span>
+        </div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/#home">Home</a></li>
+        <li><a href="/#services">Layanan</a></li>
+        <li><a href="/#packages">Paket Tour</a></li>
+        <li><a href="/#fleet">Rental</a></li>
+        <li><a href="/galeri.html">Galeri</a></li>
+        <li><a href="/tentang-kami.html">Tentang Kami</a></li>
+        <li><a href="/kontak.html">Kontak</a></li>
+      </ul>
+      <div class="nav-actions">
+        <div class="lang-switcher">
+           <button class="lang-btn" id="lang-btn" onclick="document.querySelector('.lang-menu').classList.toggle('active')"><i class="fa-solid fa-globe"></i> ID <i class="fa-solid fa-chevron-down" style="font-size: 0.7em; margin-left: 5px;"></i></button>
+           <ul class="lang-menu">
+             <li><a href="#" onclick="event.preventDefault(); doGTranslate('id|id'); updateLangBtn('ID')">🇮🇩 Indonesia</a></li>
+             <li><a href="#" onclick="event.preventDefault(); doGTranslate('id|en'); updateLangBtn('EN')">🇬🇧 English</a></li>
+             <li><a href="#" onclick="event.preventDefault(); doGTranslate('id|zh-CN'); updateLangBtn('ZH')">🇨🇳 Mandarin</a></li>
+             <li><a href="#" onclick="event.preventDefault(); doGTranslate('id|ar'); updateLangBtn('AR')">🇸🇦 Arabic</a></li>
+           </ul>
+        </div>
+        <a href="https://wa.me/6289676963255" target="_blank" class="nav-phone"><i class="fa-brands fa-whatsapp"></i> +62 896-7696-3255</a>
+        <a href="#booking" class="btn btn-green">BOOKING SEKARANG</a>
+      </div>
+      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
+    </div>
+  </nav>
+
+  
+  <section class="section">
+    <div class="container" style="max-width: 800px;">
+      <div class="section-title text-center" style="margin-top: 80px;">
+        <span class="subtitle text-green">LEGALITAS</span>
+        <h2>Syarat & Ketentuan</h2>
+        <div class="title-divider"><i class="fa-solid fa-file-contract"></i></div>
+      </div>
+      
+      <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); line-height: 1.8; color: #475569;">
+        <h4 style="color: var(--primary-blue); margin: 20px 0 10px;">1. Reservasi dan Pembayaran</h4>
+        <p>Pemesanan layanan dapat dilakukan melalui website atau WhatsApp resmi kami. Uang muka (Down Payment) sebesar 30% dari total biaya diperlukan untuk mengamankan jadwal reservasi Anda. Pelunasan dapat dilakukan pada hari-H kedatangan.</p>
+
+        <h4 style="color: var(--primary-blue); margin: 20px 0 10px;">2. Kebijakan Pembatalan (Cancellation)</h4>
+        <ul style="padding-left: 20px;">
+            <li>Pembatalan maksimal H-7: Uang muka dikembalikan 100%.</li>
+            <li>Pembatalan H-3 hingga H-6: Uang muka dikembalikan 50%.</li>
+            <li>Pembatalan kurang dari H-3: Uang muka hangus.</li>
+        </ul>
+
+        <h4 style="color: var(--primary-blue); margin: 20px 0 10px;">3. Layanan Lepas Kunci (Self-Drive)</h4>
+        <p>Untuk penyewaan mobil lepas kunci, penyewa wajib menyerahkan foto identitas asli (KTP/Paspor), tiket penerbangan pulang-pergi, dan bersedia difoto saat serah terima kendaraan. Segala kerusakan atau kecelakaan yang terjadi selama masa sewa menjadi tanggung jawab penuh penyewa.</p>
+      </div>
+    </div>
+  </section>
+<!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a href="#" class="logo footer-logo" style="display: flex; align-items: center; gap: 15px; text-decoration: none;">
+            <img src="/logo.png" alt="Travel Lombok Airport" style="height: 50px; object-fit: contain; border-radius: 8px;">
+            <span style="color: white; font-weight: 700; font-size: 1.3rem;">Travel Lombok Airport</span>
+          </a>
+          <p class="mt-4 text-gray" style="font-size: 0.9rem;">Layanan travel terpercaya di Lombok. Nikmati perjalanan yang nyaman, aman, dan berkesan bersama kami.</p>
+          <p class="mt-3 text-white">
+            <a href="https://wa.me/6289676963255" target="_blank" style="color: white; text-decoration: none;">
+              <i class="fa-brands fa-whatsapp text-green"></i> +62 896-7696-3255
+            </a>
+          </p>
+          <p class="text-white">
+            <a href="https://maps.app.goo.gl/8M5r53HeFcBwMmVL6?g_st=iwb" target="_blank" style="color: white; text-decoration: none; display: inline-flex; gap: 10px; align-items: flex-start;">
+              <i class="fa-solid fa-location-dot text-green" style="margin-top: 4px;"></i> 
+              <span>Lombok, Nusa Tenggara Barat</span>
+            </a>
+          </p>
+        </div>
+        
+        <div class="footer-links">
+          <h4>LINK CEPAT</h4>
+          <ul style="column-count: 2; column-gap: 20px;">
+            <li><a href="/#home">Home</a></li>
+            <li><a href="/#services">Layanan</a></li>
+            <li><a href="/#packages">Paket Tour</a></li>
+            <li><a href="/#fleet">Rental</a></li>
+            <li><a href="/galeri.html">Galeri</a></li>
+            <li><a href="/tentang-kami.html">Tentang Kami</a></li>
+            <li><a href="/kontak.html">Kontak</a></li>
+            <li><a href="/#cek-booking">Cek Booking</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links">
+          <h4>LAYANAN KAMI</h4>
+          <ul>
+            <li><a href="/#booking">Antar Jemput Airport</a></li>
+            <li><a href="/#fleet">Sewa Mobil</a></li>
+            <li><a href="/#fleet">Sewa Motor</a></li>
+            <li><a href="/#packages">Paket Tour</a></li>
+            <li><a href="/drone.html">Dokumentasi Drone</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-social">
+          <h4>IKUTI KAMI</h4>
+          <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i> Instagram</a>
+          <a href="https://tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+          <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook"></i> Facebook</a>
+          <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i> YouTube</a>
+        </div>
+        
+        <div class="footer-map">
+          <h4 style="color: white; font-size: 1rem; margin-bottom: 20px;">LOKASI KAMI</h4>
+          <iframe 
+            src="https://maps.google.com/maps?q=Travel+Lombok+Airport,+Jl.+Raya+Tanak+Awu,+Ketara,+Kec.+Pujut,+Kabupaten+Lombok+Tengah,+Nusa+Tenggara+Bar.+83573&t=&z=13&ie=UTF8&iwloc=&output=embed" 
+            width="100%" 
+            height="150" 
+            style="border:0; border-radius: 8px;" 
+            allowfullscreen="" 
+            loading="lazy" 
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+      
+      <div class="footer-bottom" style="display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 20px;">
+        <p style="text-align: center;"><a href="/syarat.html" style="color: #94a3b8; text-decoration: none;">Syarat & Ketentuan</a> | <a href="/kebijakan.html" style="color: #94a3b8; text-decoration: none;">Kebijakan Privasi</a> | <a href="/admin.html" style="color: #94a3b8; text-decoration: none;">Admin Panel</a></p>
+        <p style="text-align: center;">&copy; 2026 Travel Lombok Airport - All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Detail Tour Modal -->
+  <div id="tour-modal" class="tour-modal-overlay">
+    <div class="tour-modal-content">
+      <button class="tour-modal-close" onclick="closeTourModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div id="tour-modal-body">
+        <!-- Content will be generated by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Checkout Modal -->
+  <div id="checkout-modal" class="tour-modal-overlay">
+    <div class="tour-modal-content">
+      <button class="tour-modal-close" onclick="closeCheckoutModal()"><i class="fa-solid fa-xmark"></i></button>
+      <div id="checkout-modal-body" style="padding: 20px;">
+        <!-- Content injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Status Check Modal -->
+  <div id="status-modal" class="tour-modal-overlay">
+    <div class="tour-modal-content" style="max-width: 500px;">
+      <button class="tour-modal-close" onclick="document.getElementById('status-modal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
+      <div id="status-modal-body" style="padding: 20px;">
+        <!-- Content injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Google Translate -->
+  <div id="google_translate_element2" style="display:none;"></div>
+  <script type="text/javascript">
+    function googleTranslateElementInit2() {
+      new google.translate.TranslateElement({pageLanguage: 'id', autoDisplay: false}, 'google_translate_element2');
+    }
+    
+    function doGTranslate(langPair) {
+        if(langPair.value) langPair = langPair.value;
+        if(langPair == '') return;
+        var lang = langPair.split('|')[1];
+        var teCombo;
+        var sel = document.getElementsByTagName('select');
+        for (var i = 0; i < sel.length; i++) {
+            if (sel[i].className.indexOf('goog-te-combo') != -1) {
+                teCombo = sel[i];
+                break;
+            }
+        }
+        if (document.getElementById('google_translate_element2') == null || 
+            document.getElementById('google_translate_element2').innerHTML.length == 0 || 
+            teCombo == null || teCombo.length == 0 || teCombo.innerHTML.length == 0) {
+            setTimeout(function() { doGTranslate(langPair) }, 500);
+        } else {
+            teCombo.value = lang;
+            if (document.createEvent) {
+                var evt = document.createEvent('HTMLEvents');
+                evt.initEvent('change', true, true);
+                teCombo.dispatchEvent(evt);
+            } else {
+                teCombo.fireEvent('onchange');
+            }
+        }
+    }
+    
+    function updateLangBtn(langCode) {
+        document.getElementById('lang-btn').innerHTML = '<i class="fa-solid fa-globe"></i> ' + langCode + ' <i class="fa-solid fa-chevron-down" style="font-size: 0.7em; margin-left: 5px;"></i>';
+        document.querySelector('.lang-menu').classList.remove('active');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
+
+  <script type="module" src="./main.js"></script>
+<script src="/pwa.js"></script>
+</body>
+</html>
