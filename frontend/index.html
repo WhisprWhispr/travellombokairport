@@ -31,7 +31,7 @@
           </span>
         </div>
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" onclick="if(window.innerWidth <= 1250) this.classList.remove('active')">
         <li><a href="/#home">Home</a></li>
         <li><a href="/#services">Layanan</a></li>
         <li><a href="/#packages">Paket Tour</a></li>
@@ -52,8 +52,8 @@
         </div>
         <a href="https://wa.me/6289676963255" target="_blank" class="nav-phone"><i class="fa-brands fa-whatsapp"></i> +62 896-7696-3255</a>
         <a href="#booking" class="btn btn-green">BOOKING SEKARANG</a>
+        <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
       </div>
-      <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
     </div>
   </nav>
 
