@@ -1393,3 +1393,24 @@ body { top: 0 !important; position: static !important; }
     background: #f1f5f9;
     color: var(--primary-green);
 }
+
+/* Premium Responsiveness & Animations */
+@media (max-width: 480px) {
+  .hero-title { font-size: 2rem !important; }
+  .hero-container { margin-top: 20px; }
+  .hero-features { flex-direction: column; gap: 10px; }
+  .section { padding: 50px 0; }
+  .booking-card { padding: 20px; }
+  .form-row { flex-direction: column; gap: 0; }
+  .btn-large { padding: 12px 20px; width: 100%; font-size: 0.9rem; }
+  .hero-buttons { flex-direction: column; }
+  .stats-container { grid-template-columns: 1fr; }
+  .info-grid { gap: 20px; }
+  .nav-content { padding: 0; }
+}
+/* Smooth Card Hover */
+.card { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+.card:hover { transform: translateY(-8px); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); border-color: var(--primary-blue); }
+/* iOS Input Fix */
+input, select, textarea { font-size: 16px !important; } 
+

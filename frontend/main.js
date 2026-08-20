@@ -165,8 +165,8 @@ window.openTourModal = (id) => {
 };
 
 // Render Service Card (Layanan)
-const createServiceCard = (item) => `
-    <div class="card service-card">
+const createServiceCard = (item, index = 0) => `
+    <div class="card service-card" data-aos="zoom-in" data-aos-delay="${index * 100}">
         <div class="service-icon"><i class="fa-solid fa-plane"></i></div>
         <h3>${item.title}</h3>
         <p>${item.description}</p>
@@ -174,8 +174,8 @@ const createServiceCard = (item) => `
 `;
 
 // Render Package Card (Paket Tour)
-const createPackageCard = (item) => `
-    <div class="card package-card">
+const createPackageCard = (item, index = 0) => `
+    <div class="card package-card" data-aos="fade-up" data-aos-delay="${index * 100}">
         <div class="img-wrapper">
             <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
@@ -194,8 +194,8 @@ const createPackageCard = (item) => `
 `;
 
 // Render Fleet Card (Armada/Rental)
-const createFleetCard = (item) => `
-    <div class="card fleet-card">
+const createFleetCard = (item, index = 0) => `
+    <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${index * 100}">
         <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         <h3>${item.title}</h3>
         <div class="fleet-features">
@@ -230,7 +230,7 @@ const init = async () => {
     // Render Services
     if (servicesContainer) {
         if (services.length > 0) {
-            servicesContainer.innerHTML = services.map(createServiceCard).join('');
+            servicesContainer.innerHTML = services.map((s, i) => createServiceCard(s, i)).join('');
         } else {
             servicesContainer.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada layanan yang ditambahkan.</p>';
         }
@@ -239,7 +239,7 @@ const init = async () => {
     // Render Packages
     if (packagesContainer) {
         if (packages.length > 0) {
-            packagesContainer.innerHTML = packages.map(createPackageCard).join('');
+            packagesContainer.innerHTML = packages.map((p, i) => createPackageCard(p, i)).join('');
         } else {
             packagesContainer.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada paket yang ditambahkan.</p>';
         }
@@ -248,7 +248,7 @@ const init = async () => {
     // Render Fleets
     if (fleetContainer) {
         if (fleets.length > 0) {
-            fleetContainer.innerHTML = fleets.map(createFleetCard).join('');
+            fleetContainer.innerHTML = fleets.map((f, i) => createFleetCard(f, i)).join('');
         } else {
             fleetContainer.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada armada yang ditambahkan.</p>';
         }
@@ -798,57 +798,106 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
             </div>
             <button onclick="closeCheckoutModal()" class="btn btn-outline" style="width: 100%;">TUTUP</button>
             
-            <!-- Hidden PDF Template -->
-            <div id="pdf-template" style="display: none; text-align: left; padding: 40px; font-family: sans-serif; color: #333;">
-                <div style="border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
-                    <div>
-                        <h1 style="color: #2563eb; margin: 0; font-size: 24px;">TRAVEL LOMBOK AIRPORT</h1>
-                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">e-Tiket & Kwitansi Resmi</p>
-                    </div>
-                    <div style="text-align: right;">
-                        <h3 style="margin: 0; color: #10b981;">LUNAS</h3>
-                        <p style="margin: 5px 0 0 0; font-size: 14px;">Ref: ${id}</p>
-                    </div>
-                </div>
-                
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd; background: #f8fafc; width: 40%; font-weight: bold;">Layanan</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">${window.currentCheckoutData ? window.currentCheckoutData.itemName : 'Layanan Travel Lombok'}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold;">Nama Tamu</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">${window.currentCheckoutData ? window.currentCheckoutData.customerName : '-'}</td>
-                    </tr>
-                    <tr>
-                        <td style="padding: 10px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold;">Tanggal Jemput</td>
-                        <td style="padding: 10px; border: 1px solid #ddd;">${window.currentCheckoutData ? new Date(window.currentCheckoutData.startDate).toLocaleDateString('id-ID') : '-'}</td>
-                    </tr>
-                </table>
-                
-                <div style="background: #f8fafc; padding: 20px; text-align: center; border-radius: 8px;">
-                    <p style="margin: 0; font-size: 14px; color: #666;">Terima kasih telah mempercayakan perjalanan Anda kepada kami.</p>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: bold;">Simpan e-Tiket ini dan tunjukkan kepada supir kami saat penjemputan.</p>
-                </div>
-            </div>
+            
         </div>
     `;
 };
 
 window.downloadPdfInvoice = (id) => {
-    const element = document.getElementById('pdf-template');
-    element.style.display = 'block';
+    // Buat wrapper off-screen agar html2pdf bisa merender HTML dengan sempurna (tidak display: none)
+    const wrapper = document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.style.left = '-9999px';
+    wrapper.style.top = '-9999px';
+    
+    const data = window.currentCheckoutData || {};
+    const itemName = data.itemName || 'Layanan Travel Lombok';
+    const customerName = data.customerName || '-';
+    const tgl = data.startDate ? new Date(data.startDate).toLocaleDateString('id-ID', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : '-';
+    const total = data.itemPrice ? 'Rp ' + parseInt(data.itemPrice).toLocaleString('id-ID') : '-';
+
+    wrapper.innerHTML = `
+        <div id="pdf-content" style="width: 800px; padding: 50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; background: white; box-sizing: border-box;">
+            
+            <!-- Header -->
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0284c7; padding-bottom: 25px; margin-bottom: 35px;">
+                <div>
+                    <h1 style="color: #0284c7; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.5px;">TRAVEL LOMBOK AIRPORT</h1>
+                    <p style="margin: 8px 0 0 0; font-size: 15px; color: #64748b;">Layanan Transportasi & Wisata Profesional</p>
+                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">📞 +62 878-7555-5203 | 🌐 travellombokairport.com</p>
+                </div>
+                <div style="text-align: right;">
+                    <div style="background: #10b981; color: white; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 16px; display: inline-block; margin-bottom: 10px;">
+                        LUNAS (PAID)
+                    </div>
+                    <h2 style="margin: 0; color: #1e293b; font-size: 24px; font-weight: 700;">E-TIKET / INVOICE</h2>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b; font-family: monospace;">Ref: ${id}</p>
+                </div>
+            </div>
+            
+            <!-- Guest Info -->
+            <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 35px; border: 1px solid #e2e8f0;">
+                <h3 style="margin: 0 0 15px 0; color: #0284c7; font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px;">DETAIL PEMESAN (GUEST INFO)</h3>
+                <div style="display: flex; flex-wrap: wrap;">
+                    <div style="width: 50%; margin-bottom: 15px;">
+                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Nama Tamu</p>
+                        <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600;">${customerName}</p>
+                    </div>
+                    <div style="width: 50%; margin-bottom: 15px;">
+                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Tanggal Pelaksanaan</p>
+                        <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600;">${tgl}</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Order Details -->
+            <h3 style="margin: 0 0 15px 0; color: #0284c7; font-size: 16px;">DETAIL LAYANAN (ORDER DETAILS)</h3>
+            <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
+                <thead>
+                    <tr style="background: #0f172a; color: white;">
+                        <th style="padding: 15px; text-align: left; font-size: 14px; border-top-left-radius: 8px;">Deskripsi Layanan</th>
+                        <th style="padding: 15px; text-align: right; font-size: 14px; border-top-right-radius: 8px; width: 30%;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #e2e8f0; font-size: 16px; font-weight: 500;">
+                            ${itemName}
+                        </td>
+                        <td style="padding: 20px 15px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 16px; font-weight: 700; color: #0284c7;">
+                            ${total}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <!-- Footer -->
+            <div style="margin-top: 50px; text-align: center; color: #64748b;">
+                <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <p style="margin: 0 0 5px 0; font-size: 16px; color: #1e293b; font-weight: 600;">Terima kasih atas pesanan Anda!</p>
+                <p style="margin: 0; font-size: 13px;">Harap simpan e-Tiket ini dan tunjukkan kepada pengemudi atau petugas kami saat hari keberangkatan.</p>
+                <p style="margin: 15px 0 0 0; font-size: 11px; opacity: 0.7;">Dokumen ini diterbitkan secara otomatis oleh sistem Travel Lombok Airport dan sah tanpa tanda tangan.</p>
+            </div>
+            
+        </div>
+    `;
+    
+    document.body.appendChild(wrapper);
+    
+    const element = wrapper.querySelector('#pdf-content');
     
     const opt = {
-      margin:       0.5,
+      margin:       [0, 0, 0, 0], // nol margin agar background penuh
       filename:     `e-Tiket_${id}.pdf`,
-      image:        { type: 'jpeg', quality: 0.98 },
-      html2canvas:  { scale: 2 },
+      image:        { type: 'jpeg', quality: 1.0 },
+      html2canvas:  { scale: 2, useCORS: true, logging: false },
       jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
     };
     
     html2pdf().set(opt).from(element).save().then(() => {
-        element.style.display = 'none';
+        document.body.removeChild(wrapper);
     });
 };
 

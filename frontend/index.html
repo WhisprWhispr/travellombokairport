@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./style.css">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#2563eb">
   </head>
@@ -59,7 +60,7 @@
   <!-- Hero Section -->
   <header id="home" class="hero">
     <div class="container hero-container">
-      <div class="hero-left">
+      <div class="hero-left" data-aos="fade-right" data-aos-duration="1000">
         <span class="hero-tag">Liburan Anti Ribet, Nyaman & Aman Bersama</span>
         <h1 class="hero-title">EXPLORE THE<br>BEAUTY OF <span class="text-green">LOMBOK</span></h1>
         <p class="hero-subtitle">Nikmati perjalanan di Lombok dengan layanan airport transfer, rental kendaraan dan paket wisata yang nyaman serta terpercaya.</p>
@@ -75,7 +76,7 @@
         </div>
       </div>
       
-      <div class="hero-right" id="booking">
+      <div class="hero-right" id="booking" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
         <div class="booking-card shadow-lg">
           <h3 class="text-blue"><i class="fa-solid fa-car"></i> QUICK BOOKING</h3>
           <form class="booking-form" id="quick-booking-form">
@@ -134,7 +135,7 @@
   <!-- Layanan Kami -->
   <section id="services" class="section">
     <div class="container">
-      <div class="section-title text-center">
+      <div class="section-title text-center" data-aos="fade-up">
         <span class="subtitle text-green">LAYANAN KAMI</span>
         <h2>Layanan Terbaik Untuk Perjalanan Anda</h2>
         <div class="title-divider"><i class="fa-solid fa-plane"></i></div>
@@ -413,10 +414,16 @@
     }
   </script>
   <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
-
-  <script type="module" src="./main.js"></script>
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script>
+    AOS.init({
+      once: true,
+      offset: 100,
+      duration: 800
+    });
+  </script>
+  <script type="module" src="/main.js"></script>
 <script type="module" src="/pwa.js"></script>
 </body>
 </html>
-
-
