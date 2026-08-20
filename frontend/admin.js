@@ -1,20 +1,5 @@
-import { initializeApp } from "firebase/app";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyA6iPEJgUiZpRkt6YMaIk4Z2tglVF1MiBs",
-  authDomain: "travellombokairport.firebaseapp.com",
-  projectId: "travellombokairport",
-  storageBucket: "travellombokairport.firebasestorage.app",
-  messagingSenderId: "1091706966192",
-  appId: "1:1091706966192:web:4eea0b5132e7c353c8ab75"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-
-let authToken = null;
-const API_URL = "http://192.168.18.67:5000/api";
+let authToken = localStorage.getItem('adminToken') || null;
+const API_URL = "/api";
 
 // Elements
 const loginContainer = document.getElementById("login-container");
@@ -42,19 +27,23 @@ const includeInput = document.getElementById("item-include");
 const excludeInput = document.getElementById("item-exclude");
 const modalTitle = document.getElementById("modal-title");
 
-// Auth State Listener
-onAuthStateChanged(auth, async (user) => {
-    if (user) {
-        authToken = await user.getIdToken();
+const checkAuth = () => {
+    if (authToken) {
         loginContainer.style.display = "none";
         adminDashboard.style.display = "block";
         fetchAdminItems();
+        
+        if (!localStorage.getItem('adminTutorialSeen')) {
+            setTimeout(showAdminTutorial, 1000);
+        }
     } else {
-        authToken = null;
         loginContainer.style.display = "flex";
         adminDashboard.style.display = "none";
     }
-});
+};
+
+// Panggil saat halaman dimuat
+checkAuth();
 
 // Login Handler
 loginForm.addEventListener("submit", async (e) => {
@@ -67,7 +56,21 @@ loginForm.addEventListener("submit", async (e) => {
     btn.disabled = true;
     btn.innerText = "Loading...";
     try {
-        await signInWithEmailAndPassword(auth, email, password);
+        const response = await fetch(`${API_URL}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            authToken = data.token;
+            localStorage.setItem('adminToken', authToken);
+            checkAuth();
+        } else {
+            throw new Error(data.error || "Email atau password salah");
+        }
     } catch (error) {
         loginError.innerText = "Login Gagal: " + error.message;
         loginError.style.display = "block";
@@ -80,7 +83,9 @@ loginForm.addEventListener("submit", async (e) => {
 // Logout Handler
 logoutBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    signOut(auth);
+    authToken = null;
+    localStorage.removeItem('adminToken');
+    checkAuth();
 });
 
 // Utility to get auth headers
@@ -308,9 +313,11 @@ window.showTab = (tab) => {
     document.getElementById("web-bookings-section").style.display = "none";
     document.getElementById("gallery-section").style.display = "none";
     document.getElementById("withdrawal-section").style.display = "none";
+    document.getElementById("drivers-section").style.display = "none";
     document.getElementById("add-item-btn").style.display = "none";
     document.getElementById("add-booking-btn").style.display = "none";
     document.getElementById("add-gallery-btn").style.display = "none";
+    document.getElementById("add-driver-btn").style.display = "none";
     
     if (tab === "items") {
         document.getElementById("items-section").style.display = "block";
@@ -335,6 +342,10 @@ window.showTab = (tab) => {
     } else if (tab === "withdrawals") {
         document.getElementById("withdrawal-section").style.display = "block";
         fetchWithdrawals();
+    } else if (tab === "drivers") {
+        document.getElementById("drivers-section").style.display = "block";
+        document.getElementById("add-driver-btn").style.display = "inline-block";
+        fetchAdminDrivers();
     }
 };
 
@@ -381,6 +392,7 @@ const fetchAdminBookings = async () => {
                                 <a href="https://wa.me/${cleanWa}?text=${waMsg}" target="_blank" style="color: #10b981; text-decoration: none; font-weight: bold;">
                                     <i class="fa-brands fa-whatsapp"></i> ${b.phone}
                                 </a>
+                                <br>${assignDriverBtn}
                             </small>
                         </td>
                         <td><span style="background: ${statusColor}; color: white; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${b.status}</span></td>
@@ -488,6 +500,51 @@ const fetchAdminStats = async () => {
     } catch (e) {
         console.error(e);
     }
+};
+
+window.showAdminTutorial = () => {
+    Swal.fire({
+        title: '<strong style="color: #1e293b; font-size: 1.5rem;">Panduan Panel Admin</strong>',
+        html: `
+            <div style="text-align: left; font-size: 0.9rem; color: #475569;">
+                <p style="margin-bottom: 20px;">Selamat datang di Pusat Kendali Travel Anda. Berikut adalah fungsi utama dari setiap menu:</p>
+                
+                <div style="background: #eff6ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #3b82f6; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 8px 0; color: #1e40af; font-size: 1rem;"><i class="fa-solid fa-laptop"></i> 1. Booking Web</h4>
+                    <p style="margin: 0;">Semua pesanan yang masuk dari website akan muncul di sini. Anda bisa melihat status pembayaran (PAID/PENDING). Di menu ini, Anda WAJIB menugaskan supir dengan menekan tombol <strong>Assign Supir</strong>.</p>
+                </div>
+
+                <div style="background: #fdf4ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #d946ef; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 8px 0; color: #86198f; font-size: 1rem;"><i class="fa-solid fa-calendar-alt"></i> 2. Jadwal Manual</h4>
+                    <p style="margin: 0;">Gunakan menu ini jika Anda mendapat pesanan dari telepon/WA (offline). Anda bisa menginput data secara manual agar jadwal tidak bentrok dengan pesanan dari website.</p>
+                </div>
+
+                <div style="background: #fff7ed; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #f97316; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 8px 0; color: #9a3412; font-size: 1rem;"><i class="fa-solid fa-car"></i> 3. Manajemen Supir</h4>
+                    <p style="margin: 0;">Tempat Anda mendaftarkan tim supir/tour guide. Masukkan <strong>Nomor HP</strong> dan buatkan <strong>PIN 6 Angka</strong>. Nomor HP dan PIN ini digunakan supir untuk login ke portal mereka.</p>
+                </div>
+
+                <div style="background: #f0fdf4; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #22c55e; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 1rem;"><i class="fa-solid fa-money-bill-wave"></i> 4. Penarikan Dana</h4>
+                    <p style="margin: 0;">Pusat keuangan Anda. Semua pendapatan dari tamu yang membayar lunas via QRIS akan masuk ke Saldo Aktif. Anda bisa menarik uang ke rekening pribadi dengan menekan tombol <strong>Ajukan Penarikan</strong>.</p>
+                </div>
+
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #64748b; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0 0 8px 0; color: #334155; font-size: 1rem;"><i class="fa-solid fa-camera"></i> 5. Kelola Galeri & Item</h4>
+                    <p style="margin: 0;">Tempat untuk mengatur "Etalase" website Anda. Tambahkan foto-foto perjalanan menarik atau atur ulang harga dan detail paket wisata Anda kapan saja.</p>
+                </div>
+            </div>
+        `,
+        width: 700,
+        icon: 'info',
+        confirmButtonText: '<i class="fa-solid fa-check-circle"></i> Saya Mengerti',
+        confirmButtonColor: '#2563eb',
+        padding: '2em',
+        background: '#ffffff',
+        backdrop: `rgba(15, 23, 42, 0.8)`
+    }).then(() => {
+        localStorage.setItem('adminTutorialSeen', 'true');
+    });
 };
 
 document.getElementById("stats-form").addEventListener("submit", async (e) => {
@@ -734,3 +791,135 @@ document.getElementById("btn-request-withdrawal").addEventListener("click", () =
         }
     });
 });
+
+// Driver Logic
+window.fetchAdminDrivers = async () => {
+    try {
+        const res = await fetch(`${API_URL}/drivers`, { headers: getAuthHeaders() });
+        const drivers = await res.json();
+        
+        // Cache drivers globally for assignment
+        window.allDrivers = drivers;
+        
+        const tableBody = document.getElementById("admin-drivers-table");
+        if (drivers.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada supir terdaftar.</td></tr>';
+            return;
+        }
+        
+        tableBody.innerHTML = drivers.map(d => `
+            <tr>
+                <td><strong>${d.name}</strong></td>
+                <td>${d.phone}</td>
+                <td>${d.pin}</td>
+                <td>
+                    <button class="btn btn-sm btn-outline" style="border-color: #ef4444; color: #ef4444;" onclick="deleteDriver('${d.id}')"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            </tr>
+        `).join("");
+    } catch (e) {
+        console.error("Error fetching drivers:", e);
+    }
+};
+
+document.getElementById("add-driver-btn").addEventListener("click", () => {
+    Swal.fire({
+        title: 'Tambah Supir Baru',
+        html: `
+            <input id="swal-d-name" class="swal2-input" placeholder="Nama Supir">
+            <input type="tel" id="swal-d-phone" class="swal2-input" placeholder="Nomor HP">
+            <input type="number" id="swal-d-pin" class="swal2-input" placeholder="PIN (6 Angka)" maxlength="6">
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        preConfirm: () => {
+            const name = document.getElementById('swal-d-name').value;
+            const phone = document.getElementById('swal-d-phone').value;
+            const pin = document.getElementById('swal-d-pin').value;
+            if (!name || !phone || !pin) {
+                Swal.showValidationMessage('Semua harus diisi!');
+                return false;
+            }
+            return { name, phone, pin };
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${API_URL}/drivers`, {
+                    method: 'POST',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(result.value)
+                });
+                if (res.ok) {
+                    Swal.fire('Berhasil!', 'Supir ditambahkan.', 'success');
+                    fetchAdminDrivers();
+                } else {
+                    Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                }
+            } catch (e) {
+                Swal.fire('Gagal!', 'Koneksi bermasalah.', 'error');
+            }
+        }
+    });
+});
+
+window.deleteDriver = (id) => {
+    Swal.fire({
+        title: 'Hapus Supir?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Hapus!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                await fetch(`${API_URL}/drivers/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+                Swal.fire('Terhapus!', 'Supir telah dihapus.', 'success');
+                fetchAdminDrivers();
+            } catch (e) {
+                Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+            }
+        }
+    });
+};
+
+window.assignDriver = (bookingId, currentDriverId) => {
+    if (!window.allDrivers || window.allDrivers.length === 0) {
+        return Swal.fire('Oops', 'Anda belum menambahkan supir sama sekali.', 'warning');
+    }
+    
+    let optionsHtml = '<option value="">-- Pilih Supir --</option>';
+    window.allDrivers.forEach(d => {
+        optionsHtml += `<option value="${d.id}" ${currentDriverId === d.id ? 'selected' : ''}>${d.name} (${d.phone})</option>`;
+    });
+    
+    Swal.fire({
+        title: 'Tugaskan Supir',
+        html: `<select id="swal-assign-driver" class="swal2-input" style="width: 80%;">${optionsHtml}</select>`,
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        preConfirm: () => {
+            const select = document.getElementById('swal-assign-driver');
+            const driverId = select.value;
+            const driverName = driverId ? select.options[select.selectedIndex].text.split(' (')[0] : '';
+            return { driverId, driverName };
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${API_URL}/bookings/${bookingId}/driver`, {
+                    method: 'PUT',
+                    headers: getAuthHeaders(),
+                    body: JSON.stringify(result.value)
+                });
+                if (res.ok) {
+                    Swal.fire('Berhasil!', 'Supir ditugaskan.', 'success');
+                    fetchAdminBookings(); // Refresh bookings
+                }
+            } catch (e) {
+                Swal.fire('Gagal', 'Gagal menugaskan supir.', 'error');
+            }
+        }
+    });
+};

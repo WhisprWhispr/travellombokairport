@@ -12,6 +12,6 @@
     "vite": "^8.2.0"
   },
   "dependencies": {
-    "firebase": "^12.17.1"
+    "hono": "^4.13.3"
   }
 }

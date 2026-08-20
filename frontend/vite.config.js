@@ -2,6 +2,14 @@ import { resolve } from 'path';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
+  },
   build: {
     rollupOptions: {
       input: {
@@ -12,7 +20,8 @@ export default defineConfig({
         kontak: resolve(__dirname, 'kontak.html'),
         syarat: resolve(__dirname, 'syarat.html'),
         tentangKami: resolve(__dirname, 'tentang-kami.html'),
-        kebijakan: resolve(__dirname, 'kebijakan.html')
+        kebijakan: resolve(__dirname, 'kebijakan.html'),
+        driver: resolve(__dirname, 'driver.html')
       }
     }
   }

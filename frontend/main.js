@@ -1,4 +1,4 @@
-﻿const API_URL = 'http://192.168.18.67:5000/api';
+const API_URL = '/api';
 let globalItems = [];
 
 // Format currency
@@ -272,7 +272,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
     btn.disabled = true;
     
     try {
-        const response = await fetch(`http://192.168.18.67:5000/api/bookings/check/${trxId}`);
+        const response = await fetch(`${API_URL}/bookings/check/${trxId}`);
         
         if (response.ok) {
             const data = await response.json();
@@ -455,7 +455,7 @@ window.openCheckoutModal = async (itemName, price) => {
     
     // Fetch bookings to show availability
     try {
-        const res = await fetch(`http://192.168.18.67:5000/api/bookings?public=true`);
+        const res = await fetch(`${API_URL}/bookings?public=true`);
         const allBookings = await res.json();
         const itemBookings = allBookings.filter(b => {
             const bName = b.itemName || "";
@@ -630,7 +630,7 @@ window.processCheckout = async (itemName, price) => {
     if (payment === "booking_only") {
         const transactionId = "BKG-" + Math.floor(Math.random() * 10000);
         try {
-            await fetch('http://192.168.18.67:5000/api/bookings', {
+            await fetch(`${API_URL}/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...bookingData, status: 'PENDING', transactionId })
@@ -643,7 +643,7 @@ window.processCheckout = async (itemName, price) => {
     if (payment === "manual") {
         const transactionId = "BKG-" + Math.floor(Math.random() * 10000);
         try {
-            await fetch('http://192.168.18.67:5000/api/bookings', {
+            await fetch(`${API_URL}/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...bookingData, status: 'PENDING', transactionId })
@@ -672,7 +672,7 @@ window.processCheckout = async (itemName, price) => {
     `;
 
     try {
-        fetch(`http://192.168.18.67:5000/api/payment/qris`, {
+        fetch(`${API_URL}/payment/qris`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: price, customer_name: name })
@@ -711,7 +711,7 @@ window.processCheckout = async (itemName, price) => {
                     if (msgDiv) msgDiv.innerHTML = '';
                     
                     try {
-                        const statusRes = await fetch(`http://192.168.18.67:5000/api/payment/status/${txId}`);
+                        const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
                         const statusData = await statusRes.json();
                         if (statusData.success && statusData.data.status === 'PAID') {
                             if (window.activePollInterval) clearInterval(window.activePollInterval);
@@ -729,7 +729,7 @@ window.processCheckout = async (itemName, price) => {
 
                 const pollInterval = setInterval(async () => {
                     try {
-                        const statusRes = await fetch(`http://192.168.18.67:5000/api/payment/status/${data.transactionId}`);
+                        const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`);
                         const statusData = await statusRes.json();
                         
                         if (statusData.success && statusData.data.status === 'PAID') {
@@ -773,7 +773,7 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     // Save PAID booking for QRIS if data exists
     if (!isBookingOnly && window.currentCheckoutData) {
         try {
-            await fetch('http://192.168.18.67:5000/api/bookings', {
+            await fetch(`${API_URL}/bookings`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ ...window.currentCheckoutData, status: 'PAID', transactionId: id })
@@ -786,15 +786,70 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
         <div style="text-align: center; padding: 40px 20px;">
             <i class="fa-solid fa-circle-check" style="font-size: 5rem; color: var(--primary-green); margin-bottom: 20px;"></i>
             <h2 style="color: var(--text-dark); margin-bottom: 10px;">${isBookingOnly ? "Booking Berhasil!" : "Pembayaran Berhasil!"}</h2>
-            <p style="color: #64748b; margin-bottom: 20px;">Terima kasih, ${isBookingOnly ? "booking" : "pesanan"} Anda telah kami terima dan akan segera diproses.</p>
+            <p style="color: #64748b; margin-bottom: 20px;">Terima kasih, pesanan Anda telah kami terima.</p>
             
             <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 25px;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">Nomor Refrensi Anda:</p>
                 <h3 style="color: var(--primary-blue); font-family: monospace; font-size: 1.5rem; letter-spacing: 2px;">${id}</h3>
             </div>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                <button onclick="downloadPdfInvoice('${id}')" class="btn btn-primary" style="flex: 1; background: #10b981;"><i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket</button>
+            </div>
             <button onclick="closeCheckoutModal()" class="btn btn-outline" style="width: 100%;">TUTUP</button>
+            
+            <!-- Hidden PDF Template -->
+            <div id="pdf-template" style="display: none; text-align: left; padding: 40px; font-family: sans-serif; color: #333;">
+                <div style="border-bottom: 2px solid #2563eb; padding-bottom: 20px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h1 style="color: #2563eb; margin: 0; font-size: 24px;">TRAVEL LOMBOK AIRPORT</h1>
+                        <p style="margin: 5px 0 0 0; font-size: 14px; color: #666;">e-Tiket & Kwitansi Resmi</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <h3 style="margin: 0; color: #10b981;">LUNAS</h3>
+                        <p style="margin: 5px 0 0 0; font-size: 14px;">Ref: ${id}</p>
+                    </div>
+                </div>
+                
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 30px;">
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; background: #f8fafc; width: 40%; font-weight: bold;">Layanan</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${window.currentCheckoutData ? window.currentCheckoutData.itemName : 'Layanan Travel Lombok'}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold;">Nama Tamu</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${window.currentCheckoutData ? window.currentCheckoutData.customerName : '-'}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; border: 1px solid #ddd; background: #f8fafc; font-weight: bold;">Tanggal Jemput</td>
+                        <td style="padding: 10px; border: 1px solid #ddd;">${window.currentCheckoutData ? new Date(window.currentCheckoutData.startDate).toLocaleDateString('id-ID') : '-'}</td>
+                    </tr>
+                </table>
+                
+                <div style="background: #f8fafc; padding: 20px; text-align: center; border-radius: 8px;">
+                    <p style="margin: 0; font-size: 14px; color: #666;">Terima kasih telah mempercayakan perjalanan Anda kepada kami.</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; font-weight: bold;">Simpan e-Tiket ini dan tunjukkan kepada supir kami saat penjemputan.</p>
+                </div>
+            </div>
         </div>
     `;
+};
+
+window.downloadPdfInvoice = (id) => {
+    const element = document.getElementById('pdf-template');
+    element.style.display = 'block';
+    
+    const opt = {
+      margin:       0.5,
+      filename:     `e-Tiket_${id}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2 },
+      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+    };
+    
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.display = 'none';
+    });
 };
 
 // Load dynamic stats

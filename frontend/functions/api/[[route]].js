@@ -1,0 +1,36 @@
+import { Hono } from 'hono';
+import { handle } from 'hono/cloudflare-pages';
+import { cors } from 'hono/cors';
+
+// Import Routes
+import apiRoutes from './routes/api.js';
+import bookingsRoutes from './routes/bookings.js';
+import paymentRoutes from './routes/payment.js';
+import authRoutes from './routes/auth.js';
+import driversRoutes from './routes/drivers.js';
+
+const app = new Hono().basePath('/api');
+
+// Global Middleware
+app.use('*', cors());
+
+// Base Route
+app.get('/', (c) => c.text('Travel Lombok Airport API is running (Cloudflare Serverless)'));
+
+// Mount Routes
+app.route('/items', apiRoutes);
+app.route('/stats', apiRoutes); // apiRoutes handles /items, /stats, /gallery, /withdrawals
+app.route('/gallery', apiRoutes);
+app.route('/withdrawals', apiRoutes);
+
+// For cleanly mounting the rest
+app.route('/bookings', bookingsRoutes);
+app.route('/payment', paymentRoutes);
+app.route('/auth', authRoutes);
+app.route('/drivers', driversRoutes);
+
+// For fallback in api.js
+app.route('/', apiRoutes);
+
+export const onRequest = handle(app);
+

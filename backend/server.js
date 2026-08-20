@@ -13,9 +13,13 @@ app.use(express.json());
 const apiRoutes = require('./routes/api');
 const paymentRoutes = require('./routes/payment');
 const bookingsRoutes = require('./routes/bookings');
+const driversRoutes = require('./routes/drivers');
+const authRoutes = require('./routes/auth');
 app.use('/api', apiRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/bookings', bookingsRoutes);
+app.use('/api/drivers', driversRoutes);
+app.use('/api/auth', authRoutes);
 
 // Base route
 app.get('/', (req, res) => {

@@ -122,4 +122,43 @@ router.put('/:id/status', verifyToken, async (req, res) => {
     }
 });
 
+// PUT assign driver to booking
+router.put('/:id/driver', verifyToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { driverId, driverName } = req.body;
+        
+        await db.collection('bookings').doc(id).update({ 
+            driverId: driverId || null,
+            driverName: driverName || ''
+        });
+        res.json({ message: 'Driver assigned successfully', driverId });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// PUT driver complete trip (Driver Only)
+router.put('/:id/complete', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const driverId = req.headers['x-driver-id'];
+        
+        if (!driverId) {
+            return res.status(401).json({ message: 'Unauthorized driver' });
+        }
+        
+        // Verify this booking belongs to the driver
+        const doc = await db.collection('bookings').doc(id).get();
+        if (!doc.exists || doc.data().driverId !== driverId) {
+            return res.status(403).json({ message: 'Forbidden: Not your booking' });
+        }
+        
+        await db.collection('bookings').doc(id).update({ status: 'COMPLETED' });
+        res.json({ message: 'Trip completed successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;
