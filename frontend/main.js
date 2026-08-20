@@ -140,11 +140,11 @@ window.openTourModal = (id) => {
                     <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
                     <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer deposit (booking fee) sebesar <strong>Rp 500.000</strong> ke rekening berikut:</p>
                     <div class="bank-item" style="background: #f8fafc; border: none;">
-                        <img src="./mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
+                        <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>
                     </div>
                     <div class="bank-item" style="background: #f8fafc; border: none;">
-                        <img src="./bri.svg" alt="BRI" style="height: 25px; object-fit: contain;">
+                        <img src="/bri.svg" alt="BRI" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">759801017387536</span></div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
@@ -516,14 +516,14 @@ window.openCheckoutModal = async (itemName, price) => {
             <div id="bank-details" style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Silakan transfer ke salah satu rekening berikut:</p>
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <img src="./mandiri.svg" style="height: 25px; object-fit: contain;" alt="Mandiri">
+                    <img src="/mandiri.svg" style="height: 25px; object-fit: contain;" alt="Mandiri">
                     <div>
                         <div style="font-weight: bold; color: var(--text-dark); font-size: 0.9rem;">LALU RENGGANE</div>
                         <div style="color: var(--primary-blue); font-weight: bold; letter-spacing: 1px;">1610017191425</div>
                     </div>
                 </div>
                 <div style="display: flex; align-items: center; gap: 15px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
-                    <img src="./bri.svg" style="height: 25px; object-fit: contain;" alt="BRI">
+                    <img src="/bri.svg" style="height: 25px; object-fit: contain;" alt="BRI">
                     <div>
                         <div style="font-weight: bold; color: var(--text-dark); font-size: 0.9rem;">LALU RENGGANE</div>
                         <div style="color: var(--primary-blue); font-weight: bold; letter-spacing: 1px;">759801017387536</div>
