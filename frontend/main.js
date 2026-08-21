@@ -404,7 +404,7 @@ const createFleetCard = (item, index = 0) => `
         <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800; text-align: center; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
         <div style="display: flex; gap: 10px; margin-top: auto; padding-top: 15px; border-top: 1px solid #f1f5f9;">
             <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 10px; border-radius: 25px; font-weight: 700; transition: all 0.3s; font-size: 0.9rem;">DETAIL</button>
-            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 25px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2); font-size: 0.9rem;"><i class="fa-solid fa-check-circle"></i> PESAN</button>
+            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 25px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2); font-size: 0.9rem;"><i class="fa-brands fa-whatsapp"></i> PESAN</button>
         </div>
     </div>
 `;
