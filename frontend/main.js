@@ -483,8 +483,7 @@ const createDroneCard = (item, index = 0) => {
         <div class="content" style="padding: 20px;">
             <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 5px;">${item.title}</h3>
             ${dateHtml}
-            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">${item.description}</p>
-            <div class="price" style="font-size: 1.2rem; color: var(--primary-green); font-weight: 700; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.8rem; color: var(--text-gray); font-weight: 400;">/ ${item.duration || 'hari'}</span></div>
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 25px;">${item.description}</p>
             ${buttonHtml}
         </div>
     </div>
