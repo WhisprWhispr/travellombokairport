@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../config/firebase');
+const axios = require('axios'); // Tambahkan axios untuk request REST API
 
 // Simple JWT-like token generation (for local dev)
 const generateToken = (payload) => {
@@ -22,43 +23,48 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ error: 'Email dan password wajib diisi.' });
         }
 
-        // Check against Firestore 'admins' collection
-        let admin = null;
-        try {
-            const snapshot = await db.collection('admins')
-                .where('email', '==', email)
-                .where('password', '==', password)
-                .get();
-
-            snapshot.forEach(doc => {
-                admin = { id: doc.id, ...doc.data() };
+        const apiKey = process.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return res.status(500).json({ 
+                error: 'Sistem belum siap. FIREBASE_API_KEY tidak ditemukan di backend/.env. Silakan masukkan Web API Key dari Firebase Console ke file .env.' 
             });
-        } catch (dbError) {
-            console.warn('DB query failed, trying fallback:', dbError.message);
         }
 
-        // Fallback: hardcoded admin (for local dev / first-time setup)
-        if (!admin) {
-            const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'travellombokairport@gmail.com';
-            const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
+        try {
+            // Verifikasi password ke Firebase Authentication menggunakan REST API
+            const response = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+                email: email,
+                password: password,
+                returnSecureToken: true
+            });
+
+            // Jika berhasil, Firebase akan mengembalikan idToken dan localId
+            const firebaseUser = response.data;
             
-            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-                admin = { id: 'admin-1', email: ADMIN_EMAIL };
+            // Generate token internal sistem
+            const token = generateToken({ id: firebaseUser.localId, email: firebaseUser.email });
+
+            return res.json({
+                success: true,
+                token,
+                admin: { id: firebaseUser.localId, email: firebaseUser.email }
+            });
+
+        } catch (firebaseError) {
+            // Jika login gagal dari sisi Firebase (salah password, email tidak terdaftar, dll)
+            let errorMessage = 'Email atau password salah.';
+            if (firebaseError.response && firebaseError.response.data && firebaseError.response.data.error) {
+                const fbErr = firebaseError.response.data.error.message;
+                if (fbErr === 'EMAIL_NOT_FOUND' || fbErr === 'INVALID_LOGIN_CREDENTIALS') {
+                    errorMessage = 'Email atau password salah!';
+                } else if (fbErr === 'INVALID_PASSWORD') {
+                    errorMessage = 'Password salah!';
+                } else {
+                    errorMessage = `Firebase Error: ${fbErr}`;
+                }
             }
+            return res.status(401).json({ error: errorMessage });
         }
-
-        if (!admin) {
-            return res.status(401).json({ error: 'Email atau password salah.' });
-        }
-
-        // Generate token
-        const token = generateToken({ id: admin.id, email: admin.email });
-
-        res.json({
-            success: true,
-            token,
-            admin: { id: admin.id, email: admin.email }
-        });
 
     } catch (error) {
         console.error('Auth login error:', error);
