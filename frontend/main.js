@@ -377,8 +377,7 @@ const createPackageCard = (item, index = 0) => `
         <div class="content">
             <h3>${item.title}</h3>
             <ul>
-                <li><i class="fa-solid fa-check"></i> ${item.description.substring(0, 50)}...</li>
-                ${item.include ? `<li><i class="fa-solid fa-check-circle" style="color: var(--primary-green);"></i> Termasuk ${item.include}</li>` : ''}
+                <li><i class="fa-solid fa-check"></i> ${item.description || ''}</li>
             </ul>
             <div class="price-row">
                 <div class="price"><span>Mulai dari</span>${formatPrice(item.price)}</div>
