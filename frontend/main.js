@@ -84,10 +84,14 @@ window.closeGalleryModal = () => {
 const injectVideoModal = () => {
     if (document.getElementById('video-modal')) return;
     const modalHtml = `
-    <div id="video-modal" class="modal-overlay" style="z-index: 9999; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
+    <div id="video-modal" class="modal-overlay" style="z-index: 9999; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; flex-direction: column;">
         <div style="position: relative; width: 90%; max-width: 800px; height: 80vh; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <button onclick="closeVideoModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><i class="fa-solid fa-xmark"></i></button>
-            <div id="video-modal-content" style="width: 100%; height: 100%;"></div>
+            <div id="video-modal-content" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;"></div>
+        </div>
+        <div style="margin-top: 20px; text-align: center;">
+            <p style="color: #94a3b8; font-size: 0.9rem; margin-bottom: 8px;">Video tidak memutar atau error (layar abu-abu)?</p>
+            <a id="video-modal-fallback-link" href="#" target="_blank" style="color: white; background: var(--primary-blue); padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 0.95rem; font-weight: bold; display: inline-block; transition: background 0.3s;" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='var(--primary-blue)'"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Langsung dari Sumbernya</a>
         </div>
     </div>
     `;
@@ -119,10 +123,19 @@ window.openVideoModal = (url) => {
         } else if (u.hostname.includes('streamable.com')) {
             const sid = u.pathname.replace('/e/', '').replace('/', '');
             if (sid) embedUrl = `https://streamable.com/e/${sid}?autoplay=1`;
+        } else if (u.hostname.includes('drive.google.com')) {
+            embedUrl = url.replace('/view', '/preview');
+        } else if (u.hostname.includes('youtube.com') && url.includes('watch?v=')) {
+            const v = u.searchParams.get('v');
+            if (v) embedUrl = `https://www.youtube.com/embed/${v}?autoplay=1`;
         }
     } catch(e) {}
 
     content.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="background: #000;"></iframe>`;
+    
+    // Set fallback link
+    const fallbackLink = document.getElementById('video-modal-fallback-link');
+    if (fallbackLink) fallbackLink.href = url;
     
     modal.style.display = 'flex';
 };
