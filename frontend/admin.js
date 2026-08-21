@@ -84,34 +84,86 @@ window.scanImageWithAI = async () => {
                 if (result.success && result.data) {
                     const aiData = result.data;
                     
-                    // Populate forms
-                    if (aiData.title) titleInput.value = aiData.title;
-                    if (aiData.price) {
-                        priceInput.value = parseInt(aiData.price, 10).toLocaleString('id-ID');
-                    }
-                    
-                    // Auto-select category
+                    // 1. Auto-select category FIRST (triggers visibility of related fields)
                     if (aiData.category) {
                         const catLower = aiData.category.toLowerCase();
                         if (catLower.includes('motor')) categoryInput.value = 'motorcycle';
                         else if (catLower.includes('mobil')) categoryInput.value = 'car';
-                        else if (catLower.includes('tour')) categoryInput.value = 'package';
+                        else if (catLower.includes('tour') || catLower.includes('paket')) categoryInput.value = 'package';
+                        else if (catLower.includes('antar') || catLower.includes('jemput') || catLower.includes('transfer')) categoryInput.value = 'transfer';
+                        else if (catLower.includes('drone')) categoryInput.value = 'drone';
                         categoryInput.dispatchEvent(new Event('change'));
                     }
                     
-                    // Description vs Include depending on category
+                    // 2. Title
+                    if (aiData.title) titleInput.value = aiData.title;
+                    
+                    // 3. Price
+                    if (aiData.price) {
+                        priceInput.value = parseInt(aiData.price, 10).toLocaleString('id-ID');
+                    }
+                    
+                    // 4. Description
                     if (aiData.description) {
-                        if (categoryInput.value === 'package') {
-                            includeInput.value = aiData.description.replace(/•/g, '-');
-                        } else {
-                            descriptionInput.value = aiData.description;
+                        descriptionInput.value = aiData.description;
+                    }
+                    
+                    // 5. Duration
+                    if (aiData.duration && durationInput) {
+                        durationInput.value = aiData.duration;
+                    }
+                    
+                    // 6. Transmission (Sewa Mobil/Motor)
+                    if (aiData.transmission && transmissionInput) {
+                        const transLower = aiData.transmission.toLowerCase();
+                        if (transLower.includes('manual') && transLower.includes('matic')) {
+                            transmissionInput.value = 'Matic / Manual';
+                        } else if (transLower.includes('matic') || transLower.includes('automatic') || transLower.includes('otomatis')) {
+                            transmissionInput.value = 'Matic';
+                        } else if (transLower.includes('manual')) {
+                            transmissionInput.value = 'Manual';
                         }
+                    }
+                    
+                    // 7. Driver Options (Mobil)
+                    if (aiData.driverOptions && driverOptionsInput) {
+                        const drvLower = aiData.driverOptions.toLowerCase();
+                        if (drvLower.includes('include') || drvLower.includes('dengan')) {
+                            driverOptionsInput.value = 'Include Driver';
+                        } else if (drvLower.includes('tidak') || drvLower.includes('lepas') || drvLower.includes('tanpa')) {
+                            driverOptionsInput.value = 'Tidak Include Driver';
+                        }
+                    }
+                    
+                    // 8. Seats
+                    if (aiData.seats && seatsInput) {
+                        seatsInput.value = parseInt(aiData.seats, 10) || '';
+                    }
+                    
+                    // 9. Package Type (Tour)
+                    if (aiData.packageType && packageTypeInput) {
+                        packageTypeInput.value = aiData.packageType;
+                    }
+                    
+                    // 10. Itinerary (Tour)
+                    if (aiData.itinerary && itineraryInput) {
+                        itineraryInput.value = aiData.itinerary.replace(/\\n/g, '\n');
+                    }
+                    
+                    // 11. Include
+                    if (aiData.include && includeInput) {
+                        includeInput.value = aiData.include.replace(/\\n/g, '\n').replace(/•/g, '-');
+                    }
+                    
+                    // 12. Exclude
+                    if (aiData.exclude && excludeInput) {
+                        excludeInput.value = aiData.exclude.replace(/\\n/g, '\n').replace(/•/g, '-');
                     }
 
                     Swal.fire({
                         icon: 'success',
                         title: 'Berhasil!',
-                        text: 'Form telah diisi secara otomatis oleh AI.',
+                        text: 'Semua field form telah diisi secara otomatis oleh AI. Silakan periksa dan sesuaikan jika perlu.',
                         confirmButtonColor: '#22c55e'
                     });
                 } else {

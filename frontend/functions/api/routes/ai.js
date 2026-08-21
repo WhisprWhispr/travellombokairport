@@ -41,17 +41,40 @@ aiRoutes.post('/scan-image', verifyToken, async (c) => {
         const mimeMatch = imageBase64.match(/^data:(image\/[a-zA-Z+]+);base64,/);
         const mimeType = mimeMatch ? mimeMatch[1] : 'image/jpeg';
 
-        const prompt = `Anda adalah asisten AI untuk website travel & rental.
-Tugas Anda adalah membaca gambar brosur promosi ini (Sewa Mobil, Motor, Tour, dll) dan merangkum informasinya.
-Tolong keluarkan HANYA JSON murni (tanpa markdown, tanpa tag json, tanpa backtick) dengan struktur berikut:
+        const prompt = `Anda adalah asisten AI untuk website travel & rental di Lombok, Indonesia.
+Tugas Anda: baca gambar brosur promosi ini dan ekstrak SEMUA informasi yang ada ke dalam format JSON.
+
+Keluarkan HANYA JSON murni (TANPA markdown, TANPA backtick, TANPA penjelasan) dengan struktur berikut:
 {
-  "title": "Nama Layanan/Kendaraan/Tour (Singkat)",
+  "title": "Nama layanan/kendaraan/tour (singkat dan jelas)",
   "price": 500000,
-  "category": "Sewa Mobil" atau "Sewa Motor" atau "Tour" atau "Lainnya",
-  "description": "Fasilitas yang termasuk (include) atau deskripsi singkat. Format menggunakan bullet points dengan tanda - untuk setiap fasilitas."
+  "category": "Sewa Mobil",
+  "description": "Deskripsi singkat tentang layanan ini",
+  "duration": "hari",
+  "transmission": "Matic",
+  "driverOptions": "Include Driver",
+  "seats": 7,
+  "packageType": "PAKET - A",
+  "itinerary": "DAY 1: Sasak Tour\\n- Desa Sade\\n- Pantai Kuta\\n\\nDAY 2: Gili Trawangan\\n- Snorkeling",
+  "include": "Transportasi Private Full AC\\nDriver profesional\\nBBM\\nAir mineral",
+  "exclude": "Tiket pesawat\\nHotel/Penginapan\\nMakan & minum"
 }
-Pastikan price adalah angka murni tanpa titik atau huruf (contoh: 500000). Jika harga tidak ditemukan, set ke 0.
-Pastikan HANYA mengembalikan text JSON yang bisa di-parse langsung. Jangan tambahkan apapun selain JSON.`;
+
+ATURAN PENTING:
+- "category": HARUS salah satu dari: "Sewa Mobil", "Sewa Motor", "Tour", "Jasa Antar Jemput", atau "Dokumentasi Drone"
+- "price": angka murni tanpa titik/koma/huruf (contoh: 500000). Jika tidak ada, set 0
+- "duration": satuan waktu seperti "hari", "12 Jam", "3H 2M", "24 Jam". Jika tidak ada, set ""
+- "transmission": "Manual", "Matic", atau "Matic / Manual". Hanya untuk kendaraan. Jika tidak relevan, set ""
+- "driverOptions": "Include Driver" atau "Tidak Include Driver". Hanya untuk mobil. Jika tidak relevan, set ""
+- "seats": jumlah kursi/kapasitas (angka). Jika tidak ada, set 0
+- "packageType": tipe paket tour seperti "PAKET - A", "PAKET - B". Jika tidak relevan, set ""
+- "itinerary": jadwal perjalanan tour. Pisahkan hari dengan \\n\\n dan item dengan \\n-. Jika tidak ada, set ""
+- "include": fasilitas yang TERMASUK dalam harga, satu per baris dipisah \\n. Jika tidak ada, set ""
+- "exclude": yang TIDAK termasuk dalam harga, satu per baris dipisah \\n. Jika tidak ada, set ""
+- "description": deskripsi umum layanan. Jika tidak ada info khusus, buat ringkasan dari gambar
+
+Baca SEMUA teks yang terlihat di gambar dan masukkan ke field yang sesuai.
+Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSON.`;
 
         // Call Gemini REST API directly (no SDK needed - works perfectly in Cloudflare Workers)
         const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
