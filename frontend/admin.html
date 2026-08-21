@@ -302,6 +302,25 @@
           </div>
 
           <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Spesifikasi Kendaraan (Khusus Sewa)</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Hanya akan muncul jika kategori adalah Sewa Mobil atau Sewa Motor.</p>
+          
+          <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 1;">
+              <label>Transmisi</label>
+              <select id="item-transmission">
+                <option value="">Pilih Transmisi...</option>
+                <option value="Manual">Manual</option>
+                <option value="Matic">Matic</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label>Kapasitas (Seat / Helm)</label>
+              <input type="number" id="item-seats" placeholder="e.g. 7 (untuk mobil) / 2 (untuk motor)">
+            </div>
+          </div>
+
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
           <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Detail Tour (Khusus Paket Tour)</h4>
           <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Abaikan kolom di bawah ini jika item ini bukan paket tour.</p>
           

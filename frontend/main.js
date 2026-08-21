@@ -207,14 +207,14 @@ const createFleetCard = (item, index = 0) => `
     <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${index * 100}">
         <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         <h3>${item.title}</h3>
-        <div class="fleet-features">
-            <span><i class="fa-solid fa-user-group"></i> 4 Seat</span>
-            <span><i class="fa-solid fa-gear"></i> Matic</span>
+        <div class="fleet-features" style="display: flex; gap: 10px; margin-bottom: 15px; color: var(--text-gray); font-size: 0.85rem;">
+            ${item.seats ? `<span><i class="fa-solid fa-user-group" style="color: var(--primary-blue);"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
+            ${item.transmission ? `<span><i class="fa-solid fa-gear" style="color: var(--primary-blue);"></i> ${item.transmission}</span>` : ''}
         </div>
         <div class="fleet-price">${formatPrice(item.price)} / hari</div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <a href="https://wa.me/6289676963255?text=Halo%20saya%20ingin%20sewa%20${encodeURIComponent(item.title)}" target="_blank" class="btn" style="flex:1; background: white; color: var(--primary-green); border: 2px solid var(--primary-green); padding: 8px;"><i class="fa-brands fa-whatsapp"></i> WA</a>
-            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 8px;"><i class="fa-solid fa-desktop"></i> Web</button>
+            <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 8px; font-weight: 700;">DETAIL</button>
+            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 8px;"><i class="fa-solid fa-desktop"></i> PESAN</button>
         </div>
     </div>
 `;
