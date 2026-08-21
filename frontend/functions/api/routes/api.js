@@ -40,6 +40,17 @@ apiRoutes.get('/items', async (c) => {
             items.push({ id: doc.id, ...doc.data() });
         });
         
+        // Sort items by 'order' ascending. If order doesn't exist, default to 0.
+        items.sort((a, b) => {
+            const orderA = a.order || 0;
+            const orderB = b.order || 0;
+            // First by order, then by createdAt desc (newest first for same order)
+            if (orderA !== orderB) {
+                return orderA - orderB;
+            }
+            return new Date(b.createdAt) - new Date(a.createdAt);
+        });
+        
         return c.json(items);
     } catch (error) {
         return c.json({ error: error.message }, 500);

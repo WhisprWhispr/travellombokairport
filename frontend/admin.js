@@ -17,6 +17,7 @@ const form = document.getElementById("item-form");
 const idInput = document.getElementById("item-id");
 const categoryInput = document.getElementById("item-category");
 const titleInput = document.getElementById("item-title");
+const orderInput = document.getElementById("item-order");
 const descriptionInput = document.getElementById("item-description");
 const priceInput = document.getElementById("item-price");
 const imageInput = document.getElementById("item-image");
@@ -431,7 +432,7 @@ const renderTable = (items) => {
     tableBody.innerHTML = items.map(item => `
         <tr>
             <td><img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=100'"></td>
-            <td><strong>${item.title}</strong></td>
+            <td><strong>${item.title}</strong> <br><small style="color: #64748b;">Urutan: ${item.order || 0}</small></td>
             <td><span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${item.category}</span></td>
             <td>${item.price}</td>
             <td>
@@ -485,6 +486,7 @@ const closeModal = () => {
     modal.classList.remove("active");
     form.reset();
     idInput.value = "";
+    orderInput.value = "0";
     termsCustomGroup.style.display = "none";
     modalTitle.textContent = "Add New Item";
 };
@@ -544,6 +546,7 @@ form.addEventListener("submit", async (e) => {
         title: titleInput.value,
         description: descriptionInput.value,
         category: categoryInput.value,
+        order: parseInt(orderInput.value) || 0,
         price: priceInput.value.replace(/\./g, ''), // Strip dots before saving
         imageUrl: imageInput.value,
         droneVideoUrl: droneVideoInput.value,
@@ -688,6 +691,7 @@ window.editItem = async (id) => {
 
         idInput.value = item.id;
         titleInput.value = item.title;
+        orderInput.value = item.order || 0;
         descriptionInput.value = item.description;
         categoryInput.value = item.category;
         
