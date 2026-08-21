@@ -320,6 +320,38 @@ const createFleetCard = (item, index = 0) => `
     </div>
 `;
 
+// Render Drone Card (Dokumentasi Drone)
+const createDroneCard = (item, index = 0) => {
+    let videoId = '';
+    if (item.droneVideoUrl) {
+        try {
+            const url = new URL(item.droneVideoUrl);
+            if (url.hostname.includes('youtube.com')) {
+                videoId = url.searchParams.get('v');
+            } else if (url.hostname.includes('youtu.be')) {
+                videoId = url.pathname.slice(1);
+            }
+        } catch(e) {}
+    }
+    
+    return `
+    <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
+        <div class="img-wrapper" style="height: 250px;">
+            ${videoId 
+                ? `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 20px 20px 0 0;"></iframe>`
+                : `<img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'">`
+            }
+        </div>
+        <div class="content" style="padding: 20px;">
+            <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 10px;">${item.title}</h3>
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">${item.description}</p>
+            <div class="price" style="font-size: 1.2rem; color: var(--primary-green); font-weight: 700; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.8rem; color: var(--text-gray); font-weight: 400;">/ ${item.duration || 'hari'}</span></div>
+            <a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20pesan%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-green w-100"><i class="fa-brands fa-whatsapp"></i> PESAN SEKARANG</a>
+        </div>
+    </div>
+    `;
+};
+
 // Initialize Page
 const init = async () => {
     const servicesContainer = document.getElementById('services-container');
@@ -335,7 +367,8 @@ const init = async () => {
         const cat = item.category.toLowerCase();
         return cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car' || cat === 'motorcycle';
     });
-    const services = globalItems.filter(item => !packages.includes(item) && !fleets.includes(item));
+    const drones = globalItems.filter(item => item.category.toLowerCase() === 'drone');
+    const services = globalItems.filter(item => !packages.includes(item) && !fleets.includes(item) && !drones.includes(item));
 
     // Helper to render sections with "See All" button
     const renderSectionWithSeeAll = (containerId, items, renderFn) => {
@@ -381,6 +414,9 @@ const init = async () => {
     
     // Render Fleets
     renderSectionWithSeeAll('fleet-container', fleets, createFleetCard);
+    
+    // Render Drones
+    renderSectionWithSeeAll('drone-container', drones, createDroneCard);
 };
 
 // Cek Booking Status

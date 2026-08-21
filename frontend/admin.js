@@ -20,6 +20,7 @@ const titleInput = document.getElementById("item-title");
 const descriptionInput = document.getElementById("item-description");
 const priceInput = document.getElementById("item-price");
 const imageInput = document.getElementById("item-image");
+const droneVideoInput = document.getElementById("item-droneVideo");
 const packageTypeInput = document.getElementById("item-packageType");
 const durationInput = document.getElementById("item-duration");
 const itineraryInput = document.getElementById("item-itinerary");
@@ -361,6 +362,7 @@ form.addEventListener("submit", async (e) => {
         category: categoryInput.value,
         price: priceInput.value.replace(/\./g, ''), // Strip dots before saving
         imageUrl: imageInput.value,
+        droneVideoUrl: droneVideoInput.value,
         packageType: packageTypeInput.value,
         duration: durationInput.value,
         itinerary: itineraryInput.value,
@@ -457,6 +459,7 @@ window.editItem = async (id) => {
         }
         
         imageInput.value = item.imageUrl || "";
+        droneVideoInput.value = item.droneVideoUrl || "";
         packageTypeInput.value = item.packageType || "";
         durationInput.value = item.duration || "";
         itineraryInput.value = item.itinerary || "";
