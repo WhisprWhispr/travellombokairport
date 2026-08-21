@@ -12,7 +12,7 @@ const verifyAdminToken = async (c, next) => {
     }
     try {
         const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
-        const decodedToken = await verify(authHeader.split('Bearer ')[1], secret);
+        const decodedToken = await verify(authHeader.split('Bearer ')[1], secret, 'HS256');
         c.set('user', decodedToken);
         await next();
     } catch (e) {

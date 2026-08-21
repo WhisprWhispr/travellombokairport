@@ -14,7 +14,7 @@ const verifyToken = async (c, next) => {
     const token = authHeader.split('Bearer ')[1];
     try {
         const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
-        const decodedToken = await verify(token, secret);
+        const decodedToken = await verify(token, secret, 'HS256');
         c.set('user', decodedToken);
         await next();
     } catch (error) {

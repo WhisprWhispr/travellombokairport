@@ -125,13 +125,22 @@ document.getElementById('forgot-password-link').addEventListener('click', async 
 document.getElementById('reset-password-btn').addEventListener('click', async (e) => {
     e.preventDefault();
     
-    // We try to get the email from the logged in user context. 
-    // Since we don't store the email in localStorage explicitly, we can ask for it, 
-    // or we can prompt them to confirm. Let's just prompt them for their email to be safe.
+    // Coba ambil email dari token JWT
+    let defaultEmail = '';
+    if (authToken) {
+        try {
+            const payload = JSON.parse(atob(authToken.split('.')[1]));
+            defaultEmail = payload.email || '';
+        } catch (err) {
+            console.error("Gagal parse token:", err);
+        }
+    }
+
     const { value: email } = await Swal.fire({
         title: 'Ubah Sandi Saya',
         text: 'Masukkan email akun ini untuk menerima link perubahan sandi yang dikirimkan oleh Firebase.',
         input: 'email',
+        inputValue: defaultEmail,
         inputPlaceholder: 'admin@example.com',
         showCancelButton: true,
         confirmButtonText: 'Kirim Link Ubah Sandi',
@@ -576,32 +585,67 @@ window.showAdminTutorial = () => {
     Swal.fire({
         title: '<strong style="color: #1e293b; font-size: 1.5rem;">Panduan Panel Admin</strong>',
         html: `
+            <style>
+                .tutorial-grid {
+                    display: grid;
+                    grid-template-columns: 1fr;
+                    gap: 15px;
+                }
+                @media (min-width: 600px) {
+                    .tutorial-grid {
+                        grid-template-columns: 1fr 1fr;
+                    }
+                }
+                .tutorial-card {
+                    padding: 15px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    text-align: left;
+                    display: flex;
+                    flex-direction: column;
+                }
+                .tutorial-card h4 {
+                    margin: 0 0 8px 0;
+                    font-size: 1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .tutorial-card p {
+                    margin: 0;
+                    font-size: 0.85rem;
+                    line-height: 1.4;
+                    flex-grow: 1;
+                }
+            </style>
             <div style="text-align: left; font-size: 0.9rem; color: #475569;">
-                <p style="margin-bottom: 20px;">Selamat datang di Pusat Kendali Travel Anda. Berikut adalah fungsi utama dari setiap menu:</p>
+                <p style="margin-bottom: 20px; text-align: center;">Selamat datang di Pusat Kendali Travel Anda. Berikut adalah fungsi utama dari setiap menu:</p>
                 
-                <div style="background: #eff6ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #3b82f6; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #1e40af; font-size: 1rem;"><i class="fa-solid fa-laptop"></i> 1. Booking Web</h4>
-                    <p style="margin: 0;">Semua pesanan yang masuk dari website akan muncul di sini. Anda bisa melihat status pembayaran (PAID/PENDING). Di menu ini, Anda WAJIB menugaskan supir dengan menekan tombol <strong>Assign Supir</strong>.</p>
-                </div>
+                <div class="tutorial-grid">
+                    <div class="tutorial-card" style="background: #eff6ff; border-left: 5px solid #3b82f6;">
+                        <h4 style="color: #1e40af;"><i class="fa-solid fa-laptop"></i> 1. Booking Web</h4>
+                        <p>Semua pesanan yang masuk dari website akan muncul di sini. Anda bisa melihat status pembayaran (PAID/PENDING). Di menu ini, Anda WAJIB menugaskan supir dengan menekan tombol <strong>Assign Supir</strong>.</p>
+                    </div>
 
-                <div style="background: #fdf4ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #d946ef; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #86198f; font-size: 1rem;"><i class="fa-solid fa-calendar-alt"></i> 2. Jadwal Manual</h4>
-                    <p style="margin: 0;">Gunakan menu ini jika Anda mendapat pesanan dari telepon/WA (offline). Anda bisa menginput data secara manual agar jadwal tidak bentrok dengan pesanan dari website.</p>
-                </div>
+                    <div class="tutorial-card" style="background: #fdf4ff; border-left: 5px solid #d946ef;">
+                        <h4 style="color: #86198f;"><i class="fa-solid fa-calendar-alt"></i> 2. Jadwal Manual</h4>
+                        <p>Gunakan menu ini jika mendapat pesanan dari telepon/WA (offline). Anda bisa menginput data secara manual agar jadwal tidak bentrok dengan pesanan website.</p>
+                    </div>
 
-                <div style="background: #fff7ed; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #f97316; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #9a3412; font-size: 1rem;"><i class="fa-solid fa-car"></i> 3. Manajemen Supir</h4>
-                    <p style="margin: 0;">Tempat Anda mendaftarkan tim supir/tour guide. Masukkan <strong>Nomor HP</strong> dan buatkan <strong>PIN 6 Angka</strong>. Nomor HP dan PIN ini digunakan supir untuk login ke portal mereka.</p>
-                </div>
+                    <div class="tutorial-card" style="background: #fff7ed; border-left: 5px solid #f97316;">
+                        <h4 style="color: #9a3412;"><i class="fa-solid fa-car"></i> 3. Manajemen Supir</h4>
+                        <p>Tempat Anda mendaftarkan tim supir/tour guide. Masukkan <strong>Nomor HP</strong> dan buatkan <strong>PIN 6 Angka</strong>. Nomor HP dan PIN ini digunakan supir untuk login.</p>
+                    </div>
 
-                <div style="background: #f0fdf4; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #22c55e; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 1rem;"><i class="fa-solid fa-money-bill-wave"></i> 4. Penarikan Dana</h4>
-                    <p style="margin: 0;">Pusat keuangan Anda. Semua pendapatan dari tamu yang membayar lunas via QRIS akan masuk ke Saldo Aktif. Anda bisa menarik uang ke rekening pribadi dengan menekan tombol <strong>Ajukan Penarikan</strong>.</p>
-                </div>
+                    <div class="tutorial-card" style="background: #f0fdf4; border-left: 5px solid #22c55e;">
+                        <h4 style="color: #166534;"><i class="fa-solid fa-money-bill-wave"></i> 4. Penarikan Dana</h4>
+                        <p>Pusat keuangan Anda. Semua pendapatan dari tamu yang membayar lunas via QRIS masuk ke Saldo Aktif. Tarik uang ke rekening pribadi dengan menekan tombol <strong>Ajukan Penarikan</strong>.</p>
+                    </div>
 
-                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #64748b; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #334155; font-size: 1rem;"><i class="fa-solid fa-camera"></i> 5. Kelola Galeri & Item</h4>
-                    <p style="margin: 0;">Tempat untuk mengatur "Etalase" website Anda. Tambahkan foto-foto perjalanan menarik atau atur ulang harga dan detail paket wisata Anda kapan saja.</p>
+                    <div class="tutorial-card" style="background: #f8fafc; border-left: 5px solid #64748b; grid-column: 1 / -1;">
+                        <h4 style="color: #334155;"><i class="fa-solid fa-camera"></i> 5. Kelola Galeri & Item</h4>
+                        <p>Tempat untuk mengatur "Etalase" website Anda. Tambahkan foto-foto perjalanan menarik atau atur ulang harga dan detail paket wisata Anda kapan saja.</p>
+                    </div>
                 </div>
             </div>
         `,

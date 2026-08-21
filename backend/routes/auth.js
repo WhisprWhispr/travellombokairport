@@ -41,8 +41,8 @@ router.post('/login', async (req, res) => {
             // Jika berhasil, Firebase akan mengembalikan idToken dan localId
             const firebaseUser = response.data;
             
-            // Generate token internal sistem
-            const token = generateToken({ id: firebaseUser.localId, email: firebaseUser.email });
+            // Gunakan token asli dari Firebase agar bisa diverifikasi oleh admin.auth.verifyIdToken
+            const token = firebaseUser.idToken;
 
             return res.json({
                 success: true,
