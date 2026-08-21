@@ -378,6 +378,7 @@ const createPackageCard = (item, index = 0) => `
             <h3>${item.title}</h3>
             <ul>
                 <li><i class="fa-solid fa-check"></i> ${item.description.substring(0, 50)}...</li>
+                ${item.include ? `<li><i class="fa-solid fa-check-circle" style="color: var(--primary-green);"></i> Termasuk ${item.include}</li>` : ''}
             </ul>
             <div class="price-row">
                 <div class="price"><span>Mulai dari</span>${formatPrice(item.price)}</div>
@@ -390,14 +391,15 @@ const createPackageCard = (item, index = 0) => `
 // Render Fleet Card (Armada/Rental)
 const createFleetCard = (item, index = 0) => `
     <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <div style="background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 15px; height: 180px; display: flex; align-items: center; justify-content: center;">
-            <img src="${item.imageUrl}" alt="${item.title}" style="max-height: 100%; max-width: 100%; object-fit: contain; mix-blend-mode: multiply; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
+        <div style="width: 100%; height: 200px; border-radius: 12px; margin-bottom: 15px; overflow: hidden; background: #f8fafc; position: relative;">
+            <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         </div>
         <h3 class="notranslate" style="color: #0f172a; font-weight: 800; font-size: 1.3rem; text-align: left; margin-bottom: 10px;">${item.title}</h3>
         <div class="fleet-features" style="display: flex; gap: 8px; justify-content: flex-start; flex-wrap: wrap; margin-bottom: 15px; font-size: 0.8rem;">
             ${item.seats ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-user-group" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
             ${item.transmission ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-gear" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.transmission}</span>` : ''}
             ${item.driverOptions ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-id-card" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.driverOptions}</span>` : ''}
+            ${item.include ? `<span style="background: #e0f2fe; color: #0284c7; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-check-circle" style="margin-right: 4px;"></i> Termasuk ${item.include}</span>` : ''}
         </div>
         <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800; text-align: left; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
         <div style="display: flex; gap: 10px; margin-top: auto; padding-top: 15px; border-top: 1px solid #f1f5f9;">
