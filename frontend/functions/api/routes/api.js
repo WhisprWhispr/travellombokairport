@@ -46,6 +46,32 @@ apiRoutes.get('/items', async (c) => {
     }
 });
 
+// GET settings (public)
+apiRoutes.get('/settings', async (c) => {
+    try {
+        const db = getDb(c);
+        const doc = await db.collection('settings').doc('global').get();
+        if (!doc.exists) {
+            return c.json({ droneAvailable: 'available' });
+        }
+        return c.json(doc.data());
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// PUT settings (protected)
+apiRoutes.put('/settings', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const updatedSettings = await c.req.json();
+        await db.collection('settings').doc('global').set(updatedSettings, { merge: true });
+        return c.json(updatedSettings);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // GET single item (public)
 apiRoutes.get('/items/:id', async (c) => {
     try {
