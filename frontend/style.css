@@ -889,15 +889,15 @@ ul {
 
 .tour-modal-close {
   position: absolute;
-  top: 15px;
-  left: 15px;
+  top: 30px; /* Diturunkan supaya tidak tertutup UI browser di HP */
+  left: 20px;
   background: white;
   border: none;
   font-size: 0.9rem;
   font-weight: 600;
   color: var(--text-dark);
   cursor: pointer;
-  z-index: 10;
+  z-index: 999;
   padding: 8px 16px;
   border-radius: 20px;
   box-shadow: 0 4px 6px -1px rgba(0,0,0,0.2);
