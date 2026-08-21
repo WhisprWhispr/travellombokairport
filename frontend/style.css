@@ -1360,6 +1360,7 @@ ul {
   }
 }
 @media (max-width: 768px) {
+  .navbar { padding: 12px 0 !important; }
   .logo { gap: 10px; white-space: normal; }
   .logo-img { height: 42px; } 
   .logo-text { display: flex; flex-direction: column; justify-content: center; }
@@ -1367,8 +1368,8 @@ ul {
   .logo-subtitle { display: block; font-size: 0.75rem; white-space: normal; margin-top: 2px; }
   .nav-content { padding: 0 15px; }
   .nav-actions { gap: 12px; }
-  .lang-btn { padding: 6px 10px; font-size: 0.85rem; font-weight: 600; border: 1px solid #cbd5e1; border-radius: 6px; background: white; }
-  .mobile-menu-btn { font-size: 1.5rem; padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: var(--primary-blue); }
+  .lang-btn { padding: 6px 10px; font-size: 0.85rem; font-weight: 600; border: 1px solid #cbd5e1; border-radius: 6px; background: white; transition: none !important; }
+  .mobile-menu-btn { font-size: 1.5rem; padding: 4px 8px; border-radius: 6px; background: #f1f5f9; color: var(--primary-blue); transition: none !important; }
   .hero-title { font-size: 2.5rem; }
   .admin-container { flex-direction: column; display: block; }
   .admin-sidebar {
