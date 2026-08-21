@@ -44,6 +44,99 @@ priceInput.addEventListener('input', function(e) {
     }
 });
 
+// AI Auto-Fill Functionality
+window.scanImageWithAI = async () => {
+    const fileInput = document.getElementById('ai-image-input');
+    const loadingDiv = document.getElementById('ai-loading');
+    const errorDiv = document.getElementById('ai-error');
+    const btn = document.getElementById('ai-scan-btn');
+    
+    if (!fileInput.files || fileInput.files.length === 0) {
+        errorDiv.textContent = "Silakan pilih file gambar brosur terlebih dahulu!";
+        errorDiv.style.display = 'block';
+        return;
+    }
+    
+    const file = fileInput.files[0];
+    if (file.size > 4 * 1024 * 1024) {
+        errorDiv.textContent = "Ukuran gambar terlalu besar (maksimal 4MB).";
+        errorDiv.style.display = 'block';
+        return;
+    }
+
+    errorDiv.style.display = 'none';
+    loadingDiv.style.display = 'block';
+    btn.disabled = true;
+
+    try {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async () => {
+            const base64Data = reader.result;
+            try {
+                const response = await fetch(`${API_URL}/ai/scan-image`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authToken}` },
+                    body: JSON.stringify({ imageBase64: base64Data })
+                });
+                
+                const result = await response.json();
+                if (result.success && result.data) {
+                    const aiData = result.data;
+                    
+                    // Populate forms
+                    if (aiData.title) titleInput.value = aiData.title;
+                    if (aiData.price) {
+                        priceInput.value = parseInt(aiData.price, 10).toLocaleString('id-ID');
+                    }
+                    
+                    // Auto-select category
+                    if (aiData.category) {
+                        const catLower = aiData.category.toLowerCase();
+                        if (catLower.includes('motor')) categoryInput.value = 'motorcycle';
+                        else if (catLower.includes('mobil')) categoryInput.value = 'car';
+                        else if (catLower.includes('tour')) categoryInput.value = 'package';
+                        categoryInput.dispatchEvent(new Event('change'));
+                    }
+                    
+                    // Description vs Include depending on category
+                    if (aiData.description) {
+                        if (categoryInput.value === 'package') {
+                            includeInput.value = aiData.description.replace(/•/g, '-');
+                        } else {
+                            descriptionInput.value = aiData.description;
+                        }
+                    }
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Form telah diisi secara otomatis oleh AI.',
+                        confirmButtonColor: '#22c55e'
+                    });
+                } else {
+                    throw new Error(result.message || 'Gagal membaca gambar');
+                }
+            } catch (err) {
+                console.error(err);
+                errorDiv.textContent = err.message || "Terjadi kesalahan saat memproses gambar dengan AI.";
+                errorDiv.style.display = 'block';
+            } finally {
+                loadingDiv.style.display = 'none';
+                btn.disabled = false;
+            }
+        };
+        reader.onerror = () => {
+            throw new Error("Gagal membaca file lokal.");
+        };
+    } catch (err) {
+        loadingDiv.style.display = 'none';
+        btn.disabled = false;
+        errorDiv.textContent = err.message;
+        errorDiv.style.display = 'block';
+    }
+};
+
 const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR 
 
 1. Identitas Penyewa

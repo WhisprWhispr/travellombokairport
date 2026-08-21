@@ -315,6 +315,23 @@
         </div>
         <form id="item-form" class="admin-form" style="max-width: 800px; margin: 0 auto; background: #f8fafc; padding: 40px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
           <input type="hidden" id="item-id">
+          
+          <!-- AI Auto-Fill Section -->
+          <div style="background: linear-gradient(135deg, #f0fdfa, #e0f2fe); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px dashed #38bdf8;">
+            <h4 style="color: #0284c7; margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Auto-Fill (Otomatis Isi Form)
+            </h4>
+            <p style="font-size: 0.85rem; color: #475569; margin-bottom: 15px;">Unggah foto brosur promosi (Sewa/Tour), AI kami akan membacanya dan otomatis mengisi Judul, Harga, Deskripsi, dan Fasilitas (Include).</p>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="file" id="ai-image-input" accept="image/*" class="form-control" style="flex: 1; padding: 8px; font-size: 0.9rem;">
+              <button type="button" id="ai-scan-btn" onclick="window.scanImageWithAI()" class="btn btn-blue" style="white-space: nowrap; font-weight: bold; padding: 10px 20px;"><i class="fa-solid fa-robot"></i> Scan dengan AI</button>
+            </div>
+            <div id="ai-loading" style="display: none; margin-top: 15px; color: #0284c7; font-size: 0.9rem; font-weight: bold;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> AI sedang membaca gambar, mohon tunggu...
+            </div>
+            <div id="ai-error" style="display: none; margin-top: 10px; color: #ef4444; font-size: 0.85rem;"></div>
+          </div>
+
           <div class="form-group">
             <label>Category</label>
             <select id="item-category" required>
