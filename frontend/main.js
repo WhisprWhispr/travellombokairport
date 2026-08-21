@@ -3,7 +3,19 @@ let globalItems = [];
 
 // Format currency
 const formatPrice = (price) => {
-    return price;
+    if (!price) return 'Rp 0';
+    // If the price is already formatted manually by user (e.g., "Rp 500.000"), return it
+    if (price.toString().toLowerCase().includes('rp')) return price;
+    
+    // Otherwise, parse and format
+    const num = parseInt(price.toString().replace(/\D/g, ''), 10);
+    if (isNaN(num)) return price;
+    
+    return new Intl.NumberFormat('id-ID', {
+        style: 'currency',
+        currency: 'IDR',
+        minimumFractionDigits: 0
+    }).format(num);
 };
 
 // Fetch items from backend
