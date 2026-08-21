@@ -54,7 +54,7 @@ Pastikan price adalah angka murni tanpa titik atau huruf (contoh: 500000). Jika 
 Pastikan HANYA mengembalikan text JSON yang bisa di-parse langsung. Jangan tambahkan apapun selain JSON.`;
 
         // Call Gemini REST API directly (no SDK needed - works perfectly in Cloudflare Workers)
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
 
         const geminiResponse = await fetch(geminiUrl, {
             method: 'POST',
