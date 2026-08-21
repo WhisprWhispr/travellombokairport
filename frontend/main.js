@@ -136,15 +136,37 @@ window.openTourModal = (id) => {
         <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
             <div class="tm-top premium-card">
                 <div class="tm-title" style="flex: 1;">
-                    <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${item.packageType || 'PAKET TOUR'}</h4>
-                    <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
-                    <div class="tm-badges" style="margin-bottom: 20px;">
-                        <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold;"><i class="fa-regular fa-clock"></i> ${item.duration || 'N/A'}</span>
-                    </div>
-                    <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
+                    ${(() => {
+                        let typeLabel = 'PAKET TOUR';
+                        if (item.category === 'car') typeLabel = 'SEWA MOBIL';
+                        else if (item.category === 'motorcycle') typeLabel = 'SEWA MOTOR';
+                        else if (item.category === 'drone') typeLabel = 'SEWA DRONE';
+                        else if (item.category === 'transfer') typeLabel = 'ANTAR JEMPUT';
+                        if (item.packageType) typeLabel = item.packageType;
+                        
+                        let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
+                        if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
+                            durationLabel = 'PER HARI';
+                        }
+                        
+                        return `
+                        <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${typeLabel}</h4>
+                        <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
+                        <div class="tm-badges" style="margin-bottom: 20px;">
+                            <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>
+                        </div>
+                        <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
+                        `;
+                    })()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    <span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">HARGA PAKET</span>
+                    ${(() => {
+                        let priceLabel = 'HARGA PAKET';
+                        if (item.category === 'car' || item.category === 'motorcycle' || item.category === 'drone') {
+                            priceLabel = 'HARGA SEWA';
+                        }
+                        return `<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
+                    })()}
                     <h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
                     <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>
                 </div>
