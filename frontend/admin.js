@@ -123,6 +123,7 @@ const checkAuth = () => {
         loginContainer.style.display = "none";
         adminDashboard.style.display = "block";
         fetchAdminItems();
+        fetchGlobalSettings();
         
         if (!localStorage.getItem('adminTutorialSeen')) {
             setTimeout(showAdminTutorial, 1000);
@@ -1178,6 +1179,41 @@ window.assignDriver = (bookingId, currentDriverId) => {
             }
         }
     });
+};
+
+// Global Settings (Sewa Drone)
+const fetchGlobalSettings = async () => {
+    try {
+        const res = await fetch(`${API_URL}/settings`);
+        if (res.ok) {
+            const data = await res.json();
+            const droneStatus = document.getElementById('setting-drone-status');
+            if (droneStatus && data.droneAvailable) {
+                droneStatus.value = data.droneAvailable;
+            }
+        }
+    } catch (e) {
+        console.error("Error fetching settings:", e);
+    }
+};
+
+window.saveGlobalSettings = async () => {
+    const droneStatus = document.getElementById('setting-drone-status').value;
+    try {
+        Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+        const res = await fetch(`${API_URL}/settings`, {
+            method: 'PUT',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ droneAvailable: droneStatus })
+        });
+        if (res.ok) {
+            Swal.fire({icon: 'success', title: 'Berhasil', text: 'Pengaturan berhasil disimpan.', confirmButtonColor: '#22c55e'});
+        } else {
+            Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal menyimpan pengaturan.', confirmButtonColor: '#22c55e'});
+        }
+    } catch (e) {
+        Swal.fire({icon: 'error', title: 'Error', text: e.message, confirmButtonColor: '#22c55e'});
+    }
 };
 
 // Panggil saat halaman dimuat (setelah semua fungsi siap)

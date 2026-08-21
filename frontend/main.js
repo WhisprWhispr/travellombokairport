@@ -354,6 +354,35 @@ const createDroneCard = (item, index = 0) => {
 
 // Initialize Page
 const init = async () => {
+    // Check Global Settings (e.g. Drone Availability)
+    try {
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+            const settings = await res.json();
+            if (settings.droneAvailable === 'unavailable') {
+                // If on drone.html, show locked message
+                const droneContainer = document.getElementById('drone-container');
+                if (droneContainer) {
+                    const portofolioSection = droneContainer.closest('section');
+                    const heroSection = portofolioSection.previousElementSibling;
+                    
+                    if (heroSection) heroSection.style.display = 'none';
+                    if (portofolioSection) {
+                        portofolioSection.innerHTML = `
+                        <div class="container text-center" style="padding: 100px 20px;">
+                            <i class="fa-solid fa-lock" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 20px;"></i>
+                            <h2 style="color: var(--text-dark); margin-bottom: 10px;">Layanan Belum Tersedia</h2>
+                            <p style="color: var(--text-gray); max-width: 500px; margin: 0 auto 30px auto; line-height: 1.6;">Mohon maaf, layanan dokumentasi drone saat ini belum tersedia atau sedang dalam pemeliharaan. Silakan kembali lagi nanti.</p>
+                            <a href="/" class="btn btn-green"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
+                        </div>`;
+                    }
+                }
+            }
+        }
+    } catch (e) {
+        console.error("Failed to fetch settings", e);
+    }
+
     const servicesContainer = document.getElementById('services-container');
     const packagesContainer = document.getElementById('packages-container');
     const fleetContainer = document.getElementById('fleet-container');

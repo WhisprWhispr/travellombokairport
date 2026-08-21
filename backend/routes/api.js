@@ -56,6 +56,30 @@ router.get('/items', async (req, res) => {
     }
 });
 
+// GET settings
+router.get('/settings', async (req, res) => {
+    try {
+        const doc = await db.collection('settings').doc('global').get();
+        if (!doc.exists) {
+            return res.json({ droneAvailable: 'available' });
+        }
+        res.json(doc.data());
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// PUT settings
+router.put('/settings', verifyToken, async (req, res) => {
+    try {
+        const updatedSettings = req.body;
+        await db.collection('settings').doc('global').set(updatedSettings, { merge: true });
+        res.json(updatedSettings);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // GET single item (public)
 router.get('/items/:id', async (req, res) => {
     try {

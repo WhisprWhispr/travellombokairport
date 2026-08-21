@@ -56,6 +56,7 @@
           <li><a href="#" onclick="showTab('drivers')"><i class="fa-solid fa-car"></i> Manajemen Supir</a></li>
           <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
+          <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
           <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
@@ -159,6 +160,21 @@
                 <tr><td colspan="5" class="text-center">Loading web bookings...</td></tr>
               </tbody>
             </table>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Pengaturan Global</h2>
+          <div class="mt-4" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <div class="form-group">
+              <label>Status Layanan Dokumentasi Drone</label>
+              <select id="setting-drone-status" onchange="window.saveGlobalSettings()">
+                <option value="available">Tersedia</option>
+                <option value="unavailable">Belum Tersedia</option>
+              </select>
+              <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Jika diatur ke "Belum Tersedia", halaman Sewa Drone di web utama akan terkunci dan menampilkan pesan belum tersedia.</p>
+            </div>
           </div>
         </section>
 
