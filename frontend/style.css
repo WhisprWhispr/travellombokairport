@@ -1432,7 +1432,7 @@ ul {
 
 .premium-card { background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.08); }
 .premium-price-box { background: #f8fafc; color: var(--text-dark); text-align: right; border: 1px solid #e2e8f0; display: flex; flex-direction: column; justify-content: center; min-width: 280px; padding: 30px; border-radius: 20px; align-self: stretch; }
-@media (max-width: 768px) { .premium-card { padding: 20px; } .tm-header { padding: 15px; margin-top: -60px; } .premium-price-box { padding: 20px; text-align: center; } .premium-price-box .price-label { align-self: center !important; } }
+@media (max-width: 768px) { .premium-card { padding: 20px; } .tm-header { padding: 15px; margin-top: -60px; } .premium-price-box { padding: 15px; text-align: center; border-radius: 12px; margin-top: 15px; min-width: auto; } .premium-price-box .price-label { align-self: center !important; margin-bottom: 5px; } .premium-price-box h3 { font-size: 1.8rem; margin-top: 5px; } }
 
 /* Google Translate overrides */
 .goog-te-banner-frame { display: none !important; }

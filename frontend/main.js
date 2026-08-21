@@ -220,9 +220,9 @@ window.openTourModal = (id) => {
                         return `
                         <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${typeLabel}</h4>
                         <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
-                        <div class="tm-badges" style="margin-bottom: 20px;">
-                            <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>
-                            ${item.driverOptions ? `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold; margin-left: 10px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions.toUpperCase()}</span>` : ''}
+                        <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+                            <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>
+                            ${item.driverOptions ? `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions === 'Sertakan Pengemudi' ? 'DENGAN SUPIR' : item.driverOptions === 'Tidak Include Driver' ? 'LEPAS KUNCI' : item.driverOptions.toUpperCase()}</span>` : ''}
                         </div>
                         <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
                         `;
@@ -390,17 +390,19 @@ const createPackageCard = (item, index = 0) => `
 // Render Fleet Card (Armada/Rental)
 const createFleetCard = (item, index = 0) => `
     <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
-        <h3>${item.title}</h3>
-        <div class="fleet-features" style="display: flex; gap: 10px; margin-bottom: 15px; color: var(--text-gray); font-size: 0.85rem;">
-            ${item.seats ? `<span><i class="fa-solid fa-user-group" style="color: var(--primary-blue);"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
-            ${item.transmission ? `<span><i class="fa-solid fa-gear" style="color: var(--primary-blue);"></i> ${item.transmission}</span>` : ''}
-            ${item.driverOptions ? `<span><i class="fa-solid fa-id-card" style="color: var(--primary-blue);"></i> ${item.driverOptions}</span>` : ''}
+        <div style="background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 15px;">
+            <img src="${item.imageUrl}" alt="${item.title}" style="mix-blend-mode: multiply; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         </div>
-        <div class="fleet-price">${formatPrice(item.price)} / ${item.duration || 'hari'}</div>
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-            <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 8px; font-weight: 700;">DETAIL</button>
-            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 8px;"><i class="fa-solid fa-desktop"></i> PESAN</button>
+        <h3 class="notranslate" style="color: #0f172a; font-weight: 800; font-size: 1.3rem;">${item.title}</h3>
+        <div class="fleet-features" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; font-size: 0.8rem;">
+            ${item.seats ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-user-group" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
+            ${item.transmission ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-gear" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.transmission}</span>` : ''}
+            ${item.driverOptions ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-id-card" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.driverOptions}</span>` : ''}
+        </div>
+        <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 10px; border-radius: 25px; font-weight: 700; transition: all 0.3s;">DETAIL</button>
+            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 25px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-solid fa-check-circle"></i> PESAN</button>
         </div>
     </div>
 `;
