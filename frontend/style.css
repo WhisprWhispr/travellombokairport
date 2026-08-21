@@ -1353,11 +1353,11 @@ ul {
   }
 }
 @media (max-width: 768px) {
-  .logo { gap: 10px; white-space: nowrap; }
-  .logo-img { height: 32px; } /* Diperbesar dari 22px */
+  .logo { gap: 10px; white-space: normal; }
+  .logo-img { height: 35px; } 
   .logo-text { display: flex; flex-direction: column; justify-content: center; }
-  .logo-title { font-size: 1.05rem; white-space: nowrap; line-height: 1.2; font-weight: 800; }
-  .logo-subtitle { display: block; font-size: 0.65rem; white-space: nowrap; margin-top: 2px; }
+  .logo-title { font-size: 1.15rem; white-space: normal; line-height: 1.1; font-weight: 800; }
+  .logo-subtitle { display: block; font-size: 0.75rem; white-space: normal; margin-top: 2px; }
   .nav-content { padding: 0 15px; }
   .nav-actions { gap: 12px; }
   .lang-btn { padding: 6px 10px; font-size: 0.85rem; font-weight: 600; border: 1px solid #cbd5e1; border-radius: 6px; background: white; }
