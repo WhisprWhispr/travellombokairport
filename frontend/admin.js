@@ -306,6 +306,7 @@ form.addEventListener("submit", async (e) => {
         if (response.ok) {
             closeModal();
             fetchAdminItems();
+            Swal.fire({icon: 'success', title: 'Berhasil', text: "Item berhasil disimpan!", confirmButtonColor: '#22c55e'});
         } else {
             const err = await response.json();
             Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Gagal: " + (err.error || err.message), confirmButtonColor: '#22c55e'});
