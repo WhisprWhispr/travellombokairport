@@ -154,6 +154,7 @@ window.openTourModal = (id) => {
                         <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
                         <div class="tm-badges" style="margin-bottom: 20px;">
                             <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>
+                            ${item.driverOptions ? `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 1rem; padding: 8px 20px; border-radius: 30px; font-weight: bold; margin-left: 10px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions.toUpperCase()}</span>` : ''}
                         </div>
                         <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
                         `;
@@ -281,6 +282,7 @@ const createFleetCard = (item, index = 0) => `
         <div class="fleet-features" style="display: flex; gap: 10px; margin-bottom: 15px; color: var(--text-gray); font-size: 0.85rem;">
             ${item.seats ? `<span><i class="fa-solid fa-user-group" style="color: var(--primary-blue);"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
             ${item.transmission ? `<span><i class="fa-solid fa-gear" style="color: var(--primary-blue);"></i> ${item.transmission}</span>` : ''}
+            ${item.driverOptions ? `<span><i class="fa-solid fa-id-card" style="color: var(--primary-blue);"></i> ${item.driverOptions}</span>` : ''}
         </div>
         <div class="fleet-price">${formatPrice(item.price)} / ${item.duration || 'hari'}</div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">

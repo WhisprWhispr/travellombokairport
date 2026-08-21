@@ -322,8 +322,16 @@
               </select>
             </div>
             <div style="flex: 1;">
-              <label>Kapasitas (Seat / Helm)</label>
-              <input type="number" id="item-seats" placeholder="e.g. 7 (untuk mobil) / 2 (untuk motor)">
+              <label>Opsi Supir (Mobil)</label>
+              <select id="item-driverOptions">
+                <option value="">Pilih Opsi...</option>
+                <option value="Include Driver">Include Driver</option>
+                <option value="Tidak Include Driver">Tidak Include Driver</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label>Kapasitas (Seat/Helm)</label>
+              <input type="number" id="item-seats" placeholder="e.g. 7 / 2">
             </div>
           </div>
 

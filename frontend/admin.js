@@ -26,6 +26,7 @@ const itineraryInput = document.getElementById("item-itinerary");
 const includeInput = document.getElementById("item-include");
 const excludeInput = document.getElementById("item-exclude");
 const transmissionInput = document.getElementById("item-transmission");
+const driverOptionsInput = document.getElementById("item-driverOptions");
 const seatsInput = document.getElementById("item-seats");
 const termsCategoryInput = document.getElementById("item-terms-category");
 const termsCustomGroup = document.getElementById("item-terms-custom-group");
@@ -366,6 +367,7 @@ form.addEventListener("submit", async (e) => {
         include: includeInput.value,
         exclude: excludeInput.value,
         transmission: transmissionInput.value,
+        driverOptions: driverOptionsInput.value,
         seats: seatsInput.value,
         terms: finalTerms
     };
@@ -454,13 +456,14 @@ window.editItem = async (id) => {
             priceInput.value = "";
         }
         
-        imageInput.value = item.imageUrl;
+        imageInput.value = item.imageUrl || "";
         packageTypeInput.value = item.packageType || "";
         durationInput.value = item.duration || "";
         itineraryInput.value = item.itinerary || "";
         includeInput.value = item.include || "";
         excludeInput.value = item.exclude || "";
         transmissionInput.value = item.transmission || "";
+        driverOptionsInput.value = item.driverOptions || "";
         seatsInput.value = item.seats || "";
         
         if (!item.terms || item.terms.trim() === "") {
