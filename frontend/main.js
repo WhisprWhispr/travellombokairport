@@ -124,7 +124,36 @@ window.openTourModal = (id) => {
                 ${item.terms ? `
                 <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
                     <div class="tm-box-title" style="background: var(--primary-blue);"><i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN</div>
-                    <div style="padding: 15px; color: var(--text-dark); white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;">${item.terms}</div>
+                    <div style="padding: 15px; color: var(--text-dark); font-size: 0.95rem; line-height: 1.6;">
+                        ${(() => {
+                            const lines = item.terms.split('\n');
+                            let html = '';
+                            let inList = false;
+                            
+                            lines.forEach(line => {
+                                const trimmed = line.trim();
+                                if (trimmed.match(/^\d+\.\s/)) {
+                                    if (inList) { html += '</ul>'; inList = false; }
+                                    html += \`<div style="margin-top: 15px; font-weight: 700; color: var(--primary-blue);">\${trimmed}</div>\`;
+                                } else if (trimmed.startsWith('•')) {
+                                    if (!inList) { html += \'<ul style="margin: 5px 0 10px 20px; padding: 0; list-style-type: disc;">\'; inList = true; }
+                                    html += \`<li style="margin-bottom: 5px;">\${trimmed.substring(1).trim()}</li>\`;
+                                } else if (trimmed === '') {
+                                    if (inList) { html += '</ul>'; inList = false; }
+                                    html += '<div style="height: 10px;"></div>';
+                                } else {
+                                    if (inList) { html += '</ul>'; inList = false; }
+                                    if (trimmed.includes('DEPOSIT') || trimmed.startsWith('🛵') || trimmed.startsWith('🚙')) {
+                                        html += \`<div style="font-weight: 700;">\${trimmed}</div>\`;
+                                    } else {
+                                        html += \`<div>\${trimmed}</div>\`;
+                                    }
+                                }
+                            });
+                            if (inList) { html += '</ul>'; }
+                            return html;
+                        })()}
+                    </div>
                 </div>` : ''}
             </div>
             
