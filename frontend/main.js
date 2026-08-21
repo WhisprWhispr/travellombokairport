@@ -111,6 +111,7 @@ window.openTourModal = (id) => {
                     ${itineraryHTML}
                 </div>` : ''}
                 
+                ${(item.category === 'package' || itineraryHTML) ? `
                 <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
                     <div class="tm-box-title" style="background: var(--text-dark);"><i class="fa-solid fa-shield-halved"></i> KEBIJAKAN PEMBATALAN</div>
                     <ul class="tm-list" style="color:var(--text-dark);">
@@ -118,23 +119,31 @@ window.openTourModal = (id) => {
                         <li><i class="fa-solid fa-check" style="color:var(--text-gray);"></i> Pembatalan pihak travel: 100% deposit dikembalikan.</li>
                         <li><i class="fa-regular fa-calendar-days" style="color:var(--text-gray);"></i> Perubahan jadwal sesuai ketersediaan.</li>
                     </ul>
-                </div>
+                </div>` : ''}
+                
+                ${item.terms ? `
+                <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
+                    <div class="tm-box-title" style="background: var(--primary-blue);"><i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN</div>
+                    <div style="padding: 15px; color: var(--text-dark); white-space: pre-wrap; font-size: 0.95rem; line-height: 1.6;">${item.terms}</div>
+                </div>` : ''}
             </div>
             
             <div class="tm-right">
+                ${includes.length > 0 ? `
                 <div class="tm-box tm-box-green">
                     <div class="tm-box-title"><i class="fa-solid fa-check"></i> FASILITAS INCLUDE</div>
                     <ul class="tm-list">
                         ${includes.map(i => `<li><i class="fa-solid fa-check-circle"></i> ${i}</li>`).join('')}
                     </ul>
-                </div>
+                </div>` : ''}
                 
+                ${excludes.length > 0 ? `
                 <div class="tm-box tm-box-red">
                     <div class="tm-box-title"><i class="fa-solid fa-xmark"></i> TIDAK TERMASUK</div>
                     <ul class="tm-list">
                         ${excludes.map(i => `<li><i class="fa-solid fa-times-circle"></i> ${i}</li>`).join('')}
                     </ul>
-                </div>
+                </div>` : ''}
                 
                 <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
                     <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>

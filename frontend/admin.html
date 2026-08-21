@@ -330,6 +330,24 @@
             <textarea id="item-exclude" rows="4" placeholder="Tiket pesawat&#10;Hotel/Penginapan&#10;Makan & minum"></textarea>
           </div>
 
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Syarat & Ketentuan (Khusus Sewa)</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Pilih kategori syarat & ketentuan untuk ditampilkan di web.</p>
+
+          <div class="form-group">
+            <label>Kategori Syarat & Ketentuan</label>
+            <select id="item-terms-category">
+              <option value="none">Tidak Ada / Jangan Tampilkan</option>
+              <option value="default">Gunakan Default (Sesuai Kategori Item)</option>
+              <option value="custom">Tulis Custom</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="item-terms-custom-group" style="display: none;">
+            <label>Tulis Syarat & Ketentuan (Custom)</label>
+            <textarea id="item-terms" rows="8" placeholder="Ketik syarat dan ketentuan..."></textarea>
+          </div>
+
           <div class="form-actions">
             <button type="submit" class="btn btn-primary w-100" id="save-item-btn">Save Item</button>
           </div>
