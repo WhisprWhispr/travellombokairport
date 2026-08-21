@@ -15,62 +15,18 @@ if (fs.existsSync(serviceAccountPath)) {
     admin.auth = getAuth(app);
     console.log("Firebase initialized successfully.");
 } else {
-    console.warn("WARN: serviceAccountKey.json not found! Using Local Mock DB.");
-    const dbPath = path.join(__dirname, '..', 'local_db.json');
-    if (!fs.existsSync(dbPath)) fs.writeFileSync(dbPath, JSON.stringify({ items: [] }));
+    console.error("ERROR: serviceAccountKey.json not found!");
+    console.error("Please download your Firebase Admin SDK service account key and save it as backend/config/serviceAccountKey.json");
+    console.error("All data MUST be saved to Firebase according to user request, so local mock DB is disabled.");
     
-    const getDb = () => JSON.parse(fs.readFileSync(dbPath));
-    const saveDb = (data) => fs.writeFileSync(dbPath, JSON.stringify(data, null, 2));
-    const generateId = () => Math.random().toString(36).substring(2, 15);
-
+    // Create dummy db that throws error when used
     db = {
-        collection: (colName) => ({
-            orderBy: () => ({
-                get: async () => {
-                    const data = getDb()[colName] || [];
-                    return { forEach: (cb) => data.forEach(item => cb({ id: item.id, data: () => item })) };
-                }
-            }),
-            where: (field, op, val) => ({
-                get: async () => {
-                    const data = (getDb()[colName] || []).filter(item => item[field] === val);
-                    return { forEach: (cb) => data.forEach(item => cb({ id: item.id, data: () => item })) };
-                }
-            }),
-            get: async () => {
-                const data = getDb()[colName] || [];
-                return { forEach: (cb) => data.forEach(item => cb({ id: item.id, data: () => item })) };
-            },
-            add: async (item) => {
-                const data = getDb();
-                if (!data[colName]) data[colName] = [];
-                const id = generateId();
-                data[colName].push({ id, ...item });
-                saveDb(data);
-                return { id };
-            },
-            doc: (id) => ({
-                get: async () => {
-                    const data = getDb()[colName] || [];
-                    const item = data.find(i => i.id === id);
-                    return { exists: !!item, id, data: () => item };
-                },
-                update: async (item) => {
-                    const data = getDb();
-                    const index = (data[colName] || []).findIndex(i => i.id === id);
-                    if (index > -1) {
-                        data[colName][index] = { ...data[colName][index], ...item };
-                        saveDb(data);
-                    }
-                },
-                delete: async () => {
-                    const data = getDb();
-                    data[colName] = (data[colName] || []).filter(i => i.id !== id);
-                    saveDb(data);
-                }
-            })
-        })
+        collection: (colName) => {
+            throw new Error(`Data cannot be saved to ${colName} because Firebase is not configured (missing serviceAccountKey.json)`);
+        }
     };
+    
+    // We do NOT exit process here so that frontend can still be served, but API calls will fail loudly.
 }
 
 module.exports = { admin, db };
