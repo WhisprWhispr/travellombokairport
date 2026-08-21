@@ -270,6 +270,7 @@ const fetchAdminItems = async () => {
         const response = await fetch(`${API_URL}/items`);
         const items = await response.json();
         renderTable(items);
+        renderDroneTable(items);
     } catch (error) {
         console.error("Error:", error);
         tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Failed to load items. Is backend running?</td></tr>`;
@@ -288,6 +289,37 @@ const renderTable = (items) => {
             <td><strong>${item.title}</strong></td>
             <td><span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${item.category}</span></td>
             <td>${item.price}</td>
+            <td>
+                <button class="action-btn btn-edit" onclick="editItem('${item.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
+                <button class="action-btn btn-delete" onclick="deleteItem('${item.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
+            </td>
+        </tr>
+    `).join('');
+};
+
+const renderDroneTable = (items) => {
+    const droneList = document.getElementById("drone-list");
+    if (!droneList) return;
+    
+    const droneItems = items.filter(item => item.category === 'Drone');
+    
+    if (droneItems.length === 0) {
+        droneList.innerHTML = `<tr><td colspan="4" class="text-center">Belum ada portofolio drone.</td></tr>`;
+        return;
+    }
+    
+    droneList.innerHTML = droneItems.map(item => `
+        <tr>
+            <td>
+                <div style="width: 80px; height: 50px; background: #e2e8f0; border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+                    ${item.imageUrl 
+                        ? `<img src="${item.imageUrl}" style="width: 100%; height: 100%; object-fit: cover;">` 
+                        : `<i class="fa-solid fa-video" style="color: #94a3b8; font-size: 1.5rem;"></i>`
+                    }
+                </div>
+            </td>
+            <td><strong>${item.title}</strong><br><a href="${item.droneVideoUrl}" target="_blank" style="font-size: 0.8rem; color: var(--primary-blue);"><i class="fa-solid fa-link"></i> Buka Tautan</a></td>
+            <td><span style="font-size: 0.85rem; color: #64748b;">${item.date || '-'}</span></td>
             <td>
                 <button class="action-btn btn-edit" onclick="editItem('${item.id}')"><i class="fa-solid fa-pen"></i> Edit</button>
                 <button class="action-btn btn-delete" onclick="deleteItem('${item.id}')"><i class="fa-solid fa-trash"></i> Delete</button>

@@ -185,8 +185,24 @@
 
             <div class="form-group mt-4 pt-4" style="border-top: 1px solid #e2e8f0;">
               <h3 style="color: var(--primary-blue); font-size: 1.1rem; margin-bottom: 10px;">Kelola Portofolio Drone</h3>
-              <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Pintasan untuk menambahkan video portofolio dokumentasi drone baru ke dalam sistem.</p>
+              <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Pintasan untuk menambahkan dan mengelola video portofolio dokumentasi drone.</p>
               <button onclick="window.openDroneModal()" class="btn btn-green"><i class="fa-solid fa-video"></i> Tambah Video Drone Baru</button>
+              
+              <div class="table-container mt-4">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Thumbnail</th>
+                      <th>Judul Video</th>
+                      <th>Tanggal</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="drone-list">
+                    <tr><td colspan="4" class="text-center">Loading drone videos...</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </section>
