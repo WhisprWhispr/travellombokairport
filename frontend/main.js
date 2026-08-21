@@ -390,8 +390,8 @@ const createPackageCard = (item, index = 0) => `
 // Render Fleet Card (Armada/Rental)
 const createFleetCard = (item, index = 0) => `
     <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <div style="background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 15px;">
-            <img src="${item.imageUrl}" alt="${item.title}" style="mix-blend-mode: multiply; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
+        <div style="background: #f8fafc; padding: 10px; border-radius: 12px; margin-bottom: 15px; height: 180px; display: flex; align-items: center; justify-content: center;">
+            <img src="${item.imageUrl}" alt="${item.title}" style="max-height: 100%; max-width: 100%; object-fit: contain; mix-blend-mode: multiply; border-radius: 8px;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         </div>
         <h3 class="notranslate" style="color: #0f172a; font-weight: 800; font-size: 1.3rem;">${item.title}</h3>
         <div class="fleet-features" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; font-size: 0.8rem;">
@@ -400,7 +400,7 @@ const createFleetCard = (item, index = 0) => `
             ${item.driverOptions ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-id-card" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.driverOptions}</span>` : ''}
         </div>
         <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
-        <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <div style="display: flex; gap: 10px; margin-top: auto; padding-top: 15px;">
             <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 10px; border-radius: 25px; font-weight: 700; transition: all 0.3s;">DETAIL</button>
             <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 25px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-solid fa-check-circle"></i> PESAN</button>
         </div>
