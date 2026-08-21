@@ -267,6 +267,8 @@ form.addEventListener("submit", async (e) => {
     const method = itemId ? "PUT" : "POST";
     const url = itemId ? `${API_URL}/items/${itemId}` : `${API_URL}/items`;
     
+    Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+    
     try {
         const response = await fetch(url, {
             method,
@@ -302,6 +304,8 @@ document.getElementById("booking-form").addEventListener("submit", async (e) => 
         status: "PAID",
         transactionId: "MANUAL-" + Math.floor(Math.random() * 10000)
     };
+    
+    Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
     
     try {
         const response = await fetch(`${API_URL}/bookings`, {
@@ -461,6 +465,7 @@ const fetchAdminBookings = async () => {
                     const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
                     const startDateStr = new Date(b.startDate).toLocaleDateString('id-ID');
                     const waMsg = encodeURIComponent(`Halo ${b.customerName}, ini Admin Travel Lombok Airport. Terkait pesanan Anda (ID: ${trxId}) untuk layanan ${b.itemName} pada tanggal ${startDateStr}. `);
+                    const assignDriverBtn = `<button class="action-btn btn-edit" onclick="assignDriver('${b.id}')" style="margin-top: 5px; background: var(--primary-green); color: white;"><i class="fa-solid fa-car"></i> Assign Supir</button>`;
                     
                     return `
                     <tr>
