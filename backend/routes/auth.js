@@ -72,4 +72,51 @@ router.post('/login', async (req, res) => {
     }
 });
 
+// POST /api/auth/reset-password
+router.post('/reset-password', async (req, res) => {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({ error: 'Email wajib diisi.' });
+        }
+
+        const apiKey = process.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return res.status(500).json({ 
+                error: 'Sistem belum siap. FIREBASE_API_KEY tidak ditemukan di .env.' 
+            });
+        }
+
+        try {
+            // Meminta Firebase untuk mengirim email reset sandi
+            await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+                requestType: 'PASSWORD_RESET',
+                email: email
+            });
+
+            return res.json({
+                success: true,
+                message: 'Link reset sandi telah dikirim ke email Anda.'
+            });
+
+        } catch (firebaseError) {
+            let errorMessage = 'Gagal mengirim email reset sandi.';
+            if (firebaseError.response && firebaseError.response.data && firebaseError.response.data.error) {
+                const fbErr = firebaseError.response.data.error.message;
+                if (fbErr === 'EMAIL_NOT_FOUND') {
+                    errorMessage = 'Email tidak terdaftar di sistem kami.';
+                } else {
+                    errorMessage = `Firebase Error: ${fbErr}`;
+                }
+            }
+            return res.status(400).json({ error: errorMessage });
+        }
+
+    } catch (error) {
+        console.error('Reset password error:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;

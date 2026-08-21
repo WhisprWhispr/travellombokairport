@@ -76,4 +76,59 @@ authRoutes.post('/login', async (c) => {
     }
 });
 
+// POST /api/auth/reset-password
+authRoutes.post('/reset-password', async (c) => {
+    try {
+        const { email } = await c.req.json();
+        
+        if (!email) {
+            return c.json({ error: 'Email wajib diisi.' }, 400);
+        }
+
+        const apiKey = c.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return c.json({ 
+                error: 'Sistem belum siap. FIREBASE_API_KEY tidak ditemukan di Cloudflare Secrets (Variables and Secrets).' 
+            }, 500);
+        }
+
+        try {
+            // Meminta Firebase untuk mengirim email reset sandi
+            const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    requestType: 'PASSWORD_RESET',
+                    email: email
+                })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                let errorMessage = 'Gagal mengirim email reset sandi.';
+                if (data.error && data.error.message) {
+                    const fbErr = data.error.message;
+                    if (fbErr === 'EMAIL_NOT_FOUND') {
+                        errorMessage = 'Email tidak terdaftar di sistem kami.';
+                    } else {
+                        errorMessage = `Firebase Error: ${fbErr}`;
+                    }
+                }
+                return c.json({ error: errorMessage }, 400);
+            }
+            
+            return c.json({
+                success: true,
+                message: 'Link reset sandi telah dikirim ke email Anda.'
+            });
+            
+        } catch (fetchError) {
+            return c.json({ error: 'Gagal terhubung ke Firebase Auth server.' }, 502);
+        }
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 export default authRoutes;

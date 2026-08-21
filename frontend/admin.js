@@ -88,6 +88,76 @@ logoutBtn.addEventListener("click", (e) => {
     checkAuth();
 });
 
+// Forgot Password Handler
+document.getElementById('forgot-password-link').addEventListener('click', async (e) => {
+    e.preventDefault();
+    const { value: email } = await Swal.fire({
+        title: 'Lupa Sandi?',
+        text: 'Masukkan email admin Anda untuk menerima link reset sandi dari Firebase.',
+        input: 'email',
+        inputPlaceholder: 'admin@example.com',
+        showCancelButton: true,
+        confirmButtonText: 'Kirim Link Reset',
+        cancelButtonText: 'Batal'
+    });
+
+    if (email) {
+        Swal.fire({ title: 'Mengirim...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        try {
+            const response = await fetch(`${API_URL}/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+                Swal.fire('Berhasil!', data.message, 'success');
+            } else {
+                throw new Error(data.error || 'Gagal mengirim email reset sandi');
+            }
+        } catch (error) {
+            Swal.fire('Gagal!', error.message, 'error');
+        }
+    }
+});
+
+// Reset Password Handler (Ubah Sandi Saya)
+document.getElementById('reset-password-btn').addEventListener('click', async (e) => {
+    e.preventDefault();
+    
+    // We try to get the email from the logged in user context. 
+    // Since we don't store the email in localStorage explicitly, we can ask for it, 
+    // or we can prompt them to confirm. Let's just prompt them for their email to be safe.
+    const { value: email } = await Swal.fire({
+        title: 'Ubah Sandi Saya',
+        text: 'Masukkan email akun ini untuk menerima link perubahan sandi yang dikirimkan oleh Firebase.',
+        input: 'email',
+        inputPlaceholder: 'admin@example.com',
+        showCancelButton: true,
+        confirmButtonText: 'Kirim Link Ubah Sandi',
+        cancelButtonText: 'Batal'
+    });
+
+    if (email) {
+        Swal.fire({ title: 'Mengirim...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        try {
+            const response = await fetch(`${API_URL}/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+                Swal.fire('Berhasil!', data.message + '\n\nSilakan cek email Anda (termasuk folder Spam/Junk) lalu klik link untuk mengubah sandi.', 'success');
+            } else {
+                throw new Error(data.error || 'Gagal mengirim email reset sandi');
+            }
+        } catch (error) {
+            Swal.fire('Gagal!', error.message, 'error');
+        }
+    }
+});
+
 // Utility to get auth headers
 const getAuthHeaders = () => ({
     "Content-Type": "application/json",

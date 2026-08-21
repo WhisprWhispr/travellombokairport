@@ -27,6 +27,9 @@
           <div class="form-group mb-4 text-start">
             <label>Password</label>
             <input type="password" id="login-password" class="form-control" required placeholder="••••••••">
+            <div style="text-align: right; margin-top: 5px;">
+              <a href="#" id="forgot-password-link" style="font-size: 0.85rem; color: var(--primary-blue); text-decoration: none;">Lupa Sandi?</a>
+            </div>
           </div>
           <button type="submit" class="btn btn-primary w-100" id="login-btn">
             Login
@@ -54,6 +57,7 @@
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
+          <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
           <li style="margin-top: 5px;"><a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
         </ul>
       </aside>
