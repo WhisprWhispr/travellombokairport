@@ -311,6 +311,23 @@ window.openTourModal = (id) => {
     `;
 
     document.getElementById('tour-modal').classList.add('active');
+    document.body.style.overflow = 'hidden'; // Prevent double scrollbar
+};
+
+window.closeTourModal = () => {
+    const modal = document.getElementById('tour-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scroll
+    }
+};
+
+window.closeCheckoutModal = () => {
+    const modal = document.getElementById('checkout-modal');
+    if (modal) {
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restore scroll
+    }
 };
 
 // Toggle Show All function
