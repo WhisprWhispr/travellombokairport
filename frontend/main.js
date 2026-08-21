@@ -334,6 +334,11 @@ const createDroneCard = (item, index = 0) => {
         } catch(e) {}
     }
     
+    const isAvailable = window.isDroneAvailable !== false;
+    const buttonHtml = isAvailable 
+        ? `<a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20pesan%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-green w-100"><i class="fa-brands fa-whatsapp"></i> PESAN SEKARANG</a>`
+        : `<button class="btn btn-secondary w-100" style="background: #cbd5e1; color: white; cursor: not-allowed; border: none; padding: 10px; border-radius: 8px; font-weight: 700;" disabled><i class="fa-solid fa-lock"></i> BELUM TERSEDIA</button>`;
+
     return `
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="height: 250px;">
@@ -346,7 +351,7 @@ const createDroneCard = (item, index = 0) => {
             <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 10px;">${item.title}</h3>
             <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">${item.description}</p>
             <div class="price" style="font-size: 1.2rem; color: var(--primary-green); font-weight: 700; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.8rem; color: var(--text-gray); font-weight: 400;">/ ${item.duration || 'hari'}</span></div>
-            <a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20pesan%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-green w-100"><i class="fa-brands fa-whatsapp"></i> PESAN SEKARANG</a>
+            ${buttonHtml}
         </div>
     </div>
     `;
@@ -354,31 +359,29 @@ const createDroneCard = (item, index = 0) => {
 
 // Initialize Page
 const init = async () => {
+    window.isDroneAvailable = true;
+    
     // Check Global Settings (e.g. Drone Availability)
     try {
         const res = await fetch('/api/settings');
         if (res.ok) {
             const settings = await res.json();
             if (settings.droneAvailable === 'unavailable') {
-                // If on drone.html, show locked message
-                const droneContainer = document.getElementById('drone-container');
-                if (droneContainer) {
-                    const portofolioSection = droneContainer.closest('section');
-                    const heroSection = portofolioSection.previousElementSibling;
-                    
-                    if (heroSection) heroSection.style.display = 'none';
-                    if (portofolioSection) {
-                        portofolioSection.innerHTML = `
-                        <div class="container text-center" style="padding: 100px 20px;">
-                            <i class="fa-solid fa-lock" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 20px;"></i>
-                            <h2 style="color: var(--text-dark); margin-bottom: 10px;">Layanan Belum Tersedia</h2>
-                            <p style="color: var(--text-gray); max-width: 500px; margin: 0 auto 30px auto; line-height: 1.6;">Mohon maaf, layanan dokumentasi drone saat ini belum tersedia atau sedang dalam pemeliharaan. Silakan kembali lagi nanti.</p>
-                            <a href="/" class="btn btn-green"><i class="fa-solid fa-arrow-left"></i> Kembali ke Beranda</a>
-                        </div>`;
-                    }
+                window.isDroneAvailable = false;
+                
+                // If on drone.html, update the main booking button
+                const mainBookBtn = document.getElementById('drone-main-book-btn');
+                if (mainBookBtn) {
+                    mainBookBtn.removeAttribute('href');
+                    mainBookBtn.style.background = '#cbd5e1';
+                    mainBookBtn.style.cursor = 'not-allowed';
+                    mainBookBtn.style.borderColor = '#cbd5e1';
+                    mainBookBtn.innerHTML = '<i class="fa-solid fa-lock"></i> LAYANAN BELUM TERSEDIA';
                 }
-            } else if (settings.dronePrice) {
-                // If available and a price is set, update it on drone.html
+            } 
+            
+            if (settings.dronePrice) {
+                // If a price is set, update it on drone.html
                 const dronePriceEl = document.getElementById('drone-base-price');
                 if (dronePriceEl) {
                     dronePriceEl.innerText = formatPrice(settings.dronePrice).replace('Rp ', '');
