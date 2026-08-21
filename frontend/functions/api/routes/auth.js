@@ -13,40 +13,53 @@ authRoutes.post('/login', async (c) => {
             return c.json({ error: 'Email dan password wajib diisi.' }, 400);
         }
 
-        // Check against Firestore 'admins' collection
-        let admin = null;
+        const apiKey = c.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return c.json({ 
+                error: 'Sistem belum siap. FIREBASE_API_KEY tidak ditemukan di Cloudflare Secrets (Variables and Secrets). Silakan tambahkan Web API Key Anda di dashboard Cloudflare.' 
+            }, 500);
+        }
+
+        let firebaseUser;
         try {
-            const snapshot = await db.collection('admins')
-                .where('email', '==', email)
-                .where('password', '==', password)
-                .get();
-
-            snapshot.forEach(doc => {
-                admin = { id: doc.id, ...doc.data() };
+            // Verifikasi password ke Firebase Authentication menggunakan REST API
+            const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    returnSecureToken: true
+                })
             });
-        } catch (dbError) {
-            console.warn('DB query failed, trying fallback:', dbError.message);
-        }
 
-        // Fallback: hardcoded admin
-        if (!admin) {
-            const ADMIN_EMAIL = c.env.ADMIN_EMAIL || 'travellombokairport@gmail.com';
-            const ADMIN_PASSWORD = c.env.ADMIN_PASSWORD || 'admin123';
+            const data = await response.json();
             
-            if (email === ADMIN_EMAIL && password === ADMIN_PASSWORD) {
-                admin = { id: 'admin-1', email: ADMIN_EMAIL };
+            if (!response.ok) {
+                let errorMessage = 'Email atau password salah.';
+                if (data.error && data.error.message) {
+                    const fbErr = data.error.message;
+                    if (fbErr === 'EMAIL_NOT_FOUND' || fbErr === 'INVALID_LOGIN_CREDENTIALS') {
+                        errorMessage = 'Email atau password salah!';
+                    } else if (fbErr === 'INVALID_PASSWORD') {
+                        errorMessage = 'Password salah!';
+                    } else {
+                        errorMessage = `Firebase Error: ${fbErr}`;
+                    }
+                }
+                return c.json({ error: errorMessage }, 401);
             }
-        }
-
-        if (!admin) {
-            return c.json({ error: 'Email atau password salah.' }, 401);
+            
+            firebaseUser = data;
+        } catch (fetchError) {
+            return c.json({ error: 'Gagal terhubung ke Firebase Auth server.' }, 502);
         }
 
         // Generate Hono JWT token
         const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
         const payload = {
-            id: admin.id,
-            email: admin.email,
+            id: firebaseUser.localId,
+            email: firebaseUser.email,
             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 24 hours
         };
         
@@ -55,7 +68,7 @@ authRoutes.post('/login', async (c) => {
         return c.json({
             success: true,
             token,
-            admin: { id: admin.id, email: admin.email }
+            admin: { id: firebaseUser.localId, email: firebaseUser.email }
         });
 
     } catch (error) {
