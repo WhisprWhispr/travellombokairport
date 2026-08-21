@@ -245,9 +245,37 @@ window.openTourModal = (id) => {
     document.getElementById('tour-modal').classList.add('active');
 };
 
+// Toggle Show All function
+window.toggleShowAll = (containerId, btn, total) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    const hiddenItems = container.querySelectorAll('.hidden-item');
+    let isShowing = false;
+    
+    hiddenItems.forEach(item => {
+        if (item.style.display === 'none') {
+            item.style.display = ''; 
+            isShowing = true;
+        } else {
+            item.style.display = 'none';
+            isShowing = false;
+        }
+    });
+    
+    if (isShowing) {
+        btn.innerHTML = `Tutup <i class="fa-solid fa-chevron-up" style="margin-left: 5px;"></i>`;
+    } else {
+        btn.innerHTML = `Lihat Semuanya (${total}) <i class="fa-solid fa-chevron-down" style="margin-left: 5px;"></i>`;
+        const yOffset = -80; // Offset for sticky navbar
+        const y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({top: y, behavior: 'smooth'});
+    }
+};
+
 // Render Service Card (Layanan)
 const createServiceCard = (item, index = 0) => `
-    <div class="card service-card" data-aos="zoom-in" data-aos-delay="${index * 100}">
+    <div class="card service-card" data-aos="zoom-in" data-aos-delay="${(index % 3) * 100}">
         <div class="service-icon"><i class="fa-solid fa-plane"></i></div>
         <h3>${item.title}</h3>
         <p>${item.description}</p>
@@ -256,7 +284,7 @@ const createServiceCard = (item, index = 0) => `
 
 // Render Package Card (Paket Tour)
 const createPackageCard = (item, index = 0) => `
-    <div class="card package-card" data-aos="fade-up" data-aos-delay="${index * 100}">
+    <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper">
             <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
@@ -276,7 +304,7 @@ const createPackageCard = (item, index = 0) => `
 
 // Render Fleet Card (Armada/Rental)
 const createFleetCard = (item, index = 0) => `
-    <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${index * 100}">
+    <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         <h3>${item.title}</h3>
         <div class="fleet-features" style="display: flex; gap: 10px; margin-bottom: 15px; color: var(--text-gray); font-size: 0.85rem;">
@@ -309,32 +337,50 @@ const init = async () => {
     });
     const services = globalItems.filter(item => !packages.includes(item) && !fleets.includes(item));
 
-    // Render Services
-    if (servicesContainer) {
-        if (services.length > 0) {
-            servicesContainer.innerHTML = services.map((s, i) => createServiceCard(s, i)).join('');
-        } else {
-            servicesContainer.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada layanan yang ditambahkan.</p>';
+    // Helper to render sections with "See All" button
+    const renderSectionWithSeeAll = (containerId, items, renderFn) => {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        
+        if (items.length === 0) {
+            container.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada data yang ditambahkan.</p>';
+            return;
         }
-    }
+
+        const maxVisible = 3;
+        let html = '';
+        
+        items.forEach((item, index) => {
+            const isHidden = index >= maxVisible;
+            let cardHtml = renderFn(item, index);
+            if (isHidden) {
+                cardHtml = cardHtml.replace('<div class="card ', '<div class="card hidden-item" style="display: none;" ');
+            }
+            html += cardHtml;
+        });
+        
+        container.innerHTML = html;
+        
+        if (items.length > maxVisible) {
+            const btnHtml = `
+            <div class="text-center w-100 mt-4 show-all-wrapper" style="grid-column: 1/-1;">
+                <button onclick="toggleShowAll('${containerId}', this, ${items.length})" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: 2px solid var(--primary-blue); font-weight: 700; padding: 10px 25px; border-radius: 30px; transition: all 0.3s;">
+                    Lihat Semuanya (${items.length}) <i class="fa-solid fa-chevron-down" style="margin-left: 5px;"></i>
+                </button>
+            </div>
+            `;
+            container.insertAdjacentHTML('beforeend', btnHtml);
+        }
+    };
+
+    // Render Services
+    renderSectionWithSeeAll('services-container', services, createServiceCard);
 
     // Render Packages
-    if (packagesContainer) {
-        if (packages.length > 0) {
-            packagesContainer.innerHTML = packages.map((p, i) => createPackageCard(p, i)).join('');
-        } else {
-            packagesContainer.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada paket yang ditambahkan.</p>';
-        }
-    }
+    renderSectionWithSeeAll('packages-container', packages, createPackageCard);
     
     // Render Fleets
-    if (fleetContainer) {
-        if (fleets.length > 0) {
-            fleetContainer.innerHTML = fleets.map((f, i) => createFleetCard(f, i)).join('');
-        } else {
-            fleetContainer.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada armada yang ditambahkan.</p>';
-        }
-    }
+    renderSectionWithSeeAll('fleet-container', fleets, createFleetCard);
 };
 
 // Cek Booking Status
