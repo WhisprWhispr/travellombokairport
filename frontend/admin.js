@@ -32,6 +32,80 @@ const termsCustomGroup = document.getElementById("item-terms-custom-group");
 const termsInput = document.getElementById("item-terms");
 const modalTitle = document.getElementById("modal-title");
 
+const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR 
+
+1. Identitas Penyewa
+   • WNI: KTP & SIM C aktif.
+   • WNA: Paspor & SIM yang berlaku.
+
+2. Booking
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 50.000.
+   • Pelunasan dilakukan sebelum kendaraan digunakan.
+
+3. Deposit / Uang Jaminan
+   • Deposit: Rp 500.000
+   • Deposit dibayarkan sebelum kendaraan diserahkan.
+   • Deposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.
+   • Jika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.
+
+4. Penggunaan Kendaraan
+   • Kendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.
+   • Dilarang menyewakan kembali kendaraan kepada pihak lain.
+   • Dilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.
+
+5. Tanggung Jawab Penyewa
+   • Penyewa bertanggung jawab atas kendaraan selama masa sewa.
+   • Tilang, denda, parkir, kehilangan kunci, dan kerusakan akibat kelalaian menjadi tanggung jawab penyewa.
+   • Jika terjadi kecelakaan atau kerusakan, segera hubungi pihak rental.
+
+6. Pengembalian
+   • Kendaraan wajib dikembalikan sesuai waktu yang telah disepakati.
+   • Keterlambatan dapat dikenakan biaya tambahan.
+   • Kendaraan dikembalikan dalam kondisi seperti saat diterima.
+
+💰 DEPOSIT: Rp 500.000
+
+Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
+
+TRAVEL LOMBOK AIRPORT 🚙`;
+
+const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI 
+
+1. Identitas Penyewa
+   • WNI: KTP & SIM A aktif.
+   • WNA: Paspor & SIM yang berlaku.
+
+2. Booking
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 200.000.
+   • Pelunasan dilakukan sebelum kendaraan digunakan.
+
+3. Deposit / Uang Jaminan
+   • Deposit: Rp 1.000.000
+   • Deposit dibayarkan sebelum kendaraan diserahkan.
+   • Deposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.
+   • Jika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.
+
+4. Penggunaan Kendaraan
+   • Kendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.
+   • Dilarang menyewakan kembali kendaraan kepada pihak lain.
+   • Dilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.
+
+5. Tanggung Jawab Penyewa
+   • Penyewa bertanggung jawab atas kendaraan selama masa sewa.
+   • Tilang, denda, parkir, kehilangan kunci, dan kerusakan akibat kelalaian menjadi tanggung jawab penyewa.
+   • Jika terjadi kecelakaan atau kerusakan, segera hubungi pihak rental.
+
+6. Pengembalian
+   • Kendaraan wajib dikembalikan sesuai waktu yang telah disepakati.
+   • Keterlambatan dapat dikenakan biaya tambahan.
+   • Kendaraan dikembalikan dalam kondisi seperti saat diterima.
+
+💰 DEPOSIT: Rp 1.000.000
+
+Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
+
+TRAVEL LOMBOK AIRPORT 🚙`;
+
 const checkAuth = () => {
     if (authToken) {
         loginContainer.style.display = "none";
@@ -262,16 +336,12 @@ form.addEventListener("submit", async (e) => {
     e.preventDefault();
     if (!authToken) return Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Anda harus login!", confirmButtonColor: '#22c55e'});
     
-    const defaultMotorTerms = `🛵SYARAT & KETENTUAN SEWA MOTOR \n\n\t1.\tIdentitas Penyewa\n\t•\tWNI: KTP & SIM C aktif.\n\t•\tWNA: Paspor & SIM yang berlaku.\n\t2.\tBooking\n\t•\tBooking dinyatakan sah setelah pembayaran lock booking sebesar 50.000 .\n\t•\tPelunasan dilakukan sebelum kendaraan digunakan.\n\t3.\tDeposit / Uang Jaminan\n\t•\tDeposit: Rp 500.000\n\t•\tDeposit dibayarkan sebelum kendaraan diserahkan.\n\t•\tDeposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.\n\t•\tJika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.\n\t4.\tPenggunaan Kendaraan\n\t•\tKendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.\n\t•\tDilarang menyewakan kembali kendaraan kepada pihak lain.\n\t•\tDilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.\n\t5.\tTanggung Jawab Penyewa\n\t•\tPenyewa bertanggung jawab atas kendaraan selama masa sewa.\n\t•\tTilang, denda, parkir, kehilangan kunci, dan kerusakan akibat kelalaian menjadi tanggung jawab penyewa.\n\t•\tJika terjadi kecelakaan atau kerusakan, segera hubungi pihak rental.\n\t6.\tPengembalian\n\t•\tKendaraan wajib dikembalikan sesuai waktu yang telah disepakati.\n\t•\tKeterlambatan dapat dikenakan biaya tambahan.\n\t•\tKendaraan dikembalikan dalam kondisi seperti saat diterima.\n\n💰 DEPOSIT: Rp 500.000\n\nDeposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.\n\nTRAVEL LOMBOK AIRPORT🚙`;
-    
-    const defaultCarTerms = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI \n\n\t1.\tIdentitas Penyewa\n\t•\tWNI: KTP & SIM A aktif.\n\t•\tWNA: Paspor & SIM yang berlaku.\n\t2.\tBooking\n\t•\tBooking dinyatakan sah setelah pembayaran lock booking sebesar 200.000 .\n\t•\tPelunasan dilakukan sebelum kendaraan digunakan.\n\t3.\tDeposit / Uang Jaminan\n\t•\tDeposit: Rp1.000.000\n\t•\tDeposit dibayarkan sebelum kendaraan diserahkan.\n\t•\tDeposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.\n\t•\tJika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.\n\t4.\tPenggunaan Kendaraan\n\t•\tKendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.\n\t•\tDilarang menyewakan kembali kendaraan kepada pihak lain.\n\t•\tDilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.\n\t5.\tTanggung Jawab Penyewa\n\t•\tPenyewa bertanggung jawab atas kendaraan selama masa sewa.\n\t•\tTilang, denda, parkir, kehilangan kunci, dan kerusakan akibat kelalaian menjadi tanggung jawab penyewa.\n\t•\tJika terjadi kecelakaan atau kerusakan, segera hubungi pihak rental.\n\t6.\tPengembalian\n\t•\tKendaraan wajib dikembalikan sesuai waktu yang telah disepakati.\n\t•\tKeterlambatan dapat dikenakan biaya tambahan.\n\t•\tKendaraan dikembalikan dalam kondisi seperti saat diterima.\n\n💰 DEPOSIT: Rp1.000.000\n\nDeposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.\n\nTRAVEL LOMBOK AIRPORT🚙`;
-
     let finalTerms = "";
     if (termsCategoryInput.value === 'custom') {
         finalTerms = termsInput.value;
     } else if (termsCategoryInput.value === 'default') {
-        if (categoryInput.value === 'motorcycle') finalTerms = defaultMotorTerms;
-        else if (categoryInput.value === 'car') finalTerms = defaultCarTerms;
+        if (categoryInput.value === 'motorcycle') finalTerms = DEFAULT_MOTOR_TERMS;
+        else if (categoryInput.value === 'car') finalTerms = DEFAULT_CAR_TERMS;
     }
     
     const itemData = {
@@ -376,14 +446,11 @@ window.editItem = async (id) => {
         transmissionInput.value = item.transmission || "";
         seatsInput.value = item.seats || "";
         
-        const defaultMotorTerms = `🛵SYARAT & KETENTUAN SEWA MOTOR \n\n\t1.\tIdentitas Penyewa\n\t•\tWNI: KTP & SIM C aktif.\n\t•\tWNA: Paspor & SIM yang berlaku.\n\t2.\tBooking\n\t•\tBooking dinyatakan sah setelah pembayaran lock booking sebesar 50.000 .\n\t•\tPelunasan dilakukan sebelum kendaraan digunakan.\n\t3.\tDeposit / Uang Jaminan\n\t•\tDeposit: Rp 500.000\n\t•\tDeposit dibayarkan sebelum kendaraan diserahkan.\n\t•\tDeposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.\n\t•\tJika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.\n\t4.\tPenggunaan Kendaraan\n\t•\tKendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.\n\t•\tDilarang menyewakan kembali kendaraan kepada pihak lain.\n\t•\tDilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.\n\t5.\tTanggung Jawab Penyewa\n\t•\tPenyewa bertanggung jawab atas kendaraan selama masa sewa.\n\t•\tTilang, denda, parkir, kehilangan kunci, dan kerusakan akibat kelalaian menjadi tanggung jawab penyewa.\n\t•\tJika terjadi kecelakaan atau kerusakan, segera hubungi pihak rental.\n\t6.\tPengembalian\n\t•\tKendaraan wajib dikembalikan sesuai waktu yang telah disepakati.\n\t•\tKeterlambatan dapat dikenakan biaya tambahan.\n\t•\tKendaraan dikembalikan dalam kondisi seperti saat diterima.\n\n💰 DEPOSIT: Rp 500.000\n\nDeposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.\n\nTRAVEL LOMBOK AIRPORT🚙`;
-        const defaultCarTerms = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI \n\n\t1.\tIdentitas Penyewa\n\t•\tWNI: KTP & SIM A aktif.\n\t•\tWNA: Paspor & SIM yang berlaku.\n\t2.\tBooking\n\t•\tBooking dinyatakan sah setelah pembayaran lock booking sebesar 200.000 .\n\t•\tPelunasan dilakukan sebelum kendaraan digunakan.\n\t3.\tDeposit / Uang Jaminan\n\t•\tDeposit: Rp1.000.000\n\t•\tDeposit dibayarkan sebelum kendaraan diserahkan.\n\t•\tDeposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.\n\t•\tJika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.\n\t4.\tPenggunaan Kendaraan\n\t•\tKendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.\n\t•\tDilarang menyewakan kembali kendaraan kepada pihak lain.\n\t•\tDilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.\n\t5.\tTanggung Jawab Penyewa\n\t•\tPenyewa bertanggung jawab atas kendaraan selama masa sewa.\n\t•\tTilang, denda, parkir, kehilangan kunci, dan kerusakan akibat kelalaian menjadi tanggung jawab penyewa.\n\t•\tJika terjadi kecelakaan atau kerusakan, segera hubungi pihak rental.\n\t6.\tPengembalian\n\t•\tKendaraan wajib dikembalikan sesuai waktu yang telah disepakati.\n\t•\tKeterlambatan dapat dikenakan biaya tambahan.\n\t•\tKendaraan dikembalikan dalam kondisi seperti saat diterima.\n\n💰 DEPOSIT: Rp1.000.000\n\nDeposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.\n\nTRAVEL LOMBOK AIRPORT🚙`;
-        
         if (!item.terms || item.terms.trim() === "") {
             termsCategoryInput.value = "none";
             termsInput.value = "";
             termsCustomGroup.style.display = "none";
-        } else if (item.terms === defaultCarTerms || item.terms === defaultMotorTerms) {
+        } else if (item.terms === DEFAULT_CAR_TERMS || item.terms === DEFAULT_MOTOR_TERMS) {
             termsCategoryInput.value = "default";
             termsInput.value = "";
             termsCustomGroup.style.display = "none";
