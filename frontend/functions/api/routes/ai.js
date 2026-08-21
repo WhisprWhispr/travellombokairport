@@ -76,35 +76,59 @@ ATURAN PENTING:
 Baca SEMUA teks yang terlihat di gambar dan masukkan ke field yang sesuai.
 Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSON.`;
 
-        // Call Gemini REST API directly (no SDK needed - works perfectly in Cloudflare Workers)
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=${apiKey}`;
-
-        const geminiResponse = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [
-                        { text: prompt },
-                        {
-                            inlineData: {
-                                mimeType: mimeType,
-                                data: base64Data
-                            }
+        // Models to try (fallback if primary is overloaded)
+        const models = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
+        const requestBody = JSON.stringify({
+            contents: [{
+                parts: [
+                    { text: prompt },
+                    {
+                        inlineData: {
+                            mimeType: mimeType,
+                            data: base64Data
                         }
-                    ]
-                }],
-                generationConfig: {
-                    temperature: 0.1,
-                    maxOutputTokens: 1024
-                }
-            })
+                    }
+                ]
+            }],
+            generationConfig: {
+                temperature: 0.1,
+                maxOutputTokens: 2048
+            }
         });
 
-        if (!geminiResponse.ok) {
-            const errBody = await geminiResponse.text();
-            console.error('Gemini API error:', geminiResponse.status, errBody);
-            return c.json({ success: false, message: `Gemini API error: ${geminiResponse.status}`, detail: errBody }, 500);
+        let geminiResponse = null;
+        let lastError = '';
+
+        // Try each model with retry
+        for (const model of models) {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            
+            for (let attempt = 1; attempt <= 2; attempt++) {
+                geminiResponse = await fetch(geminiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: requestBody
+                });
+
+                if (geminiResponse.ok) break;
+                
+                lastError = `${model} attempt ${attempt}: status ${geminiResponse.status}`;
+                console.error(lastError);
+
+                // If 503 (overloaded), wait briefly and retry
+                if (geminiResponse.status === 503 && attempt < 2) {
+                    await new Promise(r => setTimeout(r, 1500));
+                    continue;
+                }
+                break; // For non-503 errors, try next model
+            }
+            if (geminiResponse && geminiResponse.ok) break;
+        }
+
+        if (!geminiResponse || !geminiResponse.ok) {
+            const errBody = geminiResponse ? await geminiResponse.text() : 'No response';
+            console.error('All Gemini models failed:', lastError, errBody);
+            return c.json({ success: false, message: 'Server AI sedang sibuk, coba lagi dalam beberapa detik.', detail: lastError }, 503);
         }
 
         const geminiResult = await geminiResponse.json();
