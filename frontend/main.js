@@ -260,7 +260,7 @@ const createFleetCard = (item, index = 0) => `
             ${item.seats ? `<span><i class="fa-solid fa-user-group" style="color: var(--primary-blue);"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
             ${item.transmission ? `<span><i class="fa-solid fa-gear" style="color: var(--primary-blue);"></i> ${item.transmission}</span>` : ''}
         </div>
-        <div class="fleet-price">${formatPrice(item.price)} / hari</div>
+        <div class="fleet-price">${formatPrice(item.price)} / ${item.duration || 'hari'}</div>
         <div style="display: flex; gap: 10px; margin-top: 10px;">
             <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 8px; font-weight: 700;">DETAIL</button>
             <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 8px;"><i class="fa-solid fa-desktop"></i> PESAN</button>

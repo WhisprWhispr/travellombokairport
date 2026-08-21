@@ -291,9 +291,15 @@
             <textarea id="item-description" rows="3" required placeholder="Deskripsi layanan..."></textarea>
           </div>
 
-          <div class="form-group">
-            <label>Price</label>
-            <input type="text" id="item-price" required placeholder="e.g. Rp 250.000 / hari">
+          <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 2;">
+              <label>Harga (Otomatis titik)</label>
+              <input type="text" id="item-price" required placeholder="e.g. 250000">
+            </div>
+            <div style="flex: 1;">
+              <label>Durasi / Satuan Waktu</label>
+              <input type="text" id="item-duration" placeholder="e.g. hari, 12 Jam, 3H 2M">
+            </div>
           </div>
 
           <div class="form-group">
@@ -327,11 +333,6 @@
           <div class="form-group">
             <label>Tipe Paket</label>
             <input type="text" id="item-packageType" placeholder="e.g. PAKET - B">
-          </div>
-          
-          <div class="form-group">
-            <label>Durasi</label>
-            <input type="text" id="item-duration" placeholder="e.g. 3H 2M">
           </div>
           
           <div class="form-group">
