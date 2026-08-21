@@ -323,6 +323,8 @@ const createFleetCard = (item, index = 0) => `
 // Render Drone Card (Dokumentasi Drone)
 const createDroneCard = (item, index = 0) => {
     let iframeSrc = '';
+    let isExternalLink = false;
+    let externalUrl = '';
     let videoUrlStr = item.droneVideoUrl || '';
     
     if (videoUrlStr) {
@@ -336,18 +338,21 @@ const createDroneCard = (item, index = 0) => {
                 if (v) iframeSrc = `https://www.youtube.com/embed/${v}?rel=0`;
             } else if (url.hostname.includes('youtu.be')) {
                 iframeSrc = `https://www.youtube.com/embed/${url.pathname.slice(1)}?rel=0`;
-            } else if (url.hostname.includes('streamable.com')) {
-                let sid = url.pathname.replace('/e/', '').replace('/', '');
-                if (sid) iframeSrc = `https://streamable.com/e/${sid}?autoplay=0`;
             } else if (videoUrlStr.endsWith('.mp4')) {
                 iframeSrc = videoUrlStr; // will be handled as <video>
             } else {
-                // Try as raw iframe
-                iframeSrc = videoUrlStr;
+                // Any other URL (Streamable, TikTok, IG, GDrive, dll)
+                // Banyak situs memblokir iframe (X-Frame-Options: DENY).
+                // Solusi terbaik: Buka di tab baru dengan tombol play overlay.
+                isExternalLink = true;
+                externalUrl = videoUrlStr;
             }
         } catch(e) {
             if (videoUrlStr.length === 11) {
                 iframeSrc = `https://www.youtube.com/embed/${videoUrlStr}?rel=0`;
+            } else {
+                isExternalLink = true;
+                externalUrl = videoUrlStr;
             }
         }
     }
@@ -374,11 +379,20 @@ const createDroneCard = (item, index = 0) => {
         } else {
             mediaHtml = `<iframe width="100%" height="100%" src="${iframeSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 20px 20px 0 0; background: #000;"></iframe>`;
         }
+    } else if (isExternalLink) {
+        mediaHtml += `
+            <a href="${externalUrl}" target="_blank" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); text-decoration: none; color: white; border-radius: 20px 20px 0 0; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+                <div style="text-align: center;">
+                    <i class="fa-solid fa-play" style="font-size: 3.5rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
+                    <div style="font-weight: 800; letter-spacing: 1px; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">TONTON VIDEO</div>
+                </div>
+            </a>
+        `;
     }
 
     return `
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <div class="img-wrapper" style="height: 250px;">
+        <div class="img-wrapper" style="height: 250px; position: relative;">
             ${mediaHtml}
         </div>
         <div class="content" style="padding: 20px;">
