@@ -298,6 +298,19 @@ const renderTable = (items) => {
 
 // Modal handlers
 const openModal = () => { modal.classList.add("active"); };
+
+window.openDroneModal = () => {
+    form.reset();
+    idInput.value = "";
+    document.getElementById("item-terms-category").value = "default";
+    document.getElementById("terms-custom-group").style.display = "none";
+    
+    // Set category automatically
+    const catInput = document.getElementById("item-category");
+    if(catInput) catInput.value = "Drone";
+    
+    openModal();
+};
 const closeModal = () => { 
     modal.classList.remove("active");
     form.reset();
