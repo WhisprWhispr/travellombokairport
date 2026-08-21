@@ -146,23 +146,23 @@ window.openTourModal = (id) => {
                                 let trimmed = line.trim();
                                 
                                 // Auto-format numbers (4 digits or more) with dots (e.g. 500000 -> 500.000)
-                                trimmed = trimmed.replace(/\\b(\\d{4,})\\b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
+                                trimmed = trimmed.replace(/\b(\d{4,})\b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
                                 
-                                if (trimmed.match(/^\\d+\\.\\s/)) {
+                                if (trimmed.match(/^\d+\.\s/)) {
                                     if (inList) { html += '</ul>'; inList = false; }
-                                    html += \`<div style="margin-top: 15px; font-weight: 700; color: var(--primary-blue);">\${trimmed}</div>\`;
+                                    html += `<div style="margin-top: 15px; font-weight: 700; color: var(--primary-blue);">${trimmed}</div>`;
                                 } else if (trimmed.startsWith('•')) {
-                                    if (!inList) { html += \'<ul style="margin: 5px 0 10px 20px; padding: 0; list-style-type: disc;">\'; inList = true; }
-                                    html += \`<li style="margin-bottom: 5px;">\${trimmed.substring(1).trim()}</li>\`;
+                                    if (!inList) { html += '<ul style="margin: 5px 0 10px 20px; padding: 0; list-style-type: disc;">'; inList = true; }
+                                    html += `<li style="margin-bottom: 5px;">${trimmed.substring(1).trim()}</li>`;
                                 } else if (trimmed === '') {
                                     if (inList) { html += '</ul>'; inList = false; }
                                     html += '<div style="height: 10px;"></div>';
                                 } else {
                                     if (inList) { html += '</ul>'; inList = false; }
                                     if (trimmed.includes('DEPOSIT') || trimmed.startsWith('🛵') || trimmed.startsWith('🚙')) {
-                                        html += \`<div style="font-weight: 700;">\${trimmed}</div>\`;
+                                        html += `<div style="font-weight: 700;">${trimmed}</div>`;
                                     } else {
-                                        html += \`<div>\${trimmed}</div>\`;
+                                        html += `<div>${trimmed}</div>`;
                                     }
                                 }
                             });
