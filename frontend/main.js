@@ -131,8 +131,12 @@ window.openTourModal = (id) => {
                             let inList = false;
                             
                             lines.forEach(line => {
-                                const trimmed = line.trim();
-                                if (trimmed.match(/^\d+\.\s/)) {
+                                let trimmed = line.trim();
+                                
+                                // Auto-format numbers (4 digits or more) with dots (e.g. 500000 -> 500.000)
+                                trimmed = trimmed.replace(/\\b(\\d{4,})\\b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
+                                
+                                if (trimmed.match(/^\\d+\\.\\s/)) {
                                     if (inList) { html += '</ul>'; inList = false; }
                                     html += \`<div style="margin-top: 15px; font-weight: 700; color: var(--primary-blue);">\${trimmed}</div>\`;
                                 } else if (trimmed.startsWith('•')) {

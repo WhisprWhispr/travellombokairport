@@ -32,6 +32,16 @@ const termsCustomGroup = document.getElementById("item-terms-custom-group");
 const termsInput = document.getElementById("item-terms");
 const modalTitle = document.getElementById("modal-title");
 
+// Auto-format price input while typing
+priceInput.addEventListener('input', function(e) {
+    let value = this.value.replace(/\D/g, ''); // Remove non-digits
+    if (value) {
+        this.value = parseInt(value, 10).toLocaleString('id-ID');
+    } else {
+        this.value = '';
+    }
+});
+
 const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR 
 
 1. Identitas Penyewa
@@ -348,7 +358,7 @@ form.addEventListener("submit", async (e) => {
         title: titleInput.value,
         description: descriptionInput.value,
         category: categoryInput.value,
-        price: priceInput.value,
+        price: priceInput.value.replace(/\./g, ''), // Strip dots before saving
         imageUrl: imageInput.value,
         packageType: packageTypeInput.value,
         duration: durationInput.value,
@@ -436,7 +446,14 @@ window.editItem = async (id) => {
         titleInput.value = item.title;
         descriptionInput.value = item.description;
         categoryInput.value = item.category;
-        priceInput.value = item.price;
+        
+        // Format price with dots for display in form
+        if (item.price) {
+            priceInput.value = parseInt(item.price.toString().replace(/\D/g, ''), 10).toLocaleString('id-ID');
+        } else {
+            priceInput.value = "";
+        }
+        
         imageInput.value = item.imageUrl;
         packageTypeInput.value = item.packageType || "";
         durationInput.value = item.duration || "";
