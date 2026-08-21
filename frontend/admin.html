@@ -359,10 +359,10 @@
             <textarea id="item-description" rows="3" required placeholder="Deskripsi layanan..."></textarea>
           </div>
 
-          <div class="form-group" style="display: flex; gap: 15px;">
+          <div class="form-group" id="price-duration-group" style="display: flex; gap: 15px;">
             <div style="flex: 2;">
               <label>Harga (Otomatis titik)</label>
-              <input type="text" id="item-price" required placeholder="e.g. 250000">
+              <input type="text" id="item-price" placeholder="e.g. 250000">
             </div>
             <div style="flex: 1;">
               <label>Durasi / Satuan Waktu</label>
@@ -373,6 +373,22 @@
           <div class="form-group">
             <label>Image URL</label>
             <input type="url" id="item-image" required placeholder="https://example.com/image.jpg">
+          </div>
+
+          <!-- Transfer Matrix Section (Khusus Jasa Antar Jemput) -->
+          <div id="transfer-matrix-group" style="display: none;">
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+            <h4 style="color: var(--primary-blue); margin-bottom: 5px;"><i class="fa-solid fa-route"></i> Tabel Harga Airport Transfer</h4>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Kelola harga berdasarkan Area Tujuan dan Jenis Kendaraan. Bisa diisi otomatis melalui AI Scan.</p>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-green" onclick="window.addTransferArea()" style="font-size: 0.85rem; padding: 8px 15px;"><i class="fa-solid fa-plus"></i> Tambah Area</button>
+              <button type="button" class="btn btn-blue" onclick="window.addTransferVehicle()" style="font-size: 0.85rem; padding: 8px 15px;"><i class="fa-solid fa-car"></i> Tambah Jenis Kendaraan</button>
+            </div>
+
+            <div id="transfer-matrix-container" style="overflow-x: auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+              <!-- Table will be rendered by JS -->
+            </div>
           </div>
 
           <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">

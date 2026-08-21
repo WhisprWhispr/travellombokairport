@@ -7,3 +7,5 @@ directory = "dist"
 
 [vars]
 FIREBASE_API_KEY = "AIzaSyA6iPEJgUiZpRkt6YMaIk4Z2tglVF1MiBs"
+
+

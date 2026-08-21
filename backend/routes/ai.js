@@ -24,16 +24,27 @@ router.post('/scan-image', async (req, res) => {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
         const prompt = `Anda adalah asisten AI untuk website travel & rental.
-Tugas Anda adalah membaca gambar brosur promosi ini (Sewa Mobil, Motor, Tour, dll) dan merangkum informasinya.
+Tugas Anda adalah membaca gambar brosur promosi ini (Sewa Mobil, Motor, Tour, Jasa Antar Jemput, dll) dan merangkum informasinya.
 Tolong keluarkan HANYA JSON murni (tanpa tag \`\`\`json) dengan struktur berikut:
 {
   "title": "Nama Layanan/Kendaraan/Tour (Singkat)",
   "price": 500000, 
-  "category": "Sewa Mobil" atau "Sewa Motor" atau "Tour" atau "Lainnya",
-  "description": "Fasilitas yang termasuk (include) atau deskripsi singkat.\\nFormat menggunakan bullet points (•) untuk setiap fasilitas."
+  "category": "car" atau "motorcycle" atau "package" atau "transfer" atau "drone",
+  "description": "Fasilitas yang termasuk (include) atau deskripsi singkat.\\nFormat menggunakan bullet points ( ) untuk setiap fasilitas.",
+  "transferMatrix": [
+    {
+      "area": "Nama Area (misal: Area Kuta Mandalika)",
+      "prices": {
+        "Nama Kendaraan 1": 150000,
+        "Nama Kendaraan 2": 200000
+      }
+    }
+  ]
 }
-Pastikan 'price' adalah angka murni tanpa titik atau huruf (contoh: 500000). Jika harga tidak ditemukan, set ke 0.
-Pastikan HANYA mengembalikan text JSON yang bisa di-parse.`;
+Catatan:
+- Pastikan 'price' adalah angka murni tanpa titik atau huruf (contoh: 500000). Jika harga tidak ditemukan, set ke 0.
+- Field 'transferMatrix' HANYA diisi jika gambar merupakan pricelist "Jasa Antar Jemput" (Airport Transfer) yang memiliki struktur harga berdasarkan area dan kendaraan. Jika bukan, abaikan field ini atau set menjadi array kosong [].
+- Pastikan HANYA mengembalikan text JSON yang bisa di-parse.`;
 
         const imagePart = {
             inlineData: {

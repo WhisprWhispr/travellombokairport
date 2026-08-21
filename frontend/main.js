@@ -368,6 +368,55 @@ const createServiceCard = (item, index = 0) => `
     </div>
 `;
 
+// Render Transfer Card (Jasa Antar Jemput - with pricing matrix)
+const createTransferCard = (item, index = 0) => {
+    if (!item.transferMatrix || item.transferMatrix.length === 0) {
+        // Fallback to service card if no matrix
+        return createServiceCard(item, index);
+    }
+    const vehicles = item.transferVehicles || Object.keys(item.transferMatrix[0]?.prices || {});
+    let tableRows = '';
+    item.transferMatrix.forEach(tm => {
+        tableRows += `<tr>
+            <td style="padding: 10px 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; border-bottom: 1px solid #e2e8f0; position: sticky; left: 0; background: white; z-index: 1;"><i class="fa-solid fa-location-dot" style="color: var(--primary-green); margin-right: 6px;"></i>${tm.area}</td>
+            ${vehicles.map(v => {
+                const price = tm.prices[v];
+                return `<td style="padding: 10px 8px; text-align: center; border-bottom: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; color: var(--text-dark);">${price ? formatPrice(price) : '-'}</td>`;
+            }).join('')}
+        </tr>`;
+    });
+
+    return `
+    <div class="card" data-aos="fade-up" data-aos-delay="${(index % 2) * 100}" style="grid-column: 1/-1; padding: 0; overflow: hidden; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);">
+        <div style="background: linear-gradient(135deg, var(--primary-blue), #0369a1); padding: 25px 30px; color: white;">
+            <h3 style="margin: 0 0 5px 0; font-size: 1.4rem; font-weight: 800;"><i class="fa-solid fa-plane-departure" style="margin-right: 10px;"></i>${item.title}</h3>
+            <p style="margin: 0; opacity: 0.85; font-size: 0.95rem;">${item.description || 'Dari Airport / Sebaliknya'}</p>
+        </div>
+        <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px;">
+                <thead>
+                    <tr style="background: #f0f9ff;">
+                        <th style="padding: 12px 14px; text-align: left; font-weight: 800; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap; position: sticky; left: 0; background: #f0f9ff; z-index: 1;">AREA TUJUAN</th>
+                        ${vehicles.map(v => `<th style="padding: 12px 8px; text-align: center; font-weight: 700; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">${v}</th>`).join('')}
+                    </tr>
+                </thead>
+                <tbody>
+                    ${tableRows}
+                </tbody>
+            </table>
+        </div>
+        <div style="padding: 15px 25px; background: #f8fafc; border-top: 1px solid #e2e8f0; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: space-between;">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; font-size: 0.8rem; color: #475569;">
+                <span><i class="fa-solid fa-check-circle" style="color: var(--primary-green); margin-right: 4px;"></i> Parkir Tolget</span>
+                <span><i class="fa-solid fa-check-circle" style="color: var(--primary-green); margin-right: 4px;"></i> Driver Berpengalaman</span>
+                <span><i class="fa-solid fa-check-circle" style="color: var(--primary-green); margin-right: 4px;"></i> BBM / Petrol</span>
+            </div>
+            <a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20booking%20${encodeURIComponent(item.title)}" target="_blank" class="btn" style="background: #25D366; color: white; font-weight: 700; padding: 10px 20px; border-radius: 25px; font-size: 0.9rem; white-space: nowrap;"><i class="fa-brands fa-whatsapp" style="margin-right: 6px;"></i> Booking Sekarang</a>
+        </div>
+    </div>
+    `;
+};
+
 // Render Package Card (Paket Tour)
 const createPackageCard = (item, index = 0) => `
     <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
@@ -543,7 +592,8 @@ const init = async () => {
         return cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car' || cat === 'motorcycle';
     });
     const drones = globalItems.filter(item => item.category.toLowerCase() === 'drone');
-    const services = globalItems.filter(item => !packages.includes(item) && !fleets.includes(item) && !drones.includes(item));
+    const transfers = globalItems.filter(item => item.category.toLowerCase() === 'transfer');
+    const services = globalItems.filter(item => !packages.includes(item) && !fleets.includes(item) && !drones.includes(item) && !transfers.includes(item));
 
     // Helper to render sections with "See All" button
     const renderSectionWithSeeAll = (containerId, items, renderFn) => {
@@ -581,8 +631,13 @@ const init = async () => {
         }
     };
 
-    // Render Services
-    renderSectionWithSeeAll('services-container', services, createServiceCard);
+    // Render Services (non-transfer layanan)
+    renderSectionWithSeeAll('services-container', [...services, ...transfers], (item, index) => {
+        if (item.category.toLowerCase() === 'transfer' && item.transferMatrix && item.transferMatrix.length > 0) {
+            return createTransferCard(item, index);
+        }
+        return createServiceCard(item, index);
+    });
 
     // Render Packages
     renderSectionWithSeeAll('packages-container', packages, createPackageCard);
