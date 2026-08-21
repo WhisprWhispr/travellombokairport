@@ -327,11 +327,22 @@ const createDroneCard = (item, index = 0) => {
         try {
             const url = new URL(item.droneVideoUrl);
             if (url.hostname.includes('youtube.com')) {
-                videoId = url.searchParams.get('v');
+                if (url.pathname.startsWith('/shorts/')) {
+                    videoId = url.pathname.split('/')[2];
+                } else if (url.pathname.startsWith('/embed/')) {
+                    videoId = url.pathname.split('/')[2];
+                } else {
+                    videoId = url.searchParams.get('v');
+                }
             } else if (url.hostname.includes('youtu.be')) {
                 videoId = url.pathname.slice(1);
             }
-        } catch(e) {}
+        } catch(e) {
+            // Fallback for simple ID if they didn't input a full URL
+            if (item.droneVideoUrl.length === 11) {
+                videoId = item.droneVideoUrl;
+            }
+        }
     }
     
     const isAvailable = window.isDroneAvailable !== false;
@@ -353,7 +364,7 @@ const createDroneCard = (item, index = 0) => {
         <div class="img-wrapper" style="height: 250px;">
             ${videoId 
                 ? `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 20px 20px 0 0;"></iframe>`
-                : `<img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'">`
+                : `<img src="${item.imageUrl || 'https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px 20px 0 0;" onerror="this.src='https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'">`
             }
         </div>
         <div class="content" style="padding: 20px;">
