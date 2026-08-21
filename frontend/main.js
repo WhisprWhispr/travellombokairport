@@ -322,25 +322,32 @@ const createFleetCard = (item, index = 0) => `
 
 // Render Drone Card (Dokumentasi Drone)
 const createDroneCard = (item, index = 0) => {
-    let videoId = '';
-    if (item.droneVideoUrl) {
+    let iframeSrc = '';
+    let videoUrlStr = item.droneVideoUrl || '';
+    
+    if (videoUrlStr) {
         try {
-            const url = new URL(item.droneVideoUrl);
+            const url = new URL(videoUrlStr);
             if (url.hostname.includes('youtube.com')) {
-                if (url.pathname.startsWith('/shorts/')) {
-                    videoId = url.pathname.split('/')[2];
-                } else if (url.pathname.startsWith('/embed/')) {
-                    videoId = url.pathname.split('/')[2];
-                } else {
-                    videoId = url.searchParams.get('v');
-                }
+                let v = '';
+                if (url.pathname.startsWith('/shorts/')) v = url.pathname.split('/')[2];
+                else if (url.pathname.startsWith('/embed/')) v = url.pathname.split('/')[2];
+                else v = url.searchParams.get('v');
+                if (v) iframeSrc = `https://www.youtube.com/embed/${v}?rel=0`;
             } else if (url.hostname.includes('youtu.be')) {
-                videoId = url.pathname.slice(1);
+                iframeSrc = `https://www.youtube.com/embed/${url.pathname.slice(1)}?rel=0`;
+            } else if (url.hostname.includes('streamable.com')) {
+                let sid = url.pathname.replace('/e/', '').replace('/', '');
+                if (sid) iframeSrc = `https://streamable.com/e/${sid}?autoplay=0`;
+            } else if (videoUrlStr.endsWith('.mp4')) {
+                iframeSrc = videoUrlStr; // will be handled as <video>
+            } else {
+                // Try as raw iframe
+                iframeSrc = videoUrlStr;
             }
         } catch(e) {
-            // Fallback for simple ID if they didn't input a full URL
-            if (item.droneVideoUrl.length === 11) {
-                videoId = item.droneVideoUrl;
+            if (videoUrlStr.length === 11) {
+                iframeSrc = `https://www.youtube.com/embed/${videoUrlStr}?rel=0`;
             }
         }
     }
@@ -348,7 +355,7 @@ const createDroneCard = (item, index = 0) => {
     const isAvailable = window.isDroneAvailable !== false;
     const buttonHtml = isAvailable 
         ? `<a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20pesan%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-green w-100"><i class="fa-brands fa-whatsapp"></i> PESAN SEKARANG</a>`
-        : `<button class="btn btn-secondary w-100" style="background: #cbd5e1; color: white; cursor: not-allowed; border: none; padding: 10px; border-radius: 8px; font-weight: 700;" disabled><i class="fa-solid fa-lock"></i> BELUM TERSEDIA</button>`;
+        : ``; // Jangan tampilkan tombol abu-abu gembok agar user tidak mengira videonya yang dikunci
 
     let dateHtml = '';
     if (item.date) {
@@ -359,13 +366,20 @@ const createDroneCard = (item, index = 0) => {
         } catch (e) {}
     }
 
+    let mediaHtml = `<img src="${item.imageUrl || 'https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px 20px 0 0;" onerror="this.src='https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'">`;
+    
+    if (iframeSrc) {
+        if (iframeSrc.endsWith('.mp4')) {
+            mediaHtml = `<video width="100%" height="100%" controls style="border-radius: 20px 20px 0 0; object-fit: cover; background: #000;"><source src="${iframeSrc}" type="video/mp4">Your browser does not support HTML video.</video>`;
+        } else {
+            mediaHtml = `<iframe width="100%" height="100%" src="${iframeSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 20px 20px 0 0; background: #000;"></iframe>`;
+        }
+    }
+
     return `
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="height: 250px;">
-            ${videoId 
-                ? `<iframe width="100%" height="100%" src="https://www.youtube.com/embed/${videoId}?rel=0" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 20px 20px 0 0;"></iframe>`
-                : `<img src="${item.imageUrl || 'https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px 20px 0 0;" onerror="this.src='https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'">`
-            }
+            ${mediaHtml}
         </div>
         <div class="content" style="padding: 20px;">
             <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 5px;">${item.title}</h3>
