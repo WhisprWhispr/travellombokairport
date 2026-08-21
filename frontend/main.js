@@ -394,17 +394,17 @@ const createFleetCard = (item, index = 0) => `
         <div style="width: 100%; height: 200px; border-radius: 12px; margin-bottom: 15px; overflow: hidden; background: #f8fafc; position: relative;">
             <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         </div>
-        <h3 class="notranslate" style="color: #0f172a; font-weight: 800; font-size: 1.3rem; text-align: left; margin-bottom: 10px;">${item.title}</h3>
-        <div class="fleet-features" style="display: flex; gap: 8px; justify-content: flex-start; flex-wrap: wrap; margin-bottom: 15px; font-size: 0.8rem;">
-            ${item.seats ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-user-group" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
-            ${item.transmission ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-gear" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.transmission}</span>` : ''}
-            ${item.driverOptions ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-id-card" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.driverOptions}</span>` : ''}
-            ${item.include ? `<span style="background: #e0f2fe; color: #0284c7; padding: 5px 12px; border-radius: 8px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-check-circle" style="margin-right: 4px;"></i> Termasuk ${item.include}</span>` : ''}
+        <h3 class="notranslate" style="color: #0f172a; font-weight: 800; font-size: 1.3rem; text-align: center; margin-bottom: 10px;">${item.title}</h3>
+        <div class="fleet-features" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; font-size: 0.8rem;">
+            ${item.seats ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-user-group" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
+            ${item.transmission ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-gear" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.transmission}</span>` : ''}
+            ${item.driverOptions ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-id-card" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.driverOptions}</span>` : ''}
+            ${item.include ? `<span style="background: #e0f2fe; color: #0284c7; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-check-circle" style="margin-right: 4px;"></i> Termasuk ${item.include}</span>` : ''}
         </div>
-        <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800; text-align: left; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
+        <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800; text-align: center; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
         <div style="display: flex; gap: 10px; margin-top: auto; padding-top: 15px; border-top: 1px solid #f1f5f9;">
-            <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 10px; border-radius: 8px; font-weight: 700; transition: all 0.3s; font-size: 0.9rem;">DETAIL</button>
-            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 8px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2); font-size: 0.9rem;"><i class="fa-solid fa-check-circle"></i> PESAN</button>
+            <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 10px; border-radius: 25px; font-weight: 700; transition: all 0.3s; font-size: 0.9rem;">DETAIL</button>
+            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 25px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2); font-size: 0.9rem;"><i class="fa-solid fa-check-circle"></i> PESAN</button>
         </div>
     </div>
 `;
