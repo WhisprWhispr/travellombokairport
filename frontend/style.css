@@ -1519,3 +1519,4 @@ body { top: 0 !important; position: static !important; }
 /* iOS Input Fix */
 input, select, textarea { font-size: 16px !important; } 
 
+body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none; user-select: none; } input, textarea { -webkit-user-select: auto; -moz-user-select: auto; -ms-user-select: auto; user-select: auto; }

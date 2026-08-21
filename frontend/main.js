@@ -1,3 +1,4 @@
+if (!window.location.pathname.includes("admin") && !window.location.pathname.includes("driver")) { document.addEventListener("contextmenu", e => e.preventDefault()); document.addEventListener("keydown", e => { if (e.ctrlKey && (e.key === "c" || e.key === "u" || e.key === "s" || e.key === "p")) { e.preventDefault(); } if (e.key === "F12") { e.preventDefault(); } }); }
 const API_URL = '/api';
 let globalItems = [];
 
@@ -1126,16 +1127,16 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
             <h2 style="color: var(--text-dark); margin-bottom: 10px;">${isBookingOnly ? "Booking Berhasil!" : "Pembayaran Berhasil!"}</h2>
             <p style="color: #64748b; margin-bottom: 20px;">Terima kasih, pesanan Anda telah kami terima.</p>
             
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 25px;">
+            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 25px; position: relative;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">Nomor Refrensi Anda:</p>
                 <h3 style="color: var(--primary-blue); font-family: monospace; font-size: 1.5rem; letter-spacing: 2px;">${id}</h3>
+                <button onclick="navigator.clipboard.writeText('${id}'); const icon = this.querySelector('i'); icon.className='fa-solid fa-check'; setTimeout(()=>icon.className='fa-solid fa-copy', 2000)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; cursor: pointer; color: var(--primary-blue);" title="Salin / Copy"><i class="fa-solid fa-copy"></i></button>
             </div>
             
             <div style="display: flex; gap: 10px; margin-bottom: 15px;">
                 <button onclick="downloadPdfInvoice('${id}')" class="btn btn-primary" style="flex: 1; background: #10b981;"><i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket</button>
             </div>
             <button onclick="closeCheckoutModal()" class="btn btn-outline" style="width: 100%;">TUTUP</button>
-            
             
         </div>
     `;
