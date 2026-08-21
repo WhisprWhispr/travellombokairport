@@ -76,8 +76,63 @@ const formatTerms = (termsText) => {
 };
 
 // Modal functions (attached to window for global access)
-window.closeTourModal = () => {
-    document.getElementById('tour-modal').classList.remove('active');
+window.closeGalleryModal = () => {
+    document.getElementById('gallery-modal').classList.remove('active');
+};
+
+// Video Modal Injection
+const injectVideoModal = () => {
+    if (document.getElementById('video-modal')) return;
+    const modalHtml = `
+    <div id="video-modal" class="modal-overlay" style="z-index: 9999; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center;">
+        <div style="position: relative; width: 90%; max-width: 800px; height: 80vh; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <button onclick="closeVideoModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><i class="fa-solid fa-xmark"></i></button>
+            <div id="video-modal-content" style="width: 100%; height: 100%;"></div>
+        </div>
+    </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+};
+
+window.openVideoModal = (url) => {
+    injectVideoModal();
+    const modal = document.getElementById('video-modal');
+    const content = document.getElementById('video-modal-content');
+    
+    // Attempt to convert to embed URL
+    let embedUrl = url;
+    try {
+        const u = new URL(url);
+        if (u.hostname.includes('instagram.com')) {
+            const pathParts = u.pathname.split('/').filter(p => p);
+            if (pathParts.length >= 2 && (pathParts[0] === 'p' || pathParts[0] === 'reel')) {
+                embedUrl = `https://www.instagram.com/p/${pathParts[1]}/embed`;
+            }
+        } else if (u.hostname.includes('tiktok.com')) {
+            const pathParts = u.pathname.split('/').filter(p => p);
+            if (pathParts.includes('video')) {
+                const vid = pathParts[pathParts.indexOf('video') + 1];
+                embedUrl = `https://www.tiktok.com/embed/v2/${vid}`;
+            }
+        } else if (u.hostname.includes('facebook.com') && u.pathname.includes('/watch')) {
+            embedUrl = `https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(url)}&show_text=0`;
+        } else if (u.hostname.includes('streamable.com')) {
+            const sid = u.pathname.replace('/e/', '').replace('/', '');
+            if (sid) embedUrl = `https://streamable.com/e/${sid}?autoplay=1`;
+        }
+    } catch(e) {}
+
+    content.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="background: #000;"></iframe>`;
+    
+    modal.style.display = 'flex';
+};
+
+window.closeVideoModal = () => {
+    const modal = document.getElementById('video-modal');
+    if (modal) {
+        modal.style.display = 'none';
+        document.getElementById('video-modal-content').innerHTML = ''; // Stop video playing
+    }
 };
 
 window.openTourModal = (id) => {
@@ -381,12 +436,12 @@ const createDroneCard = (item, index = 0) => {
         }
     } else if (isExternalLink) {
         mediaHtml += `
-            <a href="${externalUrl}" target="_blank" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); text-decoration: none; color: white; border-radius: 20px 20px 0 0; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
+            <div onclick="openVideoModal('${externalUrl}')" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.5); text-decoration: none; color: white; border-radius: 20px 20px 0 0; transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.background='rgba(0,0,0,0.3)'" onmouseout="this.style.background='rgba(0,0,0,0.5)'">
                 <div style="text-align: center;">
                     <i class="fa-solid fa-play" style="font-size: 3.5rem; margin-bottom: 10px; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));"></i>
                     <div style="font-weight: 800; letter-spacing: 1px; font-size: 1.1rem; text-shadow: 0 2px 4px rgba(0,0,0,0.5);">TONTON VIDEO</div>
                 </div>
-            </a>
+            </div>
         `;
     }
 
