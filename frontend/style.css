@@ -1353,10 +1353,13 @@ ul {
   }
 }
 @media (max-width: 768px) {
-  .logo { gap: 8px; }
-  .logo-img { height: 32px; }
-  .logo-title { font-size: 0.9rem; }
-  .logo-subtitle { font-size: 0.6rem; }
+  .logo { gap: 6px; }
+  .logo-img { height: 26px; }
+  .logo-title { font-size: 0.8rem; white-space: normal; line-height: 1.1; }
+  .logo-subtitle { display: none; }
+  .nav-content { padding: 0 10px; }
+  .nav-actions { gap: 6px; }
+  .lang-btn { padding: 4px 8px; font-size: 0.75rem; }
   .hero-title { font-size: 2.5rem; }
   .admin-container { flex-direction: column; display: block; }
   .admin-sidebar {
