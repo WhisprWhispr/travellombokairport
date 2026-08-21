@@ -534,6 +534,7 @@ window.showTab = (tab) => {
     document.getElementById("web-bookings-section").style.display = "none";
     document.getElementById("gallery-section").style.display = "none";
     document.getElementById("withdrawal-section").style.display = "none";
+    document.getElementById("settings-section").style.display = "none";
     document.getElementById("drivers-section").style.display = "none";
     document.getElementById("add-item-btn").style.display = "none";
     document.getElementById("add-booking-btn").style.display = "none";
@@ -567,6 +568,9 @@ window.showTab = (tab) => {
         document.getElementById("drivers-section").style.display = "block";
         document.getElementById("add-driver-btn").style.display = "inline-block";
         fetchAdminDrivers();
+    } else if (tab === "settings") {
+        document.getElementById("settings-section").style.display = "block";
+        fetchGlobalSettings();
     }
 };
 
@@ -1182,14 +1186,19 @@ window.assignDriver = (bookingId, currentDriverId) => {
 };
 
 // Global Settings (Sewa Drone)
-const fetchGlobalSettings = async () => {
+window.fetchGlobalSettings = async () => {
     try {
         const res = await fetch(`${API_URL}/settings`);
         if (res.ok) {
             const data = await res.json();
             const droneStatus = document.getElementById('setting-drone-status');
+            const dronePrice = document.getElementById('setting-drone-price');
             if (droneStatus && data.droneAvailable) {
                 droneStatus.value = data.droneAvailable;
+            }
+            if (dronePrice && data.dronePrice) {
+                // Format price with dots
+                dronePrice.value = data.dronePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
             }
         }
     } catch (e) {
@@ -1199,12 +1208,15 @@ const fetchGlobalSettings = async () => {
 
 window.saveGlobalSettings = async () => {
     const droneStatus = document.getElementById('setting-drone-status').value;
+    const dronePriceRaw = document.getElementById('setting-drone-price').value || "";
+    const dronePrice = dronePriceRaw.replace(/\./g, '');
+    
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
         const res = await fetch(`${API_URL}/settings`, {
             method: 'PUT',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ droneAvailable: droneStatus })
+            body: JSON.stringify({ droneAvailable: droneStatus, dronePrice: dronePrice })
         });
         if (res.ok) {
             Swal.fire({icon: 'success', title: 'Berhasil', text: 'Pengaturan berhasil disimpan.', confirmButtonColor: '#22c55e'});

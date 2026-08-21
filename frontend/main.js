@@ -377,6 +377,12 @@ const init = async () => {
                         </div>`;
                     }
                 }
+            } else if (settings.dronePrice) {
+                // If available and a price is set, update it on drone.html
+                const dronePriceEl = document.getElementById('drone-base-price');
+                if (dronePriceEl) {
+                    dronePriceEl.innerText = formatPrice(settings.dronePrice).replace('Rp ', '');
+                }
             }
         }
     } catch (e) {

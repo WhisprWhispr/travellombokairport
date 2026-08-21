@@ -173,8 +173,15 @@
                 <option value="available">Tersedia</option>
                 <option value="unavailable">Belum Tersedia</option>
               </select>
-              <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Jika diatur ke "Belum Tersedia", halaman Sewa Drone di web utama akan terkunci dan menampilkan pesan belum tersedia.</p>
+              <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Jika diatur ke "Belum Tersedia", halaman Sewa Drone di web utama akan terkunci.</p>
             </div>
+            
+            <div class="form-group mt-3">
+              <label>Harga Mulai Dari (Drone)</label>
+              <input type="text" id="setting-drone-price" placeholder="500.000" onkeyup="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');">
+              <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Hanya masukkan angka, akan diformat otomatis. Contoh: 500000</p>
+            </div>
+            <button onclick="window.saveGlobalSettings()" class="btn btn-primary mt-3"><i class="fa-solid fa-save"></i> Simpan Pengaturan</button>
           </div>
         </section>
 
