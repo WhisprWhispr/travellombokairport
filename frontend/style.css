@@ -158,7 +158,7 @@ ul {
 }
 
 .logo-img {
-  height: 45px;
+  height: 50px;
   object-fit: contain;
 }
 
@@ -527,27 +527,34 @@ ul {
   background: white;
 }
 .package-card h3 {
-  color: var(--text-dark);
-  font-size: 1.25rem;
-  font-weight: 700;
+  color: #0f172a;
+  font-size: 1.35rem;
+  font-weight: 800;
   margin-bottom: 15px;
-  line-height: 1.4;
+  line-height: 1.35;
+  letter-spacing: -0.5px;
 }
 .package-card ul {
   margin-bottom: 24px;
   flex: 1;
 }
 .package-card ul li {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  line-height: 1.6;
   margin-bottom: 10px;
   display: flex;
-  align-items: center;
-  gap: 10px;
-  color: var(--text-gray);
+  align-items: flex-start;
+  gap: 12px;
+  color: #475569;
+  background: #f8fafc;
+  padding: 12px 15px;
+  border-radius: 12px;
+  border-left: 4px solid var(--primary-green);
 }
 .package-card ul li i {
   color: var(--primary-green);
   font-size: 1.1rem;
+  margin-top: 3px;
 }
 .package-card .price-row {
   display: flex;
@@ -1354,7 +1361,7 @@ ul {
 }
 @media (max-width: 768px) {
   .logo { gap: 10px; white-space: normal; }
-  .logo-img { height: 35px; } 
+  .logo-img { height: 42px; } 
   .logo-text { display: flex; flex-direction: column; justify-content: center; }
   .logo-title { font-size: 1.15rem; white-space: normal; line-height: 1.1; font-weight: 800; }
   .logo-subtitle { display: block; font-size: 0.75rem; white-space: normal; margin-top: 2px; }
