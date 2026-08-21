@@ -339,6 +339,15 @@ const createDroneCard = (item, index = 0) => {
         ? `<a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20pesan%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-green w-100"><i class="fa-brands fa-whatsapp"></i> PESAN SEKARANG</a>`
         : `<button class="btn btn-secondary w-100" style="background: #cbd5e1; color: white; cursor: not-allowed; border: none; padding: 10px; border-radius: 8px; font-weight: 700;" disabled><i class="fa-solid fa-lock"></i> BELUM TERSEDIA</button>`;
 
+    let dateHtml = '';
+    if (item.date) {
+        try {
+            const dateObj = new Date(item.date);
+            const formattedDate = dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+            dateHtml = `<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${formattedDate}</div>`;
+        } catch (e) {}
+    }
+
     return `
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="height: 250px;">
@@ -348,7 +357,8 @@ const createDroneCard = (item, index = 0) => {
             }
         </div>
         <div class="content" style="padding: 20px;">
-            <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 10px;">${item.title}</h3>
+            <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 5px;">${item.title}</h3>
+            ${dateHtml}
             <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">${item.description}</p>
             <div class="price" style="font-size: 1.2rem; color: var(--primary-green); font-weight: 700; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.8rem; color: var(--text-gray); font-weight: 400;">/ ${item.duration || 'hari'}</span></div>
             ${buttonHtml}

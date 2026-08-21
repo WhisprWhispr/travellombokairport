@@ -300,16 +300,9 @@ const renderTable = (items) => {
 const openModal = () => { modal.classList.add("active"); };
 
 window.openDroneModal = () => {
-    form.reset();
-    idInput.value = "";
-    document.getElementById("item-terms-category").value = "default";
-    document.getElementById("terms-custom-group").style.display = "none";
-    
-    // Set category automatically
-    const catInput = document.getElementById("item-category");
-    if(catInput) catInput.value = "Drone";
-    
-    openModal();
+    document.getElementById("drone-form").reset();
+    document.getElementById("drone-id").value = "";
+    document.getElementById("drone-modal").classList.add("active");
 };
 const closeModal = () => { 
     modal.classList.remove("active");
@@ -415,6 +408,52 @@ form.addEventListener("submit", async (e) => {
     }
 });
 
+// Handle Drone Form Submit
+document.getElementById("drone-form").addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const id = document.getElementById("drone-id").value;
+    const title = document.getElementById("drone-title").value;
+    const date = document.getElementById("drone-date").value;
+    const description = document.getElementById("drone-description").value;
+    const videoUrl = document.getElementById("drone-video-url").value;
+    
+    const itemData = {
+        category: "Drone",
+        title: title,
+        date: date, // Custom date field
+        description: description,
+        droneVideoUrl: videoUrl,
+        imageUrl: "", // Not used
+        price: "0",   // Not used, but kept for schema compatibility
+    };
+    
+    Swal.fire({title: 'Menyimpan Video Drone...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+    
+    try {
+        const url = id ? `${API_URL}/items/${id}` : `${API_URL}/items`;
+        const method = id ? "PUT" : "POST";
+        
+        const response = await fetch(url, {
+            method: method,
+            headers: getAuthHeaders(),
+            body: JSON.stringify(itemData)
+        });
+        
+        if (response.ok) {
+            document.getElementById("drone-modal").classList.remove("active");
+            fetchAdminItems(); // Refresh the main table
+            Swal.fire({icon: 'success', title: 'Berhasil', text: "Video drone berhasil disimpan!", confirmButtonColor: '#22c55e'});
+        } else {
+            const err = await response.json();
+            Swal.fire({icon: 'error', title: 'Gagal', text: "Gagal menyimpan video drone: " + (err.error || err.message), confirmButtonColor: '#22c55e'});
+        }
+    } catch (error) {
+        console.error("Error saving drone video:", error);
+        Swal.fire({icon: 'error', title: 'Gagal', text: "Terjadi kesalahan saat menyimpan video", confirmButtonColor: '#22c55e'});
+    }
+});
+
 // Form Submission (Manual Booking)
 document.getElementById("booking-form").addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -460,6 +499,16 @@ window.editItem = async (id) => {
         const response = await fetch(`${API_URL}/items/${id}`);
         const item = await response.json();
         
+        if (item.category === 'Drone') {
+            document.getElementById('drone-id').value = item.id;
+            document.getElementById('drone-title').value = item.title;
+            document.getElementById('drone-date').value = item.date || "";
+            document.getElementById('drone-description').value = item.description || "";
+            document.getElementById('drone-video-url').value = item.droneVideoUrl || "";
+            document.getElementById('drone-modal').classList.add('active');
+            return;
+        }
+
         idInput.value = item.id;
         titleInput.value = item.title;
         descriptionInput.value = item.description;

@@ -467,6 +467,42 @@
       </div>
     </div>
 
+    <!-- Modal for Add Drone Video -->
+    <div id="drone-modal" class="modal-overlay">
+      <div class="modal-content glass-panel" style="max-width: 600px;">
+        <div class="modal-header" style="margin-bottom: 20px;">
+          <h2 id="drone-modal-title">Tambah Video Drone</h2>
+          <button onclick="document.getElementById('drone-modal').classList.remove('active')" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="drone-form" class="admin-form" style="background: #f8fafc; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          <input type="hidden" id="drone-id">
+          
+          <div class="form-group">
+            <label>Judul Video</label>
+            <input type="text" id="drone-title" required placeholder="e.g. Pantai Kuta Lombok">
+          </div>
+
+          <div class="form-group">
+            <label>Tanggal Dokumentasi</label>
+            <input type="date" id="drone-date" required>
+          </div>
+
+          <div class="form-group">
+            <label>Deskripsi Pendek</label>
+            <textarea id="drone-description" rows="2" required placeholder="Dokumentasi udara acara..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>URL Video YouTube</label>
+            <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=...">
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Masukkan URL YouTube yang valid (contoh: https://youtu.be/...)</p>
+          </div>
+
+          <button type="submit" class="btn btn-green w-100 mt-4"><i class="fa-solid fa-save"></i> SIMPAN VIDEO</button>
+        </form>
+      </div>
+    </div>
+
     <script type="module" src="./admin.js"></script>
   <script type="module" src="/pwa.js"></script>
 </body>
