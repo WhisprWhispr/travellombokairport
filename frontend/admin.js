@@ -42,8 +42,7 @@ const checkAuth = () => {
     }
 };
 
-// Panggil saat halaman dimuat
-checkAuth();
+
 
 // Login Handler
 loginForm.addEventListener("submit", async (e) => {
@@ -1042,3 +1041,6 @@ window.assignDriver = (bookingId, currentDriverId) => {
         }
     });
 };
+
+// Panggil saat halaman dimuat (setelah semua fungsi siap)
+checkAuth();
