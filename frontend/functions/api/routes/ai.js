@@ -122,7 +122,27 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
             .replace(/```/g, '')
             .trim();
 
-        const data = JSON.parse(cleanJson);
+        // Fix: Gemini sometimes puts raw newlines inside JSON string values
+        // Replace actual newlines inside strings with \\n escape sequences
+        cleanJson = cleanJson.replace(/("(?:[^"\\]|\\.)*")/gs, (match) => {
+            return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
+        });
+
+        let data;
+        try {
+            data = JSON.parse(cleanJson);
+        } catch (parseErr) {
+            // Last resort: try to extract JSON object from the text
+            const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
+            if (jsonMatch) {
+                const extracted = jsonMatch[0].replace(/("(?:[^"\\]|\\.)*")/gs, (match) => {
+                    return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r');
+                });
+                data = JSON.parse(extracted);
+            } else {
+                throw parseErr;
+            }
+        }
 
         return c.json({ success: true, data });
     } catch (error) {
