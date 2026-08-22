@@ -378,7 +378,7 @@ const createTransferCard = (item, index = 0) => {
     let tableRows = '';
     item.transferMatrix.forEach(tm => {
         tableRows += `<tr>
-            <td style="padding: 10px 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; border-bottom: 1px solid #e2e8f0; position: sticky; left: 0; background: white; z-index: 1;"><i class="fa-solid fa-location-dot" style="color: var(--primary-green); margin-right: 6px;"></i>${tm.area}</td>
+            <td style="padding: 10px 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; border-bottom: 1px solid #e2e8f0;"><i class="fa-solid fa-location-dot" style="color: var(--primary-green); margin-right: 6px;"></i>${tm.area}</td>
             ${vehicles.map(v => {
                 const price = tm.prices[v];
                 return `<td style="padding: 10px 8px; text-align: center; border-bottom: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; color: var(--text-dark);">${price ? formatPrice(price) : '-'}</td>`;
@@ -396,7 +396,7 @@ const createTransferCard = (item, index = 0) => {
             <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px;">
                 <thead>
                     <tr style="background: #f0f9ff;">
-                        <th style="padding: 12px 14px; text-align: left; font-weight: 800; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap; position: sticky; left: 0; background: #f0f9ff; z-index: 1;">AREA TUJUAN</th>
+                        <th style="padding: 12px 14px; text-align: left; font-weight: 800; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">AREA TUJUAN</th>
                         ${vehicles.map(v => `<th style="padding: 12px 8px; text-align: center; font-weight: 700; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">${v}</th>`).join('')}
                     </tr>
                 </thead>
