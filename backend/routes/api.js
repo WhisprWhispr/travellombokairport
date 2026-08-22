@@ -229,13 +229,22 @@ router.post('/withdrawals', verifyToken, async (req, res) => {
 // GET all reviews
 router.get('/reviews', async (req, res) => {
     try {
-        const snapshot = await db.collection('reviews').orderBy('createdAt', 'desc').get();
+        const snapshot = await db.collection('reviews').get();
         let reviews = [];
         snapshot.forEach(doc => {
             reviews.push({ id: doc.id, ...doc.data() });
         });
+        
+        // Sort in memory by createdAt descending
+        reviews.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt) : new Date(0);
+            const dateB = b.createdAt ? new Date(b.createdAt) : new Date(0);
+            return dateB - dateA;
+        });
+        
         res.json(reviews);
     } catch (error) {
+        console.error("GET /reviews error:", error);
         res.status(500).json({ error: error.message });
     }
 });
