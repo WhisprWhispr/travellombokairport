@@ -475,7 +475,13 @@ const createFleetCard = (item, index = 0) => {
             ${featureTags ? `<div class="fleet-tags-row">${featureTags}</div>` : ''}
             ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
             <div class="price-row">
-                <div class="price"><span>Mulai dari</span>${formatPrice(item.price)} <small style="font-size: 0.7rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</small></div>
+                <div class="price">
+                    <span>Mulai dari</span>
+                    <div style="display: flex; align-items: baseline; gap: 4px;">
+                        ${formatPrice(item.price)} 
+                        <small style="font-size: 0.7rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</small>
+                    </div>
+                </div>
                 <div class="action-buttons">
                     <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
                     <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
