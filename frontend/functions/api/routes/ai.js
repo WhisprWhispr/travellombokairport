@@ -82,7 +82,7 @@ Baca SEMUA teks yang terlihat di gambar dan masukkan ke field yang sesuai.
 Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSON.`;
 
         // Models to try (fallback if primary is overloaded)
-        const models = ['gemini-1.5-flash', 'gemini-1.5-pro'];
+        const models = ['gemini-3.6-flash', 'gemini-3.5-flash', 'gemini-2.5-flash'];
         const requestBody = JSON.stringify({
             contents: [{
                 parts: [
