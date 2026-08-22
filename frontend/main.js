@@ -687,7 +687,6 @@ const init = async () => {
     }
 
     const servicesContainer = document.getElementById('services-container');
-    const packagesContainer = document.getElementById('packages-container');
     const fleetContainer = document.getElementById('fleet-container');
     
     // Fetch all data
