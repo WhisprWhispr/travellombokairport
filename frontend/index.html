@@ -33,6 +33,53 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="./style.css?v=2">
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <!-- Review Modal -->
+  <div id="review-modal" class="modal-overlay" style="z-index: 10000; position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; backdrop-filter: blur(4px);">
+    <div class="modal-content" style="background: white; padding: 30px; border-radius: 16px; width: 90%; max-width: 450px; position: relative; animation: slideUp 0.3s ease;">
+      <button onclick="document.getElementById('review-modal').classList.remove('active')" style="position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; color: #64748b; font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s;"><i class="fa-solid fa-times"></i></button>
+      
+      <h2 style="color: var(--primary-blue); margin-bottom: 10px; font-size: 1.5rem;">Bagikan Pengalaman Anda</h2>
+      <p style="color: #64748b; font-size: 0.9rem; margin-bottom: 20px;">Ulasan Anda sangat berarti bagi kami dan pelanggan lainnya.</p>
+      
+      <form id="review-form" onsubmit="submitReview(event)">
+        <div class="form-group mb-3">
+          <label style="font-weight: 600; color: var(--text-dark); margin-bottom: 5px; display: block;">Nama Anda</label>
+          <input type="text" id="review-name" class="form-control" required placeholder="Contoh: Budi Santoso" style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 15px; width: 100%;">
+        </div>
+        
+        <div class="form-group mb-3">
+          <label style="font-weight: 600; color: var(--text-dark); margin-bottom: 5px; display: block;">Penilaian</label>
+          <div class="star-rating" style="display: flex; gap: 5px; flex-direction: row-reverse; justify-content: flex-end;">
+            <input type="radio" id="star5" name="rating" value="5" required style="display: none;" /><label for="star5" style="color: #cbd5e1; font-size: 1.5rem; cursor: pointer;" title="5 stars"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" id="star4" name="rating" value="4" style="display: none;" /><label for="star4" style="color: #cbd5e1; font-size: 1.5rem; cursor: pointer;" title="4 stars"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" id="star3" name="rating" value="3" style="display: none;" /><label for="star3" style="color: #cbd5e1; font-size: 1.5rem; cursor: pointer;" title="3 stars"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" id="star2" name="rating" value="2" style="display: none;" /><label for="star2" style="color: #cbd5e1; font-size: 1.5rem; cursor: pointer;" title="2 stars"><i class="fa-solid fa-star"></i></label>
+            <input type="radio" id="star1" name="rating" value="1" style="display: none;" /><label for="star1" style="color: #cbd5e1; font-size: 1.5rem; cursor: pointer;" title="1 star"><i class="fa-solid fa-star"></i></label>
+          </div>
+        </div>
+        
+        <div class="form-group mb-4">
+          <label style="font-weight: 600; color: var(--text-dark); margin-bottom: 5px; display: block;">Ulasan Anda</label>
+          <textarea id="review-comment" class="form-control" required rows="4" placeholder="Ceritakan pengalaman Anda menggunakan layanan kami..." style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 15px; width: 100%; resize: vertical;"></textarea>
+        </div>
+        
+        <button type="submit" id="btn-submit-review" class="btn btn-primary w-100" style="padding: 12px; font-weight: 700; border-radius: 8px; font-size: 1.05rem;">Kirim Ulasan</button>
+      </form>
+    </div>
+  </div>
+
+  <style>
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label {
+      color: #f59e0b !important;
+    }
+    #review-modal.active {
+      display: flex !important;
+    }
+  </style>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
@@ -287,6 +334,26 @@
             </form>
           </div>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Section -->
+  <section id="reviews" class="section">
+    <div class="container">
+      <div class="section-title text-center" data-aos="fade-up">
+        <h2>Apa Kata Mereka?</h2>
+        <p>Ulasan nyata dari pelanggan yang telah menggunakan layanan kami.</p>
+      </div>
+      
+      <div id="reviews-container" class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; margin-bottom: 30px;">
+        <p class="text-center w-100" style="grid-column: 1/-1;">Loading ulasan...</p>
+      </div>
+
+      <div class="text-center w-100 mt-4" data-aos="fade-up">
+        <button onclick="document.getElementById('review-modal').classList.add('active')" class="btn btn-green" style="padding: 12px 30px; font-weight: 700; border-radius: 30px; font-size: 1.1rem; box-shadow: 0 4px 15px rgba(37,211,102,0.3);">
+          <i class="fa-solid fa-pen" style="margin-right: 8px;"></i> Berikan Ulasan Anda
+        </button>
       </div>
     </div>
   </section>

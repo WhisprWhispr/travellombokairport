@@ -1682,8 +1682,88 @@ const loadStats = async () => {
     }
 };
 
+// Reviews Logic
+window.loadReviews = async () => {
+    const container = document.getElementById('reviews-container');
+    if (!container) return;
+    try {
+        const res = await fetch(`${API_URL}/reviews`);
+        if (!res.ok) throw new Error('Failed to fetch');
+        const reviews = await res.json();
+        
+        if (reviews.length === 0) {
+            container.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada ulasan. Jadilah yang pertama memberikan ulasan!</p>';
+            return;
+        }
+
+        let html = '';
+        reviews.forEach(r => {
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color: #f59e0b;"></i>';
+                else stars += '<i class="fa-regular fa-star" style="color: #cbd5e1;"></i>';
+            }
+            html += `
+            <div class="card" style="padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; border: 1px solid #f1f5f9;" data-aos="fade-up">
+                <div style="display: flex; gap: 4px; margin-bottom: 10px;">${stars}</div>
+                <p style="color: #475569; font-style: italic; margin-bottom: 15px; line-height: 1.6;">"${r.comment}"</p>
+                <div style="font-weight: 700; color: var(--primary-blue);">- ${r.name}</div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    } catch (e) {
+        console.error("Failed to load reviews:", e);
+        container.innerHTML = '<p class="text-center w-100 text-danger" style="grid-column: 1/-1;">Gagal memuat ulasan.</p>';
+    }
+};
+
+window.submitReview = async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-submit-review');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+    
+    const name = document.getElementById('review-name').value;
+    const comment = document.getElementById('review-comment').value;
+    const ratingObj = document.querySelector('input[name="rating"]:checked');
+    const rating = ratingObj ? ratingObj.value : 5; // default 5
+
+    try {
+        const res = await fetch(`${API_URL}/reviews`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, rating, comment })
+        });
+        
+        if (!res.ok) throw new Error('Failed to submit review');
+        
+        Swal.fire({
+            icon: 'success',
+            title: 'Terima Kasih!',
+            text: 'Ulasan Anda berhasil dikirim.',
+            confirmButtonColor: '#22c55e'
+        });
+        
+        document.getElementById('review-form').reset();
+        document.getElementById('review-modal').classList.remove('active');
+        loadReviews(); // reload
+    } catch (error) {
+        console.error("Submit review error:", error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: 'Gagal mengirim ulasan. Silakan coba lagi.',
+            confirmButtonColor: '#22c55e'
+        });
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = 'Kirim Ulasan';
+    }
+};
+
 document.addEventListener("DOMContentLoaded", () => {
     loadStats();
+    loadReviews();
 
     // ── Restore checkout modal if user accidentally refreshed the page ──
     const savedCheckout = sessionStorage.getItem('checkoutState');
