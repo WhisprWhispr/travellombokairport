@@ -141,7 +141,6 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
 
         const geminiResult = await geminiResponse.json();
 
-        let responseText = '';
         // Extract the text from Gemini response
         responseText = geminiResult?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!responseText) {
