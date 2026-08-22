@@ -578,34 +578,39 @@ ul {
   font-weight: 500;
 }
 
-/* Fleet Card Specific */
-.fleet-card {
-  padding: 20px;
-  text-align: center;
-}
-.fleet-card img {
-  width: 100%;
-  height: 160px;
-  object-fit: contain;
-  margin-bottom: 15px;
-}
-.fleet-card h3 {
-  font-size: 1.2rem;
-  margin-bottom: 10px;
-}
-.fleet-features {
+/* Fleet Card Specific (V2 - Package Style) */
+.fleet-card-v2 .fleet-tags-row {
   display: flex;
-  justify-content: center;
-  gap: 15px;
+  gap: 8px;
+  flex-wrap: wrap;
   margin-bottom: 15px;
-  font-size: 0.85rem;
-  color: var(--text-gray);
 }
-.fleet-price {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--primary-green);
-  margin-bottom: 15px;
+.fleet-card-v2 .fleet-tag {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.fleet-card-v2 .fleet-tag i {
+  color: var(--primary-blue);
+  margin-right: 4px;
+}
+.fleet-card-v2 .price-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 15px;
+  margin-top: auto;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.fleet-card-v2 .action-buttons {
+  display: flex;
+  gap: 8px;
 }
 
 /* Info Section */

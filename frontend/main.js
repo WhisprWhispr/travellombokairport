@@ -437,26 +437,54 @@ const createPackageCard = (item, index = 0) => `
     </div>
 `;
 
-// Render Fleet Card (Armada/Rental)
-const createFleetCard = (item, index = 0) => `
-    <div class="card fleet-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <div style="width: 100%; height: 200px; border-radius: 12px; margin-bottom: 15px; overflow: hidden; background: #f8fafc; position: relative;">
-            <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
+// Render Fleet Card (Armada/Rental) - Redesigned to match Package Card style
+const createFleetCard = (item, index = 0) => {
+    const categoryIcon = item.category === 'motorcycle' ? 'fa-motorcycle' : 'fa-car';
+    const categoryLabel = item.category === 'motorcycle' ? 'Motor' : 'Mobil';
+    
+    // Build feature tags
+    let featureTags = '';
+    if (item.seats) {
+        featureTags += `<span class="fleet-tag"><i class="fa-solid fa-user-group"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>`;
+    }
+    if (item.transmission) {
+        featureTags += `<span class="fleet-tag"><i class="fa-solid fa-gear"></i> ${item.transmission}</span>`;
+    }
+    if (item.driverOptions) {
+        featureTags += `<span class="fleet-tag"><i class="fa-solid fa-id-card"></i> ${item.driverOptions}</span>`;
+    }
+
+    // Build include list
+    let includeHtml = '';
+    if (item.include) {
+        const includes = item.include.split('\\n').filter(i => i.trim());
+        includeHtml = includes.map(inc => `<li><i class="fa-solid fa-check"></i> ${inc.trim()}</li>`).join('');
+    }
+    if (item.description && !item.include) {
+        includeHtml = `<li><i class="fa-solid fa-check"></i> ${item.description}</li>`;
+    }
+
+    return `
+    <div class="card package-card fleet-card-v2" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
+        <div class="img-wrapper">
+            <span class="tag"><i class="fa-solid ${categoryIcon}" style="margin-right: 4px;"></i> ${categoryLabel}</span>
+            <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         </div>
-        <h3 class="notranslate" style="color: #0f172a; font-weight: 800; font-size: 1.3rem; text-align: center; margin-bottom: 10px;">${item.title}</h3>
-        <div class="fleet-features" style="display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 15px; font-size: 0.8rem;">
-            ${item.seats ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-user-group" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.seats} ${item.category === 'motorcycle' ? 'Helm' : 'Seat'}</span>` : ''}
-            ${item.transmission ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-gear" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.transmission}</span>` : ''}
-            ${item.driverOptions ? `<span style="background: #f1f5f9; color: #475569; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-id-card" style="color: var(--primary-blue); margin-right: 4px;"></i> ${item.driverOptions}</span>` : ''}
-            ${item.include ? `<span style="background: #e0f2fe; color: #0284c7; padding: 5px 12px; border-radius: 20px; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-check-circle" style="margin-right: 4px;"></i> Termasuk ${item.include}</span>` : ''}
-        </div>
-        <div class="fleet-price" style="font-size: 1.25rem; color: var(--primary-green); font-weight: 800; text-align: center; margin-bottom: 15px;">${formatPrice(item.price)} <span style="font-size: 0.85rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</span></div>
-        <div style="display: flex; gap: 10px; margin-top: auto; padding-top: 15px; border-top: 1px solid #f1f5f9;">
-            <button onclick="openTourModal('${item.id}')" class="btn" style="flex:1; background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 10px; border-radius: 25px; font-weight: 700; transition: all 0.3s; font-size: 0.9rem;">DETAIL</button>
-            <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="flex:1; padding: 10px; border-radius: 25px; font-weight: 700; box-shadow: 0 4px 6px rgba(5,150,105,0.2); font-size: 0.9rem;"><i class="fa-brands fa-whatsapp"></i> PESAN</button>
+        <div class="content">
+            <h3 class="notranslate">${item.title}</h3>
+            ${featureTags ? `<div class="fleet-tags-row">${featureTags}</div>` : ''}
+            ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
+            <div class="price-row">
+                <div class="price"><span>Mulai dari</span>${formatPrice(item.price)} <small style="font-size: 0.7rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</small></div>
+                <div class="action-buttons">
+                    <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
+                    <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
+                </div>
+            </div>
         </div>
     </div>
-`;
+    `;
+};
 
 // Render Drone Card (Dokumentasi Drone)
 const createDroneCard = (item, index = 0) => {
