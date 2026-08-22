@@ -779,54 +779,33 @@ const init = async () => {
     const parentPackages = sortedPackages.filter(p => p.isParent === true);
     const regularPackages = sortedPackages.filter(p => !p.isParent);
 
-    // ── Render Parent/Category Cards ──
-    const packagesContainer = document.getElementById('packages-container');
-    if (packagesContainer) {
-        let html = '';
+    // ── Render Parent/Category Cards → dedicated "Paket Pilihan Kami" section ──
+    const paketPilihanSection = document.getElementById('paket-pilihan');
+    const parentContainer = document.getElementById('parent-packages-container');
+    if (parentContainer && parentPackages.length > 0) {
+        // Show the section
+        if (paketPilihanSection) paketPilihanSection.style.display = 'block';
 
-        // 1. Parent category cards (if any)
-        if (parentPackages.length > 0) {
-            html += `<div style="grid-column:1/-1; display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:30px;">`;
-            parentPackages.forEach((item, idx) => {
-                html += `
-                <div onclick="window.openSubPackageModal('${item.id}')" data-aos="zoom-in" data-aos-delay="${idx * 80}"
-                    style="cursor:pointer; position:relative; border-radius:18px; overflow:hidden; aspect-ratio:3/4; box-shadow:0 12px 30px rgba(0,0,0,0.18); transition:transform 0.3s,box-shadow 0.3s;"
-                    onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 20px 40px rgba(0,0,0,0.28)'"
-                    onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 12px 30px rgba(0,0,0,0.18)'">
-                    <img src="${item.imageUrl}" alt="${item.title}"
-                        style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;"
-                        onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
-                    <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top,rgba(10,20,50,0.88) 0%,rgba(10,20,50,0.3) 55%,rgba(10,20,50,0) 100%);z-index:2;"></div>
-                    <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;padding:18px 16px;">
-                        <h3 style="color:white;font-size:1.3rem;font-weight:900;margin:0 0 12px;text-shadow:0 2px 8px rgba(0,0,0,0.6);line-height:1.2;font-family:'Outfit',sans-serif;">${item.title}</h3>
-                        <span style="display:inline-flex;align-items:center;gap:6px;background:#f59e0b;color:#78350f;font-size:0.72rem;font-weight:800;padding:7px 16px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
-                            LIHAT LAINNYA <i class="fa-solid fa-chevron-right"></i>
-                        </span>
-                    </div>
-                </div>`;
-            });
-            html += `</div>`;
-        }
-
-        // 2. Regular package cards below (if any)
-        if (regularPackages.length > 0) {
-            const tempContainer = document.createElement('div');
-            tempContainer.style.cssText = 'display:contents';
-            renderSectionWithSeeAll('packages-container-regular', regularPackages, createPackageCard);
-        }
-
-        if (parentPackages.length > 0) {
-            packagesContainer.innerHTML = html;
-            // After setting parent html, append regular packages if any
-            if (regularPackages.length > 0) {
-                const regularHtml = regularPackages.map((item, i) => createPackageCard(item, i)).join('');
-                packagesContainer.insertAdjacentHTML('beforeend', regularHtml);
-            }
-        } else {
-            // No parent items — render normally
-            renderSectionWithSeeAll('packages-container', regularPackages, createPackageCard);
-        }
+        parentContainer.innerHTML = parentPackages.map((item, idx) => `
+        <div onclick="window.openSubPackageModal('${item.id}')" data-aos="zoom-in" data-aos-delay="${idx * 80}"
+            style="cursor:pointer; position:relative; border-radius:18px; overflow:hidden; aspect-ratio:3/4; box-shadow:0 12px 30px rgba(0,0,0,0.18); transition:transform 0.3s,box-shadow 0.3s;"
+            onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 20px 40px rgba(0,0,0,0.28)'"
+            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 12px 30px rgba(0,0,0,0.18)'">
+            <img src="${item.imageUrl}" alt="${item.title}"
+                style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;"
+                onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top,rgba(10,20,50,0.88) 0%,rgba(10,20,50,0.3) 55%,rgba(10,20,50,0) 100%);z-index:2;"></div>
+            <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;padding:18px 16px;">
+                <h3 style="color:white;font-size:1.3rem;font-weight:900;margin:0 0 12px;text-shadow:0 2px 8px rgba(0,0,0,0.6);line-height:1.2;font-family:'Outfit',sans-serif;">${item.title}</h3>
+                <span style="display:inline-flex;align-items:center;gap:6px;background:#f59e0b;color:#78350f;font-size:0.72rem;font-weight:800;padding:7px 16px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
+                    LIHAT LAINNYA <i class="fa-solid fa-chevron-right"></i>
+                </span>
+            </div>
+        </div>`).join('');
     }
+
+    // ── Render Regular Packages → "Paket Tour Populer" section ──
+    renderSectionWithSeeAll('packages-container', regularPackages, createPackageCard);
     
     // Render Cars
     renderSectionWithSeeAll('cars-container', cars, createFleetCard);
