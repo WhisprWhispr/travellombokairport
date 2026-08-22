@@ -1956,14 +1956,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ── Auth Handling Logic ──
 window._authMode = 'login';
-window.openAuthModal = () => {
-    document.getElementById('auth-modal').style.display = 'flex';
-};
-window.closeAuthModal = () => {
-    document.getElementById('auth-modal').style.display = 'none';
-};
-window.toggleAuthMode = () => {
-    window._authMode = window._authMode === 'login' ? 'register' : 'login';
+window.openAuthModal = (mode = 'login') => {
+    window._authMode = mode;
     const isLogin = window._authMode === 'login';
     
     document.getElementById('auth-title').innerText = isLogin ? 'Login' : 'Daftar Akun';
@@ -1977,6 +1971,14 @@ window.toggleAuthMode = () => {
     } else {
         document.getElementById('auth-name').setAttribute('required', 'true');
     }
+    
+    document.getElementById('auth-modal').style.display = 'flex';
+};
+window.closeAuthModal = () => {
+    document.getElementById('auth-modal').style.display = 'none';
+};
+window.toggleAuthMode = () => {
+    window.openAuthModal(window._authMode === 'login' ? 'register' : 'login');
 };
 
 window.checkAuthUI = () => {
