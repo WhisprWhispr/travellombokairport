@@ -1957,25 +1957,18 @@ document.addEventListener("DOMContentLoaded", () => {
 // ── Auth Handling Logic ──
 window._authMode = 'login';
 window.openAuthModal = (mode = 'login') => {
-    window._authMode = mode;
-    const isLogin = window._authMode === 'login';
+    // Remember where the user was trying to go (so they can come back)
+    sessionStorage.setItem('redirect_after_auth', window.location.href);
     
-    document.getElementById('auth-title').innerText = isLogin ? 'Login' : 'Daftar Akun';
-    document.getElementById('auth-desc').innerText = isLogin ? 'Masuk untuk melanjutkan pesanan Anda.' : 'Buat akun baru untuk memudahkan pemesanan.';
-    document.getElementById('btn-auth-submit').innerText = isLogin ? 'Login' : 'Daftar';
-    document.getElementById('auth-switch-text').innerText = isLogin ? 'Belum punya akun?' : 'Sudah punya akun?';
-    document.getElementById('auth-switch-link').innerText = isLogin ? 'Daftar di sini' : 'Login di sini';
-    document.getElementById('auth-name-group').style.display = isLogin ? 'none' : 'block';
-    if(isLogin) {
-        document.getElementById('auth-name').removeAttribute('required');
+    // Redirect to dedicated auth files
+    if (mode === 'register') {
+        window.location.href = '/register.html';
     } else {
-        document.getElementById('auth-name').setAttribute('required', 'true');
+        window.location.href = '/login.html';
     }
-    
-    document.getElementById('auth-modal').style.display = 'flex';
 };
 window.closeAuthModal = () => {
-    document.getElementById('auth-modal').style.display = 'none';
+    // No-op for backwards compatibility
 };
 window.toggleAuthMode = () => {
     window.openAuthModal(window._authMode === 'login' ? 'register' : 'login');

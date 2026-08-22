@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daftar Akun - Travel Lombok Airport</title>
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .auth-card {
+      background: white;
+      width: 100%;
+      max-width: 450px;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    .auth-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .auth-logo img {
+      height: 60px;
+      object-fit: contain;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .auth-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 5px;
+    }
+    .auth-subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .form-group {
+      margin-bottom: 18px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+      box-sizing: border-box;
+    }
+    .form-control:focus {
+      border-color: #22c55e;
+      box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .auth-link {
+      color: #16a34a;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+    .back-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background: white;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+      padding: 8px 15px;
+      border-radius: 30px;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .back-btn:hover {
+      background: #f1f5f9;
+      color: #0f172a;
+    }
+  </style>
+</head>
+<body>
+
+  <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="/logo.png" alt="Travel Lombok Airport">
+    </div>
+    <div class="auth-header">
+      <h1 class="auth-title">Daftar Akun Baru</h1>
+      <p class="auth-subtitle">Buat akun untuk memudahkan pemesanan.</p>
+    </div>
+    
+    <form id="register-form">
+      <div class="form-group">
+        <label>Nama Lengkap</label>
+        <input type="text" id="name" class="form-control" required placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="email" class="form-control" required placeholder="email@contoh.com">
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="password" class="form-control" required minlength="6" placeholder="Minimal 6 karakter">
+      </div>
+      <button type="submit" class="btn-submit" id="btn-submit">Daftar Sekarang</button>
+    </form>
+    
+    <div class="auth-footer">
+      Sudah punya akun? <a href="/login.html" class="auth-link">Login di sini</a>
+    </div>
+  </div>
+
+  <script src="/config.js"></script>
+  <script>
+    // Redirect if already logged in
+    if (localStorage.getItem('auth_token')) {
+        window.location.href = '/';
+    }
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const btn = document.getElementById('btn-submit');
+        
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
+        
+        try {
+            const res = await fetch(`${API_URL}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            
+            const data = await res.json();
+            
+            if (!res.ok) {
+                throw new Error(data.error || 'Terjadi kesalahan saat pendaftaran.');
+            }
+            
+            localStorage.setItem('auth_token', data.token);
+            localStorage.setItem('auth_user', JSON.stringify(data.user || data.admin));
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Pendaftaran Berhasil!',
+                text: 'Akun Anda telah dibuat. Mengarahkan ke halaman utama...',
+                showConfirmButton: false,
+                timer: 2000
+            }).then(() => {
+                const prev = sessionStorage.getItem('redirect_after_auth');
+                if (prev) {
+                    sessionStorage.removeItem('redirect_after_auth');
+                    window.location.href = prev;
+                } else {
+                    window.location.href = '/';
+                }
+            });
+            
+        } catch (err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Pendaftaran Gagal',
+                text: err.message,
+                confirmButtonColor: '#16a34a'
+            });
+            btn.disabled = false;
+            btn.innerHTML = 'Daftar Sekarang';
+        }
+    });
+  </script>
+</body>
+</html>
