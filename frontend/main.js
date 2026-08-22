@@ -298,7 +298,7 @@ window.openTourModal = (id) => {
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">759801017387536</span></div>
                     </div>
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="https://wa.me/6289676963255?text=Halo%20admin,%20saya%20ingin%20booking%20${encodeURIComponent(item.title)}" target="_blank" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <a href="#" onclick="event.preventDefault(); if(window.checkAuthAndPrompt()) window.open('https://wa.me/6289676963255?text=Halo%20admin,%20saya%20ingin%20booking%20${encodeURIComponent(item.title)}', '_blank');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
                         <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
@@ -1283,6 +1283,8 @@ window.closeCheckoutModal = () => {
 };
 
 window.openCheckoutModal = async (itemName, price) => {
+    if (!window.checkAuthAndPrompt()) return;
+
     const modalBody = document.getElementById("checkout-modal-body");
     const isOrder = price > 0;
     const displayPrice = isOrder ? formatPrice(price) : "";
