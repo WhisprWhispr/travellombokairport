@@ -57,7 +57,11 @@ Keluarkan HANYA JSON murni (TANPA markdown, TANPA backtick, TANPA penjelasan) de
   "packageType": "PAKET - A",
   "itinerary": "DAY 1: Sasak Tour\\n- Desa Sade\\n- Pantai Kuta\\n\\nDAY 2: Gili Trawangan\\n- Snorkeling",
   "include": "Transportasi Private Full AC\\nDriver profesional\\nBBM\\nAir mineral",
-  "exclude": "Tiket pesawat\\nHotel/Penginapan\\nMakan & minum"
+  "exclude": "Tiket pesawat\\nHotel/Penginapan\\nMakan & minum",
+  "transferMatrix": [
+    {"area": "Kuta Lombok / Bandara", "prices": {"Avanza Grand/FL": 150000, "Innova Reborn": 250000, "Hiace Komuter": 400000}},
+    {"area": "Senggigi", "prices": {"Avanza Grand/FL": 250000, "Innova Reborn": 350000, "Hiace Komuter": 500000}}
+  ]
 }
 
 ATURAN PENTING:
@@ -72,6 +76,7 @@ ATURAN PENTING:
 - "include": fasilitas yang TERMASUK dalam harga, satu per baris dipisah \\n. Jika tidak ada, set ""
 - "exclude": yang TIDAK termasuk dalam harga, satu per baris dipisah \\n. Jika tidak ada, set ""
 - "description": deskripsi umum layanan. Jika tidak ada info khusus, buat ringkasan dari gambar
+- "transferMatrix": WAJIB diisi jika category adalah "Jasa Antar Jemput". Ini adalah tabel harga antar-jemput airport berdasarkan area tujuan dan jenis kendaraan. Format: array of objects [{area: "nama area", prices: {"Nama Kendaraan": harga_angka}}]. Ekstrak SEMUA baris area dan SEMUA kolom kendaraan yang terlihat di gambar/brosur. Jika bukan kategori antar jemput atau tidak ada tabel harga, set []
 
 Baca SEMUA teks yang terlihat di gambar dan masukkan ke field yang sesuai.
 Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSON.`;
