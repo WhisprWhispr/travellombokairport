@@ -579,8 +579,12 @@ ul {
 }
 
 /* Fleet Card Specific (V2 - Package Style) */
+.fleet-card-v2 h3 {
+  text-align: center;
+}
 .fleet-card-v2 .fleet-tags-row {
   display: flex;
+  justify-content: center;
   gap: 8px;
   flex-wrap: wrap;
   margin-bottom: 15px;
