@@ -562,10 +562,15 @@ const renderTable = (items) => {
         return;
     }
     
-    tableBody.innerHTML = items.map(item => `
+    tableBody.innerHTML = items.map(item => {
+        const isParentBadge = item.isParent ? `<span style="background:#fef3c7; color:#92400e; padding:2px 7px; border-radius:4px; font-size:0.7rem; font-weight:700; margin-left:5px;"><i class="fa-solid fa-layer-group"></i> FOLDER</span>` : '';
+        const isChildBadge = item.parentId ? `<span style="background:#dbeafe; color:#1e40af; padding:2px 7px; border-radius:4px; font-size:0.7rem; font-weight:700; margin-left:5px;"><i class="fa-solid fa-arrow-turn-down"></i> SUB-PAKET</span>` : '';
+        const parentName = item.parentId ? allAdminItems.find(i => i.id === item.parentId)?.title || item.parentId : '';
+        const parentInfo = item.parentId ? `<br><small style="color:#3b82f6;">↳ ${parentName}</small>` : '';
+        return `
         <tr>
             <td><img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=100'"></td>
-            <td><strong>${item.title}</strong> <br><small style="color: #64748b;">Urutan: ${item.order || 0}</small></td>
+            <td><strong>${item.title}</strong>${isParentBadge}${isChildBadge}${parentInfo} <br><small style="color: #64748b;">Urutan: ${item.order || 0}</small></td>
             <td><span style="background: #e2e8f0; padding: 4px 8px; border-radius: 4px; font-size: 0.8rem;">${item.category}</span></td>
             <td>${item.price}</td>
             <td>
@@ -573,7 +578,8 @@ const renderTable = (items) => {
                 <button class="action-btn btn-delete" onclick="deleteItem('${item.id}')"><i class="fa-solid fa-trash"></i> Delete</button>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
 };
 
 const renderDroneTable = (items) => {

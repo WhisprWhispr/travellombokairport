@@ -693,18 +693,24 @@ const init = async () => {
     // Fetch all data
     globalItems = await fetchItems();
     
-    // Categorize data
-    const packages = globalItems.filter(item => item.category.toLowerCase().includes('paket') || item.category.toLowerCase() === 'package');
-    const cars = globalItems.filter(item => {
+    // Categorize data - exclude child items (parentId set) from all main sections
+    const childItemIds = new Set(globalItems.filter(i => i.parentId).map(i => i.id));
+    const visibleItems = globalItems.filter(i => !i.parentId); // Only top-level items
+
+    const packages = visibleItems.filter(item => {
+        const cat = item.category.toLowerCase();
+        return cat.includes('paket') || cat === 'package' || cat === 'tour' || cat === 'honeymoon';
+    });
+    const cars = visibleItems.filter(item => {
         const cat = item.category.toLowerCase();
         return (cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car') && cat !== 'motorcycle';
     });
     
-    const motorcycles = globalItems.filter(item => item.category.toLowerCase() === 'motorcycle');
+    const motorcycles = visibleItems.filter(item => item.category.toLowerCase() === 'motorcycle');
 
-    const drones = globalItems.filter(item => item.category.toLowerCase() === 'drone');
-    const transfers = globalItems.filter(item => item.category.toLowerCase() === 'transfer');
-    const services = globalItems.filter(item => !packages.includes(item) && !cars.includes(item) && !motorcycles.includes(item) && !drones.includes(item) && !transfers.includes(item));
+    const drones = visibleItems.filter(item => item.category.toLowerCase() === 'drone');
+    const transfers = visibleItems.filter(item => item.category.toLowerCase() === 'transfer');
+    const services = visibleItems.filter(item => !packages.includes(item) && !cars.includes(item) && !motorcycles.includes(item) && !drones.includes(item) && !transfers.includes(item));
 
     // Helper to render sections with "See All" button
     const renderSectionWithSeeAll = (containerId, items, renderFn) => {
