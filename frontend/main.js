@@ -2021,6 +2021,10 @@ window.logoutUser = () => {
 window.checkAuthAndPrompt = () => {
     const token = localStorage.getItem('auth_token');
     if (!token) {
+        // Tutup modal lain agar fokus ke login
+        if (typeof window.closeTourModal === 'function') window.closeTourModal();
+        if (typeof window.closeSubPackageModal === 'function') window.closeSubPackageModal();
+        
         window.openAuthModal();
         return false;
     }
