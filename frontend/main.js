@@ -789,6 +789,35 @@ window.updateSubLayanan = () => {
                 {title: "Paket Family Vacation (4H3M)"}
             ];
         }
+    } else if (layanan === "Airport Transfer") {
+        const transferItems = globalItems.filter(item => {
+            const cat = item.category?.toLowerCase() || '';
+            return cat.includes("antar jemput") || cat.includes("transfer") || cat === "transfer";
+        });
+        
+        // Extract unique areas from transferMatrix
+        const uniqueAreas = new Set();
+        transferItems.forEach(item => {
+            if (item.transferMatrix && Array.isArray(item.transferMatrix)) {
+                item.transferMatrix.forEach(matrix => {
+                    if (matrix.area) uniqueAreas.add(matrix.area);
+                });
+            }
+        });
+
+        uniqueAreas.forEach(area => {
+            options.push({title: area});
+        });
+
+        // Fallback mock data
+        if (options.length === 0) {
+            options = [
+                {title: "Mataram Kota"},
+                {title: "Senggigi"},
+                {title: "Kuta Mandalika"},
+                {title: "Bangsal / Senaru"}
+            ];
+        }
     }
     
     if (options.length > 0) {
