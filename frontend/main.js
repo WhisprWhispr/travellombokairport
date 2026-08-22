@@ -615,13 +615,16 @@ const init = async () => {
     
     // Categorize data
     const packages = globalItems.filter(item => item.category.toLowerCase().includes('paket') || item.category.toLowerCase() === 'package');
-    const fleets = globalItems.filter(item => {
+    const cars = globalItems.filter(item => {
         const cat = item.category.toLowerCase();
-        return cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car' || cat === 'motorcycle';
+        return (cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car') && cat !== 'motorcycle';
     });
+    
+    const motorcycles = globalItems.filter(item => item.category.toLowerCase() === 'motorcycle');
+
     const drones = globalItems.filter(item => item.category.toLowerCase() === 'drone');
     const transfers = globalItems.filter(item => item.category.toLowerCase() === 'transfer');
-    const services = globalItems.filter(item => !packages.includes(item) && !fleets.includes(item) && !drones.includes(item) && !transfers.includes(item));
+    const services = globalItems.filter(item => !packages.includes(item) && !cars.includes(item) && !motorcycles.includes(item) && !drones.includes(item) && !transfers.includes(item));
 
     // Helper to render sections with "See All" button
     const renderSectionWithSeeAll = (containerId, items, renderFn) => {
@@ -671,8 +674,11 @@ const init = async () => {
     // Render Packages
     renderSectionWithSeeAll('packages-container', packages, createPackageCard);
     
-    // Render Fleets
-    renderSectionWithSeeAll('fleet-container', fleets, createFleetCard);
+    // Render Cars
+    renderSectionWithSeeAll('cars-container', cars, createFleetCard);
+
+    // Render Motorcycles
+    renderSectionWithSeeAll('motorcycles-container', motorcycles, createFleetCard);
     
     // Render Drones
     renderSectionWithSeeAll('drone-container', drones, createDroneCard);
