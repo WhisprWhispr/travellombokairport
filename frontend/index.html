@@ -240,16 +240,30 @@
     </div>
   </section>
 
-  <!-- Paket Tour Populer -->
+  <!-- Kategori Liburan -->
   <section id="packages" class="section bg-light">
     <div class="container">
-      <div class="section-title text-center">
-        <h2>PAKET TOUR POPULER</h2>
-      </div>
       
-      <div class="packages-grid" id="packages-container">
-        <!-- Rendered by JS -->
+      <!-- View Kategori -->
+      <div id="category-view">
+        <div class="section-title text-center">
+          <h2 style="text-transform: none; font-size: 1.2rem; color: #64748b; font-weight: 400; margin-bottom: 30px;">Liburan yang disesuaikan dengan preferensi Anda. Pilih dari berbagai kategori tur dan temukan pengalaman terbaik di destinasi pilihan Anda.</h2>
+        </div>
+        <div class="category-grid" id="main-category-container" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px;">
+          <!-- Rendered by JS -->
+        </div>
       </div>
+
+      <!-- View Detail Paket -->
+      <div id="package-detail-view" style="display: none;">
+        <div class="section-title text-center" style="margin-bottom: 30px; position: relative;">
+          <h2 id="detail-category-title" style="color: var(--primary-blue); font-size: 1.5rem; margin: 0; padding-top: 10px;">Kategori</h2>
+        </div>
+        <div class="packages-grid" id="packages-container">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
     </div>
   </section>
 

@@ -182,7 +182,9 @@ window.scanImageWithAI = async () => {
                         const catLower = aiData.category.toLowerCase();
                         if (catLower.includes('motor')) categoryInput.value = 'motorcycle';
                         else if (catLower.includes('mobil')) categoryInput.value = 'car';
-                        else if (catLower.includes('tour') || catLower.includes('paket')) categoryInput.value = 'package';
+                        else if (catLower.includes('kereta')) categoryInput.value = 'train';
+                        else if (catLower.includes('hanimun') || catLower.includes('honeymoon')) categoryInput.value = 'honeymoon';
+                        else if (catLower.includes('tour') || catLower.includes('paket')) categoryInput.value = 'tour';
                         else if (catLower.includes('antar') || catLower.includes('jemput') || catLower.includes('transfer')) categoryInput.value = 'transfer';
                         else if (catLower.includes('drone')) categoryInput.value = 'drone';
                         categoryInput.dispatchEvent(new Event('change'));
@@ -595,7 +597,7 @@ const getNextPackageTitle = async () => {
         const res = await fetch(`${API_URL}/items`);
         const items = await res.json();
         const packageItems = items.filter(i =>
-            i.category && (i.category.toLowerCase().includes('paket') || i.category.toLowerCase().includes('package') || i.category.toLowerCase() === 'package')
+            i.category && (i.category.toLowerCase().includes('paket') || i.category.toLowerCase().includes('package') || i.category.toLowerCase() === 'package' || i.category.toLowerCase() === 'tour' || i.category.toLowerCase() === 'honeymoon')
         );
 
         // Build a set of ALL exact used prefixes: "A", "A 2", "A 3", "B", etc.
@@ -627,7 +629,7 @@ const getNextPackageTitle = async () => {
 // Auto-fill title when category = package (for new items only)
 const autoFillPackageTitle = async () => {
     if (idInput.value) return; // skip if editing existing item
-    if (categoryInput.value === 'package') {
+    if (categoryInput.value === 'package' || categoryInput.value === 'tour' || categoryInput.value === 'honeymoon') {
         const suggestedTitle = await getNextPackageTitle();
         if (suggestedTitle && !titleInput.value) {
             titleInput.value = suggestedTitle;
@@ -642,10 +644,8 @@ const autoFillPackageTitle = async () => {
 // Modal handlers
 const openModal = async () => {
     modal.classList.add("active");
-    // If opening for new item and category is already 'package', auto-fill title
-    if (!idInput.value) {
-        await autoFillPackageTitle();
-    }
+    // If opening for new item and category is already 'tour', auto-fill title
+    await autoFillPackageTitle();
 };
 
 categoryInput.addEventListener('change', autoFillPackageTitle);
