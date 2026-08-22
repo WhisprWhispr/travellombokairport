@@ -969,6 +969,8 @@ window.showTab = (tab) => {
     document.getElementById("orders-section").style.display = "none";
     document.getElementById("web-bookings-section").style.display = "none";
     document.getElementById("gallery-section").style.display = "none";
+    const reviewsSection = document.getElementById("reviews-section");
+    if (reviewsSection) reviewsSection.style.display = "none";
     document.getElementById("withdrawal-section").style.display = "none";
     document.getElementById("settings-section").style.display = "none";
     document.getElementById("drivers-section").style.display = "none";
@@ -997,6 +999,10 @@ window.showTab = (tab) => {
         document.getElementById("gallery-section").style.display = "block";
         document.getElementById("add-gallery-btn").style.display = "inline-block";
         fetchAdminGallery();
+    } else if (tab === "reviews") {
+        const reviewsSection = document.getElementById("reviews-section");
+        if (reviewsSection) reviewsSection.style.display = "block";
+        fetchAdminReviews();
     } else if (tab === "withdrawals") {
         document.getElementById("withdrawal-section").style.display = "block";
         fetchWithdrawals();
@@ -1489,34 +1495,108 @@ document.getElementById("btn-request-withdrawal").addEventListener("click", () =
     });
 });
 
-// Driver Logic
+// === Drivers Logic ===
 window.fetchAdminDrivers = async () => {
     try {
         const res = await fetch(`${API_URL}/drivers`, { headers: getAuthHeaders() });
+        const tbody = document.getElementById('admin-drivers-table');
+        if (!res.ok) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Gagal memuat supir</td></tr>';
+            return;
+        }
         const drivers = await res.json();
+        window.allDrivers = drivers; // Save globally for dropdowns
         
-        // Cache drivers globally for assignment
-        window.allDrivers = drivers;
-        
-        const tableBody = document.getElementById("admin-drivers-table");
         if (drivers.length === 0) {
-            tableBody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada supir terdaftar.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada supir terdaftar.</td></tr>';
             return;
         }
         
-        tableBody.innerHTML = drivers.map(d => `
-            <tr>
-                <td><strong>${d.name}</strong></td>
+        let html = '';
+        drivers.forEach(d => {
+            html += `<tr>
+                <td style="font-weight:600;">${d.name}</td>
                 <td>${d.phone}</td>
-                <td>${d.pin}</td>
+                <td style="font-family:monospace; font-size:1.1rem; color:var(--primary-blue);">${d.pin}</td>
                 <td>
-                    <button class="btn btn-sm btn-outline" style="border-color: #ef4444; color: #ef4444;" onclick="deleteDriver('${d.id}')"><i class="fa-solid fa-trash"></i></button>
+                    <button class="btn" style="background:#fee2e2; color:#ef4444; padding:5px 10px; font-size:0.8rem;" onclick="deleteDriver('${d.id}')"><i class="fa-solid fa-trash"></i> Hapus</button>
                 </td>
-            </tr>
-        `).join("");
+            </tr>`;
+        });
+        tbody.innerHTML = html;
     } catch (e) {
-        console.error("Error fetching drivers:", e);
+        console.error("Error fetching drivers", e);
     }
+};
+
+// === Reviews Logic ===
+window.fetchAdminReviews = async () => {
+    try {
+        const res = await fetch(`${API_URL}/reviews`, { headers: getAuthHeaders() });
+        const tbody = document.getElementById('admin-reviews-table');
+        if (!tbody) return;
+        if (!res.ok) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Gagal memuat ulasan</td></tr>';
+            return;
+        }
+        const reviews = await res.json();
+        
+        if (reviews.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada ulasan.</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        reviews.forEach(r => {
+            let dateStr = '-';
+            if (r.createdAt) {
+                const d = new Date(r.createdAt);
+                dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color:#f59e0b;"></i>';
+                else stars += '<i class="fa-regular fa-star" style="color:#cbd5e1;"></i>';
+            }
+            html += `<tr>
+                <td>${dateStr}</td>
+                <td style="font-weight:600;">${r.name}</td>
+                <td>${stars}</td>
+                <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${r.comment}">${r.comment}</td>
+                <td>
+                    <button class="btn" style="background:#fee2e2; color:#ef4444; padding:5px 10px; font-size:0.8rem;" onclick="deleteReview('${r.id}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    } catch (e) {
+        console.error("Error fetching reviews", e);
+    }
+};
+
+window.deleteReview = (id) => {
+    Swal.fire({
+        title: 'Hapus Ulasan?',
+        text: 'Tindakan ini tidak dapat dibatalkan',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Hapus!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${API_URL}/reviews/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
+                if (res.ok) {
+                    Swal.fire('Terhapus!', 'Ulasan telah dihapus.', 'success');
+                    fetchAdminReviews();
+                } else {
+                    Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
+                }
+            } catch (e) {
+                Swal.fire('Gagal!', 'Koneksi bermasalah.', 'error');
+            }
+        }
+    });
 };
 
 document.getElementById("add-driver-btn").addEventListener("click", () => {

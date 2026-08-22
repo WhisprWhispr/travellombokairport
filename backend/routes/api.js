@@ -226,4 +226,51 @@ router.post('/withdrawals', verifyToken, async (req, res) => {
     }
 });
 
+// GET all reviews
+router.get('/reviews', async (req, res) => {
+    try {
+        const snapshot = await db.collection('reviews').orderBy('createdAt', 'desc').get();
+        let reviews = [];
+        snapshot.forEach(doc => {
+            reviews.push({ id: doc.id, ...doc.data() });
+        });
+        res.json(reviews);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST a new review (public)
+router.post('/reviews', async (req, res) => {
+    try {
+        const { name, rating, comment } = req.body;
+        if (!name || !rating || !comment) {
+            return res.status(400).json({ error: 'Name, rating, and comment are required' });
+        }
+        
+        const newReview = {
+            name,
+            rating: Number(rating),
+            comment,
+            createdAt: new Date().toISOString(),
+            status: 'approved' 
+        };
+        
+        const docRef = await db.collection('reviews').add(newReview);
+        res.status(201).json({ id: docRef.id, ...newReview });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE a review (protected)
+router.delete('/reviews/:id', verifyToken, async (req, res) => {
+    try {
+        await db.collection('reviews').doc(req.params.id).delete();
+        res.json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 module.exports = router;

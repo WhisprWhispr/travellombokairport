@@ -54,6 +54,7 @@
           <li><a href="#" onclick="showTab('bookings')"><i class="fa-solid fa-calendar-alt"></i> Jadwal Manual</a></li>
           <li><a href="#" onclick="showTab('gallery')"><i class="fa-solid fa-camera"></i> Kelola Galeri</a></li>
           <li><a href="#" onclick="showTab('drivers')"><i class="fa-solid fa-car"></i> Manajemen Supir</a></li>
+          <li><a href="#" onclick="showTab('reviews')"><i class="fa-solid fa-star"></i> Kelola Ulasan</a></li>
           <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
@@ -298,6 +299,27 @@
                 </tr>
               </thead>
               <tbody id="admin-drivers-table">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Kelola Ulasan Pelanggan</h2>
+          <div class="table-container mt-4">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Nama</th>
+                  <th>Bintang</th>
+                  <th>Ulasan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-reviews-table">
                 <!-- Loaded via JS -->
               </tbody>
             </table>
