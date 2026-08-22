@@ -697,79 +697,8 @@ const init = async () => {
         extractSortKey(a.title).localeCompare(extractSortKey(b.title))
     );
 
-    // Kategori Utama (Manual list based on requirements)
-    const mainCategories = [
-        { id: 'tour', name: 'Paket Tour', image: 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600' },
-        { id: 'honeymoon', name: 'Paket Hanimun', image: 'https://images.unsplash.com/photo-1549429402-4217112a67e1?auto=format&fit=crop&q=80&w=600' },
-        { id: 'car', name: 'Sewa Mobil', image: 'https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=600' },
-        { id: 'train', name: 'Sewa Kereta', image: 'https://images.unsplash.com/photo-1515162816999-a0c47dc192f7?auto=format&fit=crop&q=80&w=600' }
-    ];
-
-    const categoryContainer = document.getElementById('main-category-container');
-    if (categoryContainer) {
-        let catHtml = '';
-        mainCategories.forEach((cat, idx) => {
-            catHtml += `
-            <div class="category-card" onclick="window.showCategoryDetail('${cat.id}', '${cat.name}')" data-aos="zoom-in" data-aos-delay="${idx * 100}" style="cursor: pointer; position: relative; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 20px rgba(0,0,0,0.1); aspect-ratio: 4/5; display: flex; flex-direction: column; justify-content: flex-end; transition: transform 0.3s ease;">
-                <img src="${cat.image}" alt="${cat.name}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;">
-                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(to top, rgba(15,23,42,0.9) 0%, rgba(15,23,42,0.4) 50%, rgba(15,23,42,0) 100%); z-index: 2;"></div>
-                <div style="position: relative; z-index: 3; padding: 20px; text-align: center;">
-                    <h3 style="color: white; font-size: 1.5rem; font-weight: 800; margin: 0 0 15px 0; text-transform: uppercase; font-family: 'Outfit', sans-serif; letter-spacing: 1px;">${cat.name}</h3>
-                    <span style="background: #fbbf24; color: #78350f; font-size: 0.75rem; font-weight: 700; padding: 8px 20px; border-radius: 20px; text-transform: uppercase; letter-spacing: 1px; display: inline-block;">Lihat Lainnya <i class="fa-solid fa-chevron-right" style="margin-left: 5px;"></i></span>
-                </div>
-            </div>
-            `;
-        });
-        categoryContainer.innerHTML = catHtml;
-    }
-
-    // Global function to show category detail
-    window.showCategoryDetail = (categoryId, categoryName) => {
-        const catView = document.getElementById('category-view');
-        const detailView = document.getElementById('package-detail-view');
-        const detailTitle = document.getElementById('detail-category-title');
-        
-        if (catView && detailView && detailTitle) {
-            catView.style.display = 'none';
-            detailView.style.display = 'block';
-            detailTitle.innerText = categoryName;
-
-            // Filter items based on category
-            let filteredItems = [];
-            let renderFunc = createPackageCard;
-
-            if (categoryId === 'tour') {
-                filteredItems = sortedPackages.filter(i => i.category.toLowerCase() === 'tour' || i.category.toLowerCase() === 'package');
-            } else if (categoryId === 'honeymoon') {
-                filteredItems = sortedPackages.filter(i => i.category.toLowerCase() === 'honeymoon');
-            } else if (categoryId === 'car') {
-                filteredItems = cars;
-                renderFunc = createFleetCard;
-            } else if (categoryId === 'train') {
-                filteredItems = globalItems.filter(i => i.category.toLowerCase() === 'train');
-                renderFunc = createFleetCard;
-            }
-
-            renderSectionWithSeeAll('packages-container', filteredItems, renderFunc);
-
-            // Scroll to detail view
-            setTimeout(() => {
-                detailView.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        }
-    };
-
-    window.backToCategories = () => {
-        const catView = document.getElementById('category-view');
-        const detailView = document.getElementById('package-detail-view');
-        if (catView && detailView) {
-            detailView.style.display = 'none';
-            catView.style.display = 'block';
-            setTimeout(() => {
-                catView.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }, 100);
-        }
-    };
+    // Render Packages
+    renderSectionWithSeeAll('packages-container', sortedPackages, createPackageCard);
     
     // Render Cars
     renderSectionWithSeeAll('cars-container', cars, createFleetCard);
