@@ -336,7 +336,7 @@ window.toggleShowAll = (containerId, btn, total) => {
     const container = document.getElementById(containerId);
     if (!container) return;
     
-    const hiddenItems = container.querySelectorAll('.hidden-item');
+    const hiddenItems = container.querySelectorAll('[data-hidden="true"]');
     let isShowing = false;
     
     hiddenItems.forEach(item => {
@@ -612,7 +612,8 @@ const init = async () => {
             const isHidden = index >= maxVisible;
             let cardHtml = renderFn(item, index);
             if (isHidden) {
-                cardHtml = cardHtml.replace('<div class="card ', '<div class="card hidden-item" style="display: none;" ');
+                // Add hidden-item class using regex to handle any whitespace before <div
+                cardHtml = cardHtml.replace(/(<div\s+)/, '$1data-hidden="true" style="display: none;" ');
             }
             html += cardHtml;
         });
