@@ -21,6 +21,7 @@ const verifyToken = async (c, next) => {
 };
 
 aiRoutes.post('/scan-image', verifyToken, async (c) => {
+    let responseText = '';
     try {
         const body = await c.req.json();
         const { imageBase64 } = body;
@@ -139,8 +140,9 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
 
         const geminiResult = await geminiResponse.json();
 
+        let responseText = '';
         // Extract the text from Gemini response
-        const responseText = geminiResult?.candidates?.[0]?.content?.parts?.[0]?.text;
+        responseText = geminiResult?.candidates?.[0]?.content?.parts?.[0]?.text;
         if (!responseText) {
             console.error('No text in Gemini response:', JSON.stringify(geminiResult));
             return c.json({ success: false, message: 'AI tidak mengembalikan teks', detail: JSON.stringify(geminiResult).substring(0, 500) }, 500);
@@ -199,7 +201,8 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
         return c.json({ success: true, data });
     } catch (error) {
         console.error('Error scanning image:', error);
-        return c.json({ success: false, message: 'Gagal menganalisis gambar: ' + (error.message || 'Unknown error') }, 500);
+        let debugText = typeof responseText !== 'undefined' ? responseText.substring(0, 150) + '...' : '';
+        return c.json({ success: false, message: 'Gagal menganalisis gambar: ' + (error.message || 'Unknown error') + ' | RAW: ' + debugText }, 500);
     }
 });
 
