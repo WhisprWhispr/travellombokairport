@@ -22,11 +22,11 @@ const formatPrice = (price) => {
 // Fetch items from backend
 const fetchItems = async (category = null) => {
     try {
-        let url = `${API_URL}/items`;
+        let url = `${API_URL}/items?_t=${new Date().getTime()}`;
         if (category) {
-            url += `?category=${category}`;
+            url += `&category=${category}`;
         }
-        const response = await fetch(url);
+        const response = await fetch(url, { cache: 'no-store' });
         if (!response.ok) throw new Error('Network response was not ok');
         return await response.json();
     } catch (error) {
@@ -583,7 +583,7 @@ const init = async () => {
     
     // Check Global Settings (e.g. Drone Availability)
     try {
-        const res = await fetch('/api/settings');
+        const res = await fetch(`/api/settings?_t=${new Date().getTime()}`, { cache: 'no-store' });
         if (res.ok) {
             const settings = await res.json();
             if (settings.droneAvailable === 'unavailable') {
@@ -905,7 +905,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
     btn.disabled = true;
     
     try {
-        const response = await fetch(`${API_URL}/bookings/check/${trxId}`);
+        const response = await fetch(`${API_URL}/bookings/check/${trxId}?_t=${new Date().getTime()}`, { cache: 'no-store' });
         
         if (response.ok) {
             const data = await response.json();
@@ -1138,7 +1138,7 @@ window.openCheckoutModal = async (itemName, price) => {
     
     // Fetch bookings to show availability
     try {
-        const res = await fetch(`${API_URL}/bookings?public=true`);
+        const res = await fetch(`${API_URL}/bookings?public=true&_t=${new Date().getTime()}`, { cache: 'no-store' });
         const allBookings = await res.json();
         const itemBookings = allBookings.filter(b => {
             const bName = b.itemName || "";
@@ -1587,7 +1587,7 @@ window.downloadPdfInvoice = (id) => {
 // Load dynamic stats
 const loadStats = async () => {
     try {
-        const res = await fetch(`${API_URL}/stats`);
+        const res = await fetch(`${API_URL}/stats?_t=${new Date().getTime()}`, { cache: 'no-store' });
         if (res.ok) {
             const stats = await res.json();
             if (stats.customers) document.getElementById("stat-val-customers").innerText = stats.customers;
