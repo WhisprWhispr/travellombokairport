@@ -152,24 +152,42 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
             .trim();
 
         // Fix: Gemini sometimes puts raw newlines inside JSON string values
-        // Replace actual newlines inside strings with \\n escape sequences
         cleanJson = cleanJson.replace(/("(?:[^"\\]|\\.)*")/gs, (match) => {
             return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
         });
 
-        let data;
-        try {
-            data = JSON.parse(cleanJson);
-        } catch (parseErr) {
-            // Last resort: try to extract JSON object from the text
+        // Fix: Remove trailing commas before } or ] (common Gemini mistake)
+        cleanJson = cleanJson.replace(/,\s*([\]}])/g, '$1');
+
+        // Helper to safely try parsing JSON
+        const tryParseJSON = (str) => {
+            try { return JSON.parse(str); } catch (e) { return null; }
+        };
+
+        let data = tryParseJSON(cleanJson);
+        
+        if (!data) {
+            // Try fixing single quotes -> double quotes
+            let fixedJson = cleanJson
+                .replace(/'/g, '"')
+                .replace(/,\s*([\]}])/g, '$1');
+            data = tryParseJSON(fixedJson);
+        }
+
+        if (!data) {
+            // Last resort: extract JSON object from surrounding text
             const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
             if (jsonMatch) {
-                const extracted = jsonMatch[0].replace(/("(?:[^"\\]|\\.)*")/gs, (match) => {
-                    return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r');
-                });
-                data = JSON.parse(extracted);
+                let extracted = jsonMatch[0]
+                    .replace(/("(?:[^"\\]|\\.)*")/gs, (m) => m.replace(/\n/g, '\\n').replace(/\r/g, '\\r'))
+                    .replace(/,\s*([\]}])/g, '$1');
+                data = tryParseJSON(extracted);
+                if (!data) {
+                    extracted = extracted.replace(/'/g, '"').replace(/,\s*([\]}])/g, '$1');
+                    data = JSON.parse(extracted);
+                }
             } else {
-                throw parseErr;
+                throw new Error('Tidak dapat menemukan JSON dalam respons AI');
             }
         }
 
