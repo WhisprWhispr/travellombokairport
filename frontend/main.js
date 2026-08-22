@@ -694,232 +694,199 @@ const init = async () => {
 // Generate Professional e-Tiket PDF
 // =====================================================
 window.generateEtiketPDF = (data) => {
-    const isPaid = data.status === 'PAID';
-    const statusColor = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
-    const statusBg   = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
-    const statusText = data.status || 'UNKNOWN';
+    if (!data) { alert('Data tiket tidak ditemukan, cek status dulu.'); return; }
 
-    const formatDate = (d) => {
+    const isPaid    = data.status === 'PAID';
+    const sc        = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
+    const scBg      = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
+    const stText    = data.status || 'UNKNOWN';
+    const stIcon    = isPaid ? '&#10003;' : (data.status === 'PENDING' ? '&#9203;' : '&#10007;');
+
+    const fmtDate = (d) => {
         if (!d) return '-';
-        try { return new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }); }
+        try { return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' }); }
         catch(e) { return d; }
     };
-    const isOrder   = data.transactionId && data.transactionId.startsWith('ORD-');
-    const isBooking = data.transactionId && data.transactionId.startsWith('BKG-');
-    const typeLabel = isOrder ? 'Paket Tour / QRIS' : (isBooking ? 'Rental & Transfer' : 'Reservasi');
-    const issuedAt  = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const isORD     = data.transactionId && data.transactionId.startsWith('ORD-');
+    const isBKG     = data.transactionId && data.transactionId.startsWith('BKG-');
+    const typeLbl   = isORD ? 'Paket Tour / QRIS' : (isBKG ? 'Rental & Transfer' : 'Reservasi');
+    const issuedAt  = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
     const logoUrl   = window.location.origin + '/logo.png';
 
-    const etiketHTML = `
-    <html><head>
-    <meta charset="UTF-8">
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; }
-        body { font-family: 'Segoe UI', Arial, sans-serif; background:#f1f5f9; }
-        .page { width:794px; min-height:1123px; background:#fff; margin:0 auto; padding:0; }
+    // ── Build content (NO full HTML wrapper – injected into live DOM) ──
+    const page = document.createElement('div');
+    page.style.cssText = `
+        width:794px; min-height:1123px; background:#fff; margin:0; padding:0;
+        font-family:'Segoe UI',Arial,sans-serif; font-size:14px; color:#1e293b;
+        box-sizing:border-box; display:flex; flex-direction:column;
+    `;
 
-        /* ── Header Band ── */
-        .header { background: linear-gradient(135deg, #1d4ed8 0%, #0369a1 60%, #0891b2 100%); padding: 32px 40px 28px; position:relative; overflow:hidden; }
-        .header::after { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.06); }
-        .header::before { content:''; position:absolute; bottom:-60px; left:-30px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,0.05); }
-        .header-inner { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
-        .logo-wrap { display:flex; align-items:center; gap:16px; }
-        .logo-wrap img { width:64px; height:64px; border-radius:12px; object-fit:contain; background:#fff; padding:6px; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
-        .brand-name { color:#fff; }
-        .brand-name h1 { font-size:22px; font-weight:800; letter-spacing:0.5px; line-height:1.2; }
-        .brand-name p { font-size:11px; opacity:0.8; margin-top:2px; }
-        .header-right { text-align:right; color:#fff; }
-        .header-right .doc-type { font-size:13px; opacity:0.75; text-transform:uppercase; letter-spacing:1px; }
-        .header-right .doc-title { font-size:26px; font-weight:800; margin-top:2px; letter-spacing:-0.5px; }
-        .header-right .doc-id { font-size:12px; opacity:0.7; margin-top:4px; font-family:monospace; }
+    page.innerHTML = `
+        <!-- Header -->
+        <div style="background:linear-gradient(135deg,#1d4ed8 0%,#0369a1 60%,#0891b2 100%);
+                    padding:30px 40px 26px; display:flex; align-items:center;
+                    justify-content:space-between; flex-shrink:0;">
+            <div style="display:flex;align-items:center;gap:16px;">
+                <img src="${logoUrl}" crossorigin="anonymous"
+                     style="width:60px;height:60px;border-radius:12px;background:#fff;
+                            padding:6px;object-fit:contain;flex-shrink:0;">
+                <div>
+                    <div style="color:#fff;font-size:21px;font-weight:800;line-height:1.2;">Travel Lombok Airport</div>
+                    <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Tour &amp; Travel Lombok &middot; travellombokairport.com</div>
+                </div>
+            </div>
+            <div style="text-align:right;color:#fff;">
+                <div style="font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;">Bukti Pembayaran</div>
+                <div style="font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.1;">e-Tiket</div>
+                <div style="font-size:11px;opacity:0.65;font-family:monospace;margin-top:3px;">${data.transactionId}</div>
+            </div>
+        </div>
 
-        /* ── Ribbon Status ── */
-        .status-ribbon { background: ${statusBg}; border-left:4px solid ${statusColor}; padding:10px 40px; display:flex; align-items:center; gap:12px; }
-        .status-dot { width:10px; height:10px; border-radius:50%; background:${statusColor}; flex-shrink:0; }
-        .status-text { font-size:13px; font-weight:700; color:${statusColor}; }
-        .status-hint { font-size:11px; color:#475569; margin-left:auto; }
+        <!-- Status Ribbon -->
+        <div style="background:${scBg};border-left:5px solid ${sc};padding:10px 40px;
+                    display:flex;align-items:center;gap:12px;flex-shrink:0;">
+            <div style="width:10px;height:10px;border-radius:50%;background:${sc};flex-shrink:0;"></div>
+            <div style="font-size:13px;font-weight:700;color:${sc};">STATUS: ${stText}</div>
+            <div style="font-size:11px;color:#475569;margin-left:auto;">Diterbitkan: ${issuedAt}</div>
+        </div>
 
-        /* ── Body ── */
-        .body { padding: 32px 40px; }
+        <!-- Body -->
+        <div style="padding:28px 40px;flex:1;">
 
-        /* ── Section Title ── */
-        .section-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#94a3b8; margin-bottom:14px; }
-
-        /* ── Info Cards Grid ── */
-        .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
-        .info-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; }
-        .info-card.full-width { grid-column:1/-1; }
-        .info-label { font-size:10px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:4px; }
-        .info-value { font-size:14px; font-weight:700; color:#1e293b; line-height:1.3; }
-        .info-value.big { font-size:16px; }
-        .info-value.mono { font-family:monospace; font-size:13px; color:#2563eb; }
-
-        /* ── Divider ── */
-        .divider { border:none; border-top:2px dashed #e2e8f0; margin:24px 0; }
-
-        /* ── Footer ── */
-        .footer { background:#f8fafc; border-top:1px solid #e2e8f0; padding:20px 40px; margin-top:auto; }
-        .footer-inner { display:flex; justify-content:space-between; align-items:flex-end; }
-        .footer-contact p { font-size:10px; color:#64748b; margin-bottom:3px; line-height:1.6; }
-        .footer-contact strong { color:#1e293b; }
-        .footer-note { text-align:right; }
-        .footer-note p { font-size:9px; color:#94a3b8; line-height:1.5; }
-        .issued { font-size:10px; color:#64748b; margin-top:4px; }
-
-        /* ── Barcode-style ID Strip ── */
-        .id-strip { background:linear-gradient(135deg,#1d4ed8,#0891b2); border-radius:10px; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
-        .id-strip-label { font-size:10px; color:rgba(255,255,255,0.7); font-weight:600; text-transform:uppercase; letter-spacing:1px; }
-        .id-strip-value { font-size:18px; font-weight:800; color:#fff; font-family:monospace; letter-spacing:2px; }
-
-        /* ── Valid Mark ── */
-        .valid-mark { display:flex; flex-direction:column; align-items:center; gap:4px; }
-        .valid-circle { width:56px; height:56px; border-radius:50%; background:${statusBg}; border:2px solid ${statusColor}; display:flex; align-items:center; justify-content:center; font-size:24px; }
-        .valid-label { font-size:10px; font-weight:700; color:${statusColor}; text-transform:uppercase; letter-spacing:1px; }
-
-        /* ── Watermark ── */
-        .watermark { position:absolute; font-size:100px; font-weight:900; color:rgba(37,99,235,0.04); transform:rotate(-30deg); top:40%; left:15%; pointer-events:none; letter-spacing:-5px; white-space:nowrap; }
-
-        .page-wrap { position:relative; overflow:hidden; min-height:1123px; display:flex; flex-direction:column; }
-    </style>
-    </head><body>
-    <div class="page">
-        <div class="page-wrap">
-            <div class="watermark">e-TIKET</div>
-
-            <!-- Header -->
-            <div class="header">
-                <div class="header-inner">
-                    <div class="logo-wrap">
-                        <img src="${logoUrl}" alt="Logo Travel Lombok Airport" crossorigin="anonymous">
-                        <div class="brand-name">
-                            <h1>Travel Lombok Airport</h1>
-                            <p>Tour &amp; Travel Lombok · travellombokairport.com</p>
-                        </div>
+            <!-- ID Strip -->
+            <div style="background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:10px;
+                        padding:14px 20px;display:flex;align-items:center;
+                        justify-content:space-between;margin-bottom:22px;">
+                <div>
+                    <div style="font-size:10px;color:rgba(255,255,255,0.7);font-weight:600;
+                                text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Nomor Transaksi</div>
+                    <div style="font-size:18px;font-weight:800;color:#fff;
+                                font-family:monospace;letter-spacing:1.5px;">${data.transactionId}</div>
+                </div>
+                <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
+                    <div style="width:52px;height:52px;border-radius:50%;background:${scBg};
+                                border:2px solid ${sc};display:flex;align-items:center;
+                                justify-content:center;font-size:22px;color:${sc};font-weight:700;">
+                        ${stIcon}
                     </div>
-                    <div class="header-right">
-                        <div class="doc-type">Bukti Pembayaran</div>
-                        <div class="doc-title">e-Tiket</div>
-                        <div class="doc-id">${data.transactionId}</div>
-                    </div>
+                    <div style="font-size:10px;font-weight:700;color:${sc};
+                                text-transform:uppercase;letter-spacing:1px;">${stText}</div>
                 </div>
             </div>
 
-            <!-- Status Ribbon -->
-            <div class="status-ribbon">
-                <div class="status-dot"></div>
-                <div class="status-text">STATUS: ${statusText}</div>
-                <div class="status-hint">Diterbitkan: ${issuedAt}</div>
+            <!-- Informasi Pemesan -->
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+                        color:#94a3b8;margin-bottom:12px;">Informasi Pemesan</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Nama Lengkap</div>
+                    <div style="font-size:15px;font-weight:700;color:#1e293b;">${data.customerName || '-'}</div>
+                </div>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">No. WhatsApp / Telepon</div>
+                    <div style="font-size:14px;font-weight:700;color:#1e293b;">${data.phone || '-'}</div>
+                </div>
             </div>
 
-            <!-- Body -->
-            <div class="body" style="flex:1;">
+            <!-- Divider -->
+            <div style="border:none;border-top:2px dashed #e2e8f0;margin:18px 0;"></div>
 
-                <!-- ID Strip -->
-                <div class="id-strip">
-                    <div>
-                        <div class="id-strip-label">Nomor Transaksi</div>
-                        <div class="id-strip-value">${data.transactionId}</div>
-                    </div>
-                    <div class="valid-mark">
-                        <div class="valid-circle">${isPaid ? '✓' : (data.status === 'PENDING' ? '⏳' : '✗')}</div>
-                        <div class="valid-label">${statusText}</div>
-                    </div>
+            <!-- Detail Layanan -->
+            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
+                        color:#94a3b8;margin-bottom:12px;">Detail Layanan</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
+                            padding:13px 15px;grid-column:1/-1;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Layanan / Paket</div>
+                    <div style="font-size:16px;font-weight:800;color:#1e293b;">${data.itemName || '-'}</div>
                 </div>
-
-                <!-- Customer Info -->
-                <div class="section-title">Informasi Pemesan</div>
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-label">Nama Lengkap</div>
-                        <div class="info-value big">${data.customerName || '-'}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">No. WhatsApp / Telepon</div>
-                        <div class="info-value">${data.phone || '-'}</div>
-                    </div>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Jenis Layanan</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${typeLbl}</div>
                 </div>
-
-                <hr class="divider">
-
-                <!-- Service Info -->
-                <div class="section-title">Detail Layanan</div>
-                <div class="info-grid">
-                    <div class="info-card full-width">
-                        <div class="info-label">Layanan / Paket</div>
-                        <div class="info-value big">${data.itemName || '-'}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Jenis Layanan</div>
-                        <div class="info-value">${typeLabel}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Kategori</div>
-                        <div class="info-value">${data.category || typeLabel}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Tanggal Mulai</div>
-                        <div class="info-value">${formatDate(data.startDate)}</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Tanggal Selesai</div>
-                        <div class="info-value">${formatDate(data.endDate)}</div>
-                    </div>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Kategori</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.category || typeLbl}</div>
                 </div>
-
-                <hr class="divider">
-
-                <!-- Notes -->
-                <div class="info-card" style="margin-bottom:24px; border-color:#fef3c7; background:#fffbeb;">
-                    <div class="info-label" style="color:#d97706;">⚠ Penting — Harap Dibaca</div>
-                    <div style="font-size:11px; color:#475569; margin-top:6px; line-height:1.8;">
-                        • Tunjukkan e-Tiket ini (cetak / digital) kepada petugas saat berangkat.<br>
-                        • Harap hadir 30 menit sebelum waktu penjemputan.<br>
-                        • Hubungi kami via WhatsApp jika ada perubahan jadwal.<br>
-                        • e-Tiket ini hanya berlaku untuk transaksi dengan status <strong>PAID</strong>.
-                    </div>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Tanggal Mulai</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.startDate)}</div>
                 </div>
-
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Tanggal Selesai</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.endDate)}</div>
+                </div>
             </div>
 
-            <!-- Footer -->
-            <div class="footer">
-                <div class="footer-inner">
-                    <div class="footer-contact">
-                        <p><strong>Travel Lombok Airport</strong></p>
-                        <p>📞 +62 896-7696-3255 (WhatsApp)</p>
-                        <p>🌐 travellombokairport.com</p>
-                        <p>📍 Lombok, Nusa Tenggara Barat, Indonesia</p>
-                    </div>
-                    <div class="footer-note">
-                        <p>Dokumen ini diterbitkan secara digital oleh sistem<br>Travel Lombok Airport dan sah tanpa tanda tangan fisik.</p>
-                        <p class="issued">Dicetak: ${issuedAt}</p>
-                    </div>
+            <!-- Divider -->
+            <div style="border:none;border-top:2px dashed #e2e8f0;margin:18px 0;"></div>
+
+            <!-- Warning Box -->
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;">
+                <div style="font-size:10px;color:#d97706;font-weight:700;text-transform:uppercase;
+                            letter-spacing:0.8px;margin-bottom:8px;">&#9888; Penting &mdash; Harap Dibaca</div>
+                <div style="font-size:11px;color:#475569;line-height:2;">
+                    &bull; Tunjukkan e-Tiket ini (cetak / digital) kepada petugas saat berangkat.<br>
+                    &bull; Harap hadir 30 menit sebelum waktu penjemputan.<br>
+                    &bull; Hubungi kami via WhatsApp jika ada perubahan jadwal.<br>
+                    &bull; e-Tiket ini hanya berlaku untuk transaksi dengan status <strong>PAID</strong>.
                 </div>
             </div>
         </div>
-    </div>
-    </body></html>`;
+
+        <!-- Footer -->
+        <div style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:18px 40px;flex-shrink:0;">
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+                <div>
+                    <div style="font-size:11px;color:#1e293b;font-weight:700;margin-bottom:4px;">Travel Lombok Airport</div>
+                    <div style="font-size:10px;color:#64748b;line-height:1.8;">
+                        &#128222; +62 896-7696-3255 (WhatsApp)<br>
+                        &#127760; travellombokairport.com<br>
+                        &#128205; Lombok, Nusa Tenggara Barat, Indonesia
+                    </div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:9px;color:#94a3b8;line-height:1.6;">
+                        Dokumen ini diterbitkan secara digital oleh sistem<br>
+                        Travel Lombok Airport dan sah tanpa tanda tangan fisik.
+                    </div>
+                    <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${issuedAt}</div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // ── Wrapper: off-screen tapi tetap di document flow ──
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;width:794px;z-index:-1;overflow:hidden;';
+    wrapper.appendChild(page);
+    document.body.appendChild(wrapper);
 
     const opt = {
         margin:       0,
         filename:     `e-Tiket_${data.transactionId}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false },
-        jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait' }
+        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
+        jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ['px_scaling'] }
     };
 
-    const container = document.createElement('div');
-    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;';
-    container.innerHTML = etiketHTML;
-    document.body.appendChild(container);
-
-    html2pdf().set(opt).from(container.querySelector('.page')).save().then(() => {
-        document.body.removeChild(container);
+    html2pdf().set(opt).from(page).save().then(() => {
+        document.body.removeChild(wrapper);
     }).catch(err => {
-        document.body.removeChild(container);
-        console.error('PDF error:', err);
+        document.body.removeChild(wrapper);
+        console.error('PDF generation error:', err);
     });
 };
+
+
+
 
 // Cek Booking Status
 window.cekStatusBooking = async (event, type = 'booking') => {
