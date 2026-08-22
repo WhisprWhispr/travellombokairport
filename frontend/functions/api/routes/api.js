@@ -40,21 +40,14 @@ apiRoutes.get('/items', async (c) => {
             items.push({ id: doc.id, ...doc.data() });
         });
         
-        // Sort items by 'order' ascending. If order doesn't exist, default to 0.
+        // Sort items by price ascending (cheapest first), then by newest
         items.sort((a, b) => {
-            const orderA = a.order || 0;
-            const orderB = b.order || 0;
-            // First by order (manual sorting takes precedence)
-            if (orderA !== orderB) {
-                return orderA - orderB;
-            }
-            // If order is the same, sort by price (cheapest first)
             const priceA = parseInt(a.price) || 0;
             const priceB = parseInt(b.price) || 0;
             if (priceA !== priceB) {
                 return priceA - priceB;
             }
-            // Finally, sort by newest
+            // Same price: sort by newest
             return new Date(b.createdAt) - new Date(a.createdAt);
         });
         
