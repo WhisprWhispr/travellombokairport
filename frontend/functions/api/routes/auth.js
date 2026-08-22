@@ -76,6 +76,92 @@ authRoutes.post('/login', async (c) => {
     }
 });
 
+// POST /api/auth/register
+authRoutes.post('/register', async (c) => {
+    try {
+        const { email, password, name } = await c.req.json();
+        
+        if (!email || !password) {
+            return c.json({ error: 'Email dan password wajib diisi.' }, 400);
+        }
+
+        if (password.length < 6) {
+            return c.json({ error: 'Password minimal 6 karakter.' }, 400);
+        }
+
+        const apiKey = c.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return c.json({ error: 'System error: API Key missing' }, 500);
+        }
+
+        let firebaseUser;
+        try {
+            // Mendaftar ke Firebase Authentication
+            const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: email,
+                    password: password,
+                    returnSecureToken: true
+                })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok) {
+                let errorMessage = 'Gagal mendaftar.';
+                if (data.error && data.error.message) {
+                    if (data.error.message === 'EMAIL_EXISTS') {
+                        errorMessage = 'Email sudah terdaftar. Silakan login.';
+                    } else {
+                        errorMessage = `Firebase Error: ${data.error.message}`;
+                    }
+                }
+                return c.json({ error: errorMessage }, 400);
+            }
+            
+            firebaseUser = data;
+
+            // Optional: Update profil dengan nama
+            if (name) {
+                await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${apiKey}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        idToken: firebaseUser.idToken,
+                        displayName: name,
+                        returnSecureToken: false
+                    })
+                });
+            }
+
+        } catch (fetchError) {
+            return c.json({ error: 'Gagal terhubung ke Firebase Auth server.' }, 502);
+        }
+
+        // Generate Hono JWT token
+        const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
+        const payload = {
+            id: firebaseUser.localId,
+            email: firebaseUser.email,
+            name: name || '',
+            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 24 hours
+        };
+        
+        const token = await sign(payload, secret);
+        
+        return c.json({
+            success: true,
+            token,
+            user: { id: firebaseUser.localId, email: firebaseUser.email, name: name || '' }
+        });
+
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // POST /api/auth/reset-password
 authRoutes.post('/reset-password', async (c) => {
     try {

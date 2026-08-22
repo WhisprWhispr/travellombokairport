@@ -1243,6 +1243,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Handle Quick Booking form
 window.submitBooking = (method) => {
+    if (!window.checkAuthAndPrompt()) return;
+
     const layanan = document.getElementById("qb-layanan").value;
     const subLayanan = document.getElementById("qb-sub-layanan").value;
     const tanggal = document.getElementById("qb-tanggal").value;
@@ -1451,6 +1453,8 @@ window.checkDateOverlap = () => {
 };
 
 window.processCheckout = async (itemName, price) => {
+    if (!window.checkAuthAndPrompt()) return;
+
     const name = document.getElementById("co-name").value;
     const phone = document.getElementById("co-phone").value;
     const startDate = document.getElementById("co-start-date").value;
@@ -1919,6 +1923,7 @@ window.submitReview = async (e) => {
 };
 
 document.addEventListener("DOMContentLoaded", () => {
+    window.checkAuthUI();
     loadStats();
     loadReviews();
 
@@ -1946,3 +1951,119 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 // trigger new build
+
+// ── Auth Handling Logic ──
+window._authMode = 'login';
+window.openAuthModal = () => {
+    document.getElementById('auth-modal').style.display = 'flex';
+};
+window.closeAuthModal = () => {
+    document.getElementById('auth-modal').style.display = 'none';
+};
+window.toggleAuthMode = () => {
+    window._authMode = window._authMode === 'login' ? 'register' : 'login';
+    const isLogin = window._authMode === 'login';
+    
+    document.getElementById('auth-title').innerText = isLogin ? 'Login' : 'Daftar Akun';
+    document.getElementById('auth-desc').innerText = isLogin ? 'Masuk untuk melanjutkan pesanan Anda.' : 'Buat akun baru untuk memudahkan pemesanan.';
+    document.getElementById('btn-auth-submit').innerText = isLogin ? 'Login' : 'Daftar';
+    document.getElementById('auth-switch-text').innerText = isLogin ? 'Belum punya akun?' : 'Sudah punya akun?';
+    document.getElementById('auth-switch-link').innerText = isLogin ? 'Daftar di sini' : 'Login di sini';
+    document.getElementById('auth-name-group').style.display = isLogin ? 'none' : 'block';
+    if(isLogin) {
+        document.getElementById('auth-name').removeAttribute('required');
+    } else {
+        document.getElementById('auth-name').setAttribute('required', 'true');
+    }
+};
+
+window.checkAuthUI = () => {
+    const token = localStorage.getItem('auth_token');
+    const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+    const navBtn = document.getElementById('nav-btn-auth');
+    if (navBtn) {
+        if (token && user) {
+            navBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> ${user.name || 'Akun Saya'}`;
+            navBtn.onclick = () => {
+                Swal.fire({
+                    title: 'Akun Anda',
+                    text: `Email: ${user.email}`,
+                    icon: 'info',
+                    showCancelButton: true,
+                    confirmButtonText: 'Logout',
+                    cancelButtonText: 'Tutup',
+                    confirmButtonColor: '#ef4444'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        localStorage.removeItem('auth_token');
+                        localStorage.removeItem('auth_user');
+                        window.checkAuthUI();
+                        Swal.fire({icon: 'success', title: 'Berhasil Logout', timer: 1500, showConfirmButton: false});
+                    }
+                });
+            };
+        } else {
+            navBtn.innerHTML = `<i class="fa-solid fa-user"></i> Login`;
+            navBtn.onclick = window.openAuthModal;
+        }
+    }
+};
+
+window.checkAuthAndPrompt = () => {
+    const token = localStorage.getItem('auth_token');
+    if (!token) {
+        window.openAuthModal();
+        return false;
+    }
+    return true;
+};
+
+window.submitAuth = async (e) => {
+    e.preventDefault();
+    const isLogin = window._authMode === 'login';
+    const email = document.getElementById('auth-email').value;
+    const password = document.getElementById('auth-password').value;
+    const name = document.getElementById('auth-name').value;
+    const btn = document.getElementById('btn-auth-submit');
+
+    btn.disabled = true;
+    btn.innerHTML = 'Memproses...';
+
+    try {
+        const endpoint = isLogin ? '/api/auth/login' : '/api/auth/register';
+        const body = { email, password };
+        if (!isLogin) body.name = name;
+
+        const res = await fetch(`${API_URL}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        
+        const data = await res.json();
+        if (!res.ok) {
+            throw new Error(data.error || 'Terjadi kesalahan');
+        }
+
+        localStorage.setItem('auth_token', data.token);
+        localStorage.setItem('auth_user', JSON.stringify(data.user || data.admin));
+        
+        window.closeAuthModal();
+        window.checkAuthUI();
+        
+        Swal.fire({
+            icon: 'success',
+            title: isLogin ? 'Berhasil Login' : 'Berhasil Mendaftar',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2000
+        });
+
+    } catch (err) {
+        Swal.fire({icon: 'error', title: 'Gagal', text: err.message, confirmButtonColor: '#1d4ed8'});
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = isLogin ? 'Login' : 'Daftar';
+    }
+};

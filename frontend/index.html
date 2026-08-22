@@ -145,6 +145,7 @@
         </div>
         <a href="https://wa.me/6289676963255" target="_blank" class="nav-phone"><i class="fa-brands fa-whatsapp"></i> +62 896-7696-3255</a>
         <a href="#booking" class="btn btn-green">BOOKING SEKARANG</a>
+        <button id="nav-btn-auth" class="btn" style="background: white; color: var(--primary-blue); border: 2px solid var(--primary-blue); padding: 8px 15px; display: inline-flex; align-items: center; gap: 6px;" onclick="window.openAuthModal()"><i class="fa-solid fa-user"></i> Login</button>
         <button class="mobile-menu-btn" onclick="document.querySelector('.nav-links').classList.toggle('active')"><i class="fa-solid fa-bars"></i></button>
       </div>
     </div>
@@ -542,6 +543,42 @@
       <button class="tour-modal-close" onclick="document.getElementById('status-modal').classList.remove('active')"><i class="fa-solid fa-xmark"></i></button>
       <div id="status-modal-body" style="padding: 20px;">
         <!-- Content injected by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Auth Modal -->
+  <div id="auth-modal" class="modal-overlay" style="z-index: 10001; position: fixed; inset: 0; background: rgba(15,23,42,0.8); display: none; justify-content: center; align-items: center; backdrop-filter: blur(6px); padding: 20px;">
+    <div style="background: white; border-radius: 20px; width: 100%; max-width: 400px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: reviewPopIn 0.25s cubic-bezier(0.34,1.56,0.64,1);">
+      <button onclick="window.closeAuthModal()" style="position: absolute; top: 15px; right: 15px; background: #f1f5f9; border: none; width: 32px; height: 32px; border-radius: 50%; color: #0f172a; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-times"></i></button>
+      
+      <div style="padding: 30px 24px 20px; text-align: center;">
+        <h3 id="auth-title" style="color: #0f172a; font-size: 1.5rem; font-weight: 800; margin-bottom: 5px;">Login</h3>
+        <p id="auth-desc" style="color: #64748b; font-size: 0.9rem; margin-bottom: 25px;">Masuk untuk melanjutkan pesanan Anda.</p>
+        
+        <form id="auth-form" onsubmit="window.submitAuth(event)">
+          <div id="auth-name-group" style="display: none; text-align: left; margin-bottom: 15px;">
+            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Nama Lengkap</label>
+            <input type="text" id="auth-name" placeholder="John Doe" style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; width: 100%; font-size: 0.95rem; outline: none; box-sizing: border-box;">
+          </div>
+          <div style="text-align: left; margin-bottom: 15px;">
+            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Email</label>
+            <input type="email" id="auth-email" required placeholder="email@contoh.com" style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; width: 100%; font-size: 0.95rem; outline: none; box-sizing: border-box;">
+          </div>
+          <div style="text-align: left; margin-bottom: 20px;">
+            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Password</label>
+            <input type="password" id="auth-password" required placeholder="Minimal 6 karakter" style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; width: 100%; font-size: 0.95rem; outline: none; box-sizing: border-box;">
+          </div>
+          
+          <button type="submit" id="btn-auth-submit" style="width: 100%; background: linear-gradient(135deg, var(--primary-blue), #1e40af); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 1rem; cursor: pointer;">
+            Login
+          </button>
+        </form>
+        
+        <div style="margin-top: 20px; font-size: 0.9rem; color: #64748b;">
+          <span id="auth-switch-text">Belum punya akun?</span> 
+          <a href="#" onclick="event.preventDefault(); window.toggleAuthMode()" id="auth-switch-link" style="color: var(--primary-blue); font-weight: 700; text-decoration: none;">Daftar di sini</a>
+        </div>
       </div>
     </div>
   </div>
