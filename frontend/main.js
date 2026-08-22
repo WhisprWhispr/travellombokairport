@@ -690,6 +690,237 @@ const init = async () => {
     renderSectionWithSeeAll('drone-container', drones, createDroneCard);
 };
 
+// =====================================================
+// Generate Professional e-Tiket PDF
+// =====================================================
+window.generateEtiketPDF = (data) => {
+    const isPaid = data.status === 'PAID';
+    const statusColor = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
+    const statusBg   = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
+    const statusText = data.status || 'UNKNOWN';
+
+    const formatDate = (d) => {
+        if (!d) return '-';
+        try { return new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }); }
+        catch(e) { return d; }
+    };
+    const isOrder   = data.transactionId && data.transactionId.startsWith('ORD-');
+    const isBooking = data.transactionId && data.transactionId.startsWith('BKG-');
+    const typeLabel = isOrder ? 'Paket Tour / QRIS' : (isBooking ? 'Rental & Transfer' : 'Reservasi');
+    const issuedAt  = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const logoUrl   = window.location.origin + '/logo.png';
+
+    const etiketHTML = `
+    <html><head>
+    <meta charset="UTF-8">
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; background:#f1f5f9; }
+        .page { width:794px; min-height:1123px; background:#fff; margin:0 auto; padding:0; }
+
+        /* ── Header Band ── */
+        .header { background: linear-gradient(135deg, #1d4ed8 0%, #0369a1 60%, #0891b2 100%); padding: 32px 40px 28px; position:relative; overflow:hidden; }
+        .header::after { content:''; position:absolute; top:-40px; right:-40px; width:200px; height:200px; border-radius:50%; background:rgba(255,255,255,0.06); }
+        .header::before { content:''; position:absolute; bottom:-60px; left:-30px; width:180px; height:180px; border-radius:50%; background:rgba(255,255,255,0.05); }
+        .header-inner { display:flex; align-items:center; justify-content:space-between; position:relative; z-index:1; }
+        .logo-wrap { display:flex; align-items:center; gap:16px; }
+        .logo-wrap img { width:64px; height:64px; border-radius:12px; object-fit:contain; background:#fff; padding:6px; box-shadow:0 4px 12px rgba(0,0,0,0.2); }
+        .brand-name { color:#fff; }
+        .brand-name h1 { font-size:22px; font-weight:800; letter-spacing:0.5px; line-height:1.2; }
+        .brand-name p { font-size:11px; opacity:0.8; margin-top:2px; }
+        .header-right { text-align:right; color:#fff; }
+        .header-right .doc-type { font-size:13px; opacity:0.75; text-transform:uppercase; letter-spacing:1px; }
+        .header-right .doc-title { font-size:26px; font-weight:800; margin-top:2px; letter-spacing:-0.5px; }
+        .header-right .doc-id { font-size:12px; opacity:0.7; margin-top:4px; font-family:monospace; }
+
+        /* ── Ribbon Status ── */
+        .status-ribbon { background: ${statusBg}; border-left:4px solid ${statusColor}; padding:10px 40px; display:flex; align-items:center; gap:12px; }
+        .status-dot { width:10px; height:10px; border-radius:50%; background:${statusColor}; flex-shrink:0; }
+        .status-text { font-size:13px; font-weight:700; color:${statusColor}; }
+        .status-hint { font-size:11px; color:#475569; margin-left:auto; }
+
+        /* ── Body ── */
+        .body { padding: 32px 40px; }
+
+        /* ── Section Title ── */
+        .section-title { font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1.5px; color:#94a3b8; margin-bottom:14px; }
+
+        /* ── Info Cards Grid ── */
+        .info-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
+        .info-card { background:#f8fafc; border:1px solid #e2e8f0; border-radius:10px; padding:14px 16px; }
+        .info-card.full-width { grid-column:1/-1; }
+        .info-label { font-size:10px; color:#94a3b8; font-weight:600; text-transform:uppercase; letter-spacing:0.8px; margin-bottom:4px; }
+        .info-value { font-size:14px; font-weight:700; color:#1e293b; line-height:1.3; }
+        .info-value.big { font-size:16px; }
+        .info-value.mono { font-family:monospace; font-size:13px; color:#2563eb; }
+
+        /* ── Divider ── */
+        .divider { border:none; border-top:2px dashed #e2e8f0; margin:24px 0; }
+
+        /* ── Footer ── */
+        .footer { background:#f8fafc; border-top:1px solid #e2e8f0; padding:20px 40px; margin-top:auto; }
+        .footer-inner { display:flex; justify-content:space-between; align-items:flex-end; }
+        .footer-contact p { font-size:10px; color:#64748b; margin-bottom:3px; line-height:1.6; }
+        .footer-contact strong { color:#1e293b; }
+        .footer-note { text-align:right; }
+        .footer-note p { font-size:9px; color:#94a3b8; line-height:1.5; }
+        .issued { font-size:10px; color:#64748b; margin-top:4px; }
+
+        /* ── Barcode-style ID Strip ── */
+        .id-strip { background:linear-gradient(135deg,#1d4ed8,#0891b2); border-radius:10px; padding:14px 20px; display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; }
+        .id-strip-label { font-size:10px; color:rgba(255,255,255,0.7); font-weight:600; text-transform:uppercase; letter-spacing:1px; }
+        .id-strip-value { font-size:18px; font-weight:800; color:#fff; font-family:monospace; letter-spacing:2px; }
+
+        /* ── Valid Mark ── */
+        .valid-mark { display:flex; flex-direction:column; align-items:center; gap:4px; }
+        .valid-circle { width:56px; height:56px; border-radius:50%; background:${statusBg}; border:2px solid ${statusColor}; display:flex; align-items:center; justify-content:center; font-size:24px; }
+        .valid-label { font-size:10px; font-weight:700; color:${statusColor}; text-transform:uppercase; letter-spacing:1px; }
+
+        /* ── Watermark ── */
+        .watermark { position:absolute; font-size:100px; font-weight:900; color:rgba(37,99,235,0.04); transform:rotate(-30deg); top:40%; left:15%; pointer-events:none; letter-spacing:-5px; white-space:nowrap; }
+
+        .page-wrap { position:relative; overflow:hidden; min-height:1123px; display:flex; flex-direction:column; }
+    </style>
+    </head><body>
+    <div class="page">
+        <div class="page-wrap">
+            <div class="watermark">e-TIKET</div>
+
+            <!-- Header -->
+            <div class="header">
+                <div class="header-inner">
+                    <div class="logo-wrap">
+                        <img src="${logoUrl}" alt="Logo Travel Lombok Airport" crossorigin="anonymous">
+                        <div class="brand-name">
+                            <h1>Travel Lombok Airport</h1>
+                            <p>Tour &amp; Travel Lombok · travellombokairport.com</p>
+                        </div>
+                    </div>
+                    <div class="header-right">
+                        <div class="doc-type">Bukti Pembayaran</div>
+                        <div class="doc-title">e-Tiket</div>
+                        <div class="doc-id">${data.transactionId}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Ribbon -->
+            <div class="status-ribbon">
+                <div class="status-dot"></div>
+                <div class="status-text">STATUS: ${statusText}</div>
+                <div class="status-hint">Diterbitkan: ${issuedAt}</div>
+            </div>
+
+            <!-- Body -->
+            <div class="body" style="flex:1;">
+
+                <!-- ID Strip -->
+                <div class="id-strip">
+                    <div>
+                        <div class="id-strip-label">Nomor Transaksi</div>
+                        <div class="id-strip-value">${data.transactionId}</div>
+                    </div>
+                    <div class="valid-mark">
+                        <div class="valid-circle">${isPaid ? '✓' : (data.status === 'PENDING' ? '⏳' : '✗')}</div>
+                        <div class="valid-label">${statusText}</div>
+                    </div>
+                </div>
+
+                <!-- Customer Info -->
+                <div class="section-title">Informasi Pemesan</div>
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-label">Nama Lengkap</div>
+                        <div class="info-value big">${data.customerName || '-'}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">No. WhatsApp / Telepon</div>
+                        <div class="info-value">${data.phone || '-'}</div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Service Info -->
+                <div class="section-title">Detail Layanan</div>
+                <div class="info-grid">
+                    <div class="info-card full-width">
+                        <div class="info-label">Layanan / Paket</div>
+                        <div class="info-value big">${data.itemName || '-'}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Jenis Layanan</div>
+                        <div class="info-value">${typeLabel}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Kategori</div>
+                        <div class="info-value">${data.category || typeLabel}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Tanggal Mulai</div>
+                        <div class="info-value">${formatDate(data.startDate)}</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Tanggal Selesai</div>
+                        <div class="info-value">${formatDate(data.endDate)}</div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Notes -->
+                <div class="info-card" style="margin-bottom:24px; border-color:#fef3c7; background:#fffbeb;">
+                    <div class="info-label" style="color:#d97706;">⚠ Penting — Harap Dibaca</div>
+                    <div style="font-size:11px; color:#475569; margin-top:6px; line-height:1.8;">
+                        • Tunjukkan e-Tiket ini (cetak / digital) kepada petugas saat berangkat.<br>
+                        • Harap hadir 30 menit sebelum waktu penjemputan.<br>
+                        • Hubungi kami via WhatsApp jika ada perubahan jadwal.<br>
+                        • e-Tiket ini hanya berlaku untuk transaksi dengan status <strong>PAID</strong>.
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                <div class="footer-inner">
+                    <div class="footer-contact">
+                        <p><strong>Travel Lombok Airport</strong></p>
+                        <p>📞 +62 896-7696-3255 (WhatsApp)</p>
+                        <p>🌐 travellombokairport.com</p>
+                        <p>📍 Lombok, Nusa Tenggara Barat, Indonesia</p>
+                    </div>
+                    <div class="footer-note">
+                        <p>Dokumen ini diterbitkan secara digital oleh sistem<br>Travel Lombok Airport dan sah tanpa tanda tangan fisik.</p>
+                        <p class="issued">Dicetak: ${issuedAt}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </body></html>`;
+
+    const opt = {
+        margin:       0,
+        filename:     `e-Tiket_${data.transactionId}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false },
+        jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait' }
+    };
+
+    const container = document.createElement('div');
+    container.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:794px;';
+    container.innerHTML = etiketHTML;
+    document.body.appendChild(container);
+
+    html2pdf().set(opt).from(container.querySelector('.page')).save().then(() => {
+        document.body.removeChild(container);
+    }).catch(err => {
+        document.body.removeChild(container);
+        console.error('PDF error:', err);
+    });
+};
+
 // Cek Booking Status
 window.cekStatusBooking = async (event, type = 'booking') => {
     event.preventDefault();
@@ -740,7 +971,16 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                         <div style="font-weight: bold; color: #1e293b;">${new Date(data.startDate).toLocaleDateString('id-ID')} s/d ${new Date(data.endDate).toLocaleDateString('id-ID')}</div>
                     </div>
                 </div>
+                
+                <div style="margin-top: 16px;">
+                    <button onclick="window.generateEtiketPDF(window._lastBookingData)" style="width:100%; background: linear-gradient(135deg,#1d4ed8,#0891b2); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                        <i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket PDF
+                    </button>
+                </div>
             `;
+            
+            // Store data globally so the PDF button can access it
+            window._lastBookingData = data;
             
             Swal.fire({
                 title: 'Status Pesanan',
@@ -781,6 +1021,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
         input.value = '';
     }
 };
+
 
 // Navbar Scroll Effect
 window.addEventListener('scroll', () => {

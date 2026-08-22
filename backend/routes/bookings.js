@@ -97,8 +97,11 @@ router.get('/check/:transactionId', async (req, res) => {
             transactionId: data.transactionId,
             itemName: data.itemName,
             customerName: data.customerName,
+            phone: data.phone || '',
+            category: data.category || '',
             startDate: data.startDate,
             endDate: data.endDate,
+            createdAt: data.createdAt || '',
             status: data.status
         });
     } catch (error) {
