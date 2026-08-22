@@ -588,8 +588,54 @@ const renderDroneTable = (items) => {
     `).join('');
 };
 
+// Helper: get next available package letter based on existing items
+const getNextPackageLetter = async () => {
+    try {
+        const res = await fetch(`${API_URL}/items`);
+        const items = await res.json();
+        const packageItems = items.filter(i =>
+            i.category && (i.category.toLowerCase().includes('paket') || i.category.toLowerCase().includes('package') || i.category.toLowerCase() === 'package')
+        );
+        // Extract letters already used: match "Paket A", "Paket B", etc. in title
+        const usedLetters = new Set();
+        packageItems.forEach(i => {
+            const m = (i.title || '').match(/paket\s+([a-z])/i);
+            if (m) usedLetters.add(m[1].toUpperCase());
+        });
+        // Find first unused letter starting from A
+        for (let code = 65; code <= 90; code++) {
+            const letter = String.fromCharCode(code);
+            if (!usedLetters.has(letter)) return letter;
+        }
+        return null;
+    } catch (e) { return null; }
+};
+
+// Auto-fill title when category = package (for new items only)
+const autoFillPackageTitle = async () => {
+    if (idInput.value) return; // skip if editing existing item
+    if (categoryInput.value === 'package') {
+        const letter = await getNextPackageLetter();
+        if (letter && !titleInput.value) {
+            titleInput.value = `Paket ${letter} `;
+            titleInput.focus();
+            // Move cursor to end
+            const len = titleInput.value.length;
+            titleInput.setSelectionRange(len, len);
+        }
+    }
+};
+
 // Modal handlers
-const openModal = () => { modal.classList.add("active"); };
+const openModal = async () => {
+    modal.classList.add("active");
+    // If opening for new item and category is already 'package', auto-fill title
+    if (!idInput.value) {
+        await autoFillPackageTitle();
+    }
+};
+
+categoryInput.addEventListener('change', autoFillPackageTitle);
 
 window.openDroneModal = () => {
     document.getElementById("drone-form").reset();
