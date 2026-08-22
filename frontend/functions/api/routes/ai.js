@@ -160,6 +160,10 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
         // Fix: Remove trailing commas before } or ] (common Gemini mistake)
         cleanJson = cleanJson.replace(/,\s*([\]}])/g, '$1');
 
+        // Fix: Missing commas between objects or arrays (common LLM generation error)
+        cleanJson = cleanJson.replace(/\}\s*\{/g, '},{');
+        cleanJson = cleanJson.replace(/\]\s*\[/g, '],[');
+
         // Helper to safely try parsing JSON
         const tryParseJSON = (str) => {
             try { return JSON.parse(str); } catch (e) { return null; }
