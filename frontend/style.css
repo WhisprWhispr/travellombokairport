@@ -1521,6 +1521,24 @@ body { top: 0 !important; position: static !important; }
   .stats-container { grid-template-columns: 1fr; }
   .info-grid { gap: 20px; }
   .nav-content { padding: 0; }
+  
+  /* Header Fixes for Small Mobile */
+  .logo-img { height: 35px; }
+  .logo-title { font-size: 0.95rem; }
+  .logo-subtitle { display: none; }
+  .nav-actions { gap: 8px; }
+  .lang-btn { padding: 4px 8px; font-size: 0.8rem; }
+  .mobile-menu-btn { font-size: 1.25rem; padding: 4px 6px; }
+  
+  /* Steps Container Fix */
+  .steps-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    justify-content: center;
+  }
+  .step-arrow { display: none; }
+  .step-icon { width: 40px; height: 40px; font-size: 1rem; margin-bottom: 8px; }
 }
 /* Smooth Card Hover */
 .card { transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
