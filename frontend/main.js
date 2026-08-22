@@ -794,18 +794,21 @@ const init = async () => {
         if (paketPilihanSection) paketPilihanSection.style.display = 'block';
 
         parentContainer.innerHTML = parentPackages.map((item, idx) => `
-        <div onclick="window.openSubPackageModal('${item.id}')" data-aos="zoom-in" data-aos-delay="${idx * 80}"
-            style="cursor:pointer; position:relative; border-radius:18px; overflow:hidden; aspect-ratio:3/4; box-shadow:0 12px 30px rgba(0,0,0,0.18); transition:transform 0.3s,box-shadow 0.3s;"
-            onmouseover="this.style.transform='scale(1.04)';this.style.boxShadow='0 20px 40px rgba(0,0,0,0.28)'"
-            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 12px 30px rgba(0,0,0,0.18)'">
+        <div onclick="window.openSubPackageModal('${item.id}')" data-aos="zoom-in" data-aos-delay="${idx * 50}"
+            style="cursor:pointer; position:relative; border-radius:14px; overflow:hidden; aspect-ratio:1/1; box-shadow:0 8px 25px rgba(0,0,0,0.12); transition:transform 0.3s,box-shadow 0.3s; display:flex; flex-direction:column; justify-content:center; align-items:center;"
+            onmouseover="this.style.transform='scale(1.03)';this.style.boxShadow='0 12px 35px rgba(0,0,0,0.2)'"
+            onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)'">
             <img src="${item.imageUrl}" alt="${item.title}"
                 style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;"
                 onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
-            <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to top,rgba(10,20,50,0.88) 0%,rgba(10,20,50,0.3) 55%,rgba(10,20,50,0) 100%);z-index:2;"></div>
-            <div style="position:absolute;bottom:0;left:0;right:0;z-index:3;padding:18px 16px;">
-                <h3 style="color:white;font-size:1.3rem;font-weight:900;margin:0 0 12px;text-shadow:0 2px 8px rgba(0,0,0,0.6);line-height:1.2;font-family:'Outfit',sans-serif;">${item.title}</h3>
-                <span style="display:inline-flex;align-items:center;gap:6px;background:#f59e0b;color:#78350f;font-size:0.72rem;font-weight:800;padding:7px 16px;border-radius:20px;text-transform:uppercase;letter-spacing:0.5px;">
-                    LIHAT LAINNYA <i class="fa-solid fa-chevron-right"></i>
+            <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom, rgba(10,20,50,0.3) 0%, rgba(10,20,50,0.85) 100%);z-index:2;"></div>
+            
+            <div style="position:relative; z-index:3; text-align:center; padding:15px 10px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; width:100%; height:100%;">
+                <h3 style="color:#fbb320; font-size:1.6rem; font-weight:900; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,0.8); line-height:1.1; font-family:'Outfit',sans-serif; text-transform:uppercase;">${item.title.split(' ')[0]}</h3>
+                <span style="color:white; font-size:0.75rem; font-weight:600; margin-bottom:12px; text-shadow:0 1px 4px rgba(0,0,0,0.8);">${item.title}</span>
+                
+                <span style="display:inline-flex; align-items:center; gap:4px; background:#fbb320; color:white; font-size:0.6rem; font-weight:800; padding:6px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 10px rgba(251,179,32,0.4);">
+                    LIHAT LAINNYA <i class="fa-solid fa-chevron-right" style="font-size:0.55rem;"></i>
                 </span>
             </div>
         </div>`).join('');
