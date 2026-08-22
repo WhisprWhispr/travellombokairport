@@ -16,6 +16,8 @@ const form = document.getElementById("item-form");
 
 const idInput = document.getElementById("item-id");
 const categoryInput = document.getElementById("item-category");
+const isParentInput = document.getElementById("item-is-parent");
+const parentIdInput = document.getElementById("item-parent-id");
 const titleInput = document.getElementById("item-title");
 const orderInput = document.getElementById("item-order");
 const descriptionInput = document.getElementById("item-description");
@@ -527,12 +529,27 @@ const getAuthHeaders = () => ({
 });
 
 // Fetch and render items
+let allAdminItems = [];
+
+const populateParentDropdown = (items) => {
+    const parentSelect = document.getElementById("item-parent-id");
+    if (!parentSelect) return;
+    const parents = items.filter(i => i.isParent === true);
+    let html = '<option value="">-- Tidak ada (Tampil di halaman depan) --</option>';
+    parents.forEach(p => {
+        html += `<option value="${p.id}">${p.title}</option>`;
+    });
+    parentSelect.innerHTML = html;
+};
+
 const fetchAdminItems = async () => {
     try {
         const response = await fetch(`${API_URL}/items`);
         const items = await response.json();
         renderTable(items);
         renderDroneTable(items);
+        allAdminItems = items;
+        populateParentDropdown(items);
     } catch (error) {
         console.error("Error:", error);
         tableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Failed to load items. Is backend running?</td></tr>`;
@@ -659,6 +676,8 @@ const closeModal = () => {
     modal.classList.remove("active");
     form.reset();
     idInput.value = "";
+    if(isParentInput) isParentInput.checked = false;
+    if(parentIdInput) parentIdInput.value = "";
     orderInput.value = "0";
     termsCustomGroup.style.display = "none";
     modalTitle.textContent = "Add New Item";
@@ -723,6 +742,8 @@ form.addEventListener("submit", async (e) => {
         title: titleInput.value,
         description: descriptionInput.value,
         category: categoryInput.value,
+        isParent: isParentInput ? isParentInput.checked : false,
+        parentId: (parentIdInput && parentIdInput.value) ? parentIdInput.value : null,
         order: parseInt(orderInput.value) || 0,
         price: priceInput.value.replace(/\./g, ''), // Strip dots before saving
         imageUrl: imageInput.value,
@@ -877,6 +898,8 @@ window.editItem = async (id) => {
         orderInput.value = item.order || 0;
         descriptionInput.value = item.description;
         categoryInput.value = item.category;
+        if(isParentInput) isParentInput.checked = !!item.isParent;
+        if(parentIdInput) parentIdInput.value = item.parentId || "";
         
         // Format price with dots for display in form
         if (item.price) {

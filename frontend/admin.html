@@ -368,6 +368,23 @@
             </select>
           </div>
 
+          <div class="form-group" style="margin-top: 15px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: #f0fdf4; padding: 10px 15px; border-radius: 8px; border: 1px solid #bbf7d0;">
+              <input type="checkbox" id="item-is-parent" style="width: 18px; height: 18px; margin: 0;">
+              <span style="font-weight: 700; color: #166534;">Jadikan sebagai Kategori/Paket Utama (Folder)</span>
+            </label>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Jika dicentang, paket ini akan menjadi "Folder Utama". Saat diklik di web, akan membuka halaman khusus berisi sub-paket.</p>
+          </div>
+
+          <div class="form-group" id="item-parent-id-group" style="margin-top: 15px;">
+            <label>Masukkan ke dalam Paket Utama (Opsional)</label>
+            <select id="item-parent-id">
+              <option value="">-- Tidak ada (Tampil di halaman depan) --</option>
+              <!-- Populated by JS -->
+            </select>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Pilih jika paket ini adalah "Paket A / B / C" dari sebuah Paket Utama.</p>
+          </div>
+
           <div class="form-group">
             <label>Title</label>
             <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci">

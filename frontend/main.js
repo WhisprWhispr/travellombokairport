@@ -418,10 +418,18 @@ const createTransferCard = (item, index = 0) => {
 };
 
 // Render Package Card (Paket Tour)
-const createPackageCard = (item, index = 0) => `
-    <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <div class="img-wrapper">
+const createPackageCard = (item, index = 0) => {
+    const isParent = item.isParent === true;
+    const btnHtml = isParent
+        ? `<button onclick="window.openSubPackageModal('${item.id}')" class="btn" style="background:linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af); color:white; border:none; font-size:0.85rem; padding:8px 16px; border-radius:20px; font-weight:700;"><i class="fa-solid fa-layer-group" style="margin-right:5px;"></i>LIHAT PAKET</button>`
+        : `<button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>`;
+    const parentBadge = isParent
+        ? `<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#78350f;font-size:0.65rem;font-weight:800;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;z-index:2;"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i>Paket Pilihan</span>` : '';
+    return `
+    <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}" style="${isParent ? 'border:2px solid #fbbf24;' : ''}">
+        <div class="img-wrapper" style="position:relative;">
             <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
+            ${parentBadge}
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
         </div>
         <div class="content">
@@ -431,11 +439,76 @@ const createPackageCard = (item, index = 0) => `
             </ul>
             <div class="price-row">
                 <div class="price"><span>Mulai dari</span>${formatPrice(item.price)}</div>
-                <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
+                ${btnHtml}
             </div>
         </div>
     </div>
-`;
+`};
+
+// ===== SUB-PACKAGE MODAL LOGIC =====
+window.openSubPackageModal = (parentId) => {
+    const parentItem = globalItems.find(i => i.id === parentId);
+    if (!parentItem) return;
+
+    const children = globalItems.filter(i => i.parentId === parentId);
+    
+    const titleEl = document.getElementById('sub-modal-title');
+    const descEl = document.getElementById('sub-modal-desc');
+    const bodyEl = document.getElementById('sub-modal-body');
+    const modal = document.getElementById('sub-package-modal');
+
+    if (!titleEl || !bodyEl || !modal) return;
+
+    titleEl.innerText = parentItem.title;
+    descEl.innerText = parentItem.description || 'Pilih paket yang sesuai dengan keinginan Anda.';
+
+    if (children.length === 0) {
+        bodyEl.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#64748b;">
+            <i class="fa-solid fa-box-open" style="font-size:3rem; margin-bottom:15px; display:block; color:#cbd5e1;"></i>
+            <p>Belum ada sub-paket. Silakan tambahkan sub-paket dari panel admin.</p>
+        </div>`;
+    } else {
+        bodyEl.innerHTML = children.map((child, idx) => `
+        <div style="border-radius:16px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.08); border:1px solid #e2e8f0; transition:transform 0.3s; background:white;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
+            <div style="height:160px; overflow:hidden; position:relative;">
+                <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
+                <div style="position:absolute; bottom:10px; left:10px; background:rgba(14,165,233,0.9); color:white; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:12px;">${child.duration || ''}</div>
+            </div>
+            <div style="padding:15px;">
+                <h4 style="margin:0 0 8px; font-size:1rem; font-weight:800; color:#0f172a;">${child.title}</h4>
+                <p style="font-size:0.8rem; color:#64748b; margin:0 0 12px; line-height:1.5;">${child.description || ''}</p>
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-weight:800; color:var(--primary-blue,#0ea5e9); font-size:0.95rem;">${formatPrice(child.price)}</span>
+                    <button onclick="window.closeSubPackageModal(); openTourModal('${child.id}');" style="background:linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af); color:white; border:none; padding:8px 16px; border-radius:20px; font-size:0.8rem; font-weight:700; cursor:pointer;">Detail</button>
+                </div>
+            </div>
+        </div>
+        `).join('');
+    }
+
+    modal.style.display = 'block';
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeSubPackageModal = () => {
+    const modal = document.getElementById('sub-package-modal');
+    if (modal) modal.style.display = 'none';
+    document.body.style.overflow = '';
+};
+
+// Close on overlay click
+document.addEventListener('DOMContentLoaded', () => {
+    const modal = document.getElementById('sub-package-modal');
+    if (modal) {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal || e.target.parentElement === modal) {
+                window.closeSubPackageModal();
+            }
+        });
+    }
+});
+
+
 
 
 // Render Fleet Card (Armada/Rental) - Redesigned to match Package Card style
