@@ -100,7 +100,7 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
             }],
             generationConfig: {
                 temperature: 0.1,
-                maxOutputTokens: 2048
+                maxOutputTokens: 8192
             }
         });
 
@@ -148,60 +148,102 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
             return c.json({ success: false, message: 'AI tidak mengembalikan teks', detail: JSON.stringify(geminiResult).substring(0, 500) }, 500);
         }
 
-        // Clean up and parse JSON
-        let cleanJson = responseText
-            .replace(/```json/gi, '')
-            .replace(/```/g, '')
-            .trim();
+        // === ROBUST JSON PARSER ===
+        // Step 1: Strip markdown code fences
+        let text = responseText.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
 
-        // Fix: Gemini sometimes puts raw newlines inside JSON string values
-        cleanJson = cleanJson.replace(/("(?:[^"\\]|\\.)*")/gs, (match) => {
-            return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
-        });
+        // Step 2: Find the JSON object boundaries
+        const firstBrace = text.indexOf('{');
+        if (firstBrace === -1) {
+            return c.json({ success: false, message: 'AI tidak mengembalikan format JSON', rawPreview: responseText.substring(0, 300) }, 500);
+        }
 
-        // Fix: Remove trailing commas before } or ] (common Gemini mistake)
-        cleanJson = cleanJson.replace(/,\s*([\]}])/g, '$1');
+        // Find matching closing brace by counting
+        let depth = 0;
+        let lastBrace = -1;
+        for (let i = firstBrace; i < text.length; i++) {
+            const ch = text[i];
+            if (ch === '"') {
+                // Skip over string content
+                i++;
+                while (i < text.length && text[i] !== '"') {
+                    if (text[i] === '\\') i++; // skip escaped char
+                    i++;
+                }
+                continue;
+            }
+            if (ch === '{') depth++;
+            if (ch === '}') {
+                depth--;
+                if (depth === 0) { lastBrace = i; break; }
+            }
+        }
 
-        // Fix: Missing commas between objects or arrays (common LLM generation error)
-        cleanJson = cleanJson.replace(/\}\s*\{/g, '},{');
-        cleanJson = cleanJson.replace(/\]\s*\[/g, '],[');
+        // If no matching closing brace found (truncated response), add closing brackets
+        let jsonStr;
+        if (lastBrace === -1) {
+            jsonStr = text.substring(firstBrace);
+            // Count open brackets and close them
+            let openCurly = 0, openSquare = 0;
+            let inStr = false;
+            for (let i = 0; i < jsonStr.length; i++) {
+                if (jsonStr[i] === '"' && (i === 0 || jsonStr[i-1] !== '\\')) inStr = !inStr;
+                if (inStr) continue;
+                if (jsonStr[i] === '{') openCurly++;
+                if (jsonStr[i] === '}') openCurly--;
+                if (jsonStr[i] === '[') openSquare++;
+                if (jsonStr[i] === ']') openSquare--;
+            }
+            // Remove trailing comma if any
+            jsonStr = jsonStr.replace(/,\s*$/, '');
+            jsonStr += ']'.repeat(Math.max(0, openSquare)) + '}'.repeat(Math.max(0, openCurly));
+        } else {
+            jsonStr = text.substring(firstBrace, lastBrace + 1);
+        }
 
-        // Helper to safely try parsing JSON
-        const tryParseJSON = (str) => {
-            try { return JSON.parse(str); } catch (e) { return null; }
-        };
+        // Step 3: Apply fixes
+        // Fix trailing commas
+        jsonStr = jsonStr.replace(/,\s*([\]}])/g, '$1');
+        // Fix missing commas between objects
+        jsonStr = jsonStr.replace(/\}\s*\{/g, '},{');
+        // Fix single quotes to double quotes (but be careful with apostrophes in text)
+        // Only fix quotes that look like JSON delimiters
+        jsonStr = jsonStr.replace(/:\s*'([^']*)'/g, ': "$1"');
+        jsonStr = jsonStr.replace(/,\s*'([^']*)'\s*:/g, ', "$1":');
 
-        let data = tryParseJSON(cleanJson);
+        // Step 4: Try to parse
+        const tryParse = (s) => { try { return JSON.parse(s); } catch(e) { return null; } };
+        
+        let data = tryParse(jsonStr);
         
         if (!data) {
-            // Try fixing single quotes -> double quotes
-            let fixedJson = cleanJson
-                .replace(/'/g, '"')
-                .replace(/,\s*([\]}])/g, '$1');
-            data = tryParseJSON(fixedJson);
+            // More aggressive: replace ALL single quotes with double quotes
+            let aggressive = jsonStr.replace(/'/g, '"');
+            aggressive = aggressive.replace(/,\s*([\]}])/g, '$1');
+            data = tryParse(aggressive);
         }
 
         if (!data) {
-            // Last resort: extract JSON object from surrounding text
-            const jsonMatch = cleanJson.match(/\{[\s\S]*\}/);
-            if (jsonMatch) {
-                let extracted = jsonMatch[0]
-                    .replace(/("(?:[^"\\]|\\.)*")/gs, (m) => m.replace(/\n/g, '\\n').replace(/\r/g, '\\r'))
-                    .replace(/,\s*([\]}])/g, '$1');
-                data = tryParseJSON(extracted);
-                if (!data) {
-                    extracted = extracted.replace(/'/g, '"').replace(/,\s*([\]}])/g, '$1');
-                    data = JSON.parse(extracted);
-                }
-            } else {
-                throw new Error('Tidak dapat menemukan JSON dalam respons AI');
-            }
+            // Nuclear option: try to fix raw newlines inside strings
+            let nuclear = jsonStr.replace(/(["'])(?:(?=(\\?))\2[\s\S])*?\1/g, (match) => {
+                return match.replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
+            });
+            nuclear = nuclear.replace(/,\s*([\]}])/g, '$1');
+            data = tryParse(nuclear);
+        }
+
+        if (!data) {
+            return c.json({ 
+                success: false, 
+                message: 'AI berhasil membaca gambar tapi format JSON-nya rusak. Silakan coba scan ulang.', 
+                rawPreview: responseText.substring(0, 500) 
+            }, 500);
         }
 
         return c.json({ success: true, data });
     } catch (error) {
         console.error('Error scanning image:', error);
-        let debugText = typeof responseText !== 'undefined' ? responseText.substring(0, 150) + '...' : '';
+        let debugText = responseText ? responseText.substring(0, 300) + '...' : 'empty';
         return c.json({ success: false, message: 'Gagal menganalisis gambar: ' + (error.message || 'Unknown error') + ' | RAW: ' + debugText }, 500);
     }
 });
