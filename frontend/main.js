@@ -1136,6 +1136,10 @@ window.closeCheckoutModal = () => {
         clearInterval(window.activePollInterval);
         window.activePollInterval = null;
     }
+    // Clear saved checkout state — user intentionally closed
+    sessionStorage.removeItem('checkoutState');
+    window._checkoutActive = false;
+    window.removeEventListener('beforeunload', window._checkoutBeforeUnload);
     document.getElementById("checkout-modal").classList.remove("active");
 };
 
@@ -1237,6 +1241,40 @@ window.openCheckoutModal = async (itemName, price) => {
     
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
+
+    // Save checkout state so it survives an accidental page refresh
+    sessionStorage.setItem('checkoutState', JSON.stringify({ itemName, price }));
+    window._checkoutActive = true;
+
+    // Warn user before they accidentally leave/refresh while checkout is open
+    window._checkoutBeforeUnload = (e) => {
+        if (!window._checkoutActive) return;
+        e.preventDefault();
+        e.returnValue = 'Anda sedang dalam proses checkout. Yakin ingin meninggalkan halaman ini?';
+    };
+    window.removeEventListener('beforeunload', window._checkoutBeforeUnload);
+    window.addEventListener('beforeunload', window._checkoutBeforeUnload);
+
+    // Auto-save form input values to sessionStorage as user types
+    const saveFormState = () => {
+        const saved = JSON.parse(sessionStorage.getItem('checkoutState') || '{}');
+        const nameEl = document.getElementById('co-name');
+        const phoneEl = document.getElementById('co-phone');
+        const startEl = document.getElementById('co-start-date');
+        const endEl = document.getElementById('co-end-date');
+        const payEl = document.getElementById('co-payment');
+        if (nameEl) saved.name = nameEl.value;
+        if (phoneEl) saved.phone = phoneEl.value;
+        if (startEl) saved.startDate = startEl.value;
+        if (endEl) saved.endDate = endEl.value;
+        if (payEl) saved.payment = payEl.value;
+        sessionStorage.setItem('checkoutState', JSON.stringify(saved));
+    };
+    ['co-name','co-phone','co-start-date','co-end-date','co-payment'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('input', saveFormState);
+        if (el) el.addEventListener('change', saveFormState);
+    });
 };
 
 window.checkDateOverlap = () => {
@@ -1469,7 +1507,12 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     const id = transactionId || (idPrefix + Math.floor(Math.random() * 10000));
     
     if (window.activePollInterval) clearInterval(window.activePollInterval);
-    
+
+    // Checkout done — clear saved state and remove refresh warning
+    sessionStorage.removeItem('checkoutState');
+    window._checkoutActive = false;
+    window.removeEventListener('beforeunload', window._checkoutBeforeUnload);
+
     // Save PAID booking for QRIS — fire-and-forget (non-blocking) so UI shows immediately
     if (!isBookingOnly && window.currentCheckoutData) {
         const dataToSave = { ...window.currentCheckoutData, status: 'PAID', transactionId: id };
@@ -1621,6 +1664,26 @@ const loadStats = async () => {
 
 document.addEventListener("DOMContentLoaded", () => {
     loadStats();
+
+    // ── Restore checkout modal if user accidentally refreshed the page ──
+    const savedCheckout = sessionStorage.getItem('checkoutState');
+    if (savedCheckout) {
+        try {
+            const state = JSON.parse(savedCheckout);
+            if (state.itemName !== undefined && state.price !== undefined) {
+                // Re-open modal, then restore form values after render
+                openCheckoutModal(state.itemName, state.price).then(() => {
+                    if (state.name) { const el = document.getElementById('co-name'); if (el) el.value = state.name; }
+                    if (state.phone) { const el = document.getElementById('co-phone'); if (el) el.value = state.phone; }
+                    if (state.startDate) { const el = document.getElementById('co-start-date'); if (el) el.value = state.startDate; }
+                    if (state.endDate) { const el = document.getElementById('co-end-date'); if (el) el.value = state.endDate; }
+                    if (state.payment) { const el = document.getElementById('co-payment'); if (el) { el.value = state.payment; el.dispatchEvent(new Event('change')); } }
+                    // Re-run overlap check with restored dates
+                    if (window.checkDateOverlap) window.checkDateOverlap();
+                }).catch(() => sessionStorage.removeItem('checkoutState'));
+            }
+        } catch(e) { sessionStorage.removeItem('checkoutState'); }
+    }
 });
 
 
