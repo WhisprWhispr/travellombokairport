@@ -588,24 +588,37 @@ const renderDroneTable = (items) => {
     `).join('');
 };
 
-// Helper: get next available package letter based on existing items
-const getNextPackageLetter = async () => {
+// Helper: get next available package title
+// Sequence: Paket A → Paket A 2 → Paket A 3 → Paket B → Paket B 2 → ...
+const getNextPackageTitle = async () => {
     try {
         const res = await fetch(`${API_URL}/items`);
         const items = await res.json();
         const packageItems = items.filter(i =>
             i.category && (i.category.toLowerCase().includes('paket') || i.category.toLowerCase().includes('package') || i.category.toLowerCase() === 'package')
         );
-        // Extract letters already used: match "Paket A", "Paket B", etc. in title
-        const usedLetters = new Set();
+
+        // Build a set of ALL exact used prefixes: "A", "A 2", "A 3", "B", etc.
+        const usedTitles = new Set();
         packageItems.forEach(i => {
-            const m = (i.title || '').match(/paket\s+([a-z])/i);
-            if (m) usedLetters.add(m[1].toUpperCase());
+            // Match "Paket A", "Paket A 2", "Paket B 3" etc. (case-insensitive)
+            const m = (i.title || '').match(/paket\s+([a-z])(\s+(\d+))?/i);
+            if (m) {
+                const letter = m[1].toUpperCase();
+                const num = m[3] ? parseInt(m[3]) : 1;
+                usedTitles.add(`${letter}-${num}`);
+            }
         });
-        // Find first unused letter starting from A
+
+        // Try each letter, and for each letter try variant numbers 1, 2, 3...
         for (let code = 65; code <= 90; code++) {
             const letter = String.fromCharCode(code);
-            if (!usedLetters.has(letter)) return letter;
+            for (let num = 1; num <= 99; num++) {
+                if (!usedTitles.has(`${letter}-${num}`)) {
+                    // Return title string
+                    return num === 1 ? `Paket ${letter} ` : `Paket ${letter} ${num} `;
+                }
+            }
         }
         return null;
     } catch (e) { return null; }
@@ -615,9 +628,9 @@ const getNextPackageLetter = async () => {
 const autoFillPackageTitle = async () => {
     if (idInput.value) return; // skip if editing existing item
     if (categoryInput.value === 'package') {
-        const letter = await getNextPackageLetter();
-        if (letter && !titleInput.value) {
-            titleInput.value = `Paket ${letter} `;
+        const suggestedTitle = await getNextPackageTitle();
+        if (suggestedTitle && !titleInput.value) {
+            titleInput.value = suggestedTitle;
             titleInput.focus();
             // Move cursor to end
             const len = titleInput.value.length;
