@@ -241,4 +241,59 @@ apiRoutes.post('/withdrawals', verifyToken, async (c) => {
     }
 });
 
+// GET all reviews (public)
+apiRoutes.get('/reviews', async (c) => {
+    try {
+        const db = getDb(c);
+        const snapshot = await db.collection('reviews').get();
+        let reviews = [];
+        snapshot.forEach(doc => {
+            reviews.push({ id: doc.id, ...doc.data() });
+        });
+        // Sort in memory descending by createdAt
+        reviews.sort((a, b) => {
+            const da = a.createdAt ? new Date(a.createdAt) : new Date(0);
+            const db_ = b.createdAt ? new Date(b.createdAt) : new Date(0);
+            return db_ - da;
+        });
+        return c.json(reviews);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// POST a new review (public)
+apiRoutes.post('/reviews', async (c) => {
+    try {
+        const db = getDb(c);
+        const { name, rating, comment } = await c.req.json();
+        if (!name || !rating || !comment) {
+            return c.json({ error: 'Name, rating, and comment are required' }, 400);
+        }
+        const newReview = {
+            name,
+            rating: Number(rating),
+            comment,
+            createdAt: new Date().toISOString(),
+            status: 'approved'
+        };
+        const docRef = await db.collection('reviews').add(newReview);
+        return c.json({ id: docRef.id, ...newReview }, 201);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// DELETE a review (protected)
+apiRoutes.delete('/reviews/:id', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const id = c.req.param('id');
+        await db.collection('reviews').doc(id).delete();
+        return c.json({ message: 'Review deleted successfully' });
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 export default apiRoutes;

@@ -23,6 +23,7 @@ app.route('/items', apiRoutes);
 app.route('/stats', apiRoutes); // apiRoutes handles /items, /stats, /gallery, /withdrawals
 app.route('/gallery', apiRoutes);
 app.route('/withdrawals', apiRoutes);
+app.route('/reviews', apiRoutes);
 
 // For cleanly mounting the rest
 app.route('/bookings', bookingsRoutes);
