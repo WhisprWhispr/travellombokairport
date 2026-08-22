@@ -77,10 +77,11 @@ paymentRoutes.post('/webhook', async (c) => {
         if (isPaid && transactionId) {
             // Cari booking yang memiliki transactionId ini di Firestore
             const db = getDb(c);
+            const txIdsToSearch = [transactionId, 'ORD-' + transactionId, 'BKG-' + transactionId];
             
             // Cek di koleksi bookings
             const bookingSnap = await db.collection('bookings')
-                .where('transactionId', '==', transactionId)
+                .where('transactionId', 'in', txIdsToSearch)
                 .limit(1).get();
 
             if (!bookingSnap.empty) {
@@ -95,7 +96,7 @@ paymentRoutes.post('/webhook', async (c) => {
 
             // Cek juga di koleksi orderan
             const orderSnap = await db.collection('orderan')
-                .where('transactionId', '==', transactionId)
+                .where('transactionId', 'in', txIdsToSearch)
                 .limit(1).get();
 
             if (!orderSnap.empty) {

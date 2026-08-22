@@ -1396,9 +1396,9 @@ window.processCheckout = async (itemName, price) => {
                     try {
                         const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
                         const statusData = await statusRes.json();
-                        if (statusData.success && statusData.data.status === 'PAID') {
+                        if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
                             if (window.activePollInterval) clearInterval(window.activePollInterval);
-                            window.simulateQrisSuccess(false, "ORD-" + txId);
+                            window.simulateQrisSuccess(false, txId);
                         } else {
                             if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Maaf anda belum melakukan pembayaran, Harap selesaikan pembayaran terlebih dahulu.';
                         }
@@ -1415,9 +1415,9 @@ window.processCheckout = async (itemName, price) => {
                         const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`);
                         const statusData = await statusRes.json();
                         
-                        if (statusData.success && statusData.data.status === 'PAID') {
+                        if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
                             clearInterval(pollInterval);
-                            window.simulateQrisSuccess(false, "ORD-" + data.transactionId);
+                            window.simulateQrisSuccess(false, data.transactionId);
                         } else if (statusData.success && statusData.data.status === 'EXPIRED') {
                             clearInterval(pollInterval);
                             qrisResult.innerHTML = `
