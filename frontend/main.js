@@ -795,27 +795,38 @@ window.updateSubLayanan = () => {
             return cat.includes("antar jemput") || cat.includes("transfer") || cat === "transfer";
         });
         
-        // Extract unique areas from transferMatrix
-        const uniqueAreas = new Set();
+        // Extract unique combinations of area and vehicle from transferMatrix
+        const uniqueOptions = new Set();
         transferItems.forEach(item => {
             if (item.transferMatrix && Array.isArray(item.transferMatrix)) {
                 item.transferMatrix.forEach(matrix => {
-                    if (matrix.area) uniqueAreas.add(matrix.area);
+                    let areaName = matrix.area;
+                    if (areaName && !areaName.toLowerCase().includes("airport")) {
+                         areaName = `Airport ⇔ ${areaName}`;
+                    }
+
+                    if (matrix.area && matrix.prices && Object.keys(matrix.prices).length > 0) {
+                        Object.keys(matrix.prices).forEach(vehicle => {
+                             uniqueOptions.add(`${areaName} (${vehicle})`);
+                        });
+                    } else if (matrix.area) {
+                        uniqueOptions.add(areaName);
+                    }
                 });
             }
         });
 
-        uniqueAreas.forEach(area => {
-            options.push({title: area});
+        uniqueOptions.forEach(opt => {
+            options.push({title: opt});
         });
 
         // Fallback mock data
         if (options.length === 0) {
             options = [
-                {title: "Mataram Kota"},
-                {title: "Senggigi"},
-                {title: "Kuta Mandalika"},
-                {title: "Bangsal / Senaru"}
+                {title: "Airport ⇔ Mataram Kota (Avanza)"},
+                {title: "Airport ⇔ Mataram Kota (Innova)"},
+                {title: "Airport ⇔ Senggigi (Avanza)"},
+                {title: "Airport ⇔ Senggigi (Innova)"}
             ];
         }
     }
