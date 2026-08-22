@@ -965,7 +965,7 @@ const fetchAdminBookings = async () => {
         // Filter
         const manualBookings = allBookings.filter(b => b.transactionId && b.transactionId.startsWith('MANUAL'));
         const webOrders = allBookings.filter(b => b.transactionId && b.transactionId.startsWith('ORD-'));
-        const webBookings = allBookings.filter(b => !b.transactionId || b.transactionId.startsWith('BKG-') || (!b.transactionId.startsWith('MANUAL') && !b.transactionId.startsWith('ORD-')));
+        const webBookings = allBookings.filter(b => !b.transactionId || b.transactionId.startsWith('BKG-'));
         
         // Helper renderer
         const renderRows = (bookingsArray, emptyMsg, tableElem) => {
