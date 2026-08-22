@@ -460,30 +460,49 @@ window.openSubPackageModal = (parentId) => {
     if (!titleEl || !bodyEl || !modal) return;
 
     titleEl.innerText = parentItem.title;
-    descEl.innerText = parentItem.description || 'Pilih paket yang sesuai dengan keinginan Anda.';
+    if (descEl) descEl.innerText = parentItem.description || 'Pilih paket yang sesuai dengan keinginan Anda.';
+
+    // Scroll modal to top
+    modal.scrollTop = 0;
 
     if (children.length === 0) {
-        bodyEl.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:40px; color:#64748b;">
-            <i class="fa-solid fa-box-open" style="font-size:3rem; margin-bottom:15px; display:block; color:#cbd5e1;"></i>
-            <p>Belum ada sub-paket. Silakan tambahkan sub-paket dari panel admin.</p>
+        bodyEl.innerHTML = `<div style="grid-column:1/-1; text-align:center; padding:60px 20px; color:#64748b;">
+            <i class="fa-solid fa-box-open" style="font-size:3.5rem; margin-bottom:15px; display:block; color:#cbd5e1;"></i>
+            <p style="font-size:1rem; font-weight:600;">Belum ada sub-paket.</p>
+            <p style="font-size:0.85rem;">Silakan tambahkan sub-paket dari panel admin.</p>
         </div>`;
     } else {
-        bodyEl.innerHTML = children.map((child, idx) => `
-        <div style="border-radius:16px; overflow:hidden; box-shadow:0 8px 25px rgba(0,0,0,0.08); border:1px solid #e2e8f0; transition:transform 0.3s; background:white;" onmouseover="this.style.transform='translateY(-4px)'" onmouseout="this.style.transform='translateY(0)'">
-            <div style="height:160px; overflow:hidden; position:relative;">
-                <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}" style="width:100%; height:100%; object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
-                <div style="position:absolute; bottom:10px; left:10px; background:rgba(14,165,233,0.9); color:white; font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:12px;">${child.duration || ''}</div>
-            </div>
-            <div style="padding:15px;">
-                <h4 style="margin:0 0 8px; font-size:1rem; font-weight:800; color:#0f172a;">${child.title}</h4>
-                <p style="font-size:0.8rem; color:#64748b; margin:0 0 12px; line-height:1.5;">${child.description || ''}</p>
-                <div style="display:flex; justify-content:space-between; align-items:center;">
-                    <span style="font-weight:800; color:var(--primary-blue,#0ea5e9); font-size:0.95rem;">${formatPrice(child.price)}</span>
-                    <button onclick="window.closeSubPackageModal(); openTourModal('${child.id}');" style="background:linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af); color:white; border:none; padding:8px 16px; border-radius:20px; font-size:0.8rem; font-weight:700; cursor:pointer;">Detail</button>
+        bodyEl.innerHTML = children.map((child) => {
+            const priceText = child.price ? formatPrice(child.price).replace('Rp ', '') : '';
+            return `
+            <div style="background:white; border:1px solid #f1f5f9; border-radius:4px; overflow:hidden; box-shadow:0 2px 8px rgba(0,0,0,0.04); cursor:pointer; display:flex; flex-direction:column;"
+                 onclick="window.closeSubPackageModal(); openTourModal('${child.id}');">
+                <!-- Image -->
+                <div style="position:relative; height:130px; overflow:hidden;">
+                    <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}"
+                        style="width:100%; height:100%; object-fit:cover;"
+                        onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
+                    ${priceText ? `<div style="position:absolute; top:10px; right:0; background:#fbb320; color:#1f2937; font-size:0.75rem; font-weight:800; padding:4px 8px;">IDR ${priceText} <span style="font-size:0.6rem; font-weight:600;">/orang</span></div>` : ''}
                 </div>
-            </div>
-        </div>
-        `).join('');
+                <!-- Content -->
+                <div style="padding:12px; display:flex; flex-direction:column; flex:1;">
+                    <h4 style="margin:0 0 6px; font-size:0.75rem; font-weight:800; color:#111827; line-height:1.4; text-transform:uppercase;">${child.title}</h4>
+                    <div style="display:flex; gap:2px; margin-bottom:12px; align-items:center;">
+                        <i class="fa-solid fa-star" style="color:#fbb320; font-size:0.6rem;"></i>
+                        <i class="fa-solid fa-star" style="color:#fbb320; font-size:0.6rem;"></i>
+                        <i class="fa-solid fa-star" style="color:#fbb320; font-size:0.6rem;"></i>
+                        <i class="fa-solid fa-star" style="color:#fbb320; font-size:0.6rem;"></i>
+                        <i class="fa-solid fa-star" style="color:#fbb320; font-size:0.6rem;"></i>
+                        <span style="font-size:0.55rem; color:#9ca3af; margin-left:4px;">(All guests are satisfied)</span>
+                    </div>
+                    <div style="margin-top:auto; border-top:1px solid #f3f4f6; padding-top:10px; text-align:center;">
+                        <span style="color:#374151; font-size:0.75rem; font-weight:600; display:flex; align-items:center; justify-content:center; gap:6px;">
+                            Selengkapnya <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
     }
 
     modal.style.display = 'block';
@@ -495,18 +514,6 @@ window.closeSubPackageModal = () => {
     if (modal) modal.style.display = 'none';
     document.body.style.overflow = '';
 };
-
-// Close on overlay click
-document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('sub-package-modal');
-    if (modal) {
-        modal.addEventListener('click', (e) => {
-            if (e.target === modal || e.target.parentElement === modal) {
-                window.closeSubPackageModal();
-            }
-        });
-    }
-});
 
 
 
