@@ -418,10 +418,21 @@ const createTransferCard = (item, index = 0) => {
 };
 
 // Render Package Card (Paket Tour)
-const createPackageCard = (item, index = 0) => `
+const createPackageCard = (item, index = 0) => {
+    const letter = String.fromCharCode(65 + index); // A=0, B=1, C=2, ...
+    return `
     <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper">
             <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
+            <span style="
+                position: absolute; top: 12px; left: 12px;
+                background: linear-gradient(135deg, #1d4ed8, #0891b2);
+                color: white; font-size: 0.7rem; font-weight: 800;
+                padding: 4px 10px; border-radius: 20px;
+                display: inline-flex; align-items: center; gap: 4px;
+                box-shadow: 0 2px 8px rgba(0,0,0,0.3); z-index: 2;
+                letter-spacing: 0.5px; text-transform: uppercase;
+            "><i class="fa-solid fa-star" style="font-size:0.6rem;"></i> PAKET ${letter}</span>
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
         </div>
         <div class="content">
@@ -436,6 +447,8 @@ const createPackageCard = (item, index = 0) => `
         </div>
     </div>
 `;
+};
+
 
 // Render Fleet Card (Armada/Rental) - Redesigned to match Package Card style
 const createFleetCard = (item, index = 0) => {
