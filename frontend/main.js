@@ -858,6 +858,9 @@ window.generateEtiketPDF = (data) => {
                         Travel Lombok Airport dan sah tanpa tanda tangan fisik.
                     </div>
                     <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${issuedAt}</div>
+                    <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:20px;padding:3px 10px;">
+                        <span style="font-size:9px;color:#fff;font-weight:700;letter-spacing:0.5px;">&#127760; Dipesan melalui website travellombokairport.com</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1128,6 +1131,11 @@ window.submitBooking = (method) => {
 };
 // Checkout & QRIS Flow
 window.closeCheckoutModal = () => {
+    // Stop any active QRIS polling when modal is closed
+    if (window.activePollInterval) {
+        clearInterval(window.activePollInterval);
+        window.activePollInterval = null;
+    }
     document.getElementById("checkout-modal").classList.remove("active");
 };
 
@@ -1411,15 +1419,21 @@ window.processCheckout = async (itemName, price) => {
                 };
 
                 const pollInterval = setInterval(async () => {
+                    // Use AbortController so stale requests don't pile up
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 6000);
                     try {
-                        const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`);
+                        const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`, { signal: controller.signal });
+                        clearTimeout(timeoutId);
                         const statusData = await statusRes.json();
                         
                         if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
                             clearInterval(pollInterval);
+                            window.activePollInterval = null;
                             window.simulateQrisSuccess(false, data.transactionId);
                         } else if (statusData.success && statusData.data.status === 'EXPIRED') {
                             clearInterval(pollInterval);
+                            window.activePollInterval = null;
                             qrisResult.innerHTML = `
                                 <div style="text-align: center; padding: 20px; background: #fff1f2; border: 1px solid #fda4af; border-radius: 12px; margin-top: 20px;">
                                     <i class="fa-solid fa-circle-xmark" style="font-size: 3rem; color: #ef4444; margin-bottom: 15px;"></i>
@@ -1428,8 +1442,11 @@ window.processCheckout = async (itemName, price) => {
                                 </div>
                             `;
                         }
-                    } catch (e) { console.error(e); }
-                }, 5000);
+                    } catch (e) {
+                        clearTimeout(timeoutId);
+                        if (e.name !== 'AbortError') console.error(e);
+                    }
+                }, 2000); // Poll every 2 seconds for faster detection
                 window.activePollInterval = pollInterval;
 
             } else {
@@ -1453,16 +1470,15 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     
     if (window.activePollInterval) clearInterval(window.activePollInterval);
     
-    // Save PAID booking for QRIS if data exists
+    // Save PAID booking for QRIS — fire-and-forget (non-blocking) so UI shows immediately
     if (!isBookingOnly && window.currentCheckoutData) {
-        try {
-            await fetch(`${API_URL}/bookings`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ ...window.currentCheckoutData, status: 'PAID', transactionId: id })
-            });
-        } catch (e) { console.error("Failed to save QRIS booking:", e); }
-        window.currentCheckoutData = null; // Clear it
+        const dataToSave = { ...window.currentCheckoutData, status: 'PAID', transactionId: id };
+        window.currentCheckoutData = null; // Clear immediately
+        fetch(`${API_URL}/bookings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dataToSave)
+        }).catch(e => console.error('Failed to save QRIS booking:', e));
     }
     
     modalBody.innerHTML = `
@@ -1562,6 +1578,9 @@ window.downloadPdfInvoice = (id) => {
                 <p style="margin: 0 0 5px 0; font-size: 16px; color: #1e293b; font-weight: 600;">Terima kasih atas pesanan Anda!</p>
                 <p style="margin: 0; font-size: 13px;">Harap simpan e-Tiket ini dan tunjukkan kepada pengemudi atau petugas kami saat hari keberangkatan.</p>
                 <p style="margin: 15px 0 0 0; font-size: 11px; opacity: 0.7;">Dokumen ini diterbitkan secara otomatis oleh sistem Travel Lombok Airport dan sah tanpa tanda tangan.</p>
+                <div style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #1d4ed8, #0891b2); border-radius: 20px; padding: 5px 14px;">
+                    <span style="font-size: 11px; color: #fff; font-weight: 700; letter-spacing: 0.5px;">&#127760; Dipesan melalui website travellombokairport.com</span>
+                </div>
             </div>
             
         </div>
