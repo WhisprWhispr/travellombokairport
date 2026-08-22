@@ -678,14 +678,20 @@ const init = async () => {
         return createServiceCard(item, index);
     });
 
-    // Sort packages by letter/number extracted from title (e.g. "Paket A", "Paket B", "2D1N Paket C")
+    // Sort packages by identifier letter extracted from title
+    // Supports formats: "(Paket A)", "(Paket B 2)", "Paket A", "Paket A 2", etc.
     const extractSortKey = (title) => {
-        // Match pattern: "Paket A", "Paket B 2D", "PAKET C - ...", also handles numbers like "Paket 1"
-        const m = title.match(/paket\s+([a-z0-9]+)/i);
+        // Priority 1: match "(Paket A)" or "(Paket A 2)" inside parentheses
+        let m = title.match(/\(paket\s+([a-z])(\s+(\d+))?\s*\)/i);
+        if (!m) {
+            // Priority 2: match "Paket A" where A is a SINGLE letter (not a full word like "Private")
+            m = title.match(/paket\s+([a-z])(\s+(\d+))?(?:\s|$)/i);
+        }
         if (!m) return title.toLowerCase(); // fallback: sort by full title
-        const key = m[1].toUpperCase();
-        // Pad numbers so numeric sort works: "1" -> "001", "A" stays "A"
-        return isNaN(key) ? key : key.padStart(5, '0');
+
+        const letter = m[1].toUpperCase();
+        const num = m[3] ? parseInt(m[3]).toString().padStart(5, '0') : '00001';
+        return `${letter}-${num}`;
     };
     const sortedPackages = [...packages].sort((a, b) =>
         extractSortKey(a.title).localeCompare(extractSortKey(b.title))
