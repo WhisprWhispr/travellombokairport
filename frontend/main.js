@@ -1980,33 +1980,40 @@ window.toggleAuthMode = () => {
 window.checkAuthUI = () => {
     const token = localStorage.getItem('auth_token');
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-    const navBtn = document.getElementById('nav-btn-auth');
-    if (navBtn) {
+    
+    const authContainer = document.getElementById('footer-auth-container');
+    const userContainer = document.getElementById('footer-user-container');
+    const userNameDisplay = document.getElementById('footer-user-name');
+    
+    if (authContainer && userContainer) {
         if (token && user) {
-            navBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> ${user.name || 'Akun Saya'}`;
-            navBtn.onclick = () => {
-                Swal.fire({
-                    title: 'Akun Anda',
-                    text: `Email: ${user.email}`,
-                    icon: 'info',
-                    showCancelButton: true,
-                    confirmButtonText: 'Logout',
-                    cancelButtonText: 'Tutup',
-                    confirmButtonColor: '#ef4444'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        localStorage.removeItem('auth_token');
-                        localStorage.removeItem('auth_user');
-                        window.checkAuthUI();
-                        Swal.fire({icon: 'success', title: 'Berhasil Logout', timer: 1500, showConfirmButton: false});
-                    }
-                });
-            };
+            authContainer.style.display = 'none';
+            userContainer.style.display = 'flex';
+            if (userNameDisplay) userNameDisplay.innerText = user.name || 'Pengguna';
         } else {
-            navBtn.innerHTML = `<i class="fa-solid fa-user"></i> Login`;
-            navBtn.onclick = window.openAuthModal;
+            authContainer.style.display = 'flex';
+            userContainer.style.display = 'none';
         }
     }
+};
+
+window.logoutUser = () => {
+    Swal.fire({
+        title: 'Konfirmasi',
+        text: "Apakah Anda yakin ingin keluar?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Ya, Logout',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#ef4444'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            window.checkAuthUI();
+            Swal.fire({icon: 'success', title: 'Berhasil Logout', timer: 1500, showConfirmButton: false});
+        }
+    });
 };
 
 window.checkAuthAndPrompt = () => {
