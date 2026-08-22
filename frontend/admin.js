@@ -253,6 +253,13 @@ window.scanImageWithAI = async () => {
                         excludeInput.value = aiData.exclude.replace(/\\n/g, '\n').replace(/•/g, '-');
                     }
 
+                    // 12.5 Terms / Syarat & Ketentuan
+                    if (aiData.terms && termsInput && termsCategoryInput) {
+                        termsCategoryInput.value = 'custom';
+                        termsCategoryInput.dispatchEvent(new Event('change'));
+                        termsInput.value = aiData.terms.replace(/\\n/g, '\n').replace(/•/g, '-');
+                    }
+
                     // 13. Transfer Matrix (Antar Jemput)
                     if (aiData.transferMatrix && Array.isArray(aiData.transferMatrix) && aiData.transferMatrix.length > 0) {
                         // Extract unique vehicle names from all areas
