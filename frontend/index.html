@@ -246,7 +246,7 @@
             <form class="check-form" id="form-cek-booking" onsubmit="window.cekStatusBooking(event, 'booking')">
               <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
                 <input type="text" id="input-cek-booking" placeholder="Contoh: BKG-1234" class="form-control" required style="margin-bottom: 0;">
-                <button type="button" class="btn" style="background: var(--bg-light); color: var(--text-dark); border: 1px solid #cbd5e1; padding: 0 15px;" onclick="navigator.clipboard.readText().then(text => document.getElementById('input-cek-booking').value = text).catch(err => alert('Gagal menempelkan teks. Pastikan browser mengizinkan akses clipboard.'))" title="Tempel / Paste"><i class="fa-solid fa-paste"></i></button>
+                <button type="button" class="btn" style="background: var(--bg-light); color: var(--text-dark); border: 1px solid #cbd5e1; padding: 0 15px;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('input-cek-booking').value = text; Swal.fire({icon: 'success', title: 'Berhasil Ditempel', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); }).catch(err => Swal.fire({icon: 'error', title: 'Akses Ditolak', text: 'Browser Anda memblokir akses clipboard. Silakan paste secara manual (Ctrl+V atau Tahan lalu Tempel).'}))" title="Tempel / Paste"><i class="fa-solid fa-paste"></i></button>
               </div>
               <button type="submit" class="btn btn-green w-100" id="btn-cek-booking">CEK STATUS BOOKING</button>
             </form>
@@ -259,7 +259,7 @@
             <form class="check-form" id="form-cek-orderan" onsubmit="window.cekStatusBooking(event, 'orderan')">
               <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
                 <input type="text" id="input-cek-orderan" placeholder="Contoh: ORD-1234" class="form-control" required style="margin-bottom: 0;">
-                <button type="button" class="btn" style="background: white; color: var(--primary-green); border: 1px solid #bbf7d0; padding: 0 15px;" onclick="navigator.clipboard.readText().then(text => document.getElementById('input-cek-orderan').value = text).catch(err => alert('Gagal menempelkan teks. Pastikan browser mengizinkan akses clipboard.'))" title="Tempel / Paste"><i class="fa-solid fa-paste"></i></button>
+                <button type="button" class="btn" style="background: white; color: var(--primary-green); border: 1px solid #bbf7d0; padding: 0 15px;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('input-cek-orderan').value = text; Swal.fire({icon: 'success', title: 'Berhasil Ditempel', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); }).catch(err => Swal.fire({icon: 'error', title: 'Akses Ditolak', text: 'Browser Anda memblokir akses clipboard. Silakan paste secara manual (Ctrl+V atau Tahan lalu Tempel).'}))" title="Tempel / Paste"><i class="fa-solid fa-paste"></i></button>
               </div>
               <button type="submit" class="btn btn-green w-100" id="btn-cek-orderan" style="background: var(--primary-green);">CEK STATUS ORDERAN</button>
             </form>
