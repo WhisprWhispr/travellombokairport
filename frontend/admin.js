@@ -1091,22 +1091,33 @@ const fetchAdminBookings = async () => {
                     const waNumber = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
                     const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
                     const startDateStr = new Date(b.startDate).toLocaleDateString('id-ID');
-                    const waMsg = encodeURIComponent(`Assalamu'alaikum Wr. Wb. / Selamat ${new Date().getHours() < 11 ? 'Pagi' : new Date().getHours() < 15 ? 'Siang' : new Date().getHours() < 19 ? 'Sore' : 'Malam'}, Bapak/Ibu ${b.customerName} 🙏
+                    const waMsg = encodeURIComponent(
+`Assalamu'alaikum Wr. Wb. / Selamat ${new Date().getHours() < 11 ? 'Pagi' : new Date().getHours() < 15 ? 'Siang' : new Date().getHours() < 19 ? 'Sore' : 'Malam'}, Bapak/Ibu *${b.customerName}* 🙏
 
-Kami dari *Travel Lombok Airport* ingin menginformasikan mengenai detail pesanan Anda:
+Kami dari *Travel Lombok Airport* ingin menginformasikan detail pesanan Anda berikut ini:
 
-📋 *Detail Pemesanan:*
-• ID Transaksi : *${trxId}*
-• Layanan      : *${b.itemName}*
-• Tanggal      : *${startDateStr}*
+━━━━━━━━━━━━━━━━━━━━━
+📋 *DETAIL PESANAN*
+━━━━━━━━━━━━━━━━━━━━━
 
-Kami dengan senang hati siap melayani dan memastikan perjalanan Anda berjalan dengan nyaman dan aman.
+🆔 *ID Transaksi:*
+${trxId}
 
-Apabila ada pertanyaan, perubahan jadwal, atau hal lain yang perlu dikonfirmasi, jangan ragu untuk menghubungi kami.
+🛎️ *Layanan:*
+${b.itemName}
+
+📅 *Tanggal Mulai:*
+${startDateStr}
+
+━━━━━━━━━━━━━━━━━━━━━
+
+Kami dengan senang hati siap melayani dan memastikan perjalanan Anda berjalan dengan nyaman, aman, dan menyenangkan.
+
+Apabila Bapak/Ibu memiliki pertanyaan, ingin mengkonfirmasi jadwal, atau ada hal lain yang perlu disampaikan, jangan ragu untuk membalas pesan ini.
 
 Terima kasih telah mempercayakan perjalanan Anda kepada kami. 🌴
 
-Hormat kami,
+Salam hangat,
 *Admin Travel Lombok Airport*
 📞 +62 896-7696-3255`);
                     const assignDriverBtn = `<button class="action-btn btn-edit" onclick="assignDriver('${b.id}')" style="margin-top: 5px; background: var(--primary-green); color: white;"><i class="fa-solid fa-car"></i> Assign Supir</button>`;
