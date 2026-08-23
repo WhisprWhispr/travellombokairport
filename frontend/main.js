@@ -2398,9 +2398,12 @@ window.showTransactionDetail = (encodedData) => {
     const price = item.itemPrice ? 'Rp ' + parseInt(item.itemPrice).toLocaleString('id-ID') : '-';
     const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '-';
     
+    // Set global data here directly so the PDF button can just use it without complex string passing
+    window._lastBookingData = item;
+    
     // Tombol Cetak PDF selalu ada (baik PAID maupun PENDING)
     let pdfBtn = `
-        <button onclick="Swal.close(); setTimeout(()=>{ window._lastBookingData = JSON.parse(decodeURIComponent('${encodedData}')); window.generateEtiketPDF(window._lastBookingData); }, 300)" 
+        <button onclick="Swal.close(); setTimeout(()=>{ window.generateEtiketPDF(window._lastBookingData); }, 300)" 
             style="background:linear-gradient(135deg, #0ea5e9, #2563eb); border:none; color:white; font-size:0.95rem; padding:14px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; width:100%; margin-top:25px; box-shadow:0 8px 20px rgba(14,165,233,0.3); transition:all 0.3s;"
             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(14,165,233,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(14,165,233,0.3)';">
             <i class="fa-solid fa-file-pdf" style="font-size:1.2rem;"></i> Download E-Tiket (PDF)
