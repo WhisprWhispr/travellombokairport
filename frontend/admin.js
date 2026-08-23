@@ -18,6 +18,7 @@ const idInput = document.getElementById("item-id");
 const categoryInput = document.getElementById("item-category");
 const isParentInput = document.getElementById("item-is-parent");
 const parentIdInput = document.getElementById("item-parent-id");
+const titlePrefixInput = document.getElementById("item-title-prefix");
 const titleInput = document.getElementById("item-title");
 const orderInput = document.getElementById("item-order");
 const descriptionInput = document.getElementById("item-description");
@@ -685,7 +686,23 @@ const openModal = async () => {
     await autoFillPackageTitle();
 };
 
-categoryInput.addEventListener('change', autoFillPackageTitle);
+categoryInput.addEventListener('change', () => {
+    autoFillPackageTitle();
+    if (categoryInput.value === 'tour' || categoryInput.value === 'honeymoon' || categoryInput.value === 'package') {
+        titlePrefixInput.style.display = 'block';
+    } else {
+        titlePrefixInput.style.display = 'none';
+        titlePrefixInput.value = '';
+    }
+});
+
+titlePrefixInput.addEventListener('change', (e) => {
+    if (e.target.value) {
+        let currentTitle = titleInput.value.replace(/^Paket [A-Z](\s+)?/i, '').trim();
+        titleInput.value = `${e.target.value} ${currentTitle}`.trim();
+        titleInput.focus();
+    }
+});
 
 window.openDroneModal = () => {
     document.getElementById("drone-form").reset();
@@ -914,7 +931,24 @@ window.editItem = async (id) => {
         }
 
         idInput.value = item.id;
-        titleInput.value = item.title;
+        
+        let titleStr = item.title || "";
+        if (item.category === 'tour' || item.category === 'honeymoon' || item.category === 'package') {
+            titlePrefixInput.style.display = 'block';
+            const match = titleStr.match(/^(Paket [A-Z])(\s+|$)/i);
+            if (match) {
+                // Ensure proper casing like "Paket A"
+                const prefixVal = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase().replace('paket', 'Paket').replace(/[a-z]$/, c => c.toUpperCase());
+                titlePrefixInput.value = prefixVal;
+            } else {
+                titlePrefixInput.value = '';
+            }
+        } else {
+            titlePrefixInput.style.display = 'none';
+            titlePrefixInput.value = '';
+        }
+        titleInput.value = titleStr;
+
         orderInput.value = item.order || 0;
         descriptionInput.value = item.description;
         categoryInput.value = item.category;

@@ -389,8 +389,21 @@
           </div>
 
           <div class="form-group">
-            <label>Title</label>
-            <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci">
+            <label>Title / Nama Paket</label>
+            <div style="display: flex; gap: 10px;">
+              <select id="item-title-prefix" class="form-control" style="width: auto; display: none;">
+                <option value="">-- Tipe Paket (Opsional) --</option>
+                <option value="Paket A">Paket A</option>
+                <option value="Paket B">Paket B</option>
+                <option value="Paket C">Paket C</option>
+                <option value="Paket D">Paket D</option>
+                <option value="Paket E">Paket E</option>
+                <option value="Paket F">Paket F</option>
+                <option value="Paket G">Paket G</option>
+                <option value="Paket H">Paket H</option>
+              </select>
+              <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci" style="flex: 1;">
+            </div>
           </div>
 
           <div class="form-group">
