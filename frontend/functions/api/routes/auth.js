@@ -78,8 +78,24 @@ authRoutes.post('/login', async (c) => {
             
             if (lookupData.users && lookupData.users[0]) {
                 if (!lookupData.users[0].emailVerified) {
+                    // Send Email Verification again
+                    try {
+                        const continueUrl = 'https://www.travellombokairport.com/verify.html';
+                        await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=${apiKey}`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                                requestType: 'VERIFY_EMAIL',
+                                idToken: firebaseUser.idToken,
+                                continueUrl: continueUrl
+                            })
+                        });
+                    } catch (e) {
+                        console.error("Gagal mengirim ulang email verifikasi saat login", e);
+                    }
+
                     return c.json({ 
-                        error: 'Akun Anda belum diverifikasi. Silakan cek kotak masuk (atau folder spam) email Anda dan klik link verifikasi.',
+                        error: 'Akun Anda belum diverifikasi. Link verifikasi baru telah dikirim ulang ke email Anda. Silakan cek kotak masuk (atau folder spam).',
                         unverified: true 
                     }, 403);
                 }

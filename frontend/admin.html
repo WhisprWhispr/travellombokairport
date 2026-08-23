@@ -14,6 +14,7 @@
   <link rel="manifest" href="/manifest-admin.json">
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
 </head>
   <body class="admin-body bg-light">
     
@@ -33,6 +34,7 @@
               <a href="#" id="forgot-password-link" style="font-size: 0.85rem; color: var(--primary-blue); text-decoration: none;">Lupa Sandi?</a>
             </div>
           </div>
+          <div class="cf-turnstile mb-3 text-start" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS"></div>
           <button type="submit" class="btn btn-primary w-100" id="login-btn">
             Login
           </button>

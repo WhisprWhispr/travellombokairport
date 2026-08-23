@@ -1,5 +1,7 @@
 if (!window.location.pathname.includes("admin") && !window.location.pathname.includes("driver")) { document.addEventListener("contextmenu", e => e.preventDefault()); document.addEventListener("keydown", e => { if (e.ctrlKey && (e.key === "c" || e.key === "u" || e.key === "s" || e.key === "p")) { e.preventDefault(); } if (e.key === "F12") { e.preventDefault(); } }); }
-const API_URL = '/api';
+// ====== API ENDPOINT ======
+// Changed so that localhost hits Vite proxy on /api exactly like production
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
 let globalItems = [];
 
 // Format currency
@@ -1172,7 +1174,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                 </div>
                 
                 <div style="margin-top: 16px;">
-                    <button onclick="window.generateEtiketPDF(window._lastBookingData)" style="width:100%; background: linear-gradient(135deg,#1d4ed8,#0891b2); color:#fff; border:none; border-radius:10px; padding:13px 20px; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                    <button onclick="Swal.close(); setTimeout(()=> { window.generateEtiketPDF(window._lastBookingData); }, 300)" style="width:100%; background: linear-gradient(135deg,#1d4ed8,#0891b2); color:#fff; border:none; border-radius:10px; padding:13px 20px; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
                         <i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket PDF
                     </button>
                 </div>
@@ -2003,15 +2005,36 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
 window.downloadPdfInvoice = (id) => {
     // Buat wrapper off-screen agar html2pdf bisa merender HTML dengan sempurna (tidak display: none)
     const wrapper = document.createElement('div');
-    wrapper.style.position = 'absolute';
-    wrapper.style.left = '-9999px';
-    wrapper.style.top = '-9999px';
+    // Tambahkan style position absolute agar tetap berada di DOM dan punya height, tapi tidak terlihat
+    wrapper.style.cssText = 'position:absolute; left:0; top:0; z-index:-9999; visibility:hidden; overflow:hidden; width:800px; padding:0; margin:0;';
     
-    const data = window.currentCheckoutData || {};
-    const itemName = data.itemName || 'Layanan Travel Lombok';
-    const customerName = data.customerName || '-';
-    const tgl = data.startDate ? new Date(data.startDate).toLocaleDateString('id-ID', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'}) : '-';
-    const total = data.itemPrice ? 'Rp ' + parseInt(data.itemPrice).toLocaleString('id-ID') : '-';
+    // Cari data di raw history data yang baru diambil
+    const historyData = window._lastHistoryData || [];
+    const item = historyData.find(x => x.id === id || x.transactionId === id) || window.currentCheckoutData;
+    if(!item) {
+        alert('Data transaksi tidak ditemukan.');
+        return;
+    }
+
+    const {
+        transactionId,
+        itemName,
+        customerName,
+        customerEmail,
+        phone,
+        startDate,
+        endDate,
+        status,
+        itemPrice,
+        createdAt,
+        type
+    } = item;
+
+    // Formatting tanggal
+    const fmtDate = (d) => d ? new Date(d).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) : '-';
+    const dateStr = fmtDate(startDate) + (endDate ? ' - ' + fmtDate(endDate) : '');
+    const issueDate = fmtDate(createdAt || new Date());
+    const total = 'Rp ' + parseInt(itemPrice || 0).toLocaleString('id-ID');
 
     wrapper.innerHTML = `
         <div id="pdf-content" style="width: 800px; padding: 50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; background: white; box-sizing: border-box;">
@@ -2024,11 +2047,11 @@ window.downloadPdfInvoice = (id) => {
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">📞 +62 878-7555-5203 | 🌐 travellombokairport.com</p>
                 </div>
                 <div style="text-align: right;">
-                    <div style="background: #10b981; color: white; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 16px; display: inline-block; margin-bottom: 10px;">
-                        LUNAS (PAID)
+                    <div style="background: #dcfce7; color: #10b981; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 16px; display: inline-block; margin-bottom: 10px;">
+                        ${status || 'PAID'}
                     </div>
                     <h2 style="margin: 0; color: #1e293b; font-size: 24px; font-weight: 700;">E-TIKET / INVOICE</h2>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b; font-family: monospace;">Ref: ${id}</p>
+                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b; font-family: monospace;">Ref: ${transactionId || id}</p>
                 </div>
             </div>
             
@@ -2042,7 +2065,7 @@ window.downloadPdfInvoice = (id) => {
                     </div>
                     <div style="width: 50%; margin-bottom: 15px;">
                         <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Tanggal Pelaksanaan</p>
-                        <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600;">${tgl}</p>
+                        <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600;">${dateStr}</p>
                     </div>
                 </div>
             </div>
@@ -2099,6 +2122,10 @@ window.downloadPdfInvoice = (id) => {
     
     html2pdf().set(opt).from(element).save().then(() => {
         document.body.removeChild(wrapper);
+    }).catch(err => {
+        document.body.removeChild(wrapper);
+        console.error('PDF generation error:', err);
+        alert('Gagal mendownload PDF: ' + err.message);
     });
 };
 
