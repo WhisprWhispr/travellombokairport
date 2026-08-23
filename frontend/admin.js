@@ -1096,9 +1096,7 @@ const fetchAdminBookings = async () => {
 
 Kami dari *Travel Lombok Airport* ingin menginformasikan detail pesanan Anda berikut ini:
 
-━━━━━━━━━━━━━━━━━━━━━
-📋 *DETAIL PESANAN*
-━━━━━━━━━━━━━━━━━━━━━
+〰〰〰 📋 *DETAIL PESANAN* 〰〰〰
 
 🆔 *ID Transaksi:*
 ${trxId}
@@ -1109,7 +1107,7 @@ ${b.itemName}
 📅 *Tanggal Mulai:*
 ${startDateStr}
 
-━━━━━━━━━━━━━━━━━━━━━
+〰〰〰〰〰〰〰〰〰〰〰〰〰〰
 
 Apabila Bapak/Ibu memiliki pertanyaan, ingin mengkonfirmasi jadwal, atau ada hal lain yang perlu disampaikan, jangan ragu untuk membalas pesan ini.
 
