@@ -2395,7 +2395,8 @@ window.showTransactionDetail = (encodedData) => {
     const isPaid = item.status === 'PAID';
     const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
     const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
-    const price = item.itemPrice ? 'Rp ' + parseInt(item.itemPrice).toLocaleString('id-ID') : '-';
+    const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
+    const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
     const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '-';
     
     // Set global data here directly so the PDF button can just use it without complex string passing
@@ -2412,19 +2413,20 @@ window.showTransactionDetail = (encodedData) => {
 
     let detailsHtml = '';
     const showRow = (label, val) => {
-        if (!val) return '';
+        if (!val || val === '-') return '';
+        // Ubah layout jadi kolom agar rapi dan responsif, tidak tabrakan di layar HP
         return `
-            <div style="display:flex; justify-content:space-between; align-items:center; padding:12px 0; border-bottom:1px dashed #e2e8f0;">
-                <span style="color:#64748b; font-size:0.85rem;">${label}</span>
-                <span style="color:#1e293b; font-weight:600; font-size:0.85rem; text-align:right; max-width:60%;">${val}</span>
+            <div style="padding: 12px 0; border-bottom: 1px dashed #e2e8f0; display: flex; flex-direction: column; gap: 4px;">
+                <span style="color:#64748b; font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">${label}</span>
+                <span style="color:#1e293b; font-weight:700; font-size:0.95rem; word-break: break-word; line-height: 1.4;">${val}</span>
             </div>
         `;
     };
 
-    detailsHtml += showRow('Nama Pemesan', item.customerName || item.userEmail || '-');
-    detailsHtml += showRow('Email', item.customerEmail || item.userEmail || '-');
-    detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone || '-');
-    detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date || '-');
+    detailsHtml += showRow('Nama Pemesan', item.customerName || item.userEmail);
+    detailsHtml += showRow('Email', item.customerEmail || item.userEmail);
+    detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone);
+    detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date);
     if (item.endDate) detailsHtml += showRow('Tgl Selesai', item.endDate);
     if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
     if (item.details?.pax) detailsHtml += showRow('Jumlah Peserta', item.details.pax + ' Orang');
@@ -2455,13 +2457,13 @@ window.showTransactionDetail = (encodedData) => {
                             <h2 style="color:var(--primary-blue); font-size:2rem; font-weight:800; margin:0; letter-spacing:-0.5px;">${price}</h2>
                         </div>
                         <div style="background:white; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.03);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                                 <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-hashtag" style="opacity:0.5; margin-right:5px;"></i> ID Transaksi</span>
                                 <span style="font-family:monospace; font-weight:700; color:#1e293b; font-size:0.95rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">${item.transactionId}</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div style="display:flex; flex-direction:column; gap:6px;">
                                 <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-layer-group" style="opacity:0.5; margin-right:5px;"></i> Layanan</span>
-                                <span style="font-weight:700; color:#1e293b; font-size:0.9rem; max-width:60%; text-align:right;">${item.itemName}</span>
+                                <span style="font-weight:700; color:#1e293b; font-size:0.9rem; line-height: 1.4; padding-left: 20px;">${item.itemName}</span>
                             </div>
                         </div>
                     </div>
@@ -2486,7 +2488,8 @@ window.showTransactionDetail = (encodedData) => {
             const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
             const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
             const icon = item.type === 'order' ? 'fa-box' : 'fa-car';
-            const price = item.itemPrice ? 'Rp ' + parseInt(item.itemPrice).toLocaleString('id-ID') : '-';
+            const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
+            const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
             const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
 
             const encodedData = encodeURIComponent(JSON.stringify(item));
