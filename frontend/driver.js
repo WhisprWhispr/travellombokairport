@@ -31,34 +31,109 @@ document.addEventListener("DOMContentLoaded", () => {
 
 window.showDriverTutorial = () => {
     Swal.fire({
-        title: '<strong style="color: #1e293b; font-size: 1.5rem;">Panduan Aplikasi Supir</strong>',
+        title: '<strong style="color: #1e293b; font-size: 1.6rem; letter-spacing: -0.5px;">Panduan Portal Supir</strong>',
         html: `
-            <div style="text-align: left; font-size: 0.9rem; color: #475569; max-height: 60vh; overflow-y: auto; padding-right: 10px;">
-                <p style="margin-bottom: 20px;">Selamat bekerja! Aplikasi ini akan mempermudah Anda dalam mengatur jadwal penjemputan tamu.</p>
+            <style>
+                .driver-tutorial-container {
+                    text-align: left; 
+                    font-size: 0.95rem; 
+                    color: #475569; 
+                    max-height: 65vh; 
+                    overflow-y: auto; 
+                    padding-right: 5px;
+                }
+                .driver-tutorial-container::-webkit-scrollbar { width: 6px; }
+                .driver-tutorial-container::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 4px; }
+                .driver-tutorial-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+                
+                .step-card {
+                    background: white;
+                    padding: 20px;
+                    border-radius: 16px;
+                    margin-bottom: 15px;
+                    border: 1px solid #f1f5f9;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+                    position: relative;
+                    overflow: hidden;
+                    transition: transform 0.2s;
+                }
+                .step-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.06); }
+                
+                .step-card h4 {
+                    margin: 0 0 10px 0;
+                    font-size: 1.1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                }
+                
+                .step-card p {
+                    margin: 0;
+                    line-height: 1.5;
+                    font-size: 0.9rem;
+                }
+                
+                .step-1 { border-left: 6px solid #3b82f6; }
+                .step-1 h4 { color: #1d4ed8; }
+                .step-1 .icon-bg { background: #eff6ff; color: #3b82f6; }
+                
+                .step-2 { border-left: 6px solid #10b981; }
+                .step-2 h4 { color: #047857; }
+                .step-2 .icon-bg { background: #ecfdf5; color: #10b981; }
+                
+                .step-3 { border-left: 6px solid #f59e0b; }
+                .step-3 h4 { color: #b45309; }
+                .step-3 .icon-bg { background: #fffbeb; color: #f59e0b; }
 
-                <div style="background: #eff6ff; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #3b82f6; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #1e40af; font-size: 1rem;"><i class="fa-solid fa-calendar-check"></i> 1. Lihat Jadwal Trip</h4>
-                    <p style="margin: 0;">Di halaman utama, Anda akan melihat kartu jadwal yang berisi <strong>Nama Tamu</strong>, <strong>Layanan (Tujuan)</strong>, dan <strong>Tanggal Jemput</strong> yang ditugaskan oleh Admin kepada Anda.</p>
+                .icon-bg {
+                    width: 32px; height: 32px;
+                    border-radius: 8px;
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    font-size: 1rem;
+                }
+                
+                .badge-demo {
+                    display: inline-block;
+                    padding: 4px 10px;
+                    border-radius: 8px;
+                    font-size: 0.8rem;
+                    font-weight: 700;
+                    color: white;
+                    margin-top: 5px;
+                }
+            </style>
+            
+            <div class="driver-tutorial-container">
+                <p style="margin-bottom: 25px; text-align: center; font-size: 1rem;">Selamat bertugas! Aplikasi ini dirancang khusus untuk mempermudah pekerjaan Anda.</p>
+
+                <div class="step-card step-1">
+                    <h4><div class="icon-bg"><i class="fa-solid fa-calendar-check"></i></div> 1. Cek Jadwal Penjemputan</h4>
+                    <p>Setelah login, Anda akan langsung melihat daftar <strong>Jadwal Trip</strong>. Semua kartu jadwal yang tampil di sini adalah tugas resmi yang diberikan oleh Bos/Admin kepada Anda.</p>
                 </div>
 
-                <div style="background: #f0fdf4; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #22c55e; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #166534; font-size: 1rem;"><i class="fa-brands fa-whatsapp"></i> 2. Hubungi Tamu Otomatis</h4>
-                    <p style="margin: 0;">Tidak perlu repot mencatat nomor HP tamu. Cukup tekan tombol <span style="background: #22c55e; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Hubungi Tamu</span> dan WhatsApp Anda akan otomatis terbuka dengan pesan sapaan awal.</p>
+                <div class="step-card step-2">
+                    <h4><div class="icon-bg"><i class="fa-brands fa-whatsapp"></i></div> 2. Hubungi Tamu Secara Otomatis</h4>
+                    <p>Tidak perlu lagi repot menyimpan nomor tamu ke kontak HP Anda! Cukup tekan tombol <span class="badge-demo" style="background: #128C7E;"><i class="fa-brands fa-whatsapp"></i> Chat Penumpang</span>. <br><br>Sistem akan otomatis membuka aplikasi WhatsApp Anda yang sudah dilengkapi dengan <strong>pesan sapaan profesional</strong> (berisi nama Anda, nama tamu, dan tujuan penjemputan).</p>
                 </div>
 
-                <div style="background: #fff1f2; padding: 15px; border-radius: 12px; margin-bottom: 15px; border-left: 5px solid #e11d48; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                    <h4 style="margin: 0 0 8px 0; color: #9f1239; font-size: 1rem;"><i class="fa-solid fa-flag-checkered"></i> 3. Selesaikan Trip (Penting!)</h4>
-                    <p style="margin: 0;">Jika tamu sudah diantar sampai tujuan dengan selamat, Anda <strong>WAJIB</strong> menekan tombol <span style="background: #3b82f6; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8rem;">Selesaikan Trip</span>. Ini sebagai laporan otomatis ke Bos/Admin bahwa tugas Anda telah selesai.</p>
+                <div class="step-card step-3">
+                    <h4><div class="icon-bg"><i class="fa-solid fa-flag-checkered"></i></div> 3. Selesaikan Tugas (Wajib!)</h4>
+                    <p>Jika tamu sudah diantar sampai tujuan dengan selamat, Anda <strong>WAJIB</strong> menekan tombol <span class="badge-demo" style="background: #2563eb;"><i class="fa-solid fa-flag-checkered"></i> Selesaikan Trip</span>. <br><br>Langkah ini sangat penting karena ini adalah bukti / laporan otomatis Anda ke Bos bahwa tugas telah diselesaikan.</p>
                 </div>
             </div>
         `,
-        width: 600,
-        icon: 'info',
+        width: 650,
+        showCloseButton: true,
         confirmButtonText: '<i class="fa-solid fa-thumbs-up"></i> Siap, Laksanakan!',
         confirmButtonColor: '#10b981',
-        padding: '2em',
+        padding: '2.5em',
         background: '#ffffff',
-        backdrop: `rgba(15, 23, 42, 0.8)`
+        backdrop: `rgba(15, 23, 42, 0.85)`,
+        customClass: {
+            confirmButton: 'btn-driver-ready'
+        }
     }).then(() => {
         localStorage.setItem('driverTutorialSeen', 'true');
     });
