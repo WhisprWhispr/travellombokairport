@@ -105,6 +105,20 @@
     .auth-link:hover {
       text-decoration: underline;
     }
+    .forgot-link {
+      display: block;
+      text-align: right;
+      margin-top: -10px;
+      margin-bottom: 18px;
+      font-size: 0.85rem;
+      color: var(--primary-blue);
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    .forgot-link:hover {
+      text-decoration: underline;
+    }
     .back-btn {
       position: absolute;
       top: 20px;
@@ -125,6 +139,100 @@
     .back-btn:hover {
       background: #f1f5f9;
       color: #0f172a;
+    }
+    /* Modal Lupa Sandi */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.45);
+      z-index: 999;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(4px);
+      animation: fadeIn 0.2s ease;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    .modal-box {
+      background: white;
+      border-radius: 20px;
+      padding: 36px 30px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+      animation: slideUp 0.25s ease;
+      position: relative;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to   { transform: translateY(0);   opacity: 1; }
+    }
+    .modal-close {
+      position: absolute;
+      top: 14px;
+      right: 16px;
+      background: none;
+      border: none;
+      font-size: 1.3rem;
+      color: #94a3b8;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    .modal-close:hover { color: #0f172a; }
+    .modal-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 16px;
+      font-size: 1.5rem;
+      color: #1d4ed8;
+    }
+    .modal-title {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .modal-desc {
+      text-align: center;
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-bottom: 22px;
+      line-height: 1.5;
+    }
+    .btn-reset {
+      width: 100%;
+      padding: 13px;
+      background: linear-gradient(135deg, var(--primary-blue, #2563eb), #1e40af);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 6px;
+    }
+    .btn-reset:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    .btn-reset:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
     }
   </style>
 <script src="/protect.js"></script>
@@ -151,6 +259,7 @@
         <label>Password</label>
         <input type="password" id="password" class="form-control" required placeholder="Masukkan password Anda">
       </div>
+      <a id="forgot-link" class="forgot-link"><i class="fa-solid fa-key" style="margin-right:4px;"></i>Lupa Sandi?</a>
       <div class="form-group" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
         <div class="cf-turnstile" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS" data-theme="light"></div>
       </div>
@@ -162,12 +271,100 @@
     </div>
   </div>
 
+  <!-- Modal Lupa Sandi -->
+  <div class="modal-overlay" id="forgot-modal" role="dialog" aria-modal="true" aria-labelledby="forgot-modal-title">
+    <div class="modal-box">
+      <button class="modal-close" id="close-forgot-modal" aria-label="Tutup">&#x2715;</button>
+      <div class="modal-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+      <h2 class="modal-title" id="forgot-modal-title">Lupa Sandi?</h2>
+      <p class="modal-desc">Masukkan email yang terdaftar. Kami akan mengirimkan link untuk mereset sandi Anda.</p>
+      <div class="form-group">
+        <label for="reset-email">Email Terdaftar</label>
+        <input type="email" id="reset-email" class="form-control" placeholder="email@contoh.com" autocomplete="email">
+      </div>
+      <button class="btn-reset" id="btn-reset"><i class="fa-solid fa-paper-plane" style="margin-right:6px;"></i>Kirim Link Reset</button>
+    </div>
+  </div>
+
   <script src="/config.js"></script>
   <script>
     // Redirect if already logged in
     if (localStorage.getItem('auth_token')) {
         window.location.href = '/';
     }
+
+    // ── Lupa Sandi Modal ──────────────────────────────────────────────
+    const forgotModal  = document.getElementById('forgot-modal');
+    const forgotLink   = document.getElementById('forgot-link');
+    const closeBtn     = document.getElementById('close-forgot-modal');
+    const btnReset     = document.getElementById('btn-reset');
+    const resetEmailEl = document.getElementById('reset-email');
+
+    function openForgotModal() {
+        resetEmailEl.value = document.getElementById('email').value || '';
+        forgotModal.classList.add('active');
+        resetEmailEl.focus();
+    }
+    function closeForgotModal() {
+        forgotModal.classList.remove('active');
+    }
+
+    forgotLink.addEventListener('click', openForgotModal);
+    closeBtn.addEventListener('click', closeForgotModal);
+    forgotModal.addEventListener('click', (e) => {
+        if (e.target === forgotModal) closeForgotModal();
+    });
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeForgotModal();
+    });
+
+    btnReset.addEventListener('click', async () => {
+        const email = resetEmailEl.value.trim();
+        if (!email) {
+            resetEmailEl.focus();
+            resetEmailEl.style.borderColor = '#ef4444';
+            setTimeout(() => resetEmailEl.style.borderColor = '', 1500);
+            return;
+        }
+        btnReset.disabled = true;
+        btnReset.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Mengirim...';
+        try {
+            const res  = await fetch(`${API_URL}/api/auth/reset-password`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await res.json();
+            closeForgotModal();
+            if (res.ok) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Email Terkirim!',
+                    html: `<p>Link reset sandi telah dikirim ke <b>${email}</b>.</p><p style="font-size:0.88rem;color:#64748b;margin-top:8px;">Cek kotak masuk email Anda (termasuk folder Spam/Junk).</p>`,
+                    confirmButtonColor: '#1d4ed8'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Mengirim',
+                    text: data.error || 'Terjadi kesalahan. Silakan coba lagi.',
+                    confirmButtonColor: '#1d4ed8'
+                });
+            }
+        } catch (err) {
+            closeForgotModal();
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal Mengirim',
+                text: 'Tidak dapat terhubung ke server. Coba lagi nanti.',
+                confirmButtonColor: '#1d4ed8'
+            });
+        } finally {
+            btnReset.disabled = false;
+            btnReset.innerHTML = '<i class="fa-solid fa-paper-plane" style="margin-right:6px;"></i>Kirim Link Reset';
+        }
+    });
+    // ─────────────────────────────────────────────────────────────────
 
     document.getElementById('login-form').addEventListener('submit', async (e) => {
         e.preventDefault();
