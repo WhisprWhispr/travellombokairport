@@ -1109,11 +1109,12 @@ window.generateEtiketPDF = (data) => {
 // Cek Booking Status
 window.cekStatusBooking = async (event, type = 'booking') => {
     event.preventDefault();
+    // Gunakan input mana saja yang ada isinya (booking atau orderan)
     const inputId = type === 'booking' ? 'input-cek-booking' : 'input-cek-orderan';
-    const btnId = type === 'booking' ? 'btn-cek-booking' : 'btn-cek-orderan';
+    const btnId   = type === 'booking' ? 'btn-cek-booking'   : 'btn-cek-orderan';
     
     const input = document.getElementById(inputId);
-    const btn = document.getElementById(btnId);
+    const btn   = document.getElementById(btnId);
     const trxId = input.value.trim();
     
     if(!trxId) return;
@@ -1123,12 +1124,16 @@ window.cekStatusBooking = async (event, type = 'booking') => {
     btn.disabled = true;
     
     try {
+        // Satu endpoint yang cek keduanya (bookings + orders)
         const response = await fetch(`${API_URL}/bookings/check/${trxId}?_t=${new Date().getTime()}`, { cache: 'no-store' });
         
         if (response.ok) {
             const data = await response.json();
             const statusColor = data.status === 'PAID' ? '#22c55e' : (data.status === 'PENDING' ? '#f59e0b' : '#ef4444');
-            const statusIcon = data.status === 'PAID' ? 'fa-circle-check' : (data.status === 'PENDING' ? 'fa-clock' : 'fa-circle-xmark');
+            const statusIcon  = data.status === 'PAID' ? 'fa-circle-check' : (data.status === 'PENDING' ? 'fa-clock' : 'fa-circle-xmark');
+            const typeLabel   = (data.type === 'order' || (data.transactionId && data.transactionId.startsWith('ORD-')))
+                                 ? '🛒 Pesanan Tour / QRIS (ORD-)' 
+                                 : '🚗 Rental & Transfer (BKG-)';
             
             const htmlContent = `
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -1136,43 +1141,44 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                         <i class="fa-solid ${statusIcon}"></i>
                     </div>
                     <span style="background: ${statusColor}; color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${data.status}</span>
+                    <div style="margin-top: 8px; font-size: 0.78rem; color: #64748b; background: #f8fafc; display: inline-block; padding: 3px 10px; border-radius: 20px;">${typeLabel}</div>
                 </div>
                 
-                <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px solid #e2e8f0; text-align: left;">
+                <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: left;">
                     <div style="margin-bottom: 10px;">
-                        <span style="font-size: 0.8rem; color: #64748b;">ID Transaksi</span>
-                        <div style="font-weight: bold; color: #1e293b;">${data.transactionId}</div>
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">ID Transaksi</span>
+                        <div style="font-weight: 700; color: #1e293b; font-family: monospace; font-size: 0.95rem;">${data.transactionId}</div>
                     </div>
                     <div style="margin-bottom: 10px;">
-                        <span style="font-size: 0.8rem; color: #64748b;">Atas Nama</span>
-                        <div style="font-weight: bold; color: #1e293b;">${data.customerName}</div>
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Atas Nama</span>
+                        <div style="font-weight: 700; color: #1e293b;">${data.customerName || '-'}</div>
                     </div>
                     <div style="margin-bottom: 10px;">
-                        <span style="font-size: 0.8rem; color: #64748b;">Email</span>
-                        <div style="font-weight: bold; color: #1e293b;">${data.customerEmail || '-'}</div>
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Email</span>
+                        <div style="font-weight: 700; color: #1e293b;">${data.customerEmail || '-'}</div>
                     </div>
                     <div style="margin-bottom: 10px;">
-                        <span style="font-size: 0.8rem; color: #64748b;">No. HP / WA</span>
-                        <div style="font-weight: bold; color: #1e293b;">${data.phone || '-'}</div>
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">No. HP / WA</span>
+                        <div style="font-weight: 700; color: #1e293b;">${data.phone || '-'}</div>
                     </div>
                     <div style="margin-bottom: 10px;">
-                        <span style="font-size: 0.8rem; color: #64748b;">Item / Layanan</span>
-                        <div style="font-weight: bold; color: #1e293b;">${data.itemName}</div>
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Item / Layanan</span>
+                        <div style="font-weight: 700; color: #1e293b;">${data.itemName || '-'}</div>
                     </div>
                     <div>
-                        <span style="font-size: 0.8rem; color: #64748b;">Jadwal</span>
-                        <div style="font-weight: bold; color: #1e293b;">${new Date(data.startDate).toLocaleDateString('id-ID')} s/d ${new Date(data.endDate).toLocaleDateString('id-ID')}</div>
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Jadwal</span>
+                        <div style="font-weight: 700; color: #1e293b;">${data.startDate ? new Date(data.startDate).toLocaleDateString('id-ID') : '-'} ${data.endDate ? '– ' + new Date(data.endDate).toLocaleDateString('id-ID') : ''}</div>
                     </div>
                 </div>
                 
                 <div style="margin-top: 16px;">
-                    <button onclick="window.generateEtiketPDF(window._lastBookingData)" style="width:100%; background: linear-gradient(135deg,#1d4ed8,#0891b2); color:#fff; border:none; border-radius:8px; padding:12px 20px; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
+                    <button onclick="window.generateEtiketPDF(window._lastBookingData)" style="width:100%; background: linear-gradient(135deg,#1d4ed8,#0891b2); color:#fff; border:none; border-radius:10px; padding:13px 20px; font-size:0.95rem; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; transition:opacity 0.2s;" onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
                         <i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket PDF
                     </button>
                 </div>
             `;
             
-            // Store data globally so the PDF button can access it
+            // Simpan data lengkap untuk PDF
             window._lastBookingData = data;
             
             Swal.fire({
@@ -1180,13 +1186,11 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                 html: htmlContent,
                 confirmButtonColor: '#22c55e',
                 confirmButtonText: 'Tutup',
-                customClass: {
-                    container: 'my-swal-container'
-                }
+                customClass: { container: 'my-swal-container' }
             });
             
         } else {
-            let errorMsg = "Pastikan ID Transaksi yang Anda masukkan benar.";
+            let errorMsg = "Pastikan ID Transaksi yang Anda masukkan benar (BKG-... atau ORD-...).";
             try {
                 const err = await response.json();
                 if (err && err.message) errorMsg = err.message;
@@ -1214,7 +1218,6 @@ window.cekStatusBooking = async (event, type = 'booking') => {
         input.value = '';
     }
 };
-
 
 // Navbar Scroll Effect
 window.addEventListener('scroll', () => {

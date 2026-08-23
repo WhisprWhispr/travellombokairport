@@ -116,6 +116,8 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
                 transactionId: d.transactionId || doc.id,
                 itemName: d.itemName || d.serviceName || '-',
                 customerName: d.customerName || '-',
+                customerEmail: d.customerEmail || d.email || '-',
+                phone: d.phone || d.wa || '-',
                 startDate: d.startDate || null,
                 endDate: d.endDate || null,
                 status: d.status || 'PENDING',
@@ -133,6 +135,8 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
                 transactionId: d.transactionId || doc.id,
                 itemName: d.itemName || d.packageName || '-',
                 customerName: d.customerName || '-',
+                customerEmail: d.customerEmail || d.email || '-',
+                phone: d.phone || d.wa || '-',
                 startDate: d.travelDate || d.startDate || null,
                 endDate: d.endDate || null,
                 status: d.status || 'PENDING',
@@ -154,27 +158,85 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
     }
 });
 
-// GET specific booking for check status (public)
+// GET specific booking/order for check status (public)
+// Searches both 'bookings' (BKG-) and 'orders' (ORD-) collections
 bookingsRoutes.get('/check/:transactionId', async (c) => {
     try {
         const db = getDb(c);
         const transactionId = c.req.param('transactionId');
-        const snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+
+        // 1. Cari di collection 'bookings' (BKG-)
+        const bkgSnap = await db.collection('bookings').where('transactionId', '==', transactionId).get();
         
-        if (snapshot.empty) {
-            return c.json({ message: 'Booking tidak ditemukan' }, 404);
+        if (!bkgSnap.empty) {
+            const doc = bkgSnap.docs[0];
+            const data = doc.data();
+            return c.json({
+                transactionId: data.transactionId,
+                itemName: data.itemName || data.serviceName || '-',
+                customerName: data.customerName || '-',
+                customerEmail: data.customerEmail || data.email || '-',
+                phone: data.phone || data.wa || '-',
+                startDate: data.startDate || data.travelDate || null,
+                endDate: data.endDate || null,
+                status: data.status || 'PENDING',
+                itemPrice: data.price || data.totalPrice || data.itemPrice || 0,
+                isDp: data.isDp || false,
+                fullPrice: data.fullPrice || data.price || 0,
+                createdAt: data.createdAt || null,
+                type: 'booking'
+            });
+        }
+
+        // 2. Jika tidak ada, cari di collection 'orders' (ORD-)
+        const ordSnap = await db.collection('orders').where('transactionId', '==', transactionId).get();
+
+        if (!ordSnap.empty) {
+            const doc = ordSnap.docs[0];
+            const data = doc.data();
+            return c.json({
+                transactionId: data.transactionId,
+                itemName: data.itemName || data.packageName || '-',
+                customerName: data.customerName || '-',
+                customerEmail: data.customerEmail || data.email || '-',
+                phone: data.phone || data.wa || '-',
+                startDate: data.travelDate || data.startDate || null,
+                endDate: data.endDate || null,
+                status: data.status || 'PENDING',
+                itemPrice: data.totalPrice || data.price || data.itemPrice || 0,
+                isDp: data.isDp || false,
+                fullPrice: data.fullPrice || data.totalPrice || 0,
+                createdAt: data.createdAt || null,
+                type: 'order'
+            });
+        }
+
+        // 3. Tidak ditemukan di keduanya
+        return c.json({ message: 'Pesanan tidak ditemukan. Pastikan ID Transaksi yang Anda masukkan benar (BKG-... atau ORD-...).' }, 404);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+// PUT update booking status by transactionId (for QRIS payment callback - no auth required)
+bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
+    try {
+        const db = getDb(c);
+        const transactionId = c.req.param('transactionId');
+        const { status } = await c.req.json();
+        
+        if (!status) {
+            return c.json({ message: 'Status is required' }, 400);
         }
         
-        const doc = snapshot.docs[0];
-        const data = doc.data();
-        return c.json({
-            transactionId: data.transactionId,
-            itemName: data.itemName,
-            customerName: data.customerName,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            status: data.status
-        });
+        const snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        if (snapshot.empty) {
+            return c.json({ message: 'Booking not found' }, 404);
+        }
+        
+        const docId = snapshot.docs[0].id;
+        await db.collection('bookings').doc(docId).update({ status });
+        
+        return c.json({ message: 'Booking status updated successfully', transactionId, status });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }
