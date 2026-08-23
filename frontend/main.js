@@ -486,7 +486,7 @@ window.openSubPackageModal = (parentId) => {
         </div>`;
     } else {
         bodyEl.innerHTML = children.map((child) => {
-            const priceText = child.price ? formatPrice(child.price).replace('Rp ', '') : '';
+            const priceText = child.price ? formatPrice(child.price).replace(/^(IDR|Rp\.?)\s*/i, '') : '';
             return `
             <div style="background:white; border:none; border-radius:16px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04); cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
                  onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)';"
@@ -499,7 +499,7 @@ window.openSubPackageModal = (parentId) => {
                         onmouseover="this.style.transform='scale(1.08)'"
                         onmouseout="this.style.transform='scale(1)'"
                         onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
-                    ${priceText ? `<div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 255, 255, 0.95); backdrop-filter:blur(4px); color:#0f172a; font-size:0.85rem; font-weight:800; padding:6px 14px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.4);"><span style="color:#0284c7; font-size:0.7rem; font-weight:700; margin-right:2px;">IDR</span>${priceText} <span style="font-size:0.65rem; font-weight:600; color:#64748b;">/orang</span></div>` : ''}
+                    ${priceText ? `<div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 255, 255, 0.95); backdrop-filter:blur(4px); color:#0f172a; font-size:0.85rem; font-weight:800; padding:6px 14px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.4);"><span style="color:#0284c7; font-size:0.7rem; font-weight:700; margin-right:2px;">Rp</span>${priceText} <span style="font-size:0.65rem; font-weight:600; color:#64748b;">/orang</span></div>` : ''}
                 </div>
                 <!-- Content -->
                 <div style="padding:16px 20px; display:flex; flex-direction:column; flex:1;">
