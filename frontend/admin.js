@@ -1043,6 +1043,7 @@ window.showTab = (tab) => {
     document.getElementById("withdrawal-section").style.display = "none";
     document.getElementById("settings-section").style.display = "none";
     document.getElementById("drivers-section").style.display = "none";
+    document.getElementById("guide-item-btn").style.display = "none";
     document.getElementById("add-item-btn").style.display = "none";
     document.getElementById("add-booking-btn").style.display = "none";
     document.getElementById("add-gallery-btn").style.display = "none";
@@ -1050,6 +1051,7 @@ window.showTab = (tab) => {
     
     if (tab === "items") {
         document.getElementById("items-section").style.display = "block";
+        document.getElementById("guide-item-btn").style.display = "inline-block";
         document.getElementById("add-item-btn").style.display = "inline-block";
     } else if (tab === "bookings") {
         document.getElementById("bookings-section").style.display = "block";
@@ -1383,6 +1385,52 @@ window.showAdminTutorial = () => {
         backdrop: `rgba(15, 23, 42, 0.8)`
     }).then(() => {
         localStorage.setItem('adminTutorialSeen', 'true');
+    });
+};
+
+window.showManageItemTutorial = () => {
+    Swal.fire({
+        title: '<strong style="color: #1e293b; font-size: 1.5rem;">Panduan Kelola & Tambah Item</strong>',
+        html: `
+            <div style="text-align: left; font-size: 0.9rem; color: #475569; max-height: 65vh; overflow-y: auto; padding-right: 10px;">
+                <p>Bagian ini sangat penting karena data yang Anda masukkan di sini akan <strong>langsung tampil di website utama</strong> yang dilihat oleh pelanggan.</p>
+                
+                <h4 style="color: #2563eb; margin-top: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-layer-group"></i> A. Kategori (Category)</h4>
+                <p>Pilih kategori yang tepat agar item muncul di bagian yang benar pada website:</p>
+                <ul style="margin-top: 5px; padding-left: 20px;">
+                    <li><strong>cars:</strong> Akan tampil di bagian "Sewa Mobil".</li>
+                    <li><strong>motorcycles:</strong> Akan tampil di bagian "Sewa Motor".</li>
+                    <li><strong>packages:</strong> Akan tampil di bagian "Paket Tour Populer".</li>
+                    <li><strong>sub-packages:</strong> Ini adalah itinerary spesifik dari suatu Paket Tour (Misal: <em>Paket Tour A -> Hari 1, Hari 2</em>).</li>
+                </ul>
+
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-heading"></i> B. Judul (Title)</h4>
+                <p>Ketikkan nama mobil, motor, atau nama paket tour secara jelas. Contoh: <em>Toyota Avanza Baru</em> atau <em>Paket Gili Trawangan 3D2N</em>.</p>
+
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-tag"></i> C. Harga (Price)</h4>
+                <p>Ketikkan angka saja <strong>tanpa titik/koma/Rp</strong>. Sistem akan memformatnya secara otomatis. Contoh: Jika harganya Rp 300.000, cukup ketikkan <strong>300000</strong>.</p>
+
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-list-check"></i> D. Fitur / Detail Tambahan</h4>
+                <p>Ini adalah poin-poin fitur yang menjelaskan fasilitas atau spesifikasi. (Misal: <em>5 Kursi, AC Dingin, Termasuk Supir</em>).<br>
+                <strong>Cara Penulisan:</strong> Pisahkan setiap poin dengan tanda koma. <br>
+                <em>Contoh:</em> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #ef4444;">Termasuk Supir, BBM, Mineral Water</code></p>
+
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-image"></i> E. Link Gambar (Image URL)</h4>
+                <p>Ini adalah alamat foto/gambar yang akan ditampilkan.</p>
+                <ul style="margin-top: 5px; padding-left: 20px;">
+                    <li><strong>Cara Terbaik:</strong> Anda bisa menggunakan menu <strong>Kelola Galeri</strong> terlebih dahulu untuk meng-upload foto dari HP/Laptop Anda. Setelah terupload, klik "Copy URL" pada foto di galeri tersebut, lalu Paste/Tempel di kolom Image URL ini.</li>
+                    <li>Atau Anda bisa men-copy link gambar dari Google/website lain.</li>
+                </ul>
+
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-pen-to-square"></i> F. Edit & Hapus</h4>
+                <p>Anda bisa menekan tombol warna <span style="color: #f59e0b; font-weight: bold;">Kuning (Edit)</span> pada tabel untuk mengubah harga atau foto jika ada update, atau tombol <span style="color: #ef4444; font-weight: bold;">Merah (Hapus)</span> jika armada/paket sudah tidak tersedia.</p>
+            </div>
+        `,
+        width: 700,
+        icon: 'info',
+        confirmButtonText: '<i class="fa-solid fa-check"></i> Siap, Paham!',
+        confirmButtonColor: '#2563eb',
+        padding: '2em'
     });
 };
 
