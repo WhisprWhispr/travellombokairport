@@ -390,19 +390,15 @@
 
           <div class="form-group">
             <label>Title / Nama Paket</label>
-            <div style="display: flex; gap: 10px;">
-              <select id="item-title-prefix" class="form-control" style="width: auto; display: none;">
-                <option value="">-- Tipe Paket (Opsional) --</option>
-                <option value="Paket A">Paket A</option>
-                <option value="Paket B">Paket B</option>
-                <option value="Paket C">Paket C</option>
-                <option value="Paket D">Paket D</option>
-                <option value="Paket E">Paket E</option>
-                <option value="Paket F">Paket F</option>
-                <option value="Paket G">Paket G</option>
-                <option value="Paket H">Paket H</option>
-              </select>
-              <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci" style="flex: 1;">
+            <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci">
+            <div id="title-quick-select" style="display: none; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+              <span style="font-size: 0.8rem; color: #64748b; width: 100%;">Pilih Tipe Paket (Otomatis ditambahkan):</span>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket A</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket B</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket C</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket D</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket E</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket F</button>
             </div>
           </div>
 

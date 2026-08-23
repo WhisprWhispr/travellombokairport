@@ -18,7 +18,7 @@ const idInput = document.getElementById("item-id");
 const categoryInput = document.getElementById("item-category");
 const isParentInput = document.getElementById("item-is-parent");
 const parentIdInput = document.getElementById("item-parent-id");
-const titlePrefixInput = document.getElementById("item-title-prefix");
+const titleQuickSelect = document.getElementById("title-quick-select");
 const titleInput = document.getElementById("item-title");
 const orderInput = document.getElementById("item-order");
 const descriptionInput = document.getElementById("item-description");
@@ -689,19 +689,20 @@ const openModal = async () => {
 categoryInput.addEventListener('change', () => {
     autoFillPackageTitle();
     if (categoryInput.value === 'tour' || categoryInput.value === 'honeymoon' || categoryInput.value === 'package') {
-        titlePrefixInput.style.display = 'block';
+        titleQuickSelect.style.display = 'flex';
     } else {
-        titlePrefixInput.style.display = 'none';
-        titlePrefixInput.value = '';
+        titleQuickSelect.style.display = 'none';
     }
 });
 
-titlePrefixInput.addEventListener('change', (e) => {
-    if (e.target.value) {
+// Setup quick select badges
+document.querySelectorAll('.btn-quick-title').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        const prefix = e.target.innerText;
         let currentTitle = titleInput.value.replace(/^Paket [A-Z](\s+)?/i, '').trim();
-        titleInput.value = `${e.target.value} ${currentTitle}`.trim();
+        titleInput.value = `${prefix} ${currentTitle}`.trim();
         titleInput.focus();
-    }
+    });
 });
 
 window.openDroneModal = () => {
@@ -934,18 +935,9 @@ window.editItem = async (id) => {
         
         let titleStr = item.title || "";
         if (item.category === 'tour' || item.category === 'honeymoon' || item.category === 'package') {
-            titlePrefixInput.style.display = 'block';
-            const match = titleStr.match(/^(Paket [A-Z])(\s+|$)/i);
-            if (match) {
-                // Ensure proper casing like "Paket A"
-                const prefixVal = match[1].charAt(0).toUpperCase() + match[1].slice(1).toLowerCase().replace('paket', 'Paket').replace(/[a-z]$/, c => c.toUpperCase());
-                titlePrefixInput.value = prefixVal;
-            } else {
-                titlePrefixInput.value = '';
-            }
+            titleQuickSelect.style.display = 'flex';
         } else {
-            titlePrefixInput.style.display = 'none';
-            titlePrefixInput.value = '';
+            titleQuickSelect.style.display = 'none';
         }
         titleInput.value = titleStr;
 
