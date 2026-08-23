@@ -1267,13 +1267,16 @@ const fetchAdminStats = async () => {
 
 window.showAdminTutorial = () => {
     Swal.fire({
-        title: '<strong style="color: #1e293b; font-size: 1.5rem;">Panduan Panel Admin</strong>',
+        title: '<strong style="color: #1e293b; font-size: 1.5rem;">Panduan Lengkap Panel Admin</strong>',
         html: `
             <style>
                 .tutorial-grid {
                     display: grid;
                     grid-template-columns: 1fr;
                     gap: 15px;
+                    max-height: 60vh;
+                    overflow-y: auto;
+                    padding-right: 10px;
                 }
                 @media (min-width: 600px) {
                     .tutorial-grid {
@@ -1298,42 +1301,80 @@ window.showAdminTutorial = () => {
                 .tutorial-card p {
                     margin: 0;
                     font-size: 0.85rem;
-                    line-height: 1.4;
+                    line-height: 1.5;
                     flex-grow: 1;
+                    color: #475569;
+                }
+                /* Custom Scrollbar for the tutorial */
+                .tutorial-grid::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .tutorial-grid::-webkit-scrollbar-track {
+                    background: #f1f5f9;
+                    border-radius: 4px;
+                }
+                .tutorial-grid::-webkit-scrollbar-thumb {
+                    background: #cbd5e1;
+                    border-radius: 4px;
                 }
             </style>
             <div style="text-align: left; font-size: 0.9rem; color: #475569;">
-                <p style="margin-bottom: 20px; text-align: center;">Selamat datang di Pusat Kendali Travel Anda. Berikut adalah fungsi utama dari setiap menu:</p>
+                <p style="margin-bottom: 20px; text-align: center;">Selamat datang di Pusat Kendali Travel Anda. Berikut panduan lengkap untuk setiap menu:</p>
                 
                 <div class="tutorial-grid">
                     <div class="tutorial-card" style="background: #eff6ff; border-left: 5px solid #3b82f6;">
-                        <h4 style="color: #1e40af;"><i class="fa-solid fa-laptop"></i> 1. Booking Web</h4>
-                        <p>Semua pesanan yang masuk dari website akan muncul di sini. Anda bisa melihat status pembayaran (PAID/PENDING). Di menu ini, Anda WAJIB menugaskan supir dengan menekan tombol <strong>Assign Supir</strong>.</p>
+                        <h4 style="color: #1e40af;"><i class="fa-solid fa-list"></i> 1. Manage Items</h4>
+                        <p>Menu untuk mengatur "Etalase" website Anda. Di sini Anda dapat <strong>menambahkan, mengedit, atau menghapus</strong> daftar armada mobil, motor, dan paket tour yang ditampilkan kepada pelanggan beserta harganya.</p>
                     </div>
 
                     <div class="tutorial-card" style="background: #fdf4ff; border-left: 5px solid #d946ef;">
-                        <h4 style="color: #86198f;"><i class="fa-solid fa-calendar-alt"></i> 2. Jadwal Manual</h4>
-                        <p>Gunakan menu ini jika mendapat pesanan dari telepon/WA (offline). Anda bisa menginput data secara manual agar jadwal tidak bentrok dengan pesanan website.</p>
+                        <h4 style="color: #86198f;"><i class="fa-solid fa-shopping-cart"></i> 2. Pesanan Web (Order)</h4>
+                        <p>Menampilkan riwayat pesanan (Paket Tour) yang melakukan pembayaran otomatis via QRIS. Jika statusnya "PAID", pesanan sudah lunas. Anda bisa melihat bukti dan detail pesanan tamu di sini.</p>
+                    </div>
+
+                    <div class="tutorial-card" style="background: #e0f2fe; border-left: 5px solid #0ea5e9;">
+                        <h4 style="color: #0369a1;"><i class="fa-solid fa-laptop"></i> 3. Booking Web</h4>
+                        <p>Semua request booking rental kendaraan atau antar-jemput yang masuk dari website akan muncul di sini. Di sini Anda <strong>WAJIB menugaskan supir</strong> (Assign Supir) agar pesanan dapat diproses oleh driver.</p>
                     </div>
 
                     <div class="tutorial-card" style="background: #fff7ed; border-left: 5px solid #f97316;">
-                        <h4 style="color: #9a3412;"><i class="fa-solid fa-car"></i> 3. Manajemen Supir</h4>
-                        <p>Tempat Anda mendaftarkan tim supir/tour guide. Masukkan <strong>Nomor HP</strong> dan buatkan <strong>PIN 6 Angka</strong>. Nomor HP dan PIN ini digunakan supir untuk login.</p>
+                        <h4 style="color: #9a3412;"><i class="fa-solid fa-calendar-alt"></i> 4. Jadwal Manual</h4>
+                        <p>Gunakan menu ini jika Anda mendapat pesanan dari telepon/WA (offline). Input data tamu secara manual ke sistem agar jadwal supir/armada tidak bentrok dengan pesanan dari website.</p>
+                    </div>
+
+                    <div class="tutorial-card" style="background: #f8fafc; border-left: 5px solid #64748b;">
+                        <h4 style="color: #334155;"><i class="fa-solid fa-camera"></i> 5. Kelola Galeri</h4>
+                        <p>Tempat untuk mengunggah foto-foto dokumentasi perjalanan atau armada. Foto yang diunggah di sini akan otomatis tampil di halaman "Galeri" pada website utama.</p>
                     </div>
 
                     <div class="tutorial-card" style="background: #f0fdf4; border-left: 5px solid #22c55e;">
-                        <h4 style="color: #166534;"><i class="fa-solid fa-money-bill-wave"></i> 4. Penarikan Dana</h4>
-                        <p>Pusat keuangan Anda. Semua pendapatan dari tamu yang membayar lunas via QRIS masuk ke Saldo Aktif. Tarik uang ke rekening pribadi dengan menekan tombol <strong>Ajukan Penarikan</strong>.</p>
+                        <h4 style="color: #166534;"><i class="fa-solid fa-car"></i> 6. Manajemen Supir</h4>
+                        <p>Tempat mendaftarkan tim supir. Masukkan <strong>Nomor HP</strong> dan buat <strong>PIN 6 Angka</strong>. Nomor dan PIN ini akan digunakan oleh supir untuk login ke portal Driver mereka.</p>
                     </div>
 
-                    <div class="tutorial-card" style="background: #f8fafc; border-left: 5px solid #64748b; grid-column: 1 / -1;">
-                        <h4 style="color: #334155;"><i class="fa-solid fa-camera"></i> 5. Kelola Galeri & Item</h4>
-                        <p>Tempat untuk mengatur "Etalase" website Anda. Tambahkan foto-foto perjalanan menarik atau atur ulang harga dan detail paket wisata Anda kapan saja.</p>
+                    <div class="tutorial-card" style="background: #fef2f2; border-left: 5px solid #ef4444;">
+                        <h4 style="color: #991b1b;"><i class="fa-solid fa-star"></i> 7. Kelola Ulasan</h4>
+                        <p>Memantau review atau ulasan yang diberikan oleh pelanggan di website. Anda bisa menghapus ulasan yang spam atau tidak pantas agar tidak tampil di publik.</p>
+                    </div>
+
+                    <div class="tutorial-card" style="background: #f0fdfa; border-left: 5px solid #14b8a6;">
+                        <h4 style="color: #115e59;"><i class="fa-solid fa-money-bill-wave"></i> 8. Penarikan Dana</h4>
+                        <p>Pusat keuangan Anda. Semua pendapatan dari tamu via pembayaran online masuk ke Saldo Aktif. Tarik uang ke rekening pribadi dengan menekan tombol <strong>Ajukan Penarikan</strong>.</p>
+                    </div>
+
+                    <div class="tutorial-card" style="background: #fffbeb; border-left: 5px solid #f59e0b;">
+                        <h4 style="color: #b45309;"><i class="fa-solid fa-chart-bar"></i> 9. Statistik Web</h4>
+                        <p>Atur angka statistik yang tampil di halaman utama website, seperti jumlah "Customer Puas", "Armada Terawat", atau "Trip Selesai" untuk meyakinkan calon pelanggan.</p>
+                    </div>
+
+                    <div class="tutorial-card" style="background: #f3f4f6; border-left: 5px solid #9ca3af;">
+                        <h4 style="color: #374151;"><i class="fa-solid fa-cog"></i> 10. Pengaturan Global</h4>
+                        <p>Menu untuk menghidupkan/mematikan fitur di website (misal: fitur Sewa Drone), serta mengelola video portofolio hasil dokumentasi drone Anda.</p>
                     </div>
                 </div>
             </div>
         `,
-        width: 700,
+        width: 800,
         icon: 'info',
         confirmButtonText: '<i class="fa-solid fa-check-circle"></i> Saya Mengerti',
         confirmButtonColor: '#2563eb',
