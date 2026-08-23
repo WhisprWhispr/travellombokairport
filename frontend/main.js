@@ -9,11 +9,11 @@ const formatPrice = (price) => {
     if (!price) return 'Rp 0';
     // If the price is already formatted manually by user (e.g., "Rp 500.000"), return it
     if (price.toString().toLowerCase().includes('rp')) return price;
-    
+
     // Otherwise, parse and format
     const num = parseInt(price.toString().replace(/D/g, ''), 10);
     if (isNaN(num)) return price;
-    
+
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
         currency: 'IDR',
@@ -49,13 +49,13 @@ const formatTerms = (termsText) => {
     const lines = termsText.split('\n');
     let html = '';
     let inList = false;
-    
+
     lines.forEach(line => {
         let trimmed = line.trim();
-        
+
         // Auto-format numbers (4 digits or more) with dots (e.g. 500000 -> 500.000)
         trimmed = trimmed.replace(/b(d{4,})b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
-        
+
         if (trimmed.match(/^d+.s/)) {
             if (inList) { html += '</ul>'; inList = false; }
             html += `<div style="margin-top: 15px; font-weight: 700; color: var(--primary-blue);">${trimmed}</div>`;
@@ -105,7 +105,7 @@ window.openVideoModal = (url) => {
     injectVideoModal();
     const modal = document.getElementById('video-modal');
     const content = document.getElementById('video-modal-content');
-    
+
     // Attempt to convert to embed URL
     let embedUrl = url;
     try {
@@ -132,14 +132,14 @@ window.openVideoModal = (url) => {
             const v = u.searchParams.get('v');
             if (v) embedUrl = `https://www.youtube.com/embed/${v}?autoplay=1`;
         }
-    } catch(e) {}
+    } catch (e) { }
 
     content.innerHTML = `<iframe width="100%" height="100%" src="${embedUrl}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="background: #000;"></iframe>`;
-    
+
     // Set fallback link
     const fallbackLink = document.getElementById('video-modal-fallback-link');
     if (fallbackLink) fallbackLink.href = url;
-    
+
     modal.style.display = 'flex';
 };
 
@@ -156,7 +156,7 @@ window.openTourModal = (id) => {
     if (!item) return;
 
     const modalBody = document.getElementById('tour-modal-body');
-    
+
     // Parse itineraries
     let itineraryHTML = '';
     const itins = parseLines(item.itinerary);
@@ -164,13 +164,13 @@ window.openTourModal = (id) => {
     let currentDay = '';
     let currentTitle = '';
     let currentDests = [];
-    
+
     const commitDay = () => {
-        if(currentDay) {
+        if (currentDay) {
             itineraryHTML += `
             <div class="tm-day">
                 <div class="tm-day-header">
-                    <div class="tm-day-badge">DAY<br><span>${currentDay.replace('DAY','').trim()}</span></div>
+                    <div class="tm-day-badge">DAY<br><span>${currentDay.replace('DAY', '').trim()}</span></div>
                     <div class="tm-day-title">${currentTitle}</div>
                 </div>
                 <ul class="tm-day-list">
@@ -181,7 +181,7 @@ window.openTourModal = (id) => {
     };
 
     itins.forEach(line => {
-        if(line.toUpperCase().startsWith('DAY')) {
+        if (line.toUpperCase().startsWith('DAY')) {
             commitDay();
             const parts = line.split(':');
             currentDay = parts[0];
@@ -208,19 +208,19 @@ window.openTourModal = (id) => {
             <div class="tm-top premium-card">
                 <div class="tm-title" style="flex: 1;">
                     ${(() => {
-                        let typeLabel = 'PAKET TOUR';
-                        if (item.category === 'car') typeLabel = 'SEWA MOBIL';
-                        else if (item.category === 'motorcycle') typeLabel = 'SEWA MOTOR';
-                        else if (item.category === 'drone') typeLabel = 'SEWA DRONE';
-                        else if (item.category === 'transfer') typeLabel = 'ANTAR JEMPUT';
-                        if (item.packageType) typeLabel = item.packageType;
-                        
-                        let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
-                        if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
-                            durationLabel = 'PER HARI';
-                        }
-                        
-                        return `
+            let typeLabel = 'PAKET TOUR';
+            if (item.category === 'car') typeLabel = 'SEWA MOBIL';
+            else if (item.category === 'motorcycle') typeLabel = 'SEWA MOTOR';
+            else if (item.category === 'drone') typeLabel = 'SEWA DRONE';
+            else if (item.category === 'transfer') typeLabel = 'ANTAR JEMPUT';
+            if (item.packageType) typeLabel = item.packageType;
+
+            let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
+            if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
+                durationLabel = 'PER HARI';
+            }
+
+            return `
                         <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${typeLabel}</h4>
                         <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
                         <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
@@ -229,16 +229,16 @@ window.openTourModal = (id) => {
                         </div>
                         <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
                         `;
-                    })()}
+        })()}
                 </div>
                 <div class="tm-price-box premium-price-box">
                     ${(() => {
-                        let priceLabel = 'HARGA PAKET';
-                        if (item.category === 'car' || item.category === 'motorcycle' || item.category === 'drone') {
-                            priceLabel = 'HARGA SEWA';
-                        }
-                        return `<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
-                    })()}
+            let priceLabel = 'HARGA PAKET';
+            if (item.category === 'car' || item.category === 'motorcycle' || item.category === 'drone') {
+                priceLabel = 'HARGA SEWA';
+            }
+            return `<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
+        })()}
                     <h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
                     <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>
                 </div>
@@ -350,27 +350,27 @@ window.closeCheckoutModal = () => {
 window.toggleShowAll = (containerId, btn, total) => {
     const container = document.getElementById(containerId);
     if (!container) return;
-    
+
     const hiddenItems = container.querySelectorAll('[data-hidden="true"]');
     let isShowing = false;
-    
+
     hiddenItems.forEach(item => {
         if (item.style.display === 'none') {
-            item.style.display = ''; 
+            item.style.display = '';
             isShowing = true;
         } else {
             item.style.display = 'none';
             isShowing = false;
         }
     });
-    
+
     if (isShowing) {
         btn.innerHTML = `Tutup <i class="fa-solid fa-chevron-up" style="margin-left: 5px;"></i>`;
     } else {
         btn.innerHTML = `Lihat Semuanya (${total}) <i class="fa-solid fa-chevron-down" style="margin-left: 5px;"></i>`;
         const yOffset = -80; // Offset for sticky navbar
         const y = container.getBoundingClientRect().top + window.pageYOffset + yOffset;
-        window.scrollTo({top: y, behavior: 'smooth'});
+        window.scrollTo({ top: y, behavior: 'smooth' });
     }
 };
 
@@ -395,9 +395,9 @@ const createTransferCard = (item, index = 0) => {
         tableRows += `<tr>
             <td style="padding: 10px 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; border: 1px solid #e2e8f0;"><i class="fa-solid fa-location-dot" style="color: var(--primary-green); margin-right: 6px;"></i>${tm.area}</td>
             ${vehicles.map(v => {
-                const price = tm.prices[v];
-                return `<td style="padding: 10px 8px; text-align: center; border: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; color: var(--text-dark);">${price ? formatPrice(price) : '-'}</td>`;
-            }).join('')}
+            const price = tm.prices[v];
+            return `<td style="padding: 10px 8px; text-align: center; border: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; color: var(--text-dark);">${price ? formatPrice(price) : '-'}</td>`;
+        }).join('')}
         </tr>`;
     });
 
@@ -466,7 +466,7 @@ window.openSubPackageModal = (parentId) => {
     if (!parentItem) return;
 
     const children = globalItems.filter(i => i.parentId === parentId);
-    
+
     const titleEl = document.getElementById('sub-modal-title');
     const descEl = document.getElementById('sub-modal-desc');
     const bodyEl = document.getElementById('sub-modal-body');
@@ -541,7 +541,7 @@ window.closeSubPackageModal = () => {
 const createFleetCard = (item, index = 0) => {
     const categoryIcon = item.category === 'motorcycle' ? 'fa-motorcycle' : 'fa-car';
     const categoryLabel = item.category === 'motorcycle' ? 'Motor' : 'Mobil';
-    
+
     // Build feature tags
     let featureTags = '';
     if (item.seats) {
@@ -598,7 +598,7 @@ const createDroneCard = (item, index = 0) => {
     let isExternalLink = false;
     let externalUrl = '';
     let videoUrlStr = item.droneVideoUrl || '';
-    
+
     if (videoUrlStr) {
         try {
             const url = new URL(videoUrlStr);
@@ -619,7 +619,7 @@ const createDroneCard = (item, index = 0) => {
                 isExternalLink = true;
                 externalUrl = videoUrlStr;
             }
-        } catch(e) {
+        } catch (e) {
             if (videoUrlStr.length === 11) {
                 iframeSrc = `https://www.youtube.com/embed/${videoUrlStr}?rel=0`;
             } else {
@@ -628,9 +628,9 @@ const createDroneCard = (item, index = 0) => {
             }
         }
     }
-    
+
     const isAvailable = window.isDroneAvailable !== false;
-    const buttonHtml = isAvailable 
+    const buttonHtml = isAvailable
         ? `<a href="https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20ingin%20pesan%20${encodeURIComponent(item.title)}" target="_blank" class="btn btn-green w-100"><i class="fa-brands fa-whatsapp"></i> PESAN SEKARANG</a>`
         : ``; // Jangan tampilkan tombol abu-abu gembok agar user tidak mengira videonya yang dikunci
 
@@ -640,11 +640,11 @@ const createDroneCard = (item, index = 0) => {
             const dateObj = new Date(item.date);
             const formattedDate = dateObj.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
             dateHtml = `<div style="font-size: 0.85rem; color: #64748b; margin-bottom: 8px;"><i class="fa-regular fa-calendar" style="margin-right: 5px;"></i> ${formattedDate}</div>`;
-        } catch (e) {}
+        } catch (e) { }
     }
 
     let mediaHtml = `<img src="${item.imageUrl || 'https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover; border-radius: 20px 20px 0 0;" onerror="this.src='https://images.unsplash.com/photo-1579822606820-25e2e8e34272?auto=format&fit=crop&q=80&w=800'">`;
-    
+
     if (iframeSrc) {
         if (iframeSrc.endsWith('.mp4')) {
             mediaHtml = `<video width="100%" height="100%" controls style="border-radius: 20px 20px 0 0; object-fit: cover; background: #000;"><source src="${iframeSrc}" type="video/mp4">Your browser does not support HTML video.</video>`;
@@ -680,7 +680,7 @@ const createDroneCard = (item, index = 0) => {
 // Initialize Page
 const init = async () => {
     window.isDroneAvailable = true;
-    
+
     // Check Global Settings (e.g. Drone Availability)
     try {
         const res = await fetch(`/api/settings?_t=${new Date().getTime()}`, { cache: 'no-store' });
@@ -688,7 +688,7 @@ const init = async () => {
             const settings = await res.json();
             if (settings.droneAvailable === 'unavailable') {
                 window.isDroneAvailable = false;
-                
+
                 // If on drone.html, update the main booking button
                 const mainBookBtn = document.getElementById('drone-main-book-btn');
                 if (mainBookBtn) {
@@ -698,8 +698,8 @@ const init = async () => {
                     mainBookBtn.style.borderColor = '#cbd5e1';
                     mainBookBtn.innerHTML = '<i class="fa-solid fa-lock"></i> LAYANAN BELUM TERSEDIA';
                 }
-            } 
-            
+            }
+
             if (settings.dronePrice) {
                 // If a price is set, update it on drone.html
                 const dronePriceEl = document.getElementById('drone-base-price');
@@ -714,10 +714,10 @@ const init = async () => {
 
     const servicesContainer = document.getElementById('services-container');
     const fleetContainer = document.getElementById('fleet-container');
-    
+
     // Fetch all data
     globalItems = await fetchItems();
-    
+
     // Categorize data - exclude child items (parentId set) from all main sections
     const childItemIds = new Set(globalItems.filter(i => i.parentId).map(i => i.id));
     const visibleItems = globalItems.filter(i => !i.parentId); // Only top-level items
@@ -730,7 +730,7 @@ const init = async () => {
         const cat = item.category.toLowerCase();
         return (cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car') && cat !== 'motorcycle';
     });
-    
+
     const motorcycles = visibleItems.filter(item => item.category.toLowerCase() === 'motorcycle');
 
     const drones = visibleItems.filter(item => item.category.toLowerCase() === 'drone');
@@ -741,7 +741,7 @@ const init = async () => {
     const renderSectionWithSeeAll = (containerId, items, renderFn) => {
         const container = document.getElementById(containerId);
         if (!container) return;
-        
+
         if (items.length === 0) {
             container.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada data yang ditambahkan.</p>';
             return;
@@ -749,7 +749,7 @@ const init = async () => {
 
         const maxVisible = 3;
         let html = '';
-        
+
         items.forEach((item, index) => {
             const isHidden = index >= maxVisible;
             let cardHtml = renderFn(item, index);
@@ -759,9 +759,9 @@ const init = async () => {
             }
             html += cardHtml;
         });
-        
+
         container.innerHTML = html;
-        
+
         if (items.length > maxVisible) {
             const btnHtml = `
             <div class="text-center w-100 mt-4 show-all-wrapper" style="grid-column: 1/-1;">
@@ -835,13 +835,13 @@ const init = async () => {
 
     // ── Render Regular Packages → "Paket Tour Populer" section ──
     renderSectionWithSeeAll('packages-container', regularPackages, createPackageCard);
-    
+
     // Render Cars
     renderSectionWithSeeAll('cars-container', cars, createFleetCard);
 
     // Render Motorcycles
     renderSectionWithSeeAll('motorcycles-container', motorcycles, createFleetCard);
-    
+
     // Render Drones
     renderSectionWithSeeAll('drone-container', drones, createDroneCard);
 };
@@ -854,30 +854,30 @@ window.generateEtiketPDF = (data) => {
 
     const isDpPayment = data.isDp === true || data.isDp === 'true';
 
-    const isPaid    = data.status === 'PAID';
-    let sc        = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
-    let scBg      = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
-    let stText    = data.status || 'UNKNOWN';
-    let stIcon    = isPaid ? '&#10003;' : (data.status === 'PENDING' ? '&#9203;' : '&#10007;');
+    const isPaid = data.status === 'PAID';
+    let sc = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
+    let scBg = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
+    let stText = data.status || 'UNKNOWN';
+    let stIcon = isPaid ? '&#10003;' : (data.status === 'PENDING' ? '&#9203;' : '&#10007;');
 
     // Override untuk DP: tampilkan status khusus DP
     if (isDpPayment) {
-        sc     = '#ea580c';
-        scBg   = '#fff7ed';
+        sc = '#ea580c';
+        scBg = '#fff7ed';
         stText = 'DP - BELUM LUNAS';
         stIcon = '&#9651;'; // segitiga atas = sebagian
     }
 
     const fmtDate = (d) => {
         if (!d) return '-';
-        try { return new Date(d).toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' }); }
-        catch(e) { return d; }
+        try { return new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' }); }
+        catch (e) { return d; }
     };
-    const isORD     = data.transactionId && data.transactionId.startsWith('ORD-');
-    const isBKG     = data.transactionId && data.transactionId.startsWith('BKG-');
-    const typeLbl   = isORD ? 'Paket Tour / QRIS' : (isBKG ? 'Rental & Transfer' : 'Reservasi');
-    const issuedAt  = new Date().toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit' });
-    const logoUrl   = window.location.origin + '/logo.png';
+    const isORD = data.transactionId && data.transactionId.startsWith('ORD-');
+    const isBKG = data.transactionId && data.transactionId.startsWith('BKG-');
+    const typeLbl = isORD ? 'Paket Tour / QRIS' : (isBKG ? 'Rental & Transfer' : 'Reservasi');
+    const issuedAt = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+    const logoUrl = window.location.origin + '/logo.png';
 
     // ── Build content (NO full HTML wrapper – injected into live DOM) ──
     const page = document.createElement('div');
@@ -1019,10 +1019,10 @@ window.generateEtiketPDF = (data) => {
                 </div>
                 ` : ''}
                 ${data.endDate ? (() => {
-                    const itemName = (data.itemName || "").toLowerCase();
-                    const isPackage = itemName.includes('paket') || itemName.includes('tour') || itemName.includes('trip') || itemName.includes('honeymoon') || (data.transactionId && data.transactionId.startsWith('ORD-'));
-                    const text = isPackage ? `Paket/layanan berakhir pada <strong>${fmtDate(data.endDate)}</strong>.` : `Masa sewa berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
-                    return `
+            const itemName = (data.itemName || "").toLowerCase();
+            const isPackage = itemName.includes('paket') || itemName.includes('tour') || itemName.includes('trip') || itemName.includes('honeymoon') || (data.transactionId && data.transactionId.startsWith('ORD-'));
+            const text = isPackage ? `Paket/layanan berakhir pada <strong>${fmtDate(data.endDate)}</strong>.` : `Masa sewa berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
+            return `
                     <div style="background:#eff6ff;border:1px solid #bae6fd;border-radius:8px;padding:8px 12px;grid-column:1/-1;display:flex;align-items:center;gap:10px;">
                         <div style="width:28px;height:28px;background:#0ea5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">
                             ℹ️
@@ -1033,7 +1033,7 @@ window.generateEtiketPDF = (data) => {
                         </div>
                     </div>
                     `;
-                })() : ''}
+        })() : ''}
             </div>
 
             <!-- Divider -->
@@ -1089,12 +1089,12 @@ window.generateEtiketPDF = (data) => {
 
     // Pastikan scrollY di-set 0 di html2canvas untuk mencegah white space di atas
     const opt = {
-        margin:       0,
-        filename:     `e-Tiket_${data.transactionId}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff', scrollY: 0, windowY: 0 },
-        jsPDF:        { unit: 'px', format: [794, contentHeight], orientation: 'portrait', hotfixes: ['px_scaling'] },
-        pagebreak:    { mode: 'avoid-all' }
+        margin: 0,
+        filename: `e-Tiket_${data.transactionId}.pdf`,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff', scrollY: 0, windowY: 0 },
+        jsPDF: { unit: 'px', format: [794, contentHeight], orientation: 'portrait', hotfixes: ['px_scaling'] },
+        pagebreak: { mode: 'avoid-all' }
     };
 
     html2pdf().set(opt).from(page).save().then(() => {
@@ -1113,30 +1113,30 @@ window.cekStatusBooking = async (event, type = 'booking') => {
     event.preventDefault();
     // Gunakan input mana saja yang ada isinya (booking atau orderan)
     const inputId = type === 'booking' ? 'input-cek-booking' : 'input-cek-orderan';
-    const btnId   = type === 'booking' ? 'btn-cek-booking'   : 'btn-cek-orderan';
-    
+    const btnId = type === 'booking' ? 'btn-cek-booking' : 'btn-cek-orderan';
+
     const input = document.getElementById(inputId);
-    const btn   = document.getElementById(btnId);
+    const btn = document.getElementById(btnId);
     const trxId = input.value.trim();
-    
-    if(!trxId) return;
-    
+
+    if (!trxId) return;
+
     const originalText = btn.innerHTML;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengecek...';
     btn.disabled = true;
-    
+
     try {
         // Satu endpoint yang cek keduanya (bookings + orders)
         const response = await fetch(`${API_URL}/bookings/check/${trxId}?_t=${new Date().getTime()}`, { cache: 'no-store' });
-        
+
         if (response.ok) {
             const data = await response.json();
             const statusColor = data.status === 'PAID' ? '#22c55e' : (data.status === 'PENDING' ? '#f59e0b' : '#ef4444');
-            const statusIcon  = data.status === 'PAID' ? 'fa-circle-check' : (data.status === 'PENDING' ? 'fa-clock' : 'fa-circle-xmark');
-            const typeLabel   = (data.type === 'order' || (data.transactionId && data.transactionId.startsWith('ORD-')))
-                                 ? '🛒 Pesanan Tour / QRIS (ORD-)' 
-                                 : '🚗 Rental & Transfer (BKG-)';
-            
+            const statusIcon = data.status === 'PAID' ? 'fa-circle-check' : (data.status === 'PENDING' ? 'fa-clock' : 'fa-circle-xmark');
+            const typeLabel = (data.type === 'order' || (data.transactionId && data.transactionId.startsWith('ORD-')))
+                ? '🛒 Pesanan Tour / QRIS (ORD-)'
+                : '🚗 Rental & Transfer (BKG-)';
+
             const htmlContent = `
                 <div style="text-align: center; margin-bottom: 20px;">
                     <div style="font-size: 3rem; color: ${statusColor}; margin-bottom: 10px;">
@@ -1179,10 +1179,10 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                     </button>
                 </div>
             `;
-            
+
             // Simpan data lengkap untuk PDF
             window._lastBookingData = data;
-            
+
             Swal.fire({
                 title: 'Status Pesanan',
                 html: htmlContent,
@@ -1190,14 +1190,14 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                 confirmButtonText: 'Tutup',
                 customClass: { container: 'my-swal-container' }
             });
-            
+
         } else {
             let errorMsg = "Pastikan ID Transaksi yang Anda masukkan benar (BKG-... atau ORD-...).";
             try {
                 const err = await response.json();
                 if (err && err.message) errorMsg = err.message;
-            } catch(e) {}
-            
+            } catch (e) { }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Tidak Ditemukan',
@@ -1205,13 +1205,13 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                 confirmButtonColor: '#22c55e'
             });
         }
-        
+
     } catch (error) {
         console.error(error);
         Swal.fire({
-            icon: 'error', 
-            title: 'Gagal', 
-            text: "Terjadi kesalahan jaringan saat mengecek status.", 
+            icon: 'error',
+            title: 'Gagal',
+            text: "Terjadi kesalahan jaringan saat mengecek status.",
             confirmButtonColor: '#22c55e'
         });
     } finally {
@@ -1236,22 +1236,22 @@ window.updateSubLayanan = () => {
     const layanan = document.getElementById("qb-layanan").value;
     const subContainer = document.getElementById("qb-sub-container");
     const subSelect = document.getElementById("qb-sub-layanan");
-    
+
     subSelect.innerHTML = "";
     let options = [];
-    
+
     if (layanan === "Sewa Mobil") {
         options = globalItems.filter(item => {
             const cat = item.category.toLowerCase();
             return cat.includes("rental") || cat.includes("armada") || cat.includes("sewa") || cat === "car";
         });
-        
+
         // Fallback mock data jika tidak ada data dari backend
         if (options.length === 0) {
             options = [
-                {title: "Toyota Avanza"},
-                {title: "Toyota Innova Reborn"},
-                {title: "Toyota Hiace Commuter"}
+                { title: "Toyota Avanza" },
+                { title: "Toyota Innova Reborn" },
+                { title: "Toyota Hiace Commuter" }
             ];
         }
     } else if (layanan === "Paket Tour") {
@@ -1259,14 +1259,14 @@ window.updateSubLayanan = () => {
             const cat = item.category.toLowerCase();
             return cat.includes("paket") || cat === "package";
         });
-        
+
         // Fallback mock data jika tidak ada data dari backend
         if (options.length === 0) {
             options = [
-                {title: "Paket Sasak Tour (1 Hari)"},
-                {title: "Paket Explore Gili (1 Hari)"},
-                {title: "Paket Honeymoon Romantis (3H2M)"},
-                {title: "Paket Family Vacation (4H3M)"}
+                { title: "Paket Sasak Tour (1 Hari)" },
+                { title: "Paket Explore Gili (1 Hari)" },
+                { title: "Paket Honeymoon Romantis (3H2M)" },
+                { title: "Paket Family Vacation (4H3M)" }
             ];
         }
     } else if (layanan === "Airport Transfer") {
@@ -1274,7 +1274,7 @@ window.updateSubLayanan = () => {
             const cat = item.category?.toLowerCase() || '';
             return cat.includes("antar jemput") || cat.includes("transfer") || cat === "transfer";
         });
-        
+
         // Extract unique combinations of area and vehicle from transferMatrix
         const uniqueOptions = new Set();
         transferItems.forEach(item => {
@@ -1282,12 +1282,12 @@ window.updateSubLayanan = () => {
                 item.transferMatrix.forEach(matrix => {
                     let areaName = matrix.area;
                     if (areaName && !areaName.toLowerCase().includes("airport")) {
-                         areaName = `Airport ⇔ ${areaName}`;
+                        areaName = `Airport ⇔ ${areaName}`;
                     }
 
                     if (matrix.area && matrix.prices && Object.keys(matrix.prices).length > 0) {
                         Object.keys(matrix.prices).forEach(vehicle => {
-                             uniqueOptions.add(`${areaName} (${vehicle})`);
+                            uniqueOptions.add(`${areaName} (${vehicle})`);
                         });
                     } else if (matrix.area) {
                         uniqueOptions.add(areaName);
@@ -1297,20 +1297,20 @@ window.updateSubLayanan = () => {
         });
 
         uniqueOptions.forEach(opt => {
-            options.push({title: opt});
+            options.push({ title: opt });
         });
 
         // Fallback mock data
         if (options.length === 0) {
             options = [
-                {title: "Airport ⇔ Mataram Kota (Avanza)"},
-                {title: "Airport ⇔ Mataram Kota (Innova)"},
-                {title: "Airport ⇔ Senggigi (Avanza)"},
-                {title: "Airport ⇔ Senggigi (Innova)"}
+                { title: "Airport ⇔ Mataram Kota (Avanza)" },
+                { title: "Airport ⇔ Mataram Kota (Innova)" },
+                { title: "Airport ⇔ Senggigi (Avanza)" },
+                { title: "Airport ⇔ Senggigi (Innova)" }
             ];
         }
     }
-    
+
     if (options.length > 0) {
         options.forEach(item => {
             const opt = document.createElement("option");
@@ -1340,9 +1340,9 @@ window.submitBooking = (method) => {
     const subLayanan = document.getElementById("qb-sub-layanan").value;
     const tanggal = document.getElementById("qb-tanggal").value;
     const jumlah = document.getElementById("qb-jumlah").value;
-    
-    if(!tanggal) {
-        Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Mohon pilih tanggal terlebih dahulu.", confirmButtonColor: '#22c55e'});
+
+    if (!tanggal) {
+        Swal.fire({ icon: 'info', title: 'Pemberitahuan', text: "Mohon pilih tanggal terlebih dahulu.", confirmButtonColor: '#22c55e' });
         return;
     }
 
@@ -1352,7 +1352,7 @@ window.submitBooking = (method) => {
     }
     const itemName = `${itemDetail} (${jumlah} - ${tanggal})`;
 
-    if(method === "wa") {
+    if (method === "wa") {
         const text = `Halo Admin Travel Lombok Airport,nnSaya ingin melakukan pemesanan (Booking) dengan rincian sebagai berikut:nn- Layanan: ${layanan}n${subLayanan !== "-" ? `- Pilihan: ${subLayanan}n` : ""}- Tanggal: ${tanggal}n- Jumlah Orang: ${jumlah}nnMohon informasi mengenai ketersediaan dan proses selanjutnya. Terima kasih!`;
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
     } else {
@@ -1379,7 +1379,7 @@ window.openCheckoutModal = async (itemName, price) => {
     const modalBody = document.getElementById("checkout-modal-body");
     const isOrder = price > 0;
     const displayPrice = isOrder ? formatPrice(price) : "";
-    
+
     // Fetch bookings to show availability
     try {
         const res = await fetch(`${API_URL}/bookings?public=true&_t=${new Date().getTime()}`, { cache: 'no-store' });
@@ -1389,7 +1389,7 @@ window.openCheckoutModal = async (itemName, price) => {
             const matchesName = bName === itemName || itemName.includes(bName) || (bName && bName.includes(itemName));
             return matchesName && (b.status === 'PAID' || b.status === 'PENDING');
         });
-        
+
         window.currentBookings = itemBookings;
     } catch (e) {
         console.error("Failed to fetch bookings:", e);
@@ -1463,7 +1463,7 @@ window.openCheckoutModal = async (itemName, price) => {
                 </div>
                 <div>
                     <div id="date-duration-title" style="font-size:0.8rem;font-weight:700;color:#0369a1;">
-                        ${durationDays > 0 ? (itemName.match(/(\d+H\s*\d+M)/i)?.[1] || durationDays+'H ' + (durationDays-1)+'M') + ' &mdash; Durasi Paket' : 'Info Pengembalian'}
+                        ${durationDays > 0 ? (itemName.match(/(\d+H\s*\d+M)/i)?.[1] || durationDays + 'H ' + (durationDays - 1) + 'M') + ' &mdash; Durasi Paket' : 'Info Pengembalian'}
                     </div>
                     <div id="date-duration-text" style="font-size:0.82rem;color:#0369a1;margin-top:2px;">
                         ${durationDays > 0 ? 'Pilih tanggal mulai, tanggal selesai akan otomatis terisi.' : ''}
@@ -1534,7 +1534,7 @@ window.openCheckoutModal = async (itemName, price) => {
     html += `</form>
         <div id="qris-result" style="margin-top: 25px;"></div>
     `;
-    
+
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
 
@@ -1545,7 +1545,7 @@ window.openCheckoutModal = async (itemName, price) => {
             const _emailEl = document.getElementById('co-email');
             if (_emailEl && !_emailEl.value) _emailEl.value = _user.email;
         }
-    } catch(e) {}
+    } catch (e) { }
 
     // Save checkout state so it survives an accidental page refresh
     sessionStorage.setItem('checkoutState', JSON.stringify({ itemName, price }));
@@ -1577,24 +1577,24 @@ window.openCheckoutModal = async (itemName, price) => {
         if (payEl) saved.payment = payEl.value;
         sessionStorage.setItem('checkoutState', JSON.stringify(saved));
     };
-    ['co-name','co-phone','co-email','co-start-date','co-end-date','co-payment'].forEach(id => {
+    ['co-name', 'co-phone', 'co-email', 'co-start-date', 'co-end-date', 'co-payment'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', saveFormState);
         if (el) el.addEventListener('change', saveFormState);
     });
-    
+
     window._currentDurationDays = durationDays;
-    
+
     const startDateEl = document.getElementById('co-start-date');
     const endDateEl = document.getElementById('co-end-date');
     const durationSelectEl = document.getElementById('co-duration-select');
     const durationCustomEl = document.getElementById('co-duration-custom');
-    
+
     const updateEndDateAndPrice = () => {
         if (!startDateEl || !startDateEl.value || !endDateEl) return;
         const sDate = new Date(startDateEl.value);
         let currentDuration = durationDays;
-        
+
         if (durationSelectEl) {
             if (durationSelectEl.value === 'custom') {
                 currentDuration = durationCustomEl && durationCustomEl.value ? parseInt(durationCustomEl.value) : 1;
@@ -1602,14 +1602,14 @@ window.openCheckoutModal = async (itemName, price) => {
                 currentDuration = parseInt(durationSelectEl.value);
             }
         }
-        
+
         // Hitung End Date
         // Untuk rental (0), 1 hari = pengembalian besok (daysToAdd = currentDuration)
         // Untuk paket (>0), 5 hari 4 malam = pengembalian di hari ke-5 (daysToAdd = currentDuration - 1)
         const daysToAdd = window._currentDurationDays === 0 ? currentDuration : Math.max(0, currentDuration - 1);
         sDate.setDate(sDate.getDate() + daysToAdd);
         endDateEl.value = sDate.toISOString().split('T')[0];
-        
+
         // Tampilkan info box tanggal selesai untuk semua pesanan (rental maupun paket)
         const infoBox = document.getElementById('date-duration-info');
         const infoText = document.getElementById('date-duration-text');
@@ -1623,9 +1623,9 @@ window.openCheckoutModal = async (itemName, price) => {
                 infoText.innerHTML = `Paket/layanan berakhir pada <strong>${formattedDate}</strong>.`;
             }
         }
-        
+
         saveFormState();
-        if(window.checkDateOverlap) window.checkDateOverlap();
+        if (window.checkDateOverlap) window.checkDateOverlap();
     };
 
     if (startDateEl) startDateEl.addEventListener('change', updateEndDateAndPrice);
@@ -1638,16 +1638,16 @@ window.checkDateOverlap = () => {
     const endDate = document.getElementById("co-end-date").value;
     const warningDiv = document.getElementById("dynamic-date-warning");
     const submitBtn = document.querySelector("#checkout-form button[type='submit']");
-    
+
     if (!startDate || !endDate) {
         warningDiv.style.display = 'none';
-        if(submitBtn) submitBtn.disabled = false;
+        if (submitBtn) submitBtn.disabled = false;
         return;
     }
-    
+
     const selStart = new Date(startDate);
     const selEnd = new Date(endDate);
-    
+
     let isOverlap = false;
     if (window.currentBookings && window.currentBookings.length > 0) {
         for (let b of window.currentBookings) {
@@ -1659,14 +1659,14 @@ window.checkDateOverlap = () => {
             }
         }
     }
-    
+
     if (isOverlap) {
         warningDiv.style.display = 'block';
-        if(submitBtn) submitBtn.disabled = true;
+        if (submitBtn) submitBtn.disabled = true;
     } else {
         warningDiv.style.display = 'none';
-        if(submitBtn) submitBtn.disabled = false;
-        
+        if (submitBtn) submitBtn.disabled = false;
+
         // Dynamic pricing for rentals (items without fixed duration "H" in name)
         const basePriceEl = document.getElementById("co-display-price");
         if (basePriceEl && window._currentDurationDays === 0) {
@@ -1722,23 +1722,23 @@ window.processCheckout = async (itemName, price) => {
     const modalBody = document.getElementById("checkout-modal-body");
 
     if (!startDate || !endDate) {
-        Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Mohon isi tanggal mulai dan selesai.", confirmButtonColor: '#22c55e'});
+        Swal.fire({ icon: 'info', title: 'Pemberitahuan', text: "Mohon isi tanggal mulai dan selesai.", confirmButtonColor: '#22c55e' });
         return;
     }
 
     const selStart = new Date(startDate);
     const selEnd = new Date(endDate);
     if (selStart > selEnd) {
-        Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Tanggal selesai tidak boleh lebih awal dari tanggal mulai.", confirmButtonColor: '#22c55e'});
+        Swal.fire({ icon: 'info', title: 'Pemberitahuan', text: "Tanggal selesai tidak boleh lebih awal dari tanggal mulai.", confirmButtonColor: '#22c55e' });
         return;
     }
-    
+
     if (window.currentBookings && window.currentBookings.length > 0) {
         for (let b of window.currentBookings) {
             const bStart = new Date(b.startDate);
             const bEnd = new Date(b.endDate);
             if (selStart <= bEnd && selEnd >= bStart) {
-                Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Maaf, rentang tanggal tersebut sudah dipesan. Silakan pilih tanggal lain.", confirmButtonColor: '#22c55e'});
+                Swal.fire({ icon: 'info', title: 'Pemberitahuan', text: "Maaf, rentang tanggal tersebut sudah dipesan. Silakan pilih tanggal lain.", confirmButtonColor: '#22c55e' });
                 return;
             }
         }
@@ -1751,7 +1751,7 @@ window.processCheckout = async (itemName, price) => {
         try {
             const user = JSON.parse(userStr);
             if (user && user.email) customerEmail = user.email;
-        } catch (e) {}
+        } catch (e) { }
     }
 
     let finalPrice = price;
@@ -1789,7 +1789,7 @@ window.processCheckout = async (itemName, price) => {
         fullPrice: isDp ? price : finalPrice,
         customerEmail
     };
-    
+
     // Store temporarily for QRIS success
     window.currentCheckoutData = bookingData;
 
@@ -1846,7 +1846,7 @@ window.processCheckout = async (itemName, price) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ ...bookingData, status: 'PENDING', transactionId: pendingTxId })
         });
-    } catch(e) { console.error('Failed to save pending booking:', e); }
+    } catch (e) { console.error('Failed to save pending booking:', e); }
 
     try {
         fetch(`${API_URL}/payment/qris`, {
@@ -1893,7 +1893,7 @@ window.processCheckout = async (itemName, price) => {
                     btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...';
                     const msgDiv = document.getElementById('manual-check-msg');
                     if (msgDiv) msgDiv.innerHTML = '';
-                    
+
                     try {
                         const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
                         const statusData = await statusRes.json();
@@ -1919,7 +1919,7 @@ window.processCheckout = async (itemName, price) => {
                         const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`, { signal: controller.signal });
                         clearTimeout(timeoutId);
                         const statusData = await statusRes.json();
-                        
+
                         if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
                             clearInterval(pollInterval);
                             window.activePollInterval = null;
@@ -1944,15 +1944,15 @@ window.processCheckout = async (itemName, price) => {
 
             } else {
                 qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Gagal memuat kode QRIS. Silakan coba lagi.</div>`;
-                if(submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
             }
         }).catch(e => {
             qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Koneksi error. Silakan coba lagi.</div>`;
-            if(submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
         });
     } catch (e) {
         qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Terjadi kesalahan internal.</div>`;
-        if(submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
     }
 };
 
@@ -1960,7 +1960,7 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     const modalBody = document.getElementById("checkout-modal-body");
     const idPrefix = isBookingOnly ? "BKG-" : "ORD-";
     const id = transactionId || (idPrefix + Math.floor(Math.random() * 10000));
-    
+
     if (window.activePollInterval) clearInterval(window.activePollInterval);
 
     // Checkout done — clear saved state and remove refresh warning
@@ -1980,7 +1980,7 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
         window.currentCheckoutData = null;
         window._pendingQrisTxId = null;
     }
-    
+
     modalBody.innerHTML = `
         <div style="text-align: center; padding: 40px 20px;">
             <i class="fa-solid fa-circle-check" style="font-size: 5rem; color: var(--primary-green); margin-bottom: 20px;"></i>
@@ -2007,11 +2007,11 @@ window.downloadPdfInvoice = (id) => {
     const wrapper = document.createElement('div');
     // Tambahkan style position absolute agar tetap berada di DOM dan punya height, tapi tidak terlihat
     wrapper.style.cssText = 'position:absolute; left:0; top:0; z-index:-9999; visibility:hidden; overflow:hidden; width:800px; padding:0; margin:0;';
-    
+
     // Cari data di raw history data yang baru diambil
     const historyData = window._lastHistoryData || [];
     const item = historyData.find(x => x.id === id || x.transactionId === id) || window.currentCheckoutData;
-    if(!item) {
+    if (!item) {
         alert('Data transaksi tidak ditemukan.');
         return;
     }
@@ -2031,7 +2031,7 @@ window.downloadPdfInvoice = (id) => {
     } = item;
 
     // Formatting tanggal
-    const fmtDate = (d) => d ? new Date(d).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'}) : '-';
+    const fmtDate = (d) => d ? new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
     const dateStr = fmtDate(startDate) + (endDate ? ' - ' + fmtDate(endDate) : '');
     const issueDate = fmtDate(createdAt || new Date());
     const total = 'Rp ' + parseInt(itemPrice || 0).toLocaleString('id-ID');
@@ -2106,20 +2106,20 @@ window.downloadPdfInvoice = (id) => {
             
         </div>
     `;
-    
+
     document.body.appendChild(wrapper);
-    
+
     const element = wrapper.querySelector('#pdf-content');
-    
+
     const opt = {
-      margin:       [0, 0, 0, 0], // nol margin agar background penuh
-      filename:     `e-Tiket_${id}.pdf`,
-      image:        { type: 'jpeg', quality: 1.0 },
-      html2canvas:  { scale: 2, useCORS: true, logging: false },
-      jsPDF:        { unit: 'px', format: [800, element.offsetHeight + 100], orientation: 'portrait', hotfixes: ['px_scaling'] },
-      pagebreak:    { mode: 'avoid-all' }
+        margin: [0, 0, 0, 0], // nol margin agar background penuh
+        filename: `e-Tiket_${id}.pdf`,
+        image: { type: 'jpeg', quality: 1.0 },
+        html2canvas: { scale: 2, useCORS: true, logging: false },
+        jsPDF: { unit: 'px', format: [800, element.offsetHeight + 100], orientation: 'portrait', hotfixes: ['px_scaling'] },
+        pagebreak: { mode: 'avoid-all' }
     };
-    
+
     html2pdf().set(opt).from(element).save().then(() => {
         document.body.removeChild(wrapper);
     }).catch(err => {
@@ -2152,14 +2152,14 @@ window.showingAllReviews = false;
 window.renderReviewsList = () => {
     const container = document.getElementById('reviews-container');
     if (!container) return;
-    
+
     if (window.allReviewsData.length === 0) {
         container.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada ulasan. Jadilah yang pertama memberikan ulasan!</p>';
         return;
     }
 
     const toShow = window.showingAllReviews ? window.allReviewsData : window.allReviewsData.slice(0, 3);
-    
+
     let html = '';
     toShow.forEach(r => {
         let stars = '';
@@ -2167,13 +2167,13 @@ window.renderReviewsList = () => {
             if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color: #f59e0b;"></i>';
             else stars += '<i class="fa-regular fa-star" style="color: #cbd5e1;"></i>';
         }
-        
+
         let dateStr = '';
         if (r.createdAt) {
             const d = new Date(r.createdAt);
             dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         }
-        
+
         html += `
         <div class="card" style="padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; border: 1px solid #f1f5f9; display: flex; flex-direction: column; justify-content: space-between;" data-aos="fade-up">
             <div>
@@ -2186,7 +2186,7 @@ window.renderReviewsList = () => {
             </div>
         </div>`;
     });
-    
+
     // Add "See all" button if there are more than 3 reviews
     if (window.allReviewsData.length > 3) {
         html += `
@@ -2197,7 +2197,7 @@ window.renderReviewsList = () => {
         </div>
         `;
     }
-    
+
     container.innerHTML = html;
 };
 
@@ -2225,7 +2225,7 @@ window.submitReview = async (e) => {
     const btn = document.getElementById('btn-submit-review');
     btn.disabled = true;
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
-    
+
     const name = document.getElementById('review-name').value;
     const comment = document.getElementById('review-comment').value;
     const ratingObj = document.querySelector('input[name="rating"]:checked');
@@ -2237,16 +2237,16 @@ window.submitReview = async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, rating, comment })
         });
-        
+
         if (!res.ok) throw new Error('Failed to submit review');
-        
+
         Swal.fire({
             icon: 'success',
             title: 'Terima Kasih!',
             text: 'Ulasan Anda berhasil dikirim.',
             confirmButtonColor: '#22c55e'
         });
-        
+
         document.getElementById('review-form').reset();
         document.getElementById('review-modal').classList.remove('active');
         loadReviews(); // reload
@@ -2286,7 +2286,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     if (window.checkDateOverlap) window.checkDateOverlap();
                 }).catch(() => sessionStorage.removeItem('checkoutState'));
             }
-        } catch(e) { sessionStorage.removeItem('checkoutState'); }
+        } catch (e) { sessionStorage.removeItem('checkoutState'); }
     }
 });
 
@@ -2299,7 +2299,7 @@ window._authMode = 'login';
 window.openAuthModal = (mode = 'login') => {
     // Remember where the user was trying to go (so they can come back)
     sessionStorage.setItem('redirect_after_auth', window.location.href);
-    
+
     // Redirect to dedicated auth files
     if (mode === 'register') {
         window.location.href = '/register.html';
@@ -2317,11 +2317,11 @@ window.toggleAuthMode = () => {
 window.checkAuthUI = () => {
     const token = localStorage.getItem('auth_token');
     const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
-    
+
     const authContainer = document.getElementById('footer-auth-container');
     const userContainer = document.getElementById('footer-user-container');
     const userNameDisplay = document.getElementById('footer-user-name');
-    
+
     if (authContainer && userContainer) {
         if (token && user) {
             authContainer.style.display = 'none';
@@ -2348,7 +2348,7 @@ window.logoutUser = () => {
             localStorage.removeItem('auth_token');
             localStorage.removeItem('auth_user');
             window.checkAuthUI();
-            Swal.fire({icon: 'success', title: 'Berhasil Logout', timer: 1500, showConfirmButton: false});
+            Swal.fire({ icon: 'success', title: 'Berhasil Logout', timer: 1500, showConfirmButton: false });
         }
     });
 };
@@ -2417,20 +2417,20 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             </div>
             <div style="display:flex; flex-direction:column; gap:20px;">
         `;
-window.showTransactionDetail = (encodedData) => {
-    const item = JSON.parse(decodeURIComponent(encodedData));
-    const isPaid = item.status === 'PAID';
-    const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
-    const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
-    const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
-    const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
-    const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '-';
-    
-    // Set global data here directly so the PDF button can just use it without complex string passing
-    window._lastBookingData = item;
-    
-    // Tombol Cetak PDF selalu ada (baik PAID maupun PENDING)
-    let pdfBtn = `
+        window.showTransactionDetail = (encodedData) => {
+            const item = JSON.parse(decodeURIComponent(encodedData));
+            const isPaid = item.status === 'PAID';
+            const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
+            const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
+            const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
+            const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
+            const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '-';
+
+            // Set global data here directly so the PDF button can just use it without complex string passing
+            window._lastBookingData = item;
+
+            // Tombol Cetak PDF selalu ada (baik PAID maupun PENDING)
+            let pdfBtn = `
         <button onclick="Swal.close(); setTimeout(()=>{ window.generateEtiketPDF(window._lastBookingData); }, 300)" 
             style="background:linear-gradient(135deg, #0ea5e9, #2563eb); border:none; color:white; font-size:0.95rem; padding:14px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; width:100%; margin-top:25px; box-shadow:0 8px 20px rgba(14,165,233,0.3); transition:all 0.3s;"
             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(14,165,233,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(14,165,233,0.3)';">
@@ -2438,34 +2438,34 @@ window.showTransactionDetail = (encodedData) => {
         </button>
     `;
 
-    let detailsHtml = '';
-    const showRow = (label, val) => {
-        if (!val || val === '-') return '';
-        // Ubah layout jadi kolom agar rapi dan responsif, tidak tabrakan di layar HP
-        return `
+            let detailsHtml = '';
+            const showRow = (label, val) => {
+                if (!val || val === '-') return '';
+                // Ubah layout jadi kolom agar rapi dan responsif, tidak tabrakan di layar HP
+                return `
             <div style="padding: 12px 0; border-bottom: 1px dashed #e2e8f0; display: flex; flex-direction: column; gap: 4px;">
                 <span style="color:#64748b; font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">${label}</span>
                 <span style="color:#1e293b; font-weight:700; font-size:0.95rem; word-break: break-word; line-height: 1.4;">${val}</span>
             </div>
         `;
-    };
+            };
 
-    detailsHtml += showRow('Nama Pemesan', item.customerName || item.userEmail);
-    detailsHtml += showRow('Email', item.customerEmail || item.userEmail);
-    detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone);
-    detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date);
-    if (item.endDate) detailsHtml += showRow('Tgl Selesai', item.endDate);
-    if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
-    if (item.details?.pax) detailsHtml += showRow('Jumlah Peserta', item.details.pax + ' Orang');
-    if (item.details?.pickup) detailsHtml += showRow('Lokasi Jemput', item.details.pickup);
-    if (item.details?.dropoff) detailsHtml += showRow('Tujuan', item.details.dropoff);
-    if (item.details?.flightNumber) detailsHtml += showRow('No. Penerbangan', item.details.flightNumber);
+            detailsHtml += showRow('Nama Pemesan', item.customerName || item.userEmail);
+            detailsHtml += showRow('Email', item.customerEmail || item.userEmail);
+            detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone);
+            detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date);
+            if (item.endDate) detailsHtml += showRow('Tgl Selesai', item.endDate);
+            if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
+            if (item.details?.pax) detailsHtml += showRow('Jumlah Peserta', item.details.pax + ' Orang');
+            if (item.details?.pickup) detailsHtml += showRow('Lokasi Jemput', item.details.pickup);
+            if (item.details?.dropoff) detailsHtml += showRow('Tujuan', item.details.dropoff);
+            if (item.details?.flightNumber) detailsHtml += showRow('No. Penerbangan', item.details.flightNumber);
 
-    Swal.fire({
-        showCloseButton: true,
-        showConfirmButton: false,
-        width: '520px',
-        html: `
+            Swal.fire({
+                showCloseButton: true,
+                showConfirmButton: false,
+                width: '520px',
+                html: `
             <div style="text-align: left;">
                 <div style="text-align:center; margin-bottom:25px; margin-top:10px;">
                         <div style="width:65px; height:65px; background:rgba(59, 130, 246, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; color:#3b82f6; font-size:2rem; box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.05);">
@@ -2507,8 +2507,8 @@ window.showTransactionDetail = (encodedData) => {
                     ${pdfBtn}
             </div>
         `
-    });
-};
+            });
+        };
 
         data.forEach(item => {
             const isPaid = item.status === 'PAID';
@@ -2517,7 +2517,7 @@ window.showTransactionDetail = (encodedData) => {
             const icon = item.type === 'order' ? 'fa-box' : 'fa-car';
             const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
             const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
-            const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {day:'numeric', month:'short', year:'numeric'}) : '-';
+            const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
 
             const encodedData = encodeURIComponent(JSON.stringify(item));
 
@@ -2551,7 +2551,7 @@ window.showTransactionDetail = (encodedData) => {
         });
         html += '</div></div>';
         container.innerHTML = html;
-        
+
     } catch (e) {
         console.error("Riwayat Error:", e);
         container.innerHTML = `
@@ -2571,7 +2571,7 @@ window.checkAuthAndPrompt = () => {
         // Tutup modal lain agar fokus ke login
         if (typeof window.closeTourModal === 'function') window.closeTourModal();
         if (typeof window.closeSubPackageModal === 'function') window.closeSubPackageModal();
-        
+
         window.openAuthModal();
         return false;
     }
@@ -2599,7 +2599,7 @@ window.submitAuth = async (e) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(body)
         });
-        
+
         const data = await res.json();
         if (!res.ok) {
             throw new Error(data.error || 'Terjadi kesalahan');
@@ -2607,10 +2607,10 @@ window.submitAuth = async (e) => {
 
         localStorage.setItem('auth_token', data.token);
         localStorage.setItem('auth_user', JSON.stringify(data.user || data.admin));
-        
+
         window.closeAuthModal();
         window.checkAuthUI();
-        
+
         Swal.fire({
             icon: 'success',
             title: isLogin ? 'Berhasil Login' : 'Berhasil Mendaftar',
@@ -2621,7 +2621,7 @@ window.submitAuth = async (e) => {
         });
 
     } catch (err) {
-        Swal.fire({icon: 'error', title: 'Gagal', text: err.message, confirmButtonColor: '#1d4ed8'});
+        Swal.fire({ icon: 'error', title: 'Gagal', text: err.message, confirmButtonColor: '#1d4ed8' });
     } finally {
         btn.disabled = false;
         btn.innerHTML = isLogin ? 'Login' : 'Daftar';
