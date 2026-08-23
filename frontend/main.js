@@ -38,13 +38,13 @@ const fetchItems = async (category = null) => {
 // Parse newlines to array
 const parseLines = (text) => {
     if (!text) return [];
-    return text.split('n').map(t => t.trim()).filter(t => t.length > 0);
+    return text.split('\n').map(t => t.trim()).filter(t => t.length > 0);
 };
 
 // Format terms into HTML list
 const formatTerms = (termsText) => {
     if (!termsText) return '';
-    const lines = termsText.split('n');
+    const lines = termsText.split('\n');
     let html = '';
     let inList = false;
     
@@ -297,8 +297,21 @@ window.openTourModal = (id) => {
                         <img src="/bri.svg" alt="BRI" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">759801017387536</span></div>
                     </div>
+
+                    ${!localStorage.getItem('auth_token') ? `
+                    <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin-top: 20px; text-align: center;">
+                        <div style="font-size: 0.85rem; color: #d97706; margin-bottom: 12px; font-weight: 600;">
+                            <i class="fa-solid fa-circle-exclamation"></i> Anda harus login atau daftar akun terlebih dahulu untuk melakukan pesanan via Web.
+                        </div>
+                        <div style="display: flex; gap: 8px; justify-content: center;">
+                            <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='login'; window.openAuthModal();" class="btn" style="background: white; color: #d97706; border: 1px solid #d97706; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; flex:1; text-align: center;">LOGIN</a>
+                            <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='register'; window.openAuthModal();" class="btn" style="background: #d97706; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; flex:1; text-align: center;">DAFTAR</a>
+                        </div>
+                    </div>
+                    ` : ''}
+
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); if(window.checkAuthAndPrompt()) window.open('https://wa.me/6289676963255?text=Halo%20admin,%20saya%20ingin%20booking%20${encodeURIComponent(item.title)}', '_blank');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <a href="#" onclick="event.preventDefault(); window.open('https://wa.me/6289676963255?text=Halo%20admin,%20saya%20ingin%20booking%20${encodeURIComponent(item.title)}', '_blank');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
                         <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
@@ -378,10 +391,10 @@ const createTransferCard = (item, index = 0) => {
     let tableRows = '';
     item.transferMatrix.forEach(tm => {
         tableRows += `<tr>
-            <td style="padding: 10px 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; border-bottom: 1px solid #e2e8f0;"><i class="fa-solid fa-location-dot" style="color: var(--primary-green); margin-right: 6px;"></i>${tm.area}</td>
+            <td style="padding: 10px 14px; font-weight: 700; color: var(--text-dark); white-space: nowrap; border: 1px solid #e2e8f0;"><i class="fa-solid fa-location-dot" style="color: var(--primary-green); margin-right: 6px;"></i>${tm.area}</td>
             ${vehicles.map(v => {
                 const price = tm.prices[v];
-                return `<td style="padding: 10px 8px; text-align: center; border-bottom: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; color: var(--text-dark);">${price ? formatPrice(price) : '-'}</td>`;
+                return `<td style="padding: 10px 8px; text-align: center; border: 1px solid #e2e8f0; white-space: nowrap; font-weight: 600; color: var(--text-dark);">${price ? formatPrice(price) : '-'}</td>`;
             }).join('')}
         </tr>`;
     });
@@ -393,11 +406,11 @@ const createTransferCard = (item, index = 0) => {
             <p style="margin: 0; opacity: 0.85; font-size: 0.95rem;">${item.description || 'Dari Airport / Sebaliknya'}</p>
         </div>
         <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; min-width: 600px; border: 1px solid #e2e8f0;">
                 <thead>
                     <tr style="background: #f0f9ff;">
-                        <th style="padding: 12px 14px; text-align: left; font-weight: 800; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">AREA TUJUAN</th>
-                        ${vehicles.map(v => `<th style="padding: 12px 8px; text-align: center; font-weight: 700; color: var(--primary-blue); border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">${v}</th>`).join('')}
+                        <th style="padding: 12px 14px; text-align: left; font-weight: 800; color: var(--primary-blue); border: 1px solid #bae6fd; border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">AREA TUJUAN</th>
+                        ${vehicles.map(v => `<th style="padding: 12px 8px; text-align: center; font-weight: 700; color: var(--primary-blue); border: 1px solid #bae6fd; border-bottom: 2px solid var(--primary-blue); white-space: nowrap;">${v}</th>`).join('')}
                     </tr>
                 </thead>
                 <tbody>
@@ -538,7 +551,7 @@ const createFleetCard = (item, index = 0) => {
     // Build include list
     let includeHtml = '';
     if (item.include) {
-        const includes = item.include.split('n').filter(i => i.trim());
+        const includes = item.include.split('\n').filter(i => i.trim());
         includeHtml = includes.map(inc => `<li><i class="fa-solid fa-check"></i> ${inc.trim()}</li>`).join('');
     }
     if (item.description && !item.include) {
@@ -833,11 +846,21 @@ const init = async () => {
 window.generateEtiketPDF = (data) => {
     if (!data) { alert('Data tiket tidak ditemukan, cek status dulu.'); return; }
 
+    const isDpPayment = data.isDp === true || data.isDp === 'true';
+
     const isPaid    = data.status === 'PAID';
-    const sc        = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
-    const scBg      = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
-    const stText    = data.status || 'UNKNOWN';
-    const stIcon    = isPaid ? '&#10003;' : (data.status === 'PENDING' ? '&#9203;' : '&#10007;');
+    let sc        = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
+    let scBg      = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
+    let stText    = data.status || 'UNKNOWN';
+    let stIcon    = isPaid ? '&#10003;' : (data.status === 'PENDING' ? '&#9203;' : '&#10007;');
+
+    // Override untuk DP: tampilkan status khusus DP
+    if (isDpPayment) {
+        sc     = '#ea580c';
+        scBg   = '#fff7ed';
+        stText = 'DP - BELUM LUNAS';
+        stIcon = '&#9651;'; // segitiga atas = sebagian
+    }
 
     const fmtDate = (d) => {
         if (!d) return '-';
@@ -853,47 +876,38 @@ window.generateEtiketPDF = (data) => {
     // ── Build content (NO full HTML wrapper – injected into live DOM) ──
     const page = document.createElement('div');
     page.style.cssText = `
-        width:794px; min-height:1123px; background:#fff; margin:0; padding:0;
+        width:794px; background:#fff; margin:0; padding:0;
         font-family:'Segoe UI',Arial,sans-serif; font-size:14px; color:#1e293b;
-        box-sizing:border-box; display:flex; flex-direction:column;
+        box-sizing:border-box; display:flex; flex-direction:column; overflow:hidden;
     `;
 
     page.innerHTML = `
-        <!-- Header -->
-        <div style="background:linear-gradient(135deg,#1d4ed8 0%,#0369a1 60%,#0891b2 100%);
-                    padding:30px 40px 26px; display:flex; align-items:center;
-                    justify-content:space-between; flex-shrink:0;">
+<div style="background:linear-gradient(135deg,#1d4ed8 0%,#0369a1 60%,#0891b2 100%);padding:18px 30px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin:0;width:100%;box-sizing:border-box;">
             <div style="display:flex;align-items:center;gap:16px;">
                 <img src="${logoUrl}" crossorigin="anonymous"
                      style="width:60px;height:60px;border-radius:12px;background:#fff;
                             padding:6px;object-fit:contain;flex-shrink:0;">
                 <div>
                     <div style="color:#fff;font-size:21px;font-weight:800;line-height:1.2;">Travel Lombok Airport</div>
-                    <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Tour &amp; Travel Lombok &middot; travellombokairport.com</div>
+                    <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Tour &amp; Travel Lombok &middot; www.travellombokairport.com</div>
                 </div>
             </div>
             <div style="text-align:right;color:#fff;">
-                <div style="font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;">Bukti Pembayaran</div>
-                <div style="font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.1;">e-Tiket</div>
-                <div style="font-size:11px;opacity:0.65;font-family:monospace;margin-top:3px;">${data.transactionId}</div>
+                <div style="font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;">${isDpPayment ? 'Bukti DP' : 'Bukti Pembayaran'}</div>
+                <div style="font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.1;">${isDpPayment ? 'e-Tiket DP' : 'e-Tiket'}</div>
+            <div style="font-size:11px;opacity:0.65;font-family:monospace;margin-top:3px;">${data.transactionId}</div>
             </div>
         </div>
-
-        <!-- Status Ribbon -->
-        <div style="background:${scBg};border-left:5px solid ${sc};padding:10px 40px;
-                    display:flex;align-items:center;gap:12px;flex-shrink:0;">
+        <div style="background:${scBg};border-left:5px solid ${sc};padding:8px 30px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%;box-sizing:border-box;">
             <div style="width:10px;height:10px;border-radius:50%;background:${sc};flex-shrink:0;"></div>
-            <div style="font-size:13px;font-weight:700;color:${sc};">STATUS: ${stText}</div>
-            <div style="font-size:11px;color:#475569;margin-left:auto;">Diterbitkan: ${issuedAt}</div>
+            <div style="font-size:12px;font-weight:700;color:${sc};">STATUS: ${stText}</div>
+            <div style="font-size:10px;color:#475569;margin-left:auto;">Diterbitkan: ${issuedAt}</div>
         </div>
 
-        <!-- Body -->
-        <div style="padding:28px 40px;flex:1;">
+        <div style="padding:14px 30px;flex:1;width:100%;box-sizing:border-box;">
 
             <!-- ID Strip -->
-            <div style="background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:10px;
-                        padding:14px 20px;display:flex;align-items:center;
-                        justify-content:space-between;margin-bottom:22px;">
+            <div style="background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:8px;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;">
                 <div>
                     <div style="font-size:10px;color:rgba(255,255,255,0.7);font-weight:600;
                                 text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Nomor Transaksi</div>
@@ -911,29 +925,42 @@ window.generateEtiketPDF = (data) => {
                 </div>
             </div>
 
+            ${isDpPayment ? `
+            <div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #ea580c;border-radius:10px;padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
+                <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
+                <div style="flex:1;">
+                    <div style="font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">&#9888; Pembayaran DP &mdash; Belum Lunas</div>
+                    <div style="font-size:11px;color:#9a3412;">DP terbayar: <strong>Rp 500.000</strong> &nbsp;&bull;&nbsp; Sisa: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - 500000).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
+                    <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sebelum tanggal keberangkatan.</div>
+                </div>
+            </div>` : ''}
+
             <!-- Informasi Pemesan -->
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
-                        color:#94a3b8;margin-bottom:12px;">Informasi Pemesan</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">Informasi Pemesan</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Nama Lengkap</div>
-                    <div style="font-size:15px;font-weight:700;color:#1e293b;">${data.customerName || '-'}</div>
+                    <div style="font-size:15px;font-weight:700;color:#1e293b;">${data.customerName || data.userEmail || '-'}</div>
                 </div>
-                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Email</div>
+                    <div style="font-size:14px;font-weight:700;color:#1e293b;">${data.customerEmail || data.userEmail || '-'}</div>
+                </div>
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:8px;padding:10px 12px;grid-column:1/-1;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">No. WhatsApp / Telepon</div>
-                    <div style="font-size:14px;font-weight:700;color:#1e293b;">${data.phone || '-'}</div>
+                    <div style="font-size:14px;font-weight:700;color:#1e293b;">${data.phone || data.details?.phone || '-'}</div>
                 </div>
             </div>
 
             <!-- Divider -->
-            <div style="border:none;border-top:2px dashed #e2e8f0;margin:18px 0;"></div>
+            <div style="border:none;border-top:2px dashed #e2e8f0;margin:8px 0;"></div>
 
             <!-- Detail Layanan -->
-            <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;
-                        color:#94a3b8;margin-bottom:12px;">Detail Layanan</div>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;">
+            <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">Detail Layanan</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;
                             padding:13px 15px;grid-column:1/-1;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
@@ -947,29 +974,69 @@ window.generateEtiketPDF = (data) => {
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">Kategori</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.category || typeLbl}</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">Tanggal Pelaksanaan</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.startDate || data.details?.date)}</div>
                 </div>
+                ${(data.endDate || data.details?.time) ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">Tanggal Mulai</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.startDate)}</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">${data.endDate ? 'Tanggal Selesai' : 'Waktu Keberangkatan'}</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.endDate ? fmtDate(data.endDate) : data.details?.time}</div>
                 </div>
+                ` : ''}
+                ${data.details?.pax ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">Tanggal Selesai</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.endDate)}</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">Jumlah Peserta</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.pax} Orang</div>
                 </div>
+                ` : ''}
+                ${data.details?.pickup ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;grid-column:1/-1;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Lokasi Jemput</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.pickup}</div>
+                </div>
+                ` : ''}
+                ${data.details?.dropoff ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;grid-column:1/-1;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Tujuan / Drop-off</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.dropoff}</div>
+                </div>
+                ` : ''}
+                ${data.details?.flightNumber ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">No. Penerbangan</div>
+                <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.flightNumber}</div>
+                </div>
+                ` : ''}
+                ${data.endDate ? (() => {
+                    const itemName = (data.itemName || "").toLowerCase();
+                    const isPackage = itemName.includes('paket') || itemName.includes('tour') || itemName.includes('trip') || itemName.includes('honeymoon') || (data.transactionId && data.transactionId.startsWith('ORD-'));
+                    const text = isPackage ? `Paket/layanan berakhir pada <strong>${fmtDate(data.endDate)}</strong>.` : `Masa sewa berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
+                    return `
+                    <div style="background:#eff6ff;border:1px solid #bae6fd;border-radius:8px;padding:8px 12px;grid-column:1/-1;display:flex;align-items:center;gap:10px;">
+                        <div style="width:28px;height:28px;background:#0ea5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">
+                            ℹ️
+                        </div>
+                        <div>
+                            <div style="font-size:10px;color:#0369a1;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Info Waktu Berakhir</div>
+                            <div style="font-size:12px;color:#0369a1;">${text}</div>
+                        </div>
+                    </div>
+                    `;
+                })() : ''}
             </div>
 
             <!-- Divider -->
-            <div style="border:none;border-top:2px dashed #e2e8f0;margin:18px 0;"></div>
+            <div style="border:none;border-top:2px dashed #e2e8f0;margin:8px 0;"></div>
 
             <!-- Warning Box -->
-            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:10px;padding:14px 16px;">
-                <div style="font-size:10px;color:#d97706;font-weight:700;text-transform:uppercase;
-                            letter-spacing:0.8px;margin-bottom:8px;">&#9888; Penting &mdash; Harap Dibaca</div>
-                <div style="font-size:11px;color:#475569;line-height:2;">
+            <div style="background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;">
+                <div style="font-size:9px;color:#d97706;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">&#9888; Penting &mdash; Harap Dibaca</div>
+                <div style="font-size:10px;color:#475569;line-height:1.8;">
                     &bull; Tunjukkan e-Tiket ini (cetak / digital) kepada petugas saat berangkat.<br>
                     &bull; Harap hadir 30 menit sebelum waktu penjemputan.<br>
                     &bull; Hubungi kami via WhatsApp jika ada perubahan jadwal.<br>
@@ -979,13 +1046,13 @@ window.generateEtiketPDF = (data) => {
         </div>
 
         <!-- Footer -->
-        <div style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:18px 40px;flex-shrink:0;">
+        <div style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:10px 30px;flex-shrink:0;width:100%;box-sizing:border-box;">
             <div style="display:flex;justify-content:space-between;align-items:flex-end;">
                 <div>
                     <div style="font-size:11px;color:#1e293b;font-weight:700;margin-bottom:4px;">Travel Lombok Airport</div>
                     <div style="font-size:10px;color:#64748b;line-height:1.8;">
                         &#128222; +62 896-7696-3255 (WhatsApp)<br>
-                        &#127760; travellombokairport.com<br>
+                        &#127760; www.travellombokairport.com<br>
                         &#128205; Lombok, Nusa Tenggara Barat, Indonesia
                     </div>
                 </div>
@@ -996,7 +1063,7 @@ window.generateEtiketPDF = (data) => {
                     </div>
                     <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${issuedAt}</div>
                     <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:20px;padding:3px 10px;">
-                        <span style="font-size:9px;color:#fff;font-weight:700;letter-spacing:0.5px;">&#127760; Dipesan melalui website travellombokairport.com</span>
+                        <span style="font-size:9px;color:#fff;font-weight:700;letter-spacing:0.5px;">&#127760; Dipesan melalui website www.travellombokairport.com</span>
                     </div>
                 </div>
             </div>
@@ -1005,16 +1072,23 @@ window.generateEtiketPDF = (data) => {
 
     // ── Wrapper: off-screen tapi tetap di document flow ──
     const wrapper = document.createElement('div');
-    wrapper.style.cssText = 'position:absolute;left:-9999px;top:0;width:794px;z-index:-1;overflow:hidden;';
+    // Menggunakan absolute positioning di ujung atas dokumen agar html2canvas tidak salah kalkulasi offset
+    wrapper.style.cssText = 'position:absolute; left:0; top:0; width:794px; z-index:-9999; visibility:hidden; overflow:hidden; background:#fff; padding:0; margin:0;';
+    page.style.minHeight = 'auto'; // Biarkan tingginya menyesuaikan isi
     wrapper.appendChild(page);
     document.body.appendChild(wrapper);
 
+    // Dapatkan tinggi aslinya, berikan padding ekstra (+100px) untuk mencegah overflow ke halaman kedua
+    const contentHeight = page.offsetHeight + 100;
+
+    // Pastikan scrollY di-set 0 di html2canvas untuk mencegah white space di atas
     const opt = {
         margin:       0,
         filename:     `e-Tiket_${data.transactionId}.pdf`,
         image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff' },
-        jsPDF:        { unit: 'px', format: [794, 1123], orientation: 'portrait', hotfixes: ['px_scaling'] }
+        html2canvas:  { scale: 2, useCORS: true, allowTaint: true, logging: false, backgroundColor: '#ffffff', scrollY: 0, windowY: 0 },
+        jsPDF:        { unit: 'px', format: [794, contentHeight], orientation: 'portrait', hotfixes: ['px_scaling'] },
+        pagebreak:    { mode: 'avoid-all' }
     };
 
     html2pdf().set(opt).from(page).save().then(() => {
@@ -1068,6 +1142,14 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                     <div style="margin-bottom: 10px;">
                         <span style="font-size: 0.8rem; color: #64748b;">Atas Nama</span>
                         <div style="font-weight: bold; color: #1e293b;">${data.customerName}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-size: 0.8rem; color: #64748b;">Email</span>
+                        <div style="font-weight: bold; color: #1e293b;">${data.customerEmail || '-'}</div>
+                    </div>
+                    <div style="margin-bottom: 10px;">
+                        <span style="font-size: 0.8rem; color: #64748b;">No. HP / WA</span>
+                        <div style="font-weight: bold; color: #1e293b;">${data.phone || '-'}</div>
                     </div>
                     <div style="margin-bottom: 10px;">
                         <span style="font-size: 0.8rem; color: #64748b;">Item / Layanan</span>
@@ -1304,6 +1386,10 @@ window.openCheckoutModal = async (itemName, price) => {
         console.error("Failed to fetch bookings:", e);
     }
 
+    // Auto-calculate end date based on package name (e.g., "5H 4M" -> 5 Hari)
+    const matchDays = itemName.match(/(\d+)\s*H/i);
+    const durationDays = matchDays ? parseInt(matchDays[1]) : 0;
+
     let html = `
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="color: var(--primary-blue);">${isOrder ? "Checkout Pesanan" : "Form Booking"}</h2>
@@ -1313,7 +1399,7 @@ window.openCheckoutModal = async (itemName, price) => {
         <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #e2e8f0;">
             <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">${isOrder ? "Item yang diorder:" : "Rincian Booking:"}</p>
             <h3 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h3>
-            ${isOrder ? `<p style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
+            ${isOrder ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
         </div>
 
         <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${price || 0});">
@@ -1321,26 +1407,86 @@ window.openCheckoutModal = async (itemName, price) => {
                 <label>Nama Lengkap</label>
                 <input type="text" id="co-name" class="form-control" required placeholder="Masukkan nama Anda">
             </div>
-            <div class="form-group mb-3">
-                <label>Nomor WhatsApp</label>
-                <input type="text" id="co-phone" class="form-control" required placeholder="Contoh: 08123456789">
+            <div style="display:flex; gap:15px;">
+                <div class="form-group mb-3" style="flex:1;">
+                    <label>Nomor WhatsApp</label>
+                    <input type="text" id="co-phone" class="form-control" required placeholder="Contoh: 08123456789">
+                </div>
+                <div class="form-group mb-3" style="flex:1;">
+                    <label>Email</label>
+                    <input type="email" id="co-email" class="form-control" required placeholder="email@example.com">
+                </div>
             </div>
             <div style="display: flex; gap: 15px;">
                 <div class="form-group mb-3" style="flex: 1;">
                     <label>Tanggal Mulai</label>
-                    <input type="date" id="co-start-date" class="form-control" required onchange="if(window.checkDateOverlap) window.checkDateOverlap()">
+                    <input type="date" id="co-start-date" class="form-control" required>
                 </div>
+                ${durationDays === 0 ? `
+                <div class="form-group mb-3" style="flex: 1; display:flex; flex-direction:column;">
+                    <label>Durasi Sewa</label>
+                    <div style="display:flex; gap:10px;">
+                        <select id="co-duration-select" class="form-control" style="flex:1;" required onchange="const c = document.getElementById('co-duration-custom'); if(this.value==='custom') { c.style.display='block'; c.required=true; c.focus(); } else { c.style.display='none'; c.required=false; }">
+                            <option value="1">1 Hari</option>
+                            <option value="2">2 Hari</option>
+                            <option value="3">3 Hari</option>
+                            <option value="4">4 Hari</option>
+                            <option value="5">5 Hari</option>
+                            <option value="6">6 Hari</option>
+                            <option value="7">1 Minggu (7 Hari)</option>
+                            <option value="14">2 Minggu (14 Hari)</option>
+                            <option value="custom">Custom (Ketik Sendiri)</option>
+                        </select>
+                        <input type="number" id="co-duration-custom" class="form-control" min="1" placeholder="Berapa hari?" style="display:none; width:110px;">
+                    </div>
+                </div>
+                <input type="hidden" id="co-end-date" required>
+                ` : `
                 <div class="form-group mb-3" style="flex: 1;">
-                    <label>Tanggal Selesai</label>
-                    <input type="date" id="co-end-date" class="form-control" required onchange="if(window.checkDateOverlap) window.checkDateOverlap()">
+                    <label>Tanggal Selesai <span style="font-size:0.75rem;color:#0ea5e9;font-weight:600;">● Otomatis</span></label>
+                    <input type="date" id="co-end-date" class="form-control" required readonly style="background:#f1f5f9;cursor:not-allowed;">
+                </div>
+                `}
+            </div>
+            <div id="date-duration-info" style="display:${durationDays > 0 ? 'flex' : 'none'}; align-items:center; gap:10px; margin-bottom:16px; background:linear-gradient(135deg,#eff6ff,#e0f2fe); border:1px solid #bae6fd; border-radius:12px; padding:12px 16px;">
+                <div style="width:36px;height:36px;background:#0ea5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fa-solid fa-calendar-check" style="color:white;font-size:1rem;"></i>
+                </div>
+                <div>
+                    <div id="date-duration-title" style="font-size:0.8rem;font-weight:700;color:#0369a1;">
+                        ${durationDays > 0 ? (itemName.match(/(\d+H\s*\d+M)/i)?.[1] || durationDays+'H ' + (durationDays-1)+'M') + ' &mdash; Durasi Paket' : 'Info Pengembalian'}
+                    </div>
+                    <div id="date-duration-text" style="font-size:0.82rem;color:#0369a1;margin-top:2px;">
+                        ${durationDays > 0 ? 'Pilih tanggal mulai, tanggal selesai akan otomatis terisi.' : ''}
+                    </div>
                 </div>
             </div>
             <div id="dynamic-date-warning" style="display: none; margin-bottom: 15px; font-size: 0.85rem; color: #ef4444; background: #fff1f2; padding: 10px; border-radius: 8px; border: 1px solid #fecdd3;">
                 <strong><i class="fa-solid fa-triangle-exclamation"></i> Maaf, rentang tanggal yang Anda pilih bentrok dengan jadwal yang sudah dipesan! Silakan pilih tanggal lain.</strong>
             </div>`;
-
     if (isOrder) {
         html += `
+            ${price > 500000 ? `
+            <div class="form-group mb-4">
+                <label style="font-weight:700;color:var(--text-dark);">Tipe Pembayaran</label>
+                <div style="display:flex;gap:10px;margin-top:8px;" id="payment-type-container">
+                    <label id="pt-dp-label" onclick="window.setPaymentType('dp')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:2px solid #f59e0b;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
+                        <input type="radio" name="payment-type-radio" id="pt-dp" value="dp" checked style="accent-color:#f59e0b;width:16px;height:16px;margin-top:2px;">
+                        <div>
+                            <div style="font-weight:700;color:#d97706;font-size:0.88rem;">DP (Uang Muka)</div>
+                            <div style="font-size:0.75rem;color:#92400e;">Bayar Rp 500.000 sekarang, sisa lunas sebelum keberangkatan.</div>
+                        </div>
+                    </label>
+                    <label id="pt-full-label" onclick="window.setPaymentType('full')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#f0fdf4;border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
+                        <input type="radio" name="payment-type-radio" id="pt-full" value="full" style="accent-color:#22c55e;width:16px;height:16px;margin-top:2px;">
+                        <div>
+                            <div style="font-weight:700;color:#15803d;font-size:0.88rem;">Bayar Penuh</div>
+                            <div style="font-size:0.75rem;color:#166534;">Bayar total harga sekarang, langsung dikonfirmasi.</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+            ` : ''}
             <div class="form-group mb-4">
                 <label>Metode Pembayaran</label>
                 <select id="co-payment" class="form-control" required onchange="const d = document.getElementById('bank-details'); if(this.value==='manual') d.style.display='block'; else d.style.display='none';">
@@ -1383,6 +1529,15 @@ window.openCheckoutModal = async (itemName, price) => {
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
 
+    // Auto-fill email dari akun login jika tersedia
+    try {
+        const _user = JSON.parse(localStorage.getItem('auth_user') || '{}');
+        if (_user && _user.email) {
+            const _emailEl = document.getElementById('co-email');
+            if (_emailEl && !_emailEl.value) _emailEl.value = _user.email;
+        }
+    } catch(e) {}
+
     // Save checkout state so it survives an accidental page refresh
     sessionStorage.setItem('checkoutState', JSON.stringify({ itemName, price }));
     window._checkoutActive = true;
@@ -1401,21 +1556,72 @@ window.openCheckoutModal = async (itemName, price) => {
         const saved = JSON.parse(sessionStorage.getItem('checkoutState') || '{}');
         const nameEl = document.getElementById('co-name');
         const phoneEl = document.getElementById('co-phone');
+        const emailEl = document.getElementById('co-email');
         const startEl = document.getElementById('co-start-date');
         const endEl = document.getElementById('co-end-date');
         const payEl = document.getElementById('co-payment');
         if (nameEl) saved.name = nameEl.value;
         if (phoneEl) saved.phone = phoneEl.value;
+        if (emailEl) saved.email = emailEl.value;
         if (startEl) saved.startDate = startEl.value;
         if (endEl) saved.endDate = endEl.value;
         if (payEl) saved.payment = payEl.value;
         sessionStorage.setItem('checkoutState', JSON.stringify(saved));
     };
-    ['co-name','co-phone','co-start-date','co-end-date','co-payment'].forEach(id => {
+    ['co-name','co-phone','co-email','co-start-date','co-end-date','co-payment'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.addEventListener('input', saveFormState);
         if (el) el.addEventListener('change', saveFormState);
     });
+    
+    window._currentDurationDays = durationDays;
+    
+    const startDateEl = document.getElementById('co-start-date');
+    const endDateEl = document.getElementById('co-end-date');
+    const durationSelectEl = document.getElementById('co-duration-select');
+    const durationCustomEl = document.getElementById('co-duration-custom');
+    
+    const updateEndDateAndPrice = () => {
+        if (!startDateEl || !startDateEl.value || !endDateEl) return;
+        const sDate = new Date(startDateEl.value);
+        let currentDuration = durationDays;
+        
+        if (durationSelectEl) {
+            if (durationSelectEl.value === 'custom') {
+                currentDuration = durationCustomEl && durationCustomEl.value ? parseInt(durationCustomEl.value) : 1;
+            } else {
+                currentDuration = parseInt(durationSelectEl.value);
+            }
+        }
+        
+        // Hitung End Date
+        // Untuk rental (0), 1 hari = pengembalian besok (daysToAdd = currentDuration)
+        // Untuk paket (>0), 5 hari 4 malam = pengembalian di hari ke-5 (daysToAdd = currentDuration - 1)
+        const daysToAdd = window._currentDurationDays === 0 ? currentDuration : Math.max(0, currentDuration - 1);
+        sDate.setDate(sDate.getDate() + daysToAdd);
+        endDateEl.value = sDate.toISOString().split('T')[0];
+        
+        // Tampilkan info box tanggal selesai untuk semua pesanan (rental maupun paket)
+        const infoBox = document.getElementById('date-duration-info');
+        const infoText = document.getElementById('date-duration-text');
+        if (infoBox && infoText) {
+            infoBox.style.display = 'flex';
+            const opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = sDate.toLocaleDateString('id-ID', opt);
+            if (window._currentDurationDays === 0) {
+                infoText.innerHTML = `Masa sewa berakhir pada <strong>${formattedDate}</strong>.`;
+            } else {
+                infoText.innerHTML = `Paket/layanan berakhir pada <strong>${formattedDate}</strong>.`;
+            }
+        }
+        
+        saveFormState();
+        if(window.checkDateOverlap) window.checkDateOverlap();
+    };
+
+    if (startDateEl) startDateEl.addEventListener('change', updateEndDateAndPrice);
+    if (durationSelectEl) durationSelectEl.addEventListener('change', updateEndDateAndPrice);
+    if (durationCustomEl) durationCustomEl.addEventListener('input', updateEndDateAndPrice);
 };
 
 window.checkDateOverlap = () => {
@@ -1451,6 +1657,47 @@ window.checkDateOverlap = () => {
     } else {
         warningDiv.style.display = 'none';
         if(submitBtn) submitBtn.disabled = false;
+        
+        // Dynamic pricing for rentals (items without fixed duration "H" in name)
+        const basePriceEl = document.getElementById("co-display-price");
+        if (basePriceEl && window._currentDurationDays === 0) {
+            const basePrice = parseInt(basePriceEl.getAttribute("data-base-price") || 0);
+            if (basePrice > 0) {
+                let diffDays = 1;
+                const durationSelect = document.getElementById('co-duration-select');
+                if (durationSelect) {
+                    if (durationSelect.value === 'custom') {
+                        const customInput = document.getElementById('co-duration-custom');
+                        diffDays = customInput && customInput.value ? parseInt(customInput.value) : 1;
+                    } else {
+                        diffDays = parseInt(durationSelect.value);
+                    }
+                }
+                const total = basePrice * diffDays;
+                basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
+            }
+        }
+    }
+};
+
+window.setPaymentType = (type) => {
+    const dpLabel = document.getElementById('pt-dp-label');
+    const fullLabel = document.getElementById('pt-full-label');
+    const dpRadio = document.getElementById('pt-dp');
+    const fullRadio = document.getElementById('pt-full');
+    if (!dpLabel || !fullLabel) return;
+    if (type === 'dp') {
+        dpRadio.checked = true;
+        dpLabel.style.border = '2px solid #f59e0b';
+        dpLabel.style.background = '#fffbeb';
+        fullLabel.style.border = '2px solid #e2e8f0';
+        fullLabel.style.background = '#f0fdf4';
+    } else {
+        fullRadio.checked = true;
+        fullLabel.style.border = '2px solid #22c55e';
+        fullLabel.style.background = '#dcfce7';
+        dpLabel.style.border = '2px solid #e2e8f0';
+        dpLabel.style.background = '#fffbeb';
     }
 };
 
@@ -1459,6 +1706,7 @@ window.processCheckout = async (itemName, price) => {
 
     const name = document.getElementById("co-name").value;
     const phone = document.getElementById("co-phone").value;
+    const emailInput = document.getElementById("co-email")?.value || '';
     const startDate = document.getElementById("co-start-date").value;
     const endDate = document.getElementById("co-end-date").value;
     const payment = document.getElementById("co-payment").value;
@@ -1487,15 +1735,39 @@ window.processCheckout = async (itemName, price) => {
         }
     }
 
-    // Ambil email dari user login
+    // Ambil email: prioritaskan dari input form, fallback dari akun login
     const userStr = localStorage.getItem('auth_user');
-    let customerEmail = '';
-    if (userStr) {
+    let customerEmail = emailInput;
+    if (!customerEmail && userStr) {
         try {
             const user = JSON.parse(userStr);
             if (user && user.email) customerEmail = user.email;
         } catch (e) {}
     }
+
+    let finalPrice = price;
+    const matchDays = itemName.match(/(\d+)\s*H/i);
+    const isPackage = matchDays && parseInt(matchDays[1]) > 0;
+    if (!isPackage && price > 0) {
+        let diffDays = 1;
+        const durationSelect = document.getElementById('co-duration-select');
+        if (durationSelect) {
+            if (durationSelect.value === 'custom') {
+                const customInput = document.getElementById('co-duration-custom');
+                diffDays = customInput && customInput.value ? parseInt(customInput.value) : 1;
+            } else {
+                diffDays = parseInt(durationSelect.value);
+            }
+        } else {
+            diffDays = Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24));
+        }
+        if (diffDays < 1) diffDays = 1;
+        finalPrice = price * diffDays;
+    }
+
+    // Cek apakah user memilih DP
+    const isDp = price > 500000 && document.getElementById('pt-dp')?.checked === true;
+    if (isDp) finalPrice = 500000;
 
     const bookingData = {
         itemName,
@@ -1503,7 +1775,9 @@ window.processCheckout = async (itemName, price) => {
         phone,
         startDate,
         endDate,
-        price,
+        price: finalPrice,
+        isDp: isDp,
+        fullPrice: isDp ? price : finalPrice,
         customerEmail
     };
     
@@ -1554,11 +1828,22 @@ window.processCheckout = async (itemName, price) => {
         </div>
     `;
 
+    // Simpan booking PENDING ke DB SEBELUM QRIS dibuat, agar selalu tercatat di admin
+    const pendingTxId = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 9000 + 1000);
+    window._pendingQrisTxId = pendingTxId;
+    try {
+        await fetch(`${API_URL}/bookings`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...bookingData, status: 'PENDING', transactionId: pendingTxId })
+        });
+    } catch(e) { console.error('Failed to save pending booking:', e); }
+
     try {
         fetch(`${API_URL}/payment/qris`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: price, customer_name: name })
+            body: JSON.stringify({ amount: finalPrice, customer_name: name })
         }).then(res => res.json()).then(result => {
             if (result.success) {
                 const data = result.data;
@@ -1674,15 +1959,17 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     window._checkoutActive = false;
     window.removeEventListener('beforeunload', window._checkoutBeforeUnload);
 
-    // Save PAID booking for QRIS — fire-and-forget (non-blocking) so UI shows immediately
+    // Update booking yang sudah PENDING menjadi PAID
     if (!isBookingOnly && window.currentCheckoutData) {
-        const dataToSave = { ...window.currentCheckoutData, status: 'PAID', transactionId: id };
-        window.currentCheckoutData = null; // Clear immediately
-        fetch(`${API_URL}/bookings`, {
-            method: 'POST',
+        const txIdToUpdate = window._pendingQrisTxId || id;
+        // Update status booking ke PAID via endpoint by-txid
+        fetch(`${API_URL}/bookings/by-txid/${txIdToUpdate}/status`, {
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dataToSave)
-        }).catch(e => console.error('Failed to save QRIS booking:', e));
+            body: JSON.stringify({ status: 'PAID' })
+        }).catch(e => console.error('Failed to update QRIS booking to PAID:', e));
+        window.currentCheckoutData = null;
+        window._pendingQrisTxId = null;
     }
     
     modalBody.innerHTML = `
@@ -1799,7 +2086,8 @@ window.downloadPdfInvoice = (id) => {
       filename:     `e-Tiket_${id}.pdf`,
       image:        { type: 'jpeg', quality: 1.0 },
       html2canvas:  { scale: 2, useCORS: true, logging: false },
-      jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+      jsPDF:        { unit: 'px', format: [800, element.offsetHeight + 100], orientation: 'portrait', hotfixes: ['px_scaling'] },
+      pagebreak:    { mode: 'avoid-all' }
     };
     
     html2pdf().set(opt).from(element).save().then(() => {
@@ -2103,20 +2391,16 @@ window.showTransactionDetail = (encodedData) => {
     const price = item.itemPrice ? 'Rp ' + parseInt(item.itemPrice).toLocaleString('id-ID') : '-';
     const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric', hour:'2-digit', minute:'2-digit'}) : '-';
     
-    // Tombol Cetak PDF
-    let pdfBtn = '';
-    if (isPaid) {
-        pdfBtn = `
-            <button onclick="Swal.close(); setTimeout(()=>{ window._lastBookingData = JSON.parse(decodeURIComponent('${encodedData}')); window.generateEtiketPDF(window._lastBookingData); }, 300)" 
-                style="background:linear-gradient(135deg, #0ea5e9, #2563eb); border:none; color:white; font-size:0.95rem; padding:14px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; width:100%; margin-top:25px; box-shadow:0 8px 20px rgba(14,165,233,0.3); transition:all 0.3s;"
-                onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(14,165,233,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(14,165,233,0.3)';">
-                <i class="fa-solid fa-file-pdf" style="font-size:1.2rem;"></i> Download E-Tiket (PDF)
-            </button>
-        `;
-    }
+    // Tombol Cetak PDF selalu ada (baik PAID maupun PENDING)
+    let pdfBtn = `
+        <button onclick="Swal.close(); setTimeout(()=>{ window._lastBookingData = JSON.parse(decodeURIComponent('${encodedData}')); window.generateEtiketPDF(window._lastBookingData); }, 300)" 
+            style="background:linear-gradient(135deg, #0ea5e9, #2563eb); border:none; color:white; font-size:0.95rem; padding:14px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; width:100%; margin-top:25px; box-shadow:0 8px 20px rgba(14,165,233,0.3); transition:all 0.3s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(14,165,233,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(14,165,233,0.3)';">
+            <i class="fa-solid fa-file-pdf" style="font-size:1.2rem;"></i> Download E-Tiket (PDF)
+        </button>
+    `;
 
     let detailsHtml = '';
-    const details = item.details || {};
     const showRow = (label, val) => {
         if (!val) return '';
         return `
@@ -2128,64 +2412,60 @@ window.showTransactionDetail = (encodedData) => {
     };
 
     detailsHtml += showRow('Nama Pemesan', item.customerName || item.userEmail || '-');
-    detailsHtml += showRow('Email', item.userEmail || '-');
-    detailsHtml += showRow('No. HP / WA', details.phone || '-');
-    detailsHtml += showRow('Tgl Keberangkatan', details.date || '-');
-    if (details.time) detailsHtml += showRow('Waktu', details.time);
-    if (details.pax) detailsHtml += showRow('Jumlah Peserta', details.pax + ' Orang');
-    if (details.pickup) detailsHtml += showRow('Lokasi Jemput', details.pickup);
-    if (details.dropoff) detailsHtml += showRow('Tujuan', details.dropoff);
-    if (details.flightNumber) detailsHtml += showRow('No. Penerbangan', details.flightNumber);
+    detailsHtml += showRow('Email', item.customerEmail || item.userEmail || '-');
+    detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone || '-');
+    detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date || '-');
+    if (item.endDate) detailsHtml += showRow('Tgl Selesai', item.endDate);
+    if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
+    if (item.details?.pax) detailsHtml += showRow('Jumlah Peserta', item.details.pax + ' Orang');
+    if (item.details?.pickup) detailsHtml += showRow('Lokasi Jemput', item.details.pickup);
+    if (item.details?.dropoff) detailsHtml += showRow('Tujuan', item.details.dropoff);
+    if (item.details?.flightNumber) detailsHtml += showRow('No. Penerbangan', item.details.flightNumber);
 
     Swal.fire({
         showCloseButton: true,
         showConfirmButton: false,
         width: '520px',
-        padding: '0',
-        background: 'transparent',
         html: `
-            <div style="background:white; border-radius:24px; padding: 30px; text-align: left; position:relative; overflow:hidden;">
-                <!-- Decorative top header -->
-                <div style="position:absolute; top:0; left:0; width:100%; height:8px; background:linear-gradient(90deg, #3b82f6, #0ea5e9);"></div>
-                
+            <div style="text-align: left;">
                 <div style="text-align:center; margin-bottom:25px; margin-top:10px;">
-                    <div style="width:65px; height:65px; background:rgba(59, 130, 246, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; color:#3b82f6; font-size:2rem; box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.05);">
-                        <i class="fa-solid fa-receipt"></i>
-                    </div>
-                    <h3 style="color:#1e293b; font-size:1.4rem; font-weight:800; margin-bottom:6px;">Detail Transaksi</h3>
-                    <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">${tgl}</p>
-                    <span style="display:inline-block; font-size:0.8rem; font-weight:700; color:${statusColor}; background:${statusBg}; padding:6px 16px; border-radius:20px; letter-spacing:0.5px;">
-                        ${item.status}
-                    </span>
-                </div>
-                
-                <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:18px; padding:20px; margin-bottom:25px;">
-                    <div style="text-align:center; margin-bottom:18px;">
-                        <p style="color:#64748b; font-size:0.85rem; margin-bottom:5px;">Total Pembayaran</p>
-                        <h2 style="color:var(--primary-blue); font-size:2rem; font-weight:800; margin:0; letter-spacing:-0.5px;">${price}</h2>
-                    </div>
-                    <div style="background:white; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.03);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-hashtag" style="opacity:0.5; margin-right:5px;"></i> ID Transaksi</span>
-                            <span style="font-family:monospace; font-weight:700; color:#1e293b; font-size:0.95rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">${item.transactionId}</span>
+                        <div style="width:65px; height:65px; background:rgba(59, 130, 246, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; color:#3b82f6; font-size:2rem; box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.05);">
+                            <i class="fa-solid fa-receipt"></i>
                         </div>
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-layer-group" style="opacity:0.5; margin-right:5px;"></i> Layanan</span>
-                            <span style="font-weight:700; color:#1e293b; font-size:0.9rem; max-width:60%; text-align:right;">${item.itemName}</span>
+                        <h3 style="color:#1e293b; font-size:1.4rem; font-weight:800; margin-bottom:6px;">Detail Transaksi</h3>
+                        <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">${tgl}</p>
+                        <span style="display:inline-block; font-size:0.8rem; font-weight:700; color:${statusColor}; background:${statusBg}; padding:6px 16px; border-radius:20px; letter-spacing:0.5px;">
+                            ${item.status}
+                        </span>
+                    </div>
+                    
+                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:18px; padding:20px; margin-bottom:25px;">
+                        <div style="text-align:center; margin-bottom:18px;">
+                            <p style="color:#64748b; font-size:0.85rem; margin-bottom:5px;">Total Pembayaran</p>
+                            <h2 style="color:var(--primary-blue); font-size:2rem; font-weight:800; margin:0; letter-spacing:-0.5px;">${price}</h2>
+                        </div>
+                        <div style="background:white; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.03);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+                                <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-hashtag" style="opacity:0.5; margin-right:5px;"></i> ID Transaksi</span>
+                                <span style="font-family:monospace; font-weight:700; color:#1e293b; font-size:0.95rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">${item.transactionId}</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                                <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-layer-group" style="opacity:0.5; margin-right:5px;"></i> Layanan</span>
+                                <span style="font-weight:700; color:#1e293b; font-size:0.9rem; max-width:60%; text-align:right;">${item.itemName}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                <div style="background:white; border:1px solid #e2e8f0; border-radius:18px; padding:20px;">
-                    <h4 style="color:#1e293b; font-size:1rem; margin-bottom:5px; display:flex; align-items:center; gap:10px;">
-                        <i class="fa-solid fa-list-check" style="color:var(--primary-blue);"></i> Informasi Pemesanan
-                    </h4>
-                    <div style="margin-top:15px;">
-                        ${detailsHtml}
+                    <div style="background:white; border:1px solid #e2e8f0; border-radius:18px; padding:20px;">
+                        <h4 style="color:#1e293b; font-size:1rem; margin-bottom:5px; display:flex; align-items:center; gap:10px;">
+                            <i class="fa-solid fa-list-check" style="color:var(--primary-blue);"></i> Informasi Pemesanan
+                        </h4>
+                        <div style="margin-top:15px;">
+                            ${detailsHtml}
+                        </div>
                     </div>
-                </div>
 
-                ${pdfBtn}
+                    ${pdfBtn}
             </div>
         `
     });
