@@ -1111,15 +1111,14 @@ ${startDateStr}
 
 ━━━━━━━━━━━━━━━━━━━━━
 
-Kami dengan senang hati siap melayani dan memastikan perjalanan Anda berjalan dengan nyaman, aman, dan menyenangkan.
-
 Apabila Bapak/Ibu memiliki pertanyaan, ingin mengkonfirmasi jadwal, atau ada hal lain yang perlu disampaikan, jangan ragu untuk membalas pesan ini.
 
 Terima kasih telah mempercayakan perjalanan Anda kepada kami. 🌴
 
 Salam hangat,
-*Admin Travel Lombok Airport*
-📞 +62 896-7696-3255`);
+- *Admin Travel Lombok Airport* -
+📞 +62 896-7696-3255 (WhatsApp)
+🌐 www.travellombokairport.com`);
                     const assignDriverBtn = `<button class="action-btn btn-edit" onclick="assignDriver('${b.id}')" style="margin-top: 5px; background: var(--primary-green); color: white;"><i class="fa-solid fa-car"></i> Assign Supir</button>`;
                     
                     return `
