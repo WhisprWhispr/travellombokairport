@@ -1374,14 +1374,19 @@ ul {
   font-size: 0.8rem;
   font-weight: 600;
   margin-right: 5px;
+  margin-bottom: 5px;
   transition: all 0.2s ease;
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  white-space: nowrap;
 }
 .action-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.15); }
 .btn-edit { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; }
 .btn-delete { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; }
+.admin-table td:last-child, .data-table td:last-child {
+  white-space: nowrap;
+}
 
 /* ---- MODAL ---- */
 .modal-overlay {
