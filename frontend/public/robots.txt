@@ -1,4 +1,18 @@
 User-agent: *
 Allow: /
 
+# Blokir halaman internal/private
+Disallow: /driver
+Disallow: /driver.html
+Disallow: /admin
+Disallow: /admin.html
+Disallow: /login
+Disallow: /login.html
+Disallow: /register
+Disallow: /register.html
+Disallow: /riwayat
+Disallow: /riwayat.html
+Disallow: /verify
+Disallow: /verify.html
+
 Sitemap: https://travellombokairport.com/sitemap.xml
