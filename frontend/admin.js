@@ -386,7 +386,7 @@ TRAVEL LOMBOK AIRPORT 🚙`;
 const checkAuth = () => {
     if (authToken) {
         loginContainer.style.display = "none";
-        adminDashboard.style.display = "block";
+        adminDashboard.style.display = "";
         fetchAdminItems();
         fetchGlobalSettings();
         
