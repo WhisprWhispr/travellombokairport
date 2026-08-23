@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     body {
       background: #f8fafc;
@@ -126,6 +127,7 @@
       color: #0f172a;
     }
   </style>
+<script src="/protect.js"></script>
 </head>
 <body>
 
@@ -149,6 +151,9 @@
         <label>Password</label>
         <input type="password" id="password" class="form-control" required placeholder="Masukkan password Anda">
       </div>
+      <div class="form-group" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS" data-theme="light"></div>
+      </div>
       <button type="submit" class="btn-submit" id="btn-submit">Login Sekarang</button>
     </form>
     
@@ -170,6 +175,17 @@
         const password = document.getElementById('password').value;
         const btn = document.getElementById('btn-submit');
         
+        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
+        if (!turnstileResponse) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Verifikasi Keamanan',
+                text: 'Harap selesaikan verifikasi centang Cloudflare terlebih dahulu.',
+                confirmButtonColor: '#1d4ed8'
+            });
+            return;
+        }
+        
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
         
@@ -177,12 +193,25 @@
             const res = await fetch(`${API_URL}/api/auth/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
+                body: JSON.stringify({ email, password, turnstileToken: turnstileResponse })
             });
             
             const data = await res.json();
             
             if (!res.ok) {
+                if (data.unverified) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Akun Belum Diverifikasi',
+                        html: '<p style="margin-bottom:10px;">Anda tidak dapat login karena email belum diverifikasi.</p><p style="font-size:0.9rem;">Silakan cek kotak masuk email Anda (termasuk folder Spam/Junk) dan klik tautan verifikasi yang telah kami kirimkan.</p>',
+                        confirmButtonText: 'Tutup',
+                        confirmButtonColor: '#1d4ed8'
+                    });
+                    if (window.turnstile) window.turnstile.reset();
+                    btn.disabled = false;
+                    btn.innerHTML = 'Login Sekarang';
+                    return;
+                }
                 throw new Error(data.error || 'Terjadi kesalahan saat login.');
             }
             
@@ -207,6 +236,7 @@
             });
             
         } catch (err) {
+            if (window.turnstile) window.turnstile.reset();
             Swal.fire({
                 icon: 'error',
                 title: 'Login Gagal',

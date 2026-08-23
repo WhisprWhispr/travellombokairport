@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="/style.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <style>
     body {
       background: #f8fafc;
@@ -126,6 +127,7 @@
       color: #0f172a;
     }
   </style>
+<script src="/protect.js"></script>
 </head>
 <body>
 
@@ -153,6 +155,9 @@
         <label>Password</label>
         <input type="password" id="password" class="form-control" required minlength="6" placeholder="Minimal 6 karakter">
       </div>
+      <div class="form-group" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
+        <div class="cf-turnstile" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS" data-theme="light"></div>
+      </div>
       <button type="submit" class="btn-submit" id="btn-submit">Daftar Sekarang</button>
     </form>
     
@@ -175,6 +180,17 @@
         const password = document.getElementById('password').value;
         const btn = document.getElementById('btn-submit');
         
+        const turnstileResponse = document.querySelector('[name="cf-turnstile-response"]')?.value;
+        if (!turnstileResponse) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Verifikasi Keamanan',
+                text: 'Harap selesaikan verifikasi centang Cloudflare terlebih dahulu.',
+                confirmButtonColor: '#16a34a'
+            });
+            return;
+        }
+
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memproses...';
         
@@ -182,7 +198,7 @@
             const res = await fetch(`${API_URL}/api/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name, email, password })
+                body: JSON.stringify({ name, email, password, turnstileToken: turnstileResponse })
             });
             
             const data = await res.json();
@@ -191,26 +207,90 @@
                 throw new Error(data.error || 'Terjadi kesalahan saat pendaftaran.');
             }
             
-            localStorage.setItem('auth_token', data.token);
-            localStorage.setItem('auth_user', JSON.stringify(data.user || data.admin));
-            
-            Swal.fire({
-                icon: 'success',
-                title: 'Pendaftaran Berhasil!',
-                text: 'Akun Anda telah dibuat. Mengarahkan ke halaman utama...',
-                showConfirmButton: false,
-                timer: 2000
-            }).then(() => {
-                const prev = sessionStorage.getItem('redirect_after_auth');
-                if (prev) {
-                    sessionStorage.removeItem('redirect_after_auth');
-                    window.location.href = prev;
-                } else {
-                    window.location.href = '/';
-                }
-            });
+            if (data.requiresVerification) {
+                let pollInterval;
+                // Simpan email & password untuk polling fresh-token
+                const pollEmail = email;
+                const pollPassword = password;
+
+                Swal.fire({
+                    title: 'Menunggu Verifikasi...',
+                    html: `
+                        <div style="margin: 20px 0;">
+                            <i class="fa-solid fa-envelope-open-text fa-bounce" style="font-size: 3.5rem; color: #3b82f6; margin-bottom: 16px;"></i>
+                            <p style="margin-bottom:8px; font-weight:700; color:#1e293b; font-size:1rem;">Akun berhasil didaftarkan!</p>
+                            <p style="font-size:0.88rem; color:#64748b; margin-bottom:8px;">Kami telah mengirimkan <b>link verifikasi</b> ke <b style="color:#3b82f6;">${email}</b></p>
+                            <p style="font-size:0.85rem; color:#94a3b8;">Buka email Anda dan klik link verifikasi. Halaman ini akan <b>otomatis</b> beralih setelah terverifikasi.</p>
+                            <div id="poll-status" style="margin-top: 20px; display:flex; justify-content:center; align-items:center; gap:8px; color:#94a3b8; font-size:0.83rem; background:#f8fafc; padding:10px; border-radius:10px;">
+                                <i class="fa-solid fa-spinner fa-spin" style="color:#3b82f6;"></i> <span id="poll-text">Menunggu verifikasi email...</span>
+                            </div>
+                        </div>
+                    `,
+                    showConfirmButton: true,
+                    confirmButtonText: '<i class="fa-solid fa-arrow-right-to-bracket"></i> Login Manual',
+                    confirmButtonColor: '#94a3b8',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        let attempt = 0;
+                        pollInterval = setInterval(async () => {
+                            attempt++;
+                            const pollText = document.getElementById('poll-text');
+                            if (pollText) pollText.textContent = `Memeriksa... (${attempt})`;
+                            try {
+                                // Gunakan email+password untuk mendapatkan fresh token, lalu cek emailVerified
+                                const checkRes = await fetch(`${API_URL}/api/auth/check-verified`, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/json' },
+                                    body: JSON.stringify({ email: pollEmail, password: pollPassword })
+                                });
+                                const checkData = await checkRes.json();
+                                if (checkData.verified) {
+                                    clearInterval(pollInterval);
+                                    Swal.close();
+                                    localStorage.setItem('auth_token', checkData.token || data.token);
+                                    localStorage.setItem('auth_user', JSON.stringify(checkData.user || data.user));
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '✅ Verifikasi Berhasil!',
+                                        html: '<p>Email Anda telah terverifikasi.<br>Mengalihkan ke halaman utama...</p>',
+                                        showConfirmButton: false,
+                                        timer: 2000
+                                    }).then(() => { window.location.href = '/'; });
+                                } else {
+                                    if (pollText) pollText.textContent = `Menunggu verifikasi email...`;
+                                }
+                            } catch (e) {
+                                console.error("Polling error:", e);
+                            }
+                        }, 4000);
+                    },
+                    willClose: () => { clearInterval(pollInterval); }
+                }).then((result) => {
+                    if (result.isConfirmed) { window.location.href = '/login.html'; }
+                });
+            } else {
+                localStorage.setItem('auth_token', data.token);
+                localStorage.setItem('auth_user', JSON.stringify(data.user || data.admin));
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pendaftaran Berhasil!',
+                    text: 'Akun Anda telah dibuat. Mengarahkan ke halaman utama...',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    const prev = sessionStorage.getItem('redirect_after_auth');
+                    if (prev) {
+                        sessionStorage.removeItem('redirect_after_auth');
+                        window.location.href = prev;
+                    } else {
+                        window.location.href = '/';
+                    }
+                });
+            }
             
         } catch (err) {
+            if (window.turnstile) window.turnstile.reset();
             Swal.fire({
                 icon: 'error',
                 title: 'Pendaftaran Gagal',

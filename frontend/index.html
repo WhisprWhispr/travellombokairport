@@ -108,6 +108,7 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#2563eb">
+<script src="/protect.js"></script>
 </head>
 <body>
   <!-- Navbar -->
@@ -500,10 +501,14 @@
                  <p id="footer-user-name" style="margin: 0; font-size: 1rem; color: white; font-weight: 800;">User</p>
                </div>
              </div>
+             <button onclick="window.location.href='/riwayat.html'" style="width: 100%; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(59, 130, 246, 0.25)';" onmouseout="this.style.background='rgba(59, 130, 246, 0.15)';">
+               <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi
+             </button>
              <button onclick="window.logoutUser()" style="width: 100%; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)';" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)';">
                <i class="fa-solid fa-right-from-bracket"></i> Keluar / Logout
              </button>
           </div>
+
         </div>
         
         <div class="footer-social">
@@ -618,7 +623,7 @@
       duration: 800
     });
   </script>
-  <script type="module" src="/main.js?v=3"></script>
+  <script type="module" src="/main.js?v=4"></script>
 <script type="module" src="/pwa.js"></script>
 </body>
 </html>

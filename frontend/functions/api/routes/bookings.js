@@ -86,6 +86,74 @@ bookingsRoutes.delete('/:id', verifyToken, async (c) => {
     }
 });
 
+// GET riwayat transaksi milik user (butuh JWT)
+bookingsRoutes.get('/my-history', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const user = c.get('user');
+        const userEmail = user.email;
+
+        if (!userEmail) {
+            return c.json({ error: 'Email tidak ditemukan di token.' }, 400);
+        }
+
+        // Ambil bookings (BKG- / rental & transfer)
+        const bkgSnap = await db.collection('bookings')
+            .where('customerEmail', '==', userEmail)
+            .get();
+
+        // Ambil orders (ORD- / paket tour via QRIS)
+        const ordSnap = await db.collection('orders')
+            .where('customerEmail', '==', userEmail)
+            .get();
+
+        const bookings = [];
+        bkgSnap.forEach(doc => {
+            const d = doc.data();
+            bookings.push({
+                id: doc.id,
+                type: 'booking',
+                transactionId: d.transactionId || doc.id,
+                itemName: d.itemName || d.serviceName || '-',
+                customerName: d.customerName || '-',
+                startDate: d.startDate || null,
+                endDate: d.endDate || null,
+                status: d.status || 'PENDING',
+                itemPrice: d.itemPrice || d.price || 0,
+                createdAt: d.createdAt || null,
+            });
+        });
+
+        const orders = [];
+        ordSnap.forEach(doc => {
+            const d = doc.data();
+            orders.push({
+                id: doc.id,
+                type: 'order',
+                transactionId: d.transactionId || doc.id,
+                itemName: d.itemName || d.packageName || '-',
+                customerName: d.customerName || '-',
+                startDate: d.travelDate || d.startDate || null,
+                endDate: d.endDate || null,
+                status: d.status || 'PENDING',
+                itemPrice: d.totalPrice || d.price || 0,
+                createdAt: d.createdAt || null,
+            });
+        });
+
+        // Gabung & sort by createdAt terbaru
+        const all = [...bookings, ...orders].sort((a, b) => {
+            const da = a.createdAt ? new Date(a.createdAt) : new Date(0);
+            const db2 = b.createdAt ? new Date(b.createdAt) : new Date(0);
+            return db2 - da;
+        });
+
+        return c.json(all);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // GET specific booking for check status (public)
 bookingsRoutes.get('/check/:transactionId', async (c) => {
     try {

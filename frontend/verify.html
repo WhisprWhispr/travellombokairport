@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Verifikasi Email - Travel Lombok Airport</title>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 50%, #0f172a 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .bg-particles { position: fixed; inset: 0; z-index: 0; overflow: hidden; pointer-events: none; }
+    .particle { position: absolute; border-radius: 50%; background: rgba(59,130,246,0.12); animation: float linear infinite; }
+    @keyframes float { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100px) scale(1.5); opacity: 0; } }
+    .card { position: relative; z-index: 10; background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 28px; padding: 50px 40px; max-width: 460px; width: 100%; text-align: center; box-shadow: 0 40px 80px rgba(0,0,0,0.5); animation: cardIn 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes cardIn { from { opacity: 0; transform: scale(0.85) translateY(30px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .logo-wrap { display: flex; justify-content: center; margin-bottom: 28px; }
+    .logo-wrap img { height: 52px; object-fit: contain; }
+    .icon-ring { width: 90px; height: 90px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 24px; font-size: 2.3rem; position: relative; }
+    .icon-ring.loading { background: rgba(59,130,246,0.15); border: 2px solid rgba(59,130,246,0.3); color: #60a5fa; }
+    .icon-ring.success { background: rgba(16,185,129,0.15); border: 2px solid rgba(16,185,129,0.4); color: #34d399; animation: successPop 0.7s cubic-bezier(0.34,1.56,0.64,1); }
+    .icon-ring.error { background: rgba(239,68,68,0.15); border: 2px solid rgba(239,68,68,0.3); color: #f87171; }
+    @keyframes successPop { 0% { transform: scale(0.3) rotate(-15deg); opacity:0; } 100% { transform: scale(1) rotate(0); opacity:1; } }
+    .icon-ring.loading::before { content: ''; position: absolute; inset: -8px; border-radius: 50%; border: 2px solid rgba(59,130,246,0.25); animation: pulse-ring 1.5s ease-out infinite; }
+    @keyframes pulse-ring { 0% { transform: scale(0.9); opacity: 1; } 100% { transform: scale(1.35); opacity: 0; } }
+    h1 { font-size: 1.6rem; font-weight: 800; color: #f1f5f9; margin-bottom: 10px; }
+    .subtitle { color: #94a3b8; font-size: 0.92rem; line-height: 1.7; margin-bottom: 28px; }
+    .subtitle b { color: #cbd5e1; }
+    .progress-wrap { background: rgba(255,255,255,0.08); border-radius: 99px; height: 5px; overflow: hidden; margin-bottom: 24px; }
+    .progress-bar { height: 100%; border-radius: 99px; background: linear-gradient(90deg,#3b82f6,#06b6d4); animation: prog 2s ease-in-out forwards; }
+    @keyframes prog { 0% { width:0%; } 70% { width:85%; } 100% { width:100%; } }
+    .steps { display: flex; flex-direction: column; gap: 12px; text-align: left; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 18px 20px; margin-bottom: 24px; }
+    .step { display: flex; align-items: center; gap: 12px; font-size: 0.87rem; color: #64748b; transition: color 0.3s; }
+    .step.active { color: #e2e8f0; }
+    .step.done { color: #94a3b8; }
+    .step-num { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: center; font-size: 0.75rem; font-weight: 700; color: #475569; flex-shrink: 0; transition: all 0.4s; }
+    .step.active .step-num { background: linear-gradient(135deg,#3b82f6,#06b6d4); border-color: transparent; color: white; }
+    .step.done .step-num { background: linear-gradient(135deg,#10b981,#059669); border-color: transparent; color: white; }
+    .status-badge { display: inline-flex; align-items: center; gap: 7px; padding: 7px 16px; border-radius: 99px; font-size: 0.78rem; font-weight: 600; margin-bottom: 16px; }
+    .status-badge.verifying { background: rgba(59,130,246,0.12); color: #60a5fa; border: 1px solid rgba(59,130,246,0.2); }
+    .status-badge.success { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); }
+    .status-badge.error { background: rgba(239,68,68,0.12); color: #f87171; border: 1px solid rgba(239,68,68,0.2); }
+    .btn-primary { display: flex; align-items: center; justify-content: center; gap: 9px; width: 100%; padding: 14px; background: linear-gradient(135deg,#3b82f6,#1d4ed8); color: white; border: none; border-radius: 13px; font-size: 0.97rem; font-weight: 700; cursor: pointer; text-decoration: none; transition: all 0.3s; box-shadow: 0 8px 24px rgba(59,130,246,0.35); }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 32px rgba(59,130,246,0.5); }
+    .btn-secondary { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 12px; background: rgba(255,255,255,0.06); color: #94a3b8; border: 1px solid rgba(255,255,255,0.1); border-radius: 13px; font-size: 0.88rem; font-weight: 600; cursor: pointer; text-decoration: none; transition: all 0.3s; margin-top: 10px; }
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); color: #e2e8f0; }
+    .confetti { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 5; }
+  </style>
+<script src="/protect.js"></script>
+</head>
+<body>
+  <div class="bg-particles" id="bg-particles"></div>
+  <canvas class="confetti" id="confetti-canvas"></canvas>
+  <div class="card">
+    <div class="logo-wrap"><img src="/logo.png" alt="Travel Lombok Airport"></div>
+
+    <div id="state-loading">
+      <div class="icon-ring loading"><i class="fa-solid fa-envelope fa-beat"></i></div>
+      <div class="status-badge verifying"><i class="fa-solid fa-spinner fa-spin"></i> Sedang Memproses</div>
+      <h1>Memverifikasi Email...</h1>
+      <p class="subtitle">Harap tunggu sebentar. Kami sedang mengaktifkan akun Anda.</p>
+      <div class="progress-wrap"><div class="progress-bar"></div></div>
+      <div class="steps">
+        <div class="step done" id="step1">
+          <div class="step-num"><i class="fa-solid fa-check" style="font-size:.65rem"></i></div>
+          <span>Link verifikasi diklik</span>
+        </div>
+        <div class="step active" id="step2">
+          <div class="step-num">2</div>
+          <span>Firebase mengonfirmasi identitas...</span>
+        </div>
+        <div class="step" id="step3">
+          <div class="step-num">3</div>
+          <span>Mengaktifkan akun Anda</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="state-success" style="display:none;">
+      <div class="icon-ring success"><i class="fa-solid fa-circle-check"></i></div>
+      <div class="status-badge success"><i class="fa-solid fa-shield-check"></i> Terverifikasi</div>
+      <h1>Verifikasi Berhasil! 🎉</h1>
+      <p class="subtitle">Akun Anda telah <b>resmi diaktifkan</b>. Selamat bergabung di Travel Lombok Airport! Anda kini dapat login dan menikmati semua layanan kami.</p>
+      <a href="/login.html" class="btn-primary"><i class="fa-solid fa-right-to-bracket"></i> Login Sekarang</a>
+      <a href="/" class="btn-secondary"><i class="fa-solid fa-house"></i> Ke Halaman Utama</a>
+    </div>
+
+    <div id="state-error" style="display:none;">
+      <div class="icon-ring error"><i class="fa-solid fa-triangle-exclamation"></i></div>
+      <div class="status-badge error"><i class="fa-solid fa-xmark"></i> Verifikasi Gagal</div>
+      <h1>Link Tidak Valid</h1>
+      <p class="subtitle" id="error-msg">Link verifikasi sudah <b>kedaluwarsa atau tidak valid</b>. Silakan daftar kembali atau hubungi kami.</p>
+      <a href="/register.html" class="btn-primary"><i class="fa-solid fa-rotate-right"></i> Daftar Ulang</a>
+      <a href="/login.html" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Kembali ke Login</a>
+    </div>
+  </div>
+
+  <script src="/config.js"></script>
+  <script>
+    // Floating particles
+    const bp = document.getElementById('bg-particles');
+    for (let i = 0; i < 16; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      const s = Math.random() * 80 + 20;
+      p.style.cssText = `width:${s}px;height:${s}px;left:${Math.random()*100}%;animation-duration:${Math.random()*14+9}s;animation-delay:${Math.random()*8}s;`;
+      bp.appendChild(p);
+    }
+
+    function showState(n) {
+      ['loading','success','error'].forEach(s => document.getElementById('state-'+s).style.display = 'none');
+      document.getElementById('state-'+n).style.display = 'block';
+    }
+
+    // Simple confetti effect
+    function launchConfetti() {
+      const canvas = document.getElementById('confetti-canvas');
+      const ctx = canvas.getContext('2d');
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      const pieces = [];
+      const colors = ['#3b82f6','#10b981','#f59e0b','#ec4899','#8b5cf6','#06b6d4'];
+      for (let i = 0; i < 120; i++) {
+        pieces.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height - canvas.height,
+          r: Math.random() * 6 + 3,
+          d: Math.random() * 120 + 20,
+          color: colors[Math.floor(Math.random()*colors.length)],
+          tilt: Math.floor(Math.random()*10)-10,
+          tiltAngle: 0,
+          tiltAngleInc: (Math.random()*0.07)+0.05
+        });
+      }
+      let angle = 0, tick = 0;
+      function draw() {
+        ctx.clearRect(0,0,canvas.width,canvas.height);
+        pieces.forEach(p => {
+          ctx.beginPath();
+          ctx.lineWidth = p.r/2;
+          ctx.strokeStyle = p.color;
+          ctx.moveTo(p.x+p.tilt+p.r/4, p.y);
+          ctx.lineTo(p.x+p.tilt, p.y+p.tilt+p.r/4);
+          ctx.stroke();
+        });
+        angle += 0.01;
+        tick++;
+        pieces.forEach((p,i) => {
+          p.y += Math.cos(angle+p.d)+1+p.r/2;
+          p.x += Math.sin(angle)*1.5;
+          p.tiltAngle += p.tiltAngleInc;
+          p.tilt = Math.sin(p.tiltAngle)*12;
+          if (p.y > canvas.height + 10) {
+            pieces[i].x = Math.random()*canvas.width;
+            pieces[i].y = -10;
+          }
+        });
+        if (tick < 300) requestAnimationFrame(draw);
+        else ctx.clearRect(0,0,canvas.width,canvas.height);
+      }
+      draw();
+    }
+
+    function animateSuccess() {
+      const s2 = document.getElementById('step2');
+      s2.classList.remove('active'); s2.classList.add('done');
+      s2.querySelector('.step-num').innerHTML = '<i class="fa-solid fa-check" style="font-size:.65rem"></i>';
+      document.getElementById('step3').classList.add('active');
+      setTimeout(() => {
+        const s3 = document.getElementById('step3');
+        s3.classList.remove('active'); s3.classList.add('done');
+        s3.querySelector('.step-num').innerHTML = '<i class="fa-solid fa-check" style="font-size:.65rem"></i>';
+        setTimeout(() => {
+          showState('success');
+          launchConfetti();
+        }, 400);
+      }, 800);
+    }
+
+    // Cek apakah ini redirect dari Firebase setelah verifikasi email berhasil
+    const params = new URLSearchParams(window.location.search);
+    const mode = params.get('mode');
+    const oobCode = params.get('oobCode');
+
+    if (mode === 'verifyEmail' && oobCode) {
+      // Pengguna datang langsung dengan oobCode, perlu konfirmasi ke Firebase
+      setTimeout(() => {
+        fetch(`${API_URL}/api/auth/verify-email`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ oobCode })
+        })
+        .then(r => r.json())
+        .then(data => {
+          if (data.success) {
+            animateSuccess();
+          } else {
+            document.getElementById('error-msg').innerHTML = (data.error || 'Verifikasi gagal.') + '<br><small style="color:#475569;margin-top:8px;display:block;">Silakan daftar ulang atau hubungi kami via WhatsApp.</small>';
+            showState('error');
+          }
+        })
+        .catch(err => {
+          document.getElementById('error-msg').innerHTML = err.message;
+          showState('error');
+        });
+      }, 1500);
+    } else {
+      // Firebase sudah verifikasi, ini adalah redirect via continueUrl - langsung tampilkan sukses
+      setTimeout(() => animateSuccess(), 1200);
+    }
+  </script>
+</body>
+</html>

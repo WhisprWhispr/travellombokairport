@@ -21,7 +21,11 @@ export default defineConfig({
         syarat: resolve(__dirname, 'syarat.html'),
         tentangKami: resolve(__dirname, 'tentang-kami.html'),
         kebijakan: resolve(__dirname, 'kebijakan.html'),
-        driver: resolve(__dirname, 'driver.html')
+        driver: resolve(__dirname, 'driver.html'),
+        login: resolve(__dirname, 'login.html'),
+        register: resolve(__dirname, 'register.html'),
+        riwayat: resolve(__dirname, 'riwayat.html'),
+        verify: resolve(__dirname, 'verify.html')
       }
     }
   }

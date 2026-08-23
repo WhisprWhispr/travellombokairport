@@ -7,5 +7,6 @@ directory = "dist"
 
 [vars]
 FIREBASE_API_KEY = "AIzaSyA6iPEJgUiZpRkt6YMaIk4Z2tglVF1MiBs"
+TURNSTILE_SECRET_KEY = "0x4AAAAAAEY5_u00djGsY0BHHKjNF38ZDs0"
 
 
