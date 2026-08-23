@@ -174,53 +174,41 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             return c.json({ message: 'Format ID tidak valid. Gunakan BKG-... untuk Booking atau ORD-... untuk Order.' }, 400);
         }
 
-        if (isBKG) {
-            // Cari HANYA di collection 'bookings'
-            const snap = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        // Cari di collection 'bookings' terlebih dahulu (karena frontend POST /bookings untuk ORD- dan BKG-)
+        let snap = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        let collectionType = 'bookings';
+        
+        // Jika tidak ditemukan di 'bookings', coba cari di 'orders' atau 'orderan'
+        if (snap.empty) {
+            snap = await db.collection('orders').where('transactionId', '==', transactionId).get();
+            collectionType = 'orders';
+            
             if (snap.empty) {
-                return c.json({ message: 'Booking tidak ditemukan. Pastikan ID Booking (BKG-...) yang Anda masukkan benar.' }, 404);
+                snap = await db.collection('orderan').where('transactionId', '==', transactionId).get();
+                collectionType = 'orderan';
             }
-            const data = snap.docs[0].data();
-            return c.json({
-                transactionId: data.transactionId,
-                itemName: data.itemName || data.serviceName || '-',
-                customerName: data.customerName || '-',
-                customerEmail: data.customerEmail || data.email || '-',
-                phone: data.phone || data.wa || '-',
-                startDate: data.startDate || data.travelDate || null,
-                endDate: data.endDate || null,
-                status: data.status || 'PENDING',
-                itemPrice: data.price || data.totalPrice || data.itemPrice || 0,
-                isDp: data.isDp || false,
-                fullPrice: data.fullPrice || data.price || 0,
-                createdAt: data.createdAt || null,
-                type: 'booking'
-            });
         }
 
-        if (isORD) {
-            // Cari HANYA di collection 'orders'
-            const snap = await db.collection('orders').where('transactionId', '==', transactionId).get();
-            if (snap.empty) {
-                return c.json({ message: 'Order tidak ditemukan. Pastikan ID Order (ORD-...) yang Anda masukkan benar.' }, 404);
-            }
-            const data = snap.docs[0].data();
-            return c.json({
-                transactionId: data.transactionId,
-                itemName: data.itemName || data.packageName || '-',
-                customerName: data.customerName || '-',
-                customerEmail: data.customerEmail || data.email || '-',
-                phone: data.phone || data.wa || '-',
-                startDate: data.travelDate || data.startDate || null,
-                endDate: data.endDate || null,
-                status: data.status || 'PENDING',
-                itemPrice: data.totalPrice || data.price || data.itemPrice || 0,
-                isDp: data.isDp || false,
-                fullPrice: data.fullPrice || data.totalPrice || 0,
-                createdAt: data.createdAt || null,
-                type: 'order'
-            });
+        if (snap.empty) {
+            return c.json({ message: 'Transaksi tidak ditemukan. Pastikan ID (BKG-... atau ORD-...) yang Anda masukkan benar.' }, 404);
         }
+
+        const data = snap.docs[0].data();
+        return c.json({
+            transactionId: data.transactionId || transactionId,
+            itemName: data.itemName || data.packageName || data.serviceName || '-',
+            customerName: data.customerName || '-',
+            customerEmail: data.customerEmail || data.email || '-',
+            phone: data.phone || data.wa || '-',
+            startDate: data.startDate || data.travelDate || null,
+            endDate: data.endDate || null,
+            status: data.status || 'PENDING',
+            itemPrice: data.price || data.totalPrice || data.itemPrice || 0,
+            isDp: data.isDp || false,
+            fullPrice: data.fullPrice || data.price || data.totalPrice || 0,
+            createdAt: data.createdAt || null,
+            type: isORD ? 'order' : 'booking'
+        });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }
