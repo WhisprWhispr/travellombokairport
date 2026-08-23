@@ -1395,35 +1395,41 @@ window.showManageItemTutorial = () => {
             <div style="text-align: left; font-size: 0.9rem; color: #475569; max-height: 65vh; overflow-y: auto; padding-right: 10px;">
                 <p>Bagian ini sangat penting karena data yang Anda masukkan di sini akan <strong>langsung tampil di website utama</strong> yang dilihat oleh pelanggan.</p>
                 
-                <h4 style="color: #2563eb; margin-top: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-layer-group"></i> A. Kategori (Category)</h4>
+                <h4 style="color: #2563eb; margin-top: 15px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-wand-magic-sparkles"></i> A. AI Auto-Fill (Otomatis Isi)</h4>
+                <p>Ini adalah asisten pintar untuk mempercepat kerja Anda. Jika Anda memiliki foto brosur (contoh: brosur Paket Tour Lombok), Anda bisa mengunggahnya di sini. Klik tombol <strong>Scan dengan AI</strong>, maka AI akan secara otomatis membaca teks di gambar brosur tersebut dan mengisikan Judul, Harga, Deskripsi, dan Fitur secara otomatis untuk Anda. Sangat menghemat waktu!</p>
+
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-layer-group"></i> B. Kategori (Category) & Folder</h4>
                 <p>Pilih kategori yang tepat agar item muncul di bagian yang benar pada website:</p>
                 <ul style="margin-top: 5px; padding-left: 20px;">
                     <li><strong>cars:</strong> Akan tampil di bagian "Sewa Mobil".</li>
                     <li><strong>motorcycles:</strong> Akan tampil di bagian "Sewa Motor".</li>
                     <li><strong>packages:</strong> Akan tampil di bagian "Paket Tour Populer".</li>
-                    <li><strong>sub-packages:</strong> Ini adalah itinerary spesifik dari suatu Paket Tour (Misal: <em>Paket Tour A -> Hari 1, Hari 2</em>).</li>
+                    <li><strong>transfer:</strong> Akan tampil sebagai opsi untuk Jasa Antar Jemput Bandara.</li>
+                    <li><strong>drone:</strong> Akan tampil di halaman layanan Dokumentasi Drone.</li>
                 </ul>
+                <p style="margin-top: 10px;"><strong>Fungsi "Jadikan sebagai Kategori/Paket Utama (Folder)":</strong><br>
+                Centang ini HANYA JIKA Anda ingin membuat "Bungkus" atau "Induk" paket. Contoh: Anda mencentang ini lalu membuat judul "Paket Tour Gili". Saat pelanggan mengklik Paket Tour Gili, akan terbuka halaman baru yang berisi rincian (misal: Paket Tour Gili A, Paket Tour Gili B). Untuk membuat rinciannya, buat item baru dan pilih "Paket Tour Gili" di dropdown <em>"Masukkan ke dalam Paket Utama"</em>.</p>
 
-                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-heading"></i> B. Judul (Title)</h4>
-                <p>Ketikkan nama mobil, motor, atau nama paket tour secara jelas. Contoh: <em>Toyota Avanza Baru</em> atau <em>Paket Gili Trawangan 3D2N</em>.</p>
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-heading"></i> C. Judul (Title)</h4>
+                <p>Ketikkan nama mobil, motor, atau nama paket tour secara jelas. Contoh: <em>Toyota Avanza Baru</em> atau <em>Paket Gili Trawangan 3D2N</em>. Untuk kategori tour, akan ada pilihan cepat otomatis seperti "Paket A", "Paket B" untuk mempercepat penulisan.</p>
 
-                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-tag"></i> C. Harga (Price)</h4>
-                <p>Ketikkan angka saja <strong>tanpa titik/koma/Rp</strong>. Sistem akan memformatnya secara otomatis. Contoh: Jika harganya Rp 300.000, cukup ketikkan <strong>300000</strong>.</p>
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-tag"></i> D. Harga (Price) & Durasi</h4>
+                <p>Ketikkan angka harga <strong>tanpa titik/koma/Rp</strong>. Contoh: Jika harganya Rp 300.000, cukup ketikkan <strong>300000</strong>. Kolom di sebelahnya adalah untuk durasi (misal: <em>12 Jam</em>, <em>Per Hari</em>, <em>3 Hari 2 Malam</em>).</p>
 
-                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-list-check"></i> D. Fitur / Detail Tambahan</h4>
-                <p>Ini adalah poin-poin fitur yang menjelaskan fasilitas atau spesifikasi. (Misal: <em>5 Kursi, AC Dingin, Termasuk Supir</em>).<br>
-                <strong>Cara Penulisan:</strong> Pisahkan setiap poin dengan tanda koma. <br>
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-list-check"></i> E. Fitur / Detail Tambahan</h4>
+                <p>Ini adalah poin-poin fasilitas atau spesifikasi. (Misal: <em>5 Kursi, AC Dingin, Termasuk Supir</em>).<br>
+                <strong>Cara Penulisan:</strong> Wajib pisahkan setiap poin dengan tanda koma. <br>
                 <em>Contoh:</em> <code style="background: #f1f5f9; padding: 2px 6px; border-radius: 4px; color: #ef4444;">Termasuk Supir, BBM, Mineral Water</code></p>
 
-                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-image"></i> E. Link Gambar (Image URL)</h4>
-                <p>Ini adalah alamat foto/gambar yang akan ditampilkan.</p>
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-image"></i> F. Link Gambar (Image URL)</h4>
+                <p>Ini adalah alamat foto/gambar yang akan ditampilkan sebagai *thumbnail* utama.</p>
                 <ul style="margin-top: 5px; padding-left: 20px;">
-                    <li><strong>Cara Terbaik:</strong> Anda bisa menggunakan menu <strong>Kelola Galeri</strong> terlebih dahulu untuk meng-upload foto dari HP/Laptop Anda. Setelah terupload, klik "Copy URL" pada foto di galeri tersebut, lalu Paste/Tempel di kolom Image URL ini.</li>
-                    <li>Atau Anda bisa men-copy link gambar dari Google/website lain.</li>
+                    <li><strong>Cara Terbaik:</strong> Anda bisa menggunakan menu <strong>Kelola Galeri</strong> (di menu samping) untuk meng-upload foto dari perangkat Anda. Setelah terupload, klik "Copy URL", lalu Paste/Tempel di kolom Image URL ini.</li>
+                    <li>Atau Anda bisa men-copy link gambar (Copy Image Address) dari Google atau website lain.</li>
                 </ul>
 
-                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-pen-to-square"></i> F. Edit & Hapus</h4>
-                <p>Anda bisa menekan tombol warna <span style="color: #f59e0b; font-weight: bold;">Kuning (Edit)</span> pada tabel untuk mengubah harga atau foto jika ada update, atau tombol <span style="color: #ef4444; font-weight: bold;">Merah (Hapus)</span> jika armada/paket sudah tidak tersedia.</p>
+                <h4 style="color: #2563eb; margin-top: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 5px;"><i class="fa-solid fa-pen-to-square"></i> G. Edit & Hapus</h4>
+                <p>Setelah item ditambahkan, Anda bisa melihatnya di daftar. Anda bisa menekan tombol warna <span style="color: #f59e0b; font-weight: bold;">Kuning (Edit)</span> pada tabel untuk mengubah harga atau foto, atau tombol <span style="color: #ef4444; font-weight: bold;">Merah (Hapus)</span> jika armada/paket tersebut sudah tidak tersedia lagi.</p>
             </div>
         `,
         width: 700,
