@@ -408,13 +408,26 @@ loginForm.addEventListener("submit", async (e) => {
     const password = document.getElementById("login-password").value;
     const btn = document.getElementById("login-btn");
     
+    // Ambil turnstile token
+    let turnstileResponse = '';
+    const formData = new FormData(loginForm);
+    if (formData.has('cf-turnstile-response')) {
+        turnstileResponse = formData.get('cf-turnstile-response');
+    }
+
+    if (!turnstileResponse) {
+        loginError.style.display = "block";
+        loginError.innerText = "Harap selesaikan verifikasi keamanan (Turnstile).";
+        return;
+    }
+
     btn.disabled = true;
     btn.innerText = "Loading...";
     try {
         const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email, password })
+            body: JSON.stringify({ email, password, turnstileToken: turnstileResponse })
         });
         
         const data = await response.json();
@@ -427,8 +440,9 @@ loginForm.addEventListener("submit", async (e) => {
             throw new Error(data.error || "Email atau password salah");
         }
     } catch (error) {
-        loginError.innerText = "Login Gagal: " + error.message;
         loginError.style.display = "block";
+        loginError.innerText = "Login Gagal: " + error.message;
+        if (window.turnstile) window.turnstile.reset();
     } finally {
         btn.disabled = false;
         btn.innerText = "Login";
@@ -1077,7 +1091,24 @@ const fetchAdminBookings = async () => {
                     const waNumber = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
                     const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
                     const startDateStr = new Date(b.startDate).toLocaleDateString('id-ID');
-                    const waMsg = encodeURIComponent(`Halo ${b.customerName}, ini Admin Travel Lombok Airport. Terkait pesanan Anda (ID: ${trxId}) untuk layanan ${b.itemName} pada tanggal ${startDateStr}. `);
+                    const waMsg = encodeURIComponent(`Assalamu'alaikum Wr. Wb. / Selamat ${new Date().getHours() < 11 ? 'Pagi' : new Date().getHours() < 15 ? 'Siang' : new Date().getHours() < 19 ? 'Sore' : 'Malam'}, Bapak/Ibu ${b.customerName} 🙏
+
+Kami dari *Travel Lombok Airport* ingin menginformasikan mengenai detail pesanan Anda:
+
+📋 *Detail Pemesanan:*
+• ID Transaksi : *${trxId}*
+• Layanan      : *${b.itemName}*
+• Tanggal      : *${startDateStr}*
+
+Kami dengan senang hati siap melayani dan memastikan perjalanan Anda berjalan dengan nyaman dan aman.
+
+Apabila ada pertanyaan, perubahan jadwal, atau hal lain yang perlu dikonfirmasi, jangan ragu untuk menghubungi kami.
+
+Terima kasih telah mempercayakan perjalanan Anda kepada kami. 🌴
+
+Hormat kami,
+*Admin Travel Lombok Airport*
+📞 +62 896-7696-3255`);
                     const assignDriverBtn = `<button class="action-btn btn-edit" onclick="assignDriver('${b.id}')" style="margin-top: 5px; background: var(--primary-green); color: white;"><i class="fa-solid fa-car"></i> Assign Supir</button>`;
                     
                     return `
