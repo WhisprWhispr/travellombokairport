@@ -505,7 +505,28 @@ window.openSubPackageModal = (parentId) => {
         </div>`;
     } else {
         bodyEl.innerHTML = children
-            .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'id', { sensitivity: 'base' }))
+            .sort((a, b) => {
+                const getPaketLetter = (title) => {
+                    const match = (title || '').match(/paket\s+([a-z])/i);
+                    return match ? match[1].toUpperCase() : null;
+                };
+                const letterA = getPaketLetter(a.title);
+                const letterB = getPaketLetter(b.title);
+                
+                if (letterA && letterB) {
+                    if (letterA !== letterB) return letterA.localeCompare(letterB);
+                } else if (letterA) {
+                    return -1;
+                } else if (letterB) {
+                    return 1;
+                }
+                
+                const orderA = a.order || 0;
+                const orderB = b.order || 0;
+                if (orderA !== orderB) return orderA - orderB;
+                
+                return (a.title || '').localeCompare(b.title || '', 'id', { sensitivity: 'base' });
+            })
             .map((child) => {
             const priceText = child.price ? formatPrice(child.price).replace(/^(IDR|Rp\.?)\s*/i, '') : '';
             return `
