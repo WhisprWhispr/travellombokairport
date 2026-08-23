@@ -61,6 +61,48 @@
     
     input.form-control { border-radius: 10px; padding: 12px 15px; border: 1px solid #cbd5e1; font-size: 1rem; }
     input.form-control:focus { border-color: #3b82f6; box-shadow: 0 0 0 3px rgba(59,130,246,0.1); }
+
+    /* Hamburger Menu */
+    .hamburger-btn {
+      background: none; border: none; cursor: pointer;
+      display: flex; flex-direction: column; justify-content: center; gap: 5px;
+      padding: 8px; border-radius: 10px; transition: background 0.2s;
+    }
+    .hamburger-btn:hover { background: #f1f5f9; }
+    .hamburger-btn span {
+      display: block; width: 22px; height: 2.5px;
+      background: #475569; border-radius: 2px;
+      transition: all 0.3s ease;
+    }
+    .hamburger-btn.active span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+    .hamburger-btn.active span:nth-child(2) { opacity: 0; }
+    .hamburger-btn.active span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+    .menu-wrapper { position: relative; }
+    .dropdown-menu {
+      display: none; position: absolute; top: calc(100% + 8px); right: 0;
+      background: white; border-radius: 14px; min-width: 220px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.12); border: 1px solid #f1f5f9;
+      overflow: hidden; z-index: 100;
+      animation: dropIn 0.2s ease;
+    }
+    .dropdown-menu.open { display: block; }
+    @keyframes dropIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .dropdown-menu a, .dropdown-menu button {
+      display: flex; align-items: center; gap: 12px;
+      width: 100%; padding: 14px 18px; border: none; background: none;
+      text-align: left; font-size: 0.95rem; color: #334155;
+      cursor: pointer; text-decoration: none; font-family: inherit;
+      transition: background 0.15s;
+    }
+    .dropdown-menu a:hover, .dropdown-menu button:hover { background: #f8fafc; color: #1e293b; }
+    .dropdown-menu .menu-icon { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+    .dropdown-menu .menu-divider { height: 1px; background: #f1f5f9; margin: 4px 0; }
+    .dropdown-menu .menu-logout { color: #ef4444; }
+    .dropdown-menu .menu-logout:hover { background: #fff1f2; }
   </style>
 <script src="/protect.js"></script>
 </head>
@@ -93,9 +135,31 @@
           <p style="margin: 0; font-size: 0.8rem; color: var(--text-gray);">Selamat Datang,</p>
           <h3 id="driver-name-display" style="margin: 0; color: var(--text-dark);">Nama Supir</h3>
         </div>
-        <div>
-          <button onclick="showDriverTutorial()" style="background: none; border: 1px solid #10b981; color: #10b981; font-size: 0.9rem; padding: 4px 10px; border-radius: 8px; cursor: pointer; margin-right: 10px;"><i class="fa-solid fa-circle-question"></i> Panduan</button>
-          <button onclick="logoutDriver()" style="background: none; border: none; color: #ef4444; font-size: 1.2rem; cursor: pointer;"><i class="fa-solid fa-power-off"></i></button>
+        <div class="menu-wrapper">
+          <button id="hamburger-btn" class="hamburger-btn" onclick="toggleDriverMenu()" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
+          <div id="driver-dropdown" class="dropdown-menu">
+            <button onclick="installDriverPWA(); toggleDriverMenu()">
+              <div class="menu-icon" style="background:#eff6ff; color:#3b82f6;"><i class="fa-solid fa-download"></i></div>
+              <div>
+                <div style="font-weight:600;">Unduh Aplikasi</div>
+                <div style="font-size:0.78rem; color:#94a3b8;">Pasang di layar utama HP</div>
+              </div>
+            </button>
+            <button onclick="showDriverTutorial(); toggleDriverMenu()">
+              <div class="menu-icon" style="background:#f0fdf4; color:#10b981;"><i class="fa-solid fa-circle-question"></i></div>
+              <div>
+                <div style="font-weight:600;">Panduan Penggunaan</div>
+                <div style="font-size:0.78rem; color:#94a3b8;">Cara pakai aplikasi ini</div>
+              </div>
+            </button>
+            <div class="menu-divider"></div>
+            <button class="menu-logout" onclick="logoutDriver(); toggleDriverMenu()">
+              <div class="menu-icon" style="background:#fff1f2; color:#ef4444;"><i class="fa-solid fa-power-off"></i></div>
+              <div style="font-weight:600;">Keluar</div>
+            </button>
+          </div>
         </div>
       </div>
 

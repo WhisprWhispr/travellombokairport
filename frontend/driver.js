@@ -29,6 +29,44 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    const wrapper = document.querySelector('.menu-wrapper');
+    if (wrapper && !wrapper.contains(e.target)) {
+        document.getElementById('driver-dropdown')?.classList.remove('open');
+        document.getElementById('hamburger-btn')?.classList.remove('active');
+    }
+});
+
+window.toggleDriverMenu = () => {
+    const dropdown = document.getElementById('driver-dropdown');
+    const btn = document.getElementById('hamburger-btn');
+    dropdown.classList.toggle('open');
+    btn.classList.toggle('active');
+};
+
+window.installDriverPWA = async () => {
+    // Import from pwa.js's deferredPrompt via the shared installPWA function
+    if (typeof window.installPWA === 'function') {
+        await window.installPWA();
+    } else {
+        Swal.fire({
+            icon: 'info',
+            title: 'Unduh Aplikasi',
+            html: `
+                <p style="margin-bottom:15px;">Untuk memasang aplikasi Portal Supir ini di layar HP Anda:</p>
+                <ol style="text-align:left; padding-left:20px; line-height:2;">
+                    <li>Di browser Chrome, ketuk ikon <b>⋮</b> (titik tiga) di pojok kanan atas.</li>
+                    <li>Pilih <b>"Tambahkan ke layar utama"</b>.</li>
+                    <li>Ketuk <b>"Tambahkan"</b> dan selesai!</li>
+                </ol>
+            `,
+            confirmButtonColor: '#3b82f6',
+            confirmButtonText: 'Mengerti'
+        });
+    }
+};
+
 window.showDriverTutorial = () => {
     Swal.fire({
         title: '<strong style="color: #1e293b; font-size: 1.6rem; letter-spacing: -0.5px;">Panduan Portal Supir</strong>',
