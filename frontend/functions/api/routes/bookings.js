@@ -159,18 +159,28 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
 });
 
 // GET specific booking/order for check status (public)
-// Searches both 'bookings' (BKG-) and 'orders' (ORD-) collections
+// BKG- → hanya cari di collection 'bookings'
+// ORD- → hanya cari di collection 'orders'
 bookingsRoutes.get('/check/:transactionId', async (c) => {
     try {
         const db = getDb(c);
-        const transactionId = c.req.param('transactionId');
+        const transactionId = c.req.param('transactionId').trim().toUpperCase();
 
-        // 1. Cari di collection 'bookings' (BKG-)
-        const bkgSnap = await db.collection('bookings').where('transactionId', '==', transactionId).get();
-        
-        if (!bkgSnap.empty) {
-            const doc = bkgSnap.docs[0];
-            const data = doc.data();
+        // Deteksi tipe berdasarkan prefix ID
+        const isBKG = transactionId.startsWith('BKG-');
+        const isORD = transactionId.startsWith('ORD-');
+
+        if (!isBKG && !isORD) {
+            return c.json({ message: 'Format ID tidak valid. Gunakan BKG-... untuk Booking atau ORD-... untuk Order.' }, 400);
+        }
+
+        if (isBKG) {
+            // Cari HANYA di collection 'bookings'
+            const snap = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+            if (snap.empty) {
+                return c.json({ message: 'Booking tidak ditemukan. Pastikan ID Booking (BKG-...) yang Anda masukkan benar.' }, 404);
+            }
+            const data = snap.docs[0].data();
             return c.json({
                 transactionId: data.transactionId,
                 itemName: data.itemName || data.serviceName || '-',
@@ -188,12 +198,13 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             });
         }
 
-        // 2. Jika tidak ada, cari di collection 'orders' (ORD-)
-        const ordSnap = await db.collection('orders').where('transactionId', '==', transactionId).get();
-
-        if (!ordSnap.empty) {
-            const doc = ordSnap.docs[0];
-            const data = doc.data();
+        if (isORD) {
+            // Cari HANYA di collection 'orders'
+            const snap = await db.collection('orders').where('transactionId', '==', transactionId).get();
+            if (snap.empty) {
+                return c.json({ message: 'Order tidak ditemukan. Pastikan ID Order (ORD-...) yang Anda masukkan benar.' }, 404);
+            }
+            const data = snap.docs[0].data();
             return c.json({
                 transactionId: data.transactionId,
                 itemName: data.itemName || data.packageName || '-',
@@ -210,13 +221,11 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
                 type: 'order'
             });
         }
-
-        // 3. Tidak ditemukan di keduanya
-        return c.json({ message: 'Pesanan tidak ditemukan. Pastikan ID Transaksi yang Anda masukkan benar (BKG-... atau ORD-...).' }, 404);
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }
 });
+
 // PUT update booking status by transactionId (for QRIS payment callback - no auth required)
 bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
     try {
