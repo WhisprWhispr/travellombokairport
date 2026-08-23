@@ -113,27 +113,28 @@ async function fetchTrips(driverId) {
             
             const waNumber = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
             const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
-            const waLink = `https://wa.me/${cleanWa}?text=Halo%20${b.customerName},%20saya%20supir%20dari%20Travel%20Lombok%20Airport%20yang%20akan%20menjemput%20Anda.`;
+            const msg = `Halo Kak ${b.customerName},\n\nPerkenalkan saya *${localStorage.getItem('driverName') || 'Supir'}* dari *Travel Lombok Airport*.\n\nSaya menghubungi terkait pesanan Kakak untuk layanan:\n🚗 *${b.itemName}*\n📅 *${new Date(b.startDate).toLocaleDateString('id-ID')}*\n\nApakah ada detail tambahan mengenai lokasi penjemputan atau jam yang spesifik?\n\nTerima kasih dan saya tunggu konfirmasinya ya Kak! 🙏`;
+            const waLink = `https://wa.me/${cleanWa}?text=${encodeURIComponent(msg)}`;
             
             const card = document.createElement("div");
             card.className = `trip-card ${isCompleted ? 'completed' : ''}`;
             card.innerHTML = `
                 <div class="trip-header">
-                    <strong>${b.itemName}</strong>
+                    <strong class="trip-title">${b.itemName}</strong>
                     <span class="badge ${badgeClass}">${statusText}</span>
                 </div>
-                <div style="margin-bottom: 8px;">
-                    <i class="fa-solid fa-user" style="color: var(--text-gray); width: 20px;"></i> ${b.customerName}
+                <div class="info-row">
+                    <i class="fa-solid fa-user"></i> <span>${b.customerName}</span>
                 </div>
-                <div style="margin-bottom: 8px;">
-                    <i class="fa-solid fa-calendar" style="color: var(--text-gray); width: 20px;"></i> ${new Date(b.startDate).toLocaleDateString('id-ID')}
+                <div class="info-row">
+                    <i class="fa-solid fa-calendar"></i> <span>${new Date(b.startDate).toLocaleDateString('id-ID')}</span>
                 </div>
                 ${!isCompleted ? `
-                    <div style="display: flex; gap: 10px; margin-top: 15px;">
-                        <a href="${waLink}" target="_blank" class="wa-btn"><i class="fa-brands fa-whatsapp"></i> Hubungi Tamu</a>
-                        <button class="complete-btn" onclick="markCompleted('${b.id}')"><i class="fa-solid fa-check"></i> Selesaikan Trip</button>
+                    <div class="action-buttons">
+                        <a href="${waLink}" target="_blank" class="wa-btn"><i class="fa-brands fa-whatsapp"></i> Chat Penumpang</a>
+                        <button class="complete-btn" onclick="markCompleted('${b.id}')"><i class="fa-solid fa-flag-checkered"></i> Selesaikan Trip</button>
                     </div>
-                ` : '<div style="margin-top: 15px; color: var(--primary-green); font-weight: bold;"><i class="fa-solid fa-check-double"></i> Trip Telah Selesai</div>'}
+                ` : '<div style="margin-top: 20px; padding-top: 15px; border-top: 1px dashed #e2e8f0; color: #10b981; font-weight: 700; text-align: center;"><i class="fa-solid fa-circle-check"></i> Trip Telah Diselesaikan</div>'}
             `;
             container.appendChild(card);
         });
