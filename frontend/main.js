@@ -862,12 +862,12 @@ const init = async () => {
                 onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
             <div style="position:absolute;top:0;left:0;width:100%;height:100%;background:linear-gradient(to bottom, rgba(10,20,50,0.3) 0%, rgba(10,20,50,0.85) 100%);z-index:2;"></div>
             
-            <div style="position:relative; z-index:3; text-align:center; padding:15px 10px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; width:100%; height:100%;">
-                <h3 style="color:#fbb320; font-size:1.6rem; font-weight:900; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,0.8); line-height:1.1; font-family:'Outfit',sans-serif; text-transform:uppercase;">${item.title.split(' ')[0]}</h3>
-                <span style="color:white; font-size:0.75rem; font-weight:600; margin-bottom:12px; text-shadow:0 1px 4px rgba(0,0,0,0.8);">${item.title}</span>
+            <div style="position:relative; z-index:3; text-align:center; padding:10px 6px; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; width:100%; height:100%;">
+                <h3 style="color:#fbb320; font-size:clamp(0.85rem,3vw,1.6rem); font-weight:900; margin:0 0 4px; text-shadow:0 2px 8px rgba(0,0,0,0.8); line-height:1.1; font-family:'Outfit',sans-serif; text-transform:uppercase;">${item.title.split(' ')[0]}</h3>
+                <span style="color:white; font-size:clamp(0.6rem,2.2vw,0.75rem); font-weight:600; margin-bottom:10px; text-shadow:0 1px 4px rgba(0,0,0,0.8);">${item.title}</span>
                 
-                <span style="display:inline-flex; align-items:center; gap:4px; background:#fbb320; color:white; font-size:0.6rem; font-weight:800; padding:6px 14px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 10px rgba(251,179,32,0.4);">
-                    LIHAT LAINNYA <i class="fa-solid fa-chevron-right" style="font-size:0.55rem;"></i>
+                <span style="display:inline-flex; align-items:center; gap:4px; background:#fbb320; color:white; font-size:clamp(0.5rem,1.8vw,0.6rem); font-weight:800; padding:5px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:0.5px; box-shadow:0 4px 10px rgba(251,179,32,0.4);">
+                    LIHAT LAINNYA <i class="fa-solid fa-chevron-right" style="font-size:0.5rem;"></i>
                 </span>
             </div>
         </div>`).join('');
