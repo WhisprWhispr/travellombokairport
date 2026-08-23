@@ -499,7 +499,7 @@ window.openSubPackageModal = (parentId) => {
                         onmouseover="this.style.transform='scale(1.08)'"
                         onmouseout="this.style.transform='scale(1)'"
                         onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
-                    ${priceText ? `<div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 255, 255, 0.95); backdrop-filter:blur(4px); color:#0f172a; font-size:0.85rem; font-weight:800; padding:6px 14px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.4);"><span style="color:#0284c7; font-size:0.7rem; font-weight:700; margin-right:2px;">IDR</span>${priceText} <span style="font-size:0.65rem; font-weight:600; color:#64748b;">/pax</span></div>` : ''}
+                    ${priceText ? `<div style="position:absolute; bottom:12px; right:12px; background:rgba(255, 255, 255, 0.95); backdrop-filter:blur(4px); color:#0f172a; font-size:0.85rem; font-weight:800; padding:6px 14px; border-radius:20px; box-shadow:0 4px 10px rgba(0,0,0,0.15); border: 1px solid rgba(255,255,255,0.4);"><span style="color:#0284c7; font-size:0.7rem; font-weight:700; margin-right:2px;">IDR</span>${priceText} <span style="font-size:0.65rem; font-weight:600; color:#64748b;">/orang</span></div>` : ''}
                 </div>
                 <!-- Content -->
                 <div style="padding:16px 20px; display:flex; flex-direction:column; flex:1;">
