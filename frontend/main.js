@@ -504,7 +504,9 @@ window.openSubPackageModal = (parentId) => {
             <p style="font-size:0.85rem;">Silakan tambahkan sub-paket dari panel admin.</p>
         </div>`;
     } else {
-        bodyEl.innerHTML = children.map((child) => {
+        bodyEl.innerHTML = children
+            .sort((a, b) => (a.title || '').localeCompare(b.title || '', 'id', { sensitivity: 'base' }))
+            .map((child) => {
             const priceText = child.price ? formatPrice(child.price).replace(/^(IDR|Rp\.?)\s*/i, '') : '';
             return `
             <div style="background:white; border:none; border-radius:16px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04); cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
