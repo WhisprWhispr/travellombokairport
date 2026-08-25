@@ -537,6 +537,7 @@ window.openSubPackageModal = (parentId) => {
                  onclick="window.closeSubPackageModal(); openTourModal('${child.id}');">
                 <!-- Image -->
                 <div style="position:relative; height:180px; overflow:hidden;">
+                    <button onclick="event.stopPropagation(); window.shareItem('${child.id}', '${child.title.replace(/'/g, "\\'")}', '${formatPrice(child.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
                     <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}"
                         style="width:100%; height:100%; object-fit:cover; transition: transform 0.5s ease;"
                         onmouseover="this.style.transform='scale(1.08)'"
