@@ -1866,3 +1866,52 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
     margin-top: -30px;
   }
 }
+
+@media (max-width: 768px) {
+  .fleet-grid .package-card .content {
+    padding: 12px;
+  }
+  .fleet-grid .package-card h3 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  .fleet-grid .package-card ul {
+    margin-bottom: 15px;
+  }
+  .fleet-grid .package-card ul li {
+    padding: 8px;
+    font-size: 0.75rem;
+    gap: 8px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+  .fleet-grid .fleet-card-v2 .price-row {
+    padding-top: 10px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .fleet-grid .fleet-card-v2 .price {
+    font-size: 1rem;
+    margin-bottom: 10px;
+  }
+  .fleet-grid .fleet-card-v2 .action-buttons {
+    width: 100%;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  .fleet-grid .fleet-card-v2 .action-buttons .btn {
+    flex: 1;
+    padding: 6px;
+    font-size: 0.75rem;
+  }
+  .fleet-grid .fleet-card-v2 .fleet-tag {
+    padding: 3px 8px;
+    font-size: 0.7rem;
+  }
+  .fleet-grid .package-card .tag {
+    font-size: 0.65rem;
+    padding: 4px 8px;
+    top: 10px;
+    left: 10px;
+  }
+}
