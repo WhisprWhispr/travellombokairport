@@ -785,7 +785,7 @@ const init = async () => {
     const services = visibleItems.filter(item => !packages.includes(item) && !cars.includes(item) && !motorcycles.includes(item) && !drones.includes(item) && !transfers.includes(item));
 
     // Helper to render sections with "See All" button
-    const renderSectionWithSeeAll = (containerId, items, renderFn) => {
+    const renderSectionWithSeeAll = (containerId, items, renderFn, customMaxVisible = null) => {
         const container = document.getElementById(containerId);
         if (!container) return;
 
@@ -794,8 +794,11 @@ const init = async () => {
             return;
         }
 
-        let cols = window.innerWidth >= 1200 ? (containerId.includes('cars') || containerId.includes('motor') ? 4 : 3) : 2;
-        const maxVisible = cols * 2;
+        let maxVisible = customMaxVisible;
+        if (maxVisible === null) {
+            let cols = window.innerWidth >= 1200 ? (containerId.includes('cars') || containerId.includes('motor') ? 4 : 3) : 2;
+            maxVisible = cols * 2;
+        }
         let html = '';
 
         items.forEach((item, index) => {
@@ -882,13 +885,13 @@ const init = async () => {
     }
 
     // ── Render Regular Packages → "Paket Tour Populer" section ──
-    renderSectionWithSeeAll('packages-container', regularPackages, createPackageCard);
+    renderSectionWithSeeAll('packages-container', regularPackages, createPackageCard, 6);
 
     // Render Cars
-    renderSectionWithSeeAll('cars-container', cars, createFleetCard);
+    renderSectionWithSeeAll('cars-container', cars, createFleetCard, 4);
 
     // Render Motorcycles
-    renderSectionWithSeeAll('motorcycles-container', motorcycles, createFleetCard);
+    renderSectionWithSeeAll('motorcycles-container', motorcycles, createFleetCard, 4);
 
     // Render Drones
     renderSectionWithSeeAll('drone-container', drones, createDroneCard);
