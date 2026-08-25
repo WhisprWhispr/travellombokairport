@@ -2672,3 +2672,35 @@ window.submitAuth = async (e) => {
         btn.innerHTML = isLogin ? 'Login' : 'Daftar';
     }
 };
+
+window.shareItem = (title, priceStr) => {
+    const url = window.location.origin;
+    const textWa = `Rencanakan liburan seru di Lombok bersama Travel Lombok Airport! ✨\n\nJelajahi penawaran terbaik untuk: *${title}*\nHarga spesial mulai dari: ${priceStr}\n\nAyo cek detailnya dan booking sekarang di: ${url}`;
+    const textOther = `Liburan seru di Lombok bareng Travel Lombok Airport! ✨ Cek penawaran keren untuk ${title} mulai dari ${priceStr}. Cek selengkapnya di: ${url}`;
+    
+    const waLink = `https://wa.me/?text=${encodeURIComponent(textWa)}`;
+    const twLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(textOther)}`;
+    const threadsLink = `https://threads.net/intent/post?text=${encodeURIComponent(textOther)}`;
+
+    Swal.fire({
+        title: '<span style="font-size:1.1rem;font-weight:800;">Bagikan Penawaran</span>',
+        html: `
+            <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
+                <a href="${waLink}" target="_blank" class="btn" style="background:#25D366; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
+                    <i class="fa-brands fa-whatsapp" style="font-size:1.2rem;"></i> Bagikan ke WhatsApp
+                </a>
+                <a href="${twLink}" target="_blank" class="btn" style="background:#1DA1F2; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
+                    <i class="fa-brands fa-twitter" style="font-size:1.2rem;"></i> Bagikan ke Twitter
+                </a>
+                <a href="${threadsLink}" target="_blank" class="btn" style="background:#000000; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
+                    <i class="fa-brands fa-threads" style="font-size:1.2rem;"></i> Bagikan ke Threads
+                </a>
+                <button onclick="navigator.clipboard.writeText('${textOther}'); Swal.fire({icon:'success',title:'Disalin!',toast:true,position:'top-end',showConfirmButton:false,timer:2000});" class="btn" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
+                    <i class="fa-solid fa-copy" style="font-size:1.2rem;"></i> Salin Link & Teks
+                </button>
+            </div>
+        `,
+        showConfirmButton: false,
+        showCloseButton: true
+    });
+};
