@@ -42,6 +42,7 @@ router.get('/', async (req, res) => {
                 bookings.push({
                     id: doc.id,
                     itemId: data.itemId,
+                    itemName: data.itemName,
                     startDate: data.startDate,
                     endDate: data.endDate,
                     status: data.status

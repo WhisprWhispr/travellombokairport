@@ -1427,7 +1427,8 @@ window.openCheckoutModal = async (itemName, price) => {
         const allBookings = await res.json();
         const itemBookings = allBookings.filter(b => {
             const bName = b.itemName || "";
-            const matchesName = bName === itemName || itemName.includes(bName) || (bName && bName.includes(itemName));
+            if (!bName) return false;
+            const matchesName = bName === itemName || itemName.includes(bName) || bName.includes(itemName);
             return matchesName && (b.status === 'PAID' || b.status === 'PENDING');
         });
 
