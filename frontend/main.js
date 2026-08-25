@@ -2716,7 +2716,7 @@ window.shareItem = (id, title, priceStr) => {
                 <a href="${threadsLink}" target="_blank" class="btn" style="background:#000000; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
                     <i class="fa-brands fa-threads" style="font-size:1.2rem;"></i> Bagikan ke Threads
                 </a>
-                <button onclick="navigator.clipboard.writeText('${textOther}'); Swal.fire({icon:'success',title:'Disalin!',toast:true,position:'top-end',showConfirmButton:false,timer:2000});" class="btn" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
+                <button onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(textOther)}')); Swal.fire({icon:'success',title:'Disalin!',toast:true,position:'top-end',showConfirmButton:false,timer:2000});" class="btn" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
                     <i class="fa-solid fa-copy" style="font-size:1.2rem;"></i> Salin Link & Teks
                 </button>
             </div>
