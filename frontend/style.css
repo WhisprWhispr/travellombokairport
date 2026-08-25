@@ -426,14 +426,22 @@ ul {
 }
 
 /* Grids */
-.services-grid, .packages-grid, .fleet-grid {
+.services-grid, .packages-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
 }
+.fleet-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
 @media (min-width: 1200px) {
-  .packages-grid, .fleet-grid {
+  .packages-grid {
     grid-template-columns: repeat(3, 1fr);
+  }
+  .fleet-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
 
