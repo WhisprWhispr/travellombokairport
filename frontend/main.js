@@ -2675,8 +2675,8 @@ window.submitAuth = async (e) => {
 
 window.shareItem = (title, priceStr) => {
     const url = window.location.origin;
-    const textWa = `Rencanakan liburan seru di Lombok bersama Travel Lombok Airport! ✨\n\nJelajahi penawaran terbaik untuk: *${title}*\nHarga spesial mulai dari: ${priceStr}\n\nAyo cek detailnya dan booking sekarang di: ${url}`;
-    const textOther = `Liburan seru di Lombok bareng Travel Lombok Airport! ✨ Cek penawaran keren untuk ${title} mulai dari ${priceStr}. Cek selengkapnya di: ${url}`;
+    const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${title}*\n💰 *${priceStr}*\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
+    const textOther = `Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${title}\n💰 ${priceStr}\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${url}`;
     
     const waLink = `https://wa.me/?text=${encodeURIComponent(textWa)}`;
     const twLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(textOther)}`;
