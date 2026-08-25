@@ -1692,7 +1692,7 @@ body { top: 0 !important; position: static !important; }
   /* Header Fixes for Small Mobile */
   .logo-img { height: 35px; }
   .logo-title { font-size: 0.95rem; }
-  .logo-subtitle { display: none; }
+  .logo-subtitle { display: block; font-size: 0.65rem; }
   .nav-actions { gap: 8px; }
   .lang-btn { padding: 4px 8px; font-size: 0.8rem; }
   .mobile-menu-btn { font-size: 1.25rem; padding: 4px 6px; }
