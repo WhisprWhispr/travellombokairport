@@ -426,12 +426,12 @@ ul {
 }
 
 /* Grids */
-.services-grid, .packages-grid {
+.services-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 30px;
 }
-.fleet-grid {
+.packages-grid, .fleet-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
@@ -1868,33 +1868,33 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
 }
 
 @media (max-width: 768px) {
-  .fleet-grid .package-card .content {
+  .fleet-grid .package-card .content, .packages-grid .package-card .content {
     padding: 12px;
   }
-  .fleet-grid .package-card h3 {
+  .fleet-grid .package-card h3, .packages-grid .package-card h3 {
     font-size: 1.1rem;
     margin-bottom: 10px;
   }
-  .fleet-grid .package-card ul {
+  .fleet-grid .package-card ul, .packages-grid .package-card ul {
     display: none;
   }
-  .fleet-grid .package-card ul li {
+  .fleet-grid .package-card ul li, .packages-grid .package-card ul li {
     padding: 8px;
     font-size: 0.75rem;
     gap: 8px;
     margin-bottom: 8px;
     line-height: 1.4;
   }
-  .fleet-grid .fleet-card-v2 .price-row {
+  .fleet-grid .fleet-card-v2 .price-row, .packages-grid .package-card .price-row {
     padding-top: 10px;
     flex-direction: column;
     align-items: flex-start;
   }
-  .fleet-grid .fleet-card-v2 .price {
+  .fleet-grid .fleet-card-v2 .price, .packages-grid .package-card .price {
     font-size: 1rem;
     margin-bottom: 10px;
   }
-  .fleet-grid .fleet-card-v2 .action-buttons {
+  .fleet-grid .fleet-card-v2 .action-buttons, .packages-grid .package-card .btn {
     width: 100%;
     justify-content: space-between;
     gap: 5px;
