@@ -2247,15 +2247,19 @@ window.renderReviewsList = () => {
             dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
         }
 
+        let initial = r.name ? r.name.charAt(0).toUpperCase() : 'U';
         html += `
-        <div class="card" style="padding: 25px; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); background: white; border: 1px solid #f1f5f9; display: flex; flex-direction: column; justify-content: space-between;" data-aos="fade-up">
-            <div>
-                <div style="display: flex; gap: 4px; margin-bottom: 10px;">${stars}</div>
-                <p style="color: #475569; font-style: italic; margin-bottom: 15px; line-height: 1.6;">"${r.comment}"</p>
+        <div class="review-card" data-aos="fade-up">
+            <div class="review-content">
+                <div style="display: flex; gap: 4px; margin-bottom: 12px; font-size: 0.9rem;">${stars}</div>
+                <p class="review-text">"${r.comment}"</p>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 15px; margin-top: auto;">
-                <div style="font-weight: 700; color: var(--primary-blue);">${r.name}</div>
-                <div style="font-size: 0.8rem; color: #94a3b8;">${dateStr}</div>
+            <div class="review-author">
+                <div class="review-author-avatar">${initial}</div>
+                <div style="flex: 1;">
+                    <div style="font-weight: 800; color: var(--primary-blue); font-size: 1.05rem; letter-spacing: -0.3px;">${r.name}</div>
+                    <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">${dateStr}</div>
+                </div>
             </div>
         </div>`;
     });
