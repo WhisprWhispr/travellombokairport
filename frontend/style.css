@@ -1929,3 +1929,6 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
 
 .review-author { display: flex; align-items: center; gap: 15px; border-top: 1px dashed #e2e8f0; padding-top: 15px; margin-top: auto; z-index: 1; }
 
+
+.horizontal-steps-container { display: flex; flex-direction: row; gap: 1rem; align-items: stretch; overflow-x: auto; padding: 10px 10px 20px 10px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; } .horizontal-steps-container .modern-step-card { min-width: 200px; flex-shrink: 0; scroll-snap-align: center; padding: 1.5rem 1rem; } .horizontal-steps-container .modern-step-arrow { display: flex; align-items: center; flex-shrink: 0; } .horizontal-steps-container::-webkit-scrollbar { height: 6px; } .horizontal-steps-container::-webkit-scrollbar-thumb { background-color: var(--primary-green); border-radius: 4px; } .horizontal-steps-container::-webkit-scrollbar-track { background: transparent; }
+
