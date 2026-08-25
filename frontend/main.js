@@ -351,7 +351,10 @@ window.closeTourModal = () => {
     const modal = document.getElementById('tour-modal');
     if (modal) {
         modal.classList.remove('active');
-        document.body.style.overflow = ''; // Restore scroll
+        const subModal = document.getElementById('sub-package-modal');
+        if (!subModal || subModal.style.display === 'none') {
+            document.body.style.overflow = ''; // Restore scroll only if sub-package is closed
+        }
     }
 };
 
@@ -534,7 +537,7 @@ window.openSubPackageModal = (parentId) => {
             <div style="background:white; border:none; border-radius:16px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04); cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
                  onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)';"
                  onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04)';"
-                 onclick="window.closeSubPackageModal(); openTourModal('${child.id}');">
+                 onclick="openTourModal('${child.id}');">
                 <!-- Image -->
                 <div style="position:relative; height:180px; overflow:hidden;">
                     <button onclick="event.stopPropagation(); window.shareItem('${child.id}', '${child.title.replace(/'/g, "\\'")}', '${formatPrice(child.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
