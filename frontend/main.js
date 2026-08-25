@@ -787,7 +787,7 @@ const init = async () => {
             return;
         }
 
-        const maxVisible = 3;
+        const maxVisible = 4;
         let html = '';
 
         items.forEach((item, index) => {
