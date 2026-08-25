@@ -1876,7 +1876,7 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
     margin-bottom: 10px;
   }
   .fleet-grid .package-card ul {
-    margin-bottom: 15px;
+    display: none;
   }
   .fleet-grid .package-card ul li {
     padding: 8px;
