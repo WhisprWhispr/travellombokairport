@@ -787,7 +787,8 @@ const init = async () => {
             return;
         }
 
-        const maxVisible = 4;
+        let cols = window.innerWidth >= 1200 ? (containerId.includes('cars') || containerId.includes('motor') ? 4 : 3) : 2;
+        const maxVisible = cols * 2;
         let html = '';
 
         items.forEach((item, index) => {
