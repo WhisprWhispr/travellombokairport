@@ -806,7 +806,7 @@ const init = async () => {
             let cardHtml = renderFn(item, index);
             if (isHidden) {
                 // Add hidden-item class using regex to handle any whitespace before <div
-                cardHtml = cardHtml.replace(/(<divs+)/, '$1data-hidden="true" style="display: none;" ');
+                cardHtml = cardHtml.replace(/(<div\s+)/, '$1data-hidden="true" style="display: none;" ');
             }
             html += cardHtml;
         });
