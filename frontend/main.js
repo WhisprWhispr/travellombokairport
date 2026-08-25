@@ -460,7 +460,7 @@ const createPackageCard = (item, index = 0) => {
     return `
     <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}" style="${isParent ? 'border:2px solid #fbbf24;' : ''}">
         <div class="img-wrapper" style="position:relative;">
-            <button onclick="window.shareItem('${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
             ${parentBadge}
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
@@ -707,7 +707,7 @@ const createDroneCard = (item, index = 0) => {
     return `
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="height: 250px; position: relative;">
-            <button onclick="window.shareItem('${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             ${mediaHtml}
         </div>
         <div class="content" style="padding: 20px;">
@@ -1373,6 +1373,27 @@ window.updateSubLayanan = () => {
 document.addEventListener('DOMContentLoaded', () => {
     init().then(() => {
         window.updateSubLayanan(); // initialize dropdowns
+        
+        // Auto-open shared item
+        const urlParams = new URLSearchParams(window.location.search);
+        const itemId = urlParams.get('item');
+        if (itemId && globalItems) {
+            const item = globalItems.find(i => i.id === itemId);
+            if (item) {
+                const isFleet = ['car', 'motorcycle', 'drone'].includes(item.category);
+                const sectionId = isFleet ? (item.category === 'motorcycle' ? 'motorcycles' : (item.category === 'drone' ? 'drones' : 'cars')) : 'packages';
+                const section = document.getElementById(sectionId);
+                if (section) section.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+                window.history.replaceState({}, document.title, window.location.pathname);
+                
+                if (isFleet) {
+                    openCheckoutModal(item.title, item.price);
+                } else {
+                    openTourModal(item.id);
+                }
+            }
+        }
     });
 });
 
@@ -2673,8 +2694,8 @@ window.submitAuth = async (e) => {
     }
 };
 
-window.shareItem = (title, priceStr) => {
-    const url = window.location.origin;
+window.shareItem = (id, title, priceStr) => {
+    const url = window.location.origin + window.location.pathname + '?item=' + id;
     const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${title}*\n💰 *${priceStr}*\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
     const textOther = `Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${title}\n💰 ${priceStr}\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${url}`;
     
