@@ -36,7 +36,7 @@ blogsRoutes.get('/', async (c) => {
         const listOnly = c.req.query('list') === 'true'; // If true, exclude full content to save bandwidth
         const limit = c.req.query('limit') ? parseInt(c.req.query('limit')) : 50;
         
-        let query = db.collection('blogs').orderBy('createdAt', 'desc').limit(limit);
+        let query = db.collection('blogs').orderBy('createdAt', 'desc');
         const snapshot = await query.get();
         
         let blogs = [];
@@ -47,6 +47,10 @@ blogsRoutes.get('/', async (c) => {
             }
             blogs.push({ id: doc.id, ...data });
         });
+        
+        if (blogs.length > limit) {
+            blogs = blogs.slice(0, limit);
+        }
         
         return c.json(blogs);
     } catch (error) {
@@ -65,7 +69,7 @@ blogsRoutes.get('/:idOrSlug', async (c) => {
         
         if (!docSnapshot.exists) {
             // Try searching by slug
-            const slugSnapshot = await db.collection('blogs').where('slug', '==', param).limit(1).get();
+            const slugSnapshot = await db.collection('blogs').where('slug', '==', param).get();
             if (slugSnapshot.empty) {
                 return c.json({ message: 'Blog tidak ditemukan' }, 404);
             }
