@@ -73,6 +73,16 @@ router.get('/settings', async (req, res) => {
 router.put('/settings', verifyToken, async (req, res) => {
     try {
         const updatedSettings = req.body;
+        
+        // Jika ada attempt mengubah maintenanceMode
+        if (updatedSettings.maintenanceMode !== undefined) {
+            const isMainAdmin = req.user && req.user.email === 'ridhosandhika18022022@gmail.com';
+            if (!isMainAdmin) {
+                // Jangan izinkan mengubah maintenanceMode, hapus dari payload
+                delete updatedSettings.maintenanceMode;
+            }
+        }
+
         await db.collection('settings').doc('global').set(updatedSettings, { merge: true });
         res.json(updatedSettings);
     } catch (error) {

@@ -76,6 +76,17 @@ apiRoutes.put('/settings', verifyToken, async (c) => {
     try {
         const db = getDb(c);
         const updatedSettings = await c.req.json();
+        const user = c.get('user');
+
+        // Jika ada attempt mengubah maintenanceMode
+        if (updatedSettings.maintenanceMode !== undefined) {
+            const isMainAdmin = user && user.email === 'ridhosandhika18022022@gmail.com';
+            if (!isMainAdmin) {
+                // Jangan izinkan mengubah maintenanceMode, hapus dari payload
+                delete updatedSettings.maintenanceMode;
+            }
+        }
+
         await db.collection('settings').doc('global').set(updatedSettings, { merge: true });
         return c.json(updatedSettings);
     } catch (error) {

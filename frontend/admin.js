@@ -436,6 +436,11 @@ loginForm.addEventListener("submit", async (e) => {
         if (response.ok && data.success) {
             authToken = data.token;
             localStorage.setItem('adminToken', authToken);
+            if (data.admin && data.admin.email) {
+                localStorage.setItem('adminEmail', data.admin.email);
+            } else if (data.user && data.user.email) {
+                localStorage.setItem('adminEmail', data.user.email);
+            }
             checkAuth();
         } else {
             throw new Error(data.error || "Email atau password salah");
@@ -455,6 +460,7 @@ logoutBtn.addEventListener("click", (e) => {
     e.preventDefault();
     authToken = null;
     localStorage.removeItem('adminToken');
+    localStorage.removeItem('adminEmail');
     checkAuth();
 });
 
@@ -1913,6 +1919,33 @@ window.fetchGlobalSettings = async () => {
             }
             if (maintenanceToggle) {
                 maintenanceToggle.checked = data.maintenanceMode === true;
+                
+                // Restrict toggle for non-main admins
+                const currentAdminEmail = localStorage.getItem('adminEmail');
+                if (currentAdminEmail !== 'ridhosandhika18022022@gmail.com') {
+                    maintenanceToggle.disabled = true;
+                    
+                    // Style the slider to look disabled
+                    const slider = maintenanceToggle.nextElementSibling;
+                    if (slider) {
+                        slider.style.cursor = 'not-allowed';
+                        slider.style.opacity = '0.5';
+                    }
+
+                    const toggleContainer = maintenanceToggle.closest('.form-group');
+                    if (toggleContainer) {
+                        // Avoid adding multiple warnings if fetched multiple times
+                        if (!toggleContainer.querySelector('.admin-warn-text')) {
+                            const warnText = document.createElement('p');
+                            warnText.className = 'admin-warn-text';
+                            warnText.style.color = '#ef4444';
+                            warnText.style.fontSize = '0.85rem';
+                            warnText.style.marginTop = '10px';
+                            warnText.innerHTML = '<strong>Akses Ditolak:</strong> Hanya Admin Pusat (ridhosandhika18022022@gmail.com) yang dapat mengubah Mode Pemeliharaan.';
+                            toggleContainer.appendChild(warnText);
+                        }
+                    }
+                }
             }
         }
     } catch (e) {
