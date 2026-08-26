@@ -2190,7 +2190,11 @@ function populatePromoItems() {
     if (!sel) return;
     const currentVal = sel.value;
     sel.innerHTML = '<option value="">-- Semua Paket --</option>';
-    if (window.globalItems) {
+    if (typeof allAdminItems !== 'undefined' && allAdminItems.length > 0) {
+        allAdminItems.forEach(item => {
+            sel.innerHTML += `<option value="${item.id}">${item.title}</option>`;
+        });
+    } else if (window.globalItems) {
         window.globalItems.forEach(item => {
             sel.innerHTML += `<option value="${item.id}">${item.title}</option>`;
         });
