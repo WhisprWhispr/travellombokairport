@@ -535,7 +535,8 @@ ul {
 }
 .package-card .tag {
   position: absolute;
-  top: 15px;
+  bottom: 15px;
+  top: auto;
   left: 15px;
   background: rgba(255, 255, 255, 0.95);
   color: var(--primary-green);
@@ -1935,7 +1936,8 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
   .fleet-grid .package-card .tag {
     font-size: 0.65rem;
     padding: 4px 8px;
-    top: 10px;
+    top: auto;
+    bottom: 10px;
     left: 10px;
   }
 }
