@@ -2494,6 +2494,40 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             </div>
             <div style="display:flex; flex-direction:column; gap:20px;">
         `;
+        window.copyTxId = (btn, id, event) => {
+            if (event) event.stopPropagation();
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(id).then(() => {
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    btn.style.background = '#10b981';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.style.background = 'var(--primary-blue)';
+                    }, 2000);
+                }).catch(err => console.error('Gagal menyalin:', err));
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement("textarea");
+                textArea.value = id;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    const originalHtml = btn.innerHTML;
+                    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    btn.style.background = '#10b981';
+                    setTimeout(() => {
+                        btn.innerHTML = originalHtml;
+                        btn.style.background = 'var(--primary-blue)';
+                    }, 2000);
+                } catch (err) {
+                    console.error('Gagal menyalin:', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        };
+
         window.showTransactionDetail = (encodedData) => {
             const item = JSON.parse(decodeURIComponent(encodedData));
             const isPaid = item.status === 'PAID';
@@ -2563,7 +2597,10 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                         <div style="background:white; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.03);">
                             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
                                 <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-hashtag" style="opacity:0.5; margin-right:5px;"></i> ID Transaksi</span>
-                                <span style="font-family:monospace; font-weight:700; color:#1e293b; font-size:0.95rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">${item.transactionId}</span>
+                                <div style="display:flex; align-items:center; gap:8px;">
+                                    <span style="font-family:monospace; font-weight:700; color:#1e293b; font-size:0.95rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">${item.transactionId}</span>
+                                    <button onclick="window.copyTxId(this, '${item.transactionId}', event)" style="background:var(--primary-blue); color:white; border:none; border-radius:6px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer;" title="Salin ID"><i class="fa-regular fa-copy" style="font-size:0.8rem;"></i></button>
+                                </div>
                             </div>
                             <div style="display:flex; flex-direction:column; gap:6px;">
                                 <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-layer-group" style="opacity:0.5; margin-right:5px;"></i> Layanan</span>
@@ -2601,7 +2638,10 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             html += `
                 <div onclick="window.showTransactionDetail('${encodedData}')" style="background:white; border-radius:16px; padding:16px; border:1px solid #e2e8f0; position:relative; box-shadow:0 4px 10px rgba(0,0,0,0.02); cursor:pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.06)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)';">
                     <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #e2e8f0;">
-                        <span style="font-size:0.75rem; color:#64748b; font-weight:600; font-family:monospace;"><i class="fa-solid fa-hashtag" style="margin-right:3px; opacity:0.6;"></i>${item.transactionId}</span>
+                        <span style="font-size:0.75rem; color:#64748b; font-weight:600; font-family:monospace; display:flex; align-items:center; gap:6px;">
+                            <i class="fa-solid fa-hashtag" style="opacity:0.6;"></i>${item.transactionId}
+                            <button onclick="window.copyTxId(this, '${item.transactionId}', event)" style="background:var(--primary-blue); color:white; border:none; border-radius:4px; width:20px; height:20px; display:flex; align-items:center; justify-content:center; cursor:pointer;" title="Salin ID"><i class="fa-regular fa-copy" style="font-size:0.65rem;"></i></button>
+                        </span>
                         <span style="font-size:0.75rem; font-weight:700; color:${statusColor}; background:${statusBg}; padding:4px 10px; border-radius:12px; letter-spacing:0.5px;">
                             ${item.status}
                         </span>
