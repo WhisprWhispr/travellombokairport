@@ -865,13 +865,13 @@ window.openSubPackageModal = (parentId) => {
                 <!-- Content -->
                 <div style="padding:16px 20px; display:flex; flex-direction:column; flex:1;">
                     <h4 style="margin:0 0 8px; font-size:0.95rem; font-weight:800; color:#0f172a; line-height:1.4;">${child.title}</h4>
-                    <div style="display:flex; gap:3px; margin-bottom:16px; align-items:center;">
+                    <div style="display:flex; gap:3px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
                         <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
                         <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
                         <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
                         <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
                         <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
-                        <span style="font-size:0.7rem; color:#64748b; margin-left:6px; font-weight:500;">(Top Rated)</span>
+                        <span style="font-size:0.7rem; color:#64748b; margin-left:6px; font-weight:500; white-space:nowrap;">(Top Rated)</span>
                     </div>
                     <div style="margin-top:auto; padding-top:12px; border-top:1px dashed #e2e8f0; text-align:center;">
                         <span style="color:#0ea5e9; font-size:0.85rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition: color 0.2s ease;">
@@ -3299,3 +3299,4 @@ window.shareItem = (id, title, priceStr) => {
         showCloseButton: true
     });
 };
+
