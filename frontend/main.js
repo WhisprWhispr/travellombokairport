@@ -765,10 +765,23 @@ const init = async () => {
             // Maintenance Mode Check
             if (settings.maintenanceMode === true && !window.location.pathname.includes('/admin')) {
                 document.body.innerHTML = `
-                    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #f8fafc; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; font-family: 'Outfit', sans-serif;">
-                        <i class="fa-solid fa-person-digging" style="font-size: 5rem; color: var(--primary-blue); margin-bottom: 20px;"></i>
-                        <h1 style="color: var(--primary-blue); font-size: 2rem; font-weight: 800; margin-bottom: 10px;">Website Sedang Dalam Pemeliharaan</h1>
-                        <p style="color: #64748b; font-size: 1.1rem; max-width: 500px; line-height: 1.6;">Kami sedang melakukan pembaruan dan peningkatan sistem untuk memberikan pelayanan yang lebih baik. Silakan kembali beberapa saat lagi!</p>
+                    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; font-family: 'Outfit', sans-serif;">
+                        <div style="background: white; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); max-width: 500px; width: 100%; display: flex; flex-direction: column; align-items: center;">
+                            <img src="/logo.png" alt="Travel Lombok Airport Logo" style="height: 80px; object-fit: contain; margin-bottom: 25px;">
+                            <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+                                <i class="fa-solid fa-person-digging" style="font-size: 2.5rem; color: var(--primary-blue, #3b82f6);"></i>
+                            </div>
+                            <h1 style="color: var(--primary-blue, #1e293b); font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; line-height: 1.3;">Website Sedang Dalam Pemeliharaan</h1>
+                            <p style="color: #64748b; font-size: 1rem; line-height: 1.6; margin-bottom: 30px;">Kami sedang melakukan pembaruan sistem untuk memberikan pengalaman layanan yang lebih baik. Kami akan segera kembali beroperasi. Terima kasih atas kesabaran Anda.</p>
+                            <div style="display: flex; gap: 15px; width: 100%;">
+                                <a href="https://wa.me/6285338304245" target="_blank" style="flex: 1; background: #10b981; color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;">
+                                    <i class="fa-brands fa-whatsapp"></i> Hubungi CS
+                                </a>
+                                <button onclick="window.location.reload()" style="flex: 1; background: white; color: var(--primary-blue, #3b82f6); border: 2px solid var(--primary-blue, #3b82f6); padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                                    <i class="fa-solid fa-rotate-right"></i> Muat Ulang
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 `;
                 return; // Stop further execution
