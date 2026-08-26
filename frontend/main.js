@@ -765,19 +765,102 @@ const init = async () => {
             // Maintenance Mode Check
             if (settings.maintenanceMode === true && !window.location.pathname.includes('/admin')) {
                 document.body.innerHTML = `
-                    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; font-family: 'Outfit', sans-serif;">
-                        <div style="background: white; padding: 40px 30px; border-radius: 24px; box-shadow: 0 20px 40px rgba(0,0,0,0.08); max-width: 500px; width: 100%; display: flex; flex-direction: column; align-items: center;">
-                            <img src="/logo.png" alt="Travel Lombok Airport Logo" style="height: 80px; object-fit: contain; margin-bottom: 25px;">
-                            <div style="width: 80px; height: 80px; background: rgba(59, 130, 246, 0.1); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-                                <i class="fa-solid fa-person-digging" style="font-size: 2.5rem; color: var(--primary-blue, #3b82f6);"></i>
+                    <style>
+                        @keyframes float {
+                            0% { transform: translateY(0px); }
+                            50% { transform: translateY(-15px); }
+                            100% { transform: translateY(0px); }
+                        }
+                        @keyframes pulse-ring {
+                            0% { transform: scale(0.8); opacity: 0.5; }
+                            100% { transform: scale(1.3); opacity: 0; }
+                        }
+                        .maint-card {
+                            background: rgba(255, 255, 255, 0.95);
+                            backdrop-filter: blur(10px);
+                            padding: 50px 30px;
+                            border-radius: 28px;
+                            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15);
+                            max-width: 450px;
+                            width: calc(100% - 40px);
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            position: relative;
+                            z-index: 2;
+                            border: 1px solid rgba(255,255,255,0.5);
+                        }
+                        .maint-icon-container {
+                            width: 90px;
+                            height: 90px;
+                            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+                            border-radius: 50%;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            margin-bottom: 25px;
+                            position: relative;
+                            animation: float 4s ease-in-out infinite;
+                        }
+                        .maint-icon-container::before {
+                            content: '';
+                            position: absolute;
+                            width: 100%;
+                            height: 100%;
+                            background: #3b82f6;
+                            border-radius: 50%;
+                            z-index: -1;
+                            animation: pulse-ring 2s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+                        }
+                        .maint-bg {
+                            position: fixed;
+                            top: 0; left: 0; width: 100vw; height: 100vh;
+                            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+                            z-index: 999999;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            text-align: center;
+                            font-family: 'Outfit', sans-serif;
+                        }
+                        .maint-blob {
+                            position: absolute;
+                            width: 300px; height: 300px;
+                            background: rgba(59, 130, 246, 0.15);
+                            filter: blur(40px);
+                            border-radius: 50%;
+                            top: -100px; left: -100px;
+                            z-index: 1;
+                        }
+                        .maint-blob2 {
+                            position: absolute;
+                            width: 250px; height: 250px;
+                            background: rgba(16, 185, 129, 0.15);
+                            filter: blur(40px);
+                            border-radius: 50%;
+                            bottom: -50px; right: -50px;
+                            z-index: 1;
+                        }
+                        @media (max-width: 480px) {
+                            .maint-card { padding: 40px 20px; }
+                            .maint-title { font-size: 1.5rem !important; }
+                        }
+                    </style>
+                    <div class="maint-bg">
+                        <div class="maint-blob"></div>
+                        <div class="maint-blob2"></div>
+                        <div class="maint-card">
+                            <img src="/logo.png" alt="Travel Lombok Airport Logo" style="height: 100px; object-fit: contain; margin-bottom: 30px;">
+                            <div class="maint-icon-container">
+                                <i class="fa-solid fa-person-digging" style="font-size: 2.5rem; color: #3b82f6;"></i>
                             </div>
-                            <h1 style="color: var(--primary-blue, #1e293b); font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; line-height: 1.3;">Website Sedang Dalam Pemeliharaan</h1>
-                            <p style="color: #64748b; font-size: 1rem; line-height: 1.6; margin-bottom: 30px;">Kami sedang melakukan pembaruan sistem untuk memberikan pengalaman layanan yang lebih baik. Kami akan segera kembali beroperasi. Terima kasih atas kesabaran Anda.</p>
-                            <div style="display: flex; gap: 15px; width: 100%;">
-                                <a href="https://wa.me/6285338304245" target="_blank" style="flex: 1; background: #10b981; color: white; text-decoration: none; padding: 12px; border-radius: 12px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.3s;">
+                            <h1 class="maint-title" style="color: #0f172a; font-size: 1.8rem; font-weight: 800; margin-bottom: 15px; line-height: 1.3;">Sedang Pemeliharaan</h1>
+                            <p style="color: #475569; font-size: 1rem; line-height: 1.6; margin-bottom: 30px;">Kami sedang meningkatkan sistem untuk memberikan pengalaman yang lebih baik. Silakan kembali beberapa saat lagi.</p>
+                            <div style="display: flex; gap: 15px; width: 100%; flex-wrap: wrap;">
+                                <a href="https://wa.me/6285338304245" target="_blank" style="flex: 1; min-width: 140px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; text-decoration: none; padding: 14px; border-radius: 14px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); transition: transform 0.2s;">
                                     <i class="fa-brands fa-whatsapp"></i> Hubungi CS
                                 </a>
-                                <button onclick="window.location.reload()" style="flex: 1; background: white; color: var(--primary-blue, #3b82f6); border: 2px solid var(--primary-blue, #3b82f6); padding: 12px; border-radius: 12px; font-weight: 600; cursor: pointer; transition: 0.3s;">
+                                <button onclick="window.location.reload()" style="flex: 1; min-width: 140px; background: white; color: #3b82f6; border: 2px solid #e2e8f0; padding: 14px; border-radius: 14px; font-weight: 600; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.borderColor='#3b82f6'; this.style.backgroundColor='#eff6ff';" onmouseout="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='white';">
                                     <i class="fa-solid fa-rotate-right"></i> Muat Ulang
                                 </button>
                             </div>
