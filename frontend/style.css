@@ -1502,7 +1502,7 @@ ul {
     .lang-btn { padding: 5px 8px; font-size: 0.7rem; }
   }
 
-@media (max-width: 1300px) {
+@media (max-width: 1250px) {
   .nav-links { 
     display: none; 
     position: absolute;
