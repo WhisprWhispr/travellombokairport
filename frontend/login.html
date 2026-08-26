@@ -259,7 +259,10 @@
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="password" class="form-control" required placeholder="Masukkan password Anda">
+        <div style="position: relative;">
+          <input type="password" id="password" class="form-control" required placeholder="Masukkan password Anda" style="padding-right: 40px;">
+          <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b;"></i>
+        </div>
       </div>
       <a id="forgot-link" class="forgot-link"><i class="fa-solid fa-key" style="margin-right:4px;"></i>Lupa Sandi?</a>
       <div class="form-group" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
@@ -293,6 +296,17 @@
     // Redirect if already logged in
     if (localStorage.getItem('auth_token')) {
         window.location.href = '/';
+    }
+
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    if(togglePassword && password) {
+      togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+      });
     }
 
     // ── Lupa Sandi Modal ──────────────────────────────────────────────

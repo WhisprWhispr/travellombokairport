@@ -153,7 +153,10 @@
       </div>
       <div class="form-group">
         <label>Password</label>
-        <input type="password" id="password" class="form-control" required minlength="6" placeholder="Minimal 6 karakter">
+        <div style="position: relative;">
+          <input type="password" id="password" class="form-control" required minlength="6" placeholder="Minimal 6 karakter" style="padding-right: 40px;">
+          <i class="fa-solid fa-eye" id="togglePassword" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b;"></i>
+        </div>
       </div>
       <div class="form-group" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
         <div class="cf-turnstile" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS" data-theme="light"></div>
@@ -171,6 +174,17 @@
     // Redirect if already logged in
     if (localStorage.getItem('auth_token')) {
         window.location.href = '/';
+    }
+
+    // Toggle Password Visibility
+    const togglePassword = document.getElementById('togglePassword');
+    const password = document.getElementById('password');
+    if(togglePassword && password) {
+      togglePassword.addEventListener('click', function () {
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        this.classList.toggle('fa-eye-slash');
+      });
     }
 
     document.getElementById('register-form').addEventListener('submit', async (e) => {
