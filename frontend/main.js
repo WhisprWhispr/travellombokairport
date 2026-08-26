@@ -2,6 +2,36 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
 // ====== API ENDPOINT ======
 // Changed so that localhost hits Vite proxy on /api exactly like production
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
+
+// ====== ANALYTICS TRACKING ======
+if (!window.location.pathname.includes("admin") && !window.location.pathname.includes("driver")) {
+    const trackVisitor = async () => {
+        try {
+            // Generate a simple pseudo-hash for the IP/session using User-Agent + Date
+            // In a real app, the backend usually gets the IP, but here we can pass a session ID
+            let sessionId = localStorage.getItem('visitor_session_id');
+            if (!sessionId) {
+                sessionId = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+                localStorage.setItem('visitor_session_id', sessionId);
+            }
+            
+            await fetch(`${API_URL}/analytics/track`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    path: window.location.pathname + window.location.hash,
+                    userAgent: navigator.userAgent,
+                    ipHash: sessionId, // Using session ID as proxy for unique IP
+                    screenWidth: window.innerWidth || screen.width
+                })
+            });
+        } catch (e) {
+            console.error('Failed to track visitor:', e);
+        }
+    };
+    // Run after a short delay so it doesn't block main render
+    setTimeout(trackVisitor, 2000);
+}
 let globalItems = [];
 
 const EXCHANGE_RATES = {

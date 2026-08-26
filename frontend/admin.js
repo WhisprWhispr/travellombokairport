@@ -1040,6 +1040,8 @@ window.showTab = (tab) => {
     
     document.getElementById("items-section").style.display = "none";
     document.getElementById("stats-section").style.display = "none";
+    const analyticsSection = document.getElementById("analytics-section");
+    if (analyticsSection) analyticsSection.style.display = "none";
     document.getElementById("bookings-section").style.display = "none";
     document.getElementById("orders-section").style.display = "none";
     document.getElementById("web-bookings-section").style.display = "none";
@@ -1072,6 +1074,12 @@ window.showTab = (tab) => {
     } else if (tab === "stats") {
         document.getElementById("stats-section").style.display = "block";
         fetchAdminStats();
+    } else if (tab === "analytics") {
+        const analyticsSection = document.getElementById("analytics-section");
+        if (analyticsSection) {
+            analyticsSection.style.display = "block";
+            fetchVisitorAnalytics();
+        }
     } else if (tab === "gallery") {
         document.getElementById("gallery-section").style.display = "block";
         document.getElementById("add-gallery-btn").style.display = "inline-block";
@@ -1978,6 +1986,141 @@ window.saveGlobalSettings = async () => {
     } catch (e) {
         Swal.fire({icon: 'error', title: 'Error', text: e.message, confirmButtonColor: '#22c55e'});
     }
+};
+
+let analyticsChartInstance = null;
+
+window.fetchVisitorAnalytics = async () => {
+    try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await fetch(`${API_URL}/analytics/stats`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        if (data.success && data.logs) {
+            const logs = data.logs;
+            
+            // 1. Hitung Total Pageviews
+            document.getElementById("analytics-total-views").innerText = logs.length;
+            
+            // 2. Hitung Unique Visitors (berdasarkan ipHash)
+            const uniqueVisitors = new Set(logs.map(log => log.ipHash));
+            document.getElementById("analytics-unique-visitors").innerText = uniqueVisitors.size;
+            
+            // 3. Render Tabel (50 Terakhir)
+            const tbody = document.getElementById("analytics-table-body");
+            tbody.innerHTML = '';
+            const recentLogs = logs.slice(0, 50);
+            
+            if (recentLogs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada data pengunjung.</td></tr>';
+            } else {
+                recentLogs.forEach(log => {
+                    const date = new Date(log.timestamp).toLocaleString('id-ID');
+                    
+                    // Ekstrak nama browser dari userAgent untuk tampilan yang lebih bersih
+                    let browser = "Unknown";
+                    if (log.userAgent.includes("Firefox")) browser = "Firefox";
+                    else if (log.userAgent.includes("Chrome")) browser = "Chrome";
+                    else if (log.userAgent.includes("Safari")) browser = "Safari";
+                    else if (log.userAgent.includes("Edge")) browser = "Edge";
+                    else browser = log.userAgent.substring(0, 30) + "...";
+                    
+                    // Deteksi mobile
+                    const isMobile = log.screenWidth > 0 && log.screenWidth <= 768;
+                    const deviceIcon = isMobile ? '<i class="fa-solid fa-mobile-screen"></i>' : '<i class="fa-solid fa-desktop"></i>';
+
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${date}</td>
+                            <td><span style="background: #e2e8f0; padding: 2px 6px; border-radius: 4px; font-family: monospace;">${log.path}</span></td>
+                            <td>${deviceIcon} ${browser}</td>
+                            <td>${log.screenWidth || '?'}px</td>
+                        </tr>
+                    `;
+                });
+            }
+            
+            // 4. Render Chart.js (Tren 7 Hari Terakhir)
+            renderAnalyticsChart(logs);
+        }
+    } catch (e) {
+        console.error("Gagal mengambil data analytics:", e);
+    }
+};
+
+const renderAnalyticsChart = (logs) => {
+    const ctx = document.getElementById('analyticsChart');
+    if (!ctx) return;
+    
+    // Siapkan label 7 hari terakhir
+    const dates = [];
+    const pageviews = [];
+    const uniqueVisits = [];
+    
+    for (let i = 6; i >= 0; i--) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const dateString = d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short' });
+        dates.push(dateString);
+        
+        // Filter log untuk hari ini
+        const logsOnDay = logs.filter(log => {
+            const logDate = new Date(log.timestamp);
+            return logDate.getDate() === d.getDate() && logDate.getMonth() === d.getMonth();
+        });
+        
+        pageviews.push(logsOnDay.length);
+        const unique = new Set(logsOnDay.map(l => l.ipHash)).size;
+        uniqueVisits.push(unique);
+    }
+
+    if (analyticsChartInstance) {
+        analyticsChartInstance.destroy();
+    }
+
+    analyticsChartInstance = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [
+                {
+                    label: 'Pageviews',
+                    data: pageviews,
+                    borderColor: '#2563eb', // primary-blue
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                },
+                {
+                    label: 'Unique Visitors',
+                    data: uniqueVisits,
+                    borderColor: '#10b981', // primary-green
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.4
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: { precision: 0 }
+                }
+            },
+            plugins: {
+                legend: { position: 'top' }
+            }
+        }
+    });
 };
 
 // Panggil saat halaman dimuat (setelah semua fungsi siap)
