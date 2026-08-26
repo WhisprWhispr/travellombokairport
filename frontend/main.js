@@ -444,7 +444,10 @@ window.openTourModal = (id) => {
         <div style="padding: 20px; background: white; border-top: 1px solid #e2e8f0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 style="font-size: 1.1rem; color: var(--text-dark); margin: 0;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Ulasan Pelanggan</h3>
-                <button onclick="window.openItemReviewModal('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="btn btn-outline" style="border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 5px 12px; font-size: 0.8rem; border-radius: 6px;"><i class="fa-solid fa-pen"></i> Tulis Ulasan</button>
+                <button onclick="window.toggleInlineReviewForm('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="btn btn-outline" style="border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 5px 12px; font-size: 0.8rem; border-radius: 6px;"><i class="fa-solid fa-pen"></i> Tulis Ulasan</button>
+            </div>
+            <div id="inline-review-form-container-${item.id}" style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+                <!-- Form content will be injected here -->
             </div>
             <div id="item-reviews-container-${item.id}" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
                 <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 20px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat ulasan...</p>
@@ -532,7 +535,15 @@ window.loadItemReviews = async (itemId) => {
     }
 };
 
-window.openItemReviewModal = (itemId, itemName) => {
+window.toggleInlineReviewForm = (itemId, itemName) => {
+    const container = document.getElementById(`inline-review-form-container-${itemId}`);
+    if (!container) return;
+
+    if (container.style.display === 'block') {
+        container.style.display = 'none';
+        return;
+    }
+
     let nameValue = '';
     const userStr = localStorage.getItem('auth_user');
     if (userStr) {
@@ -543,64 +554,68 @@ window.openItemReviewModal = (itemId, itemName) => {
         } catch(e) {}
     }
 
-    Swal.fire({
-        title: 'Tulis Ulasan',
-        html: `
-            <div style="text-align: left;">
-                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Item: <strong>${itemName}</strong></p>
-                <div class="form-group mb-3">
-                    <label style="font-size:0.85rem; font-weight:600;">Nama Anda</label>
-                    <input type="text" id="swal-review-name" class="form-control" placeholder="Nama lengkap" value="${nameValue}">
-                </div>
-                <div class="form-group mb-3">
-                    <label style="font-size:0.85rem; font-weight:600;">Rating (1-5)</label>
-                    <select id="swal-review-rating" class="form-control">
-                        <option value="5">⭐⭐⭐⭐⭐ (Sangat Bagus)</option>
-                        <option value="4">⭐⭐⭐⭐ (Bagus)</option>
-                        <option value="3">⭐⭐⭐ (Cukup)</option>
-                        <option value="2">⭐⭐ (Kurang)</option>
-                        <option value="1">⭐ (Sangat Kurang)</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label style="font-size:0.85rem; font-weight:600;">Ulasan Anda</label>
-                    <textarea id="swal-review-comment" class="form-control" rows="3" placeholder="Bagaimana pengalaman Anda?"></textarea>
-                </div>
+    container.innerHTML = `
+        <div style="text-align: left;">
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Merekam ulasan untuk: <strong>${itemName}</strong></p>
+            <div class="form-group mb-2">
+                <label style="font-size:0.8rem; font-weight:600;">Nama Anda</label>
+                <input type="text" id="inline-review-name-${itemId}" class="form-control" style="font-size:0.85rem; padding: 6px 10px;" placeholder="Nama lengkap" value="${nameValue}">
             </div>
-        `,
-        showCancelButton: true,
-        confirmButtonText: 'Kirim Ulasan',
-        cancelButtonText: 'Batal',
-        confirmButtonColor: '#10b981',
-        preConfirm: async () => {
-            const name = document.getElementById('swal-review-name').value.trim();
-            const rating = document.getElementById('swal-review-rating').value;
-            const comment = document.getElementById('swal-review-comment').value.trim();
-            
-            if (!name || !comment) {
-                Swal.showValidationMessage('Nama dan ulasan harus diisi');
-                return false;
-            }
-            
-            try {
-                const res = await fetch(`${API_URL}/reviews`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ name, rating, comment, itemId })
-                });
-                
-                if (!res.ok) throw new Error('Gagal mengirim ulasan');
-                return true;
-            } catch (error) {
-                Swal.showValidationMessage(`Request failed: ${error}`);
-            }
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            Swal.fire('Terima Kasih!', 'Ulasan Anda berhasil dikirim.', 'success');
-            window.loadItemReviews(itemId);
-        }
-    });
+            <div class="form-group mb-2">
+                <label style="font-size:0.8rem; font-weight:600;">Rating (1-5)</label>
+                <select id="inline-review-rating-${itemId}" class="form-control" style="font-size:0.85rem; padding: 6px 10px;">
+                    <option value="5">⭐⭐⭐⭐⭐ (Sangat Bagus)</option>
+                    <option value="4">⭐⭐⭐⭐ (Bagus)</option>
+                    <option value="3">⭐⭐⭐ (Cukup)</option>
+                    <option value="2">⭐⭐ (Kurang)</option>
+                    <option value="1">⭐ (Sangat Kurang)</option>
+                </select>
+            </div>
+            <div class="form-group mb-3">
+                <label style="font-size:0.8rem; font-weight:600;">Ulasan Anda</label>
+                <textarea id="inline-review-comment-${itemId}" class="form-control" rows="3" style="font-size:0.85rem; padding: 6px 10px;" placeholder="Bagaimana pengalaman Anda?"></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button onclick="document.getElementById('inline-review-form-container-${itemId}').style.display = 'none'" class="btn btn-outline" style="border: 1px solid #cbd5e1; color: #64748b; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px;">Batal</button>
+                <button onclick="window.submitInlineReview('${itemId}')" id="btn-submit-inline-review-${itemId}" class="btn" style="background: var(--primary-green); color: white; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; border: none;">Kirim Ulasan</button>
+            </div>
+        </div>
+    `;
+    container.style.display = 'block';
+};
+
+window.submitInlineReview = async (itemId) => {
+    const btn = document.getElementById(`btn-submit-inline-review-${itemId}`);
+    const name = document.getElementById(`inline-review-name-${itemId}`).value.trim();
+    const rating = document.getElementById(`inline-review-rating-${itemId}`).value;
+    const comment = document.getElementById(`inline-review-comment-${itemId}`).value.trim();
+
+    if (!name || !comment) {
+        Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Nama dan ulasan harus diisi!' });
+        return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+
+    try {
+        const res = await fetch(`${API_URL}/reviews`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, rating, comment, itemId })
+        });
+
+        if (!res.ok) throw new Error('Failed to submit');
+
+        document.getElementById(`inline-review-form-container-${itemId}`).style.display = 'none';
+        Swal.fire({ icon: 'success', title: 'Terima Kasih!', text: 'Ulasan Anda berhasil dikirim.', timer: 2000, showConfirmButton: false });
+        window.loadItemReviews(itemId);
+    } catch (error) {
+        console.error("Submit review error:", error);
+        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan. Silakan coba lagi.' });
+        btn.disabled = false;
+        btn.innerHTML = 'Kirim Ulasan';
+    }
 };
 
 window.applyPromo = async () => {
