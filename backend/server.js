@@ -16,12 +16,16 @@ const bookingsRoutes = require('./routes/bookings');
 const driversRoutes = require('./routes/drivers');
 const authRoutes = require('./routes/auth');
 const aiRoutes = require('./routes/ai');
+const promosRoutes = require('./routes/promos');
+const blogsRoutes = require('./routes/blogs');
 app.use('/api', apiRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/bookings', bookingsRoutes);
 app.use('/api/drivers', driversRoutes);
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/promos', promosRoutes);
+app.use('/api/blogs', blogsRoutes);
 
 // Base route
 app.get('/', (req, res) => {

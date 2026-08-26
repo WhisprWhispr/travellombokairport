@@ -2125,3 +2125,285 @@ const renderAnalyticsChart = (logs) => {
 
 // Panggil saat halaman dimuat (setelah semua fungsi siap)
 checkAuth();
+
+// --- PROMOS LOGIC ---
+let promosData = [];
+async function loadPromos() {
+    try {
+        const res = await fetch(`${API_URL}/promos`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` } });
+        if (!res.ok) throw new Error('Failed to load promos');
+        promosData = await res.json();
+        renderPromos();
+    } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Gagal memuat promo', 'error');
+    }
+}
+
+function renderPromos() {
+    const tbody = document.getElementById('promos-tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = promosData.map(p => {
+        const discountStr = p.discountType === 'percent' ? `${p.discountValue}% ${p.maxDiscount ? '(Max: Rp ' + p.maxDiscount.toLocaleString('id-ID') + ')' : ''}` : `Rp ${p.discountValue.toLocaleString('id-ID')}`;
+        const validStr = p.validUntil ? new Date(p.validUntil).toLocaleDateString('id-ID') : 'Tanpa Batas';
+        const statusBadge = p.isActive ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Tidak Aktif</span>';
+        
+        return `
+        <tr>
+            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}</td>
+            <td>${discountStr}</td>
+            <td>${validStr}</td>
+            <td>${statusBadge}</td>
+            <td>
+                <button class="btn btn-sm" style="background:#f59e0b;color:white;" onclick="editPromo('${p.id}')"><i class="fa-solid fa-edit"></i> Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deletePromo('${p.id}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+            </td>
+        </tr>
+        `;
+    }).join('');
+}
+
+window.openPromoModal = (promo = null) => {
+    document.getElementById('promo-form').reset();
+    if (promo) {
+        document.getElementById('promo-modal-title').innerText = 'Edit Promo';
+        document.getElementById('promo-id').value = promo.id;
+        document.getElementById('promo-code').value = promo.code;
+        document.getElementById('promo-type').value = promo.discountType;
+        document.getElementById('promo-value').value = promo.discountValue;
+        document.getElementById('promo-max').value = promo.maxDiscount || '';
+        document.getElementById('promo-valid').value = promo.validUntil || '';
+        document.getElementById('promo-active').checked = promo.isActive;
+    } else {
+        document.getElementById('promo-modal-title').innerText = 'Tambah Promo';
+        document.getElementById('promo-id').value = '';
+    }
+    document.getElementById('promo-modal').style.display = 'block';
+};
+
+window.closePromoModal = () => {
+    document.getElementById('promo-modal').style.display = 'none';
+};
+
+if (document.getElementById('promo-form')) {
+    document.getElementById('promo-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('promo-id').value;
+        const data = {
+            code: document.getElementById('promo-code').value,
+            discountType: document.getElementById('promo-type').value,
+            discountValue: Number(document.getElementById('promo-value').value),
+            maxDiscount: document.getElementById('promo-max').value ? Number(document.getElementById('promo-max').value) : null,
+            validUntil: document.getElementById('promo-valid').value || null,
+            isActive: document.getElementById('promo-active').checked
+        };
+        
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/promos/${id}` : `${API_URL}/promos`;
+        
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                Swal.fire('Sukses', `Promo berhasil ${id ? 'diperbarui' : 'ditambahkan'}`, 'success');
+                closePromoModal();
+                loadPromos();
+            } else {
+                throw new Error('Server error');
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error', 'Gagal menyimpan promo', 'error');
+        }
+    });
+}
+
+window.editPromo = (id) => {
+    const promo = promosData.find(p => p.id === id);
+    if (promo) openPromoModal(promo);
+};
+
+window.deletePromo = async (id) => {
+    const res = await Swal.fire({
+        title: 'Hapus Promo?',
+        text: 'Tindakan ini tidak bisa dibatalkan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, hapus!'
+    });
+    
+    if (res.isConfirmed) {
+        try {
+            const req = await fetch(`${API_URL}/promos/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+            });
+            if (req.ok) {
+                Swal.fire('Terhapus!', 'Promo telah dihapus.', 'success');
+                loadPromos();
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Gagal menghapus promo', 'error');
+        }
+    }
+};
+
+// --- BLOGS LOGIC ---
+let blogsData = [];
+async function loadBlogs() {
+    try {
+        const res = await fetch(`${API_URL}/blogs?list=true`);
+        if (!res.ok) throw new Error('Failed to load blogs');
+        blogsData = await res.json();
+        renderBlogs();
+    } catch (error) {
+        console.error(error);
+        Swal.fire('Error', 'Gagal memuat artikel blog', 'error');
+    }
+}
+
+function renderBlogs() {
+    const tbody = document.getElementById('blogs-tbody');
+    if (!tbody) return;
+    
+    tbody.innerHTML = blogsData.map(b => {
+        return `
+        <tr>
+            <td><img src="${b.coverImage || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'}" alt="${b.title}" style="width: 80px; height: 50px; object-fit: cover; border-radius: 8px;"></td>
+            <td style="font-weight: 600; color: var(--primary-blue);">${b.title}</td>
+            <td style="color: #64748b; font-size: 0.85rem;">/${b.slug}</td>
+            <td><span class="badge bg-secondary"><i class="fa-solid fa-eye"></i> ${b.views || 0}</span></td>
+            <td>
+                <button class="btn btn-sm" style="background:#f59e0b;color:white;" onclick="editBlog('${b.id}')"><i class="fa-solid fa-edit"></i> Edit</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteBlog('${b.id}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+            </td>
+        </tr>
+        `;
+    }).join('');
+}
+
+window.openBlogModal = (blog = null) => {
+    document.getElementById('blog-form').reset();
+    if (blog) {
+        document.getElementById('blog-modal-title').innerText = 'Edit Artikel Blog';
+        document.getElementById('blog-id').value = blog.id;
+        document.getElementById('blog-title').value = blog.title;
+        document.getElementById('blog-summary').value = blog.summary;
+        document.getElementById('blog-image').value = blog.coverImage || '';
+        document.getElementById('blog-content').value = blog.content || '';
+        document.getElementById('blog-tags').value = (blog.tags || []).join(', ');
+    } else {
+        document.getElementById('blog-modal-title').innerText = 'Tambah Artikel Blog';
+        document.getElementById('blog-id').value = '';
+    }
+    document.getElementById('blog-modal').style.display = 'block';
+};
+
+window.closeBlogModal = () => {
+    document.getElementById('blog-modal').style.display = 'none';
+};
+
+if (document.getElementById('blog-form')) {
+    document.getElementById('blog-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('blog-id').value;
+        const data = {
+            title: document.getElementById('blog-title').value,
+            summary: document.getElementById('blog-summary').value,
+            coverImage: document.getElementById('blog-image').value,
+            content: document.getElementById('blog-content').value,
+            tags: document.getElementById('blog-tags').value
+        };
+        
+        const method = id ? 'PUT' : 'POST';
+        const url = id ? `${API_URL}/blogs/${id}` : `${API_URL}/blogs`;
+        
+        // Show loading state
+        Swal.fire({
+            title: 'Menyimpan...',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+        
+        try {
+            const res = await fetch(url, {
+                method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+                },
+                body: JSON.stringify(data)
+            });
+            
+            if (res.ok) {
+                Swal.fire('Sukses', `Artikel berhasil ${id ? 'diperbarui' : 'ditambahkan'}`, 'success');
+                closeBlogModal();
+                loadBlogs();
+            } else {
+                throw new Error('Server error');
+            }
+        } catch (error) {
+            console.error(error);
+            Swal.fire('Error', 'Gagal menyimpan artikel blog', 'error');
+        }
+    });
+}
+
+window.editBlog = async (id) => {
+    // We need to fetch full blog data to get content
+    try {
+        Swal.fire({
+            title: 'Memuat...',
+            allowEscapeKey: false,
+            allowOutsideClick: false,
+            didOpen: () => { Swal.showLoading(); }
+        });
+        
+        const res = await fetch(`${API_URL}/blogs/${id}`);
+        if (!res.ok) throw new Error('Not found');
+        const blog = await res.json();
+        
+        Swal.close();
+        openBlogModal(blog);
+    } catch (e) {
+        Swal.fire('Error', 'Gagal memuat data artikel', 'error');
+    }
+};
+
+window.deleteBlog = async (id) => {
+    const res = await Swal.fire({
+        title: 'Hapus Artikel?',
+        text: 'Tindakan ini tidak bisa dibatalkan.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, hapus!'
+    });
+    
+    if (res.isConfirmed) {
+        try {
+            const req = await fetch(`${API_URL}/blogs/${id}`, {
+                method: 'DELETE',
+                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+            });
+            if (req.ok) {
+                Swal.fire('Terhapus!', 'Artikel telah dihapus.', 'success');
+                loadBlogs();
+            }
+        } catch (error) {
+            Swal.fire('Error', 'Gagal menghapus artikel', 'error');
+        }
+    }
+};

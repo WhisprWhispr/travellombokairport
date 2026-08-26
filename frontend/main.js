@@ -34,6 +34,47 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
 }
 let globalItems = [];
 
+// ====== WISHLIST SYSTEM ======
+window.getWishlist = () => {
+    try {
+        return JSON.parse(localStorage.getItem('app_wishlist')) || [];
+    } catch (e) {
+        return [];
+    }
+};
+
+window.isInWishlist = (id) => {
+    return window.getWishlist().includes(id);
+};
+
+window.toggleWishlist = (id) => {
+    let wishlist = window.getWishlist();
+    if (wishlist.includes(id)) {
+        wishlist = wishlist.filter(item => item !== id);
+    } else {
+        wishlist.push(id);
+    }
+    localStorage.setItem('app_wishlist', JSON.stringify(wishlist));
+    
+    // Update UI if the button exists on the screen
+    const btn = document.getElementById(`btn-wishlist-${id}`);
+    if (btn) {
+        const icon = btn.querySelector('i');
+        if (wishlist.includes(id)) {
+            icon.classList.remove('fa-regular');
+            icon.classList.add('fa-solid');
+            icon.style.color = '#ef4444';
+        } else {
+            icon.classList.remove('fa-solid');
+            icon.classList.add('fa-regular');
+            icon.style.color = '';
+        }
+    }
+    
+    // Optional: show a small toast notification
+    // alert(wishlist.includes(id) ? 'Disimpan ke Wishlist!' : 'Dihapus dari Wishlist');
+};
+
 const EXCHANGE_RATES = {
     IDR: 1,
     USD: 15500,
@@ -397,6 +438,17 @@ window.openTourModal = (id) => {
                 </div>
             </div>
         </div>
+
+        <div style="padding: 20px; background: white; border-top: 1px solid #e2e8f0;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                <h3 style="font-size: 1.1rem; color: var(--text-dark); margin: 0;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Ulasan Pelanggan</h3>
+                <button onclick="window.openItemReviewModal('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 6px;"><i class="fa-solid fa-pen"></i> Tulis Ulasan</button>
+            </div>
+            <div id="item-reviews-container-${item.id}" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
+                <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 20px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat ulasan...</p>
+            </div>
+        </div>
+
         <div class="tm-footer" style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 25px 20px; border-radius: 0 0 20px 20px; border-top: 1px solid #e2e8f0;">
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
                 <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
@@ -423,6 +475,9 @@ window.openTourModal = (id) => {
 
     document.getElementById('tour-modal').classList.add('active');
     document.body.style.overflow = 'hidden'; // Prevent double scrollbar
+    
+    // Fetch and render reviews
+    window.loadItemReviews(item.id);
 };
 
 window.closeTourModal = () => {
@@ -433,6 +488,183 @@ window.closeTourModal = () => {
         if (!subModal || subModal.style.display === 'none') {
             document.body.style.overflow = ''; // Restore scroll only if sub-package is closed
         }
+    }
+};
+
+window.loadItemReviews = async (itemId) => {
+    const container = document.getElementById(\`item-reviews-container-\${itemId}\`);
+    if (!container) return;
+    
+    try {
+        const res = await fetch(\`\${API_URL}/reviews?itemId=\${itemId}\`);
+        if (!res.ok) throw new Error('Failed to fetch item reviews');
+        const reviews = await res.json();
+        
+        if (reviews.length === 0) {
+            container.innerHTML = '<p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 10px 0;">Belum ada ulasan untuk paket ini. Jadilah yang pertama!</p>';
+            return;
+        }
+        
+        container.innerHTML = reviews.map(r => {
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color: #f59e0b; font-size:0.7rem;"></i>';
+                else stars += '<i class="fa-regular fa-star" style="color: #cbd5e1; font-size:0.7rem;"></i>';
+            }
+            const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
+            return \`
+            <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-dark);">\${r.name}</div>
+                        <div style="display: flex; gap: 2px; margin-top: 2px;">\${stars}</div>
+                    </div>
+                    <div style="font-size: 0.75rem; color: #94a3b8;">\${dateStr}</div>
+                </div>
+                <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0; line-height: 1.4;">\${r.comment}</p>
+            </div>\`;
+        }).join('');
+    } catch (e) {
+        console.error("Failed to load item reviews:", e);
+        container.innerHTML = '<p style="font-size: 0.85rem; color: #ef4444; text-align: center; padding: 10px 0;">Gagal memuat ulasan.</p>';
+    }
+};
+
+window.openItemReviewModal = (itemId, itemName) => {
+    let nameValue = '';
+    const userStr = localStorage.getItem('auth_user');
+    if (userStr) {
+        try {
+            const user = JSON.parse(userStr);
+            if (user && user.displayName) nameValue = user.displayName;
+            else if (user && user.name) nameValue = user.name;
+        } catch(e) {}
+    }
+
+    Swal.fire({
+        title: 'Tulis Ulasan',
+        html: \`
+            <div style="text-align: left;">
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Item: <strong>\${itemName}</strong></p>
+                <div class="form-group mb-3">
+                    <label style="font-size:0.85rem; font-weight:600;">Nama Anda</label>
+                    <input type="text" id="swal-review-name" class="form-control" placeholder="Nama lengkap" value="\${nameValue}">
+                </div>
+                <div class="form-group mb-3">
+                    <label style="font-size:0.85rem; font-weight:600;">Rating (1-5)</label>
+                    <select id="swal-review-rating" class="form-control">
+                        <option value="5">⭐⭐⭐⭐⭐ (Sangat Bagus)</option>
+                        <option value="4">⭐⭐⭐⭐ (Bagus)</option>
+                        <option value="3">⭐⭐⭐ (Cukup)</option>
+                        <option value="2">⭐⭐ (Kurang)</option>
+                        <option value="1">⭐ (Sangat Kurang)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="font-size:0.85rem; font-weight:600;">Ulasan Anda</label>
+                    <textarea id="swal-review-comment" class="form-control" rows="3" placeholder="Bagaimana pengalaman Anda?"></textarea>
+                </div>
+            </div>
+        \`,
+        showCancelButton: true,
+        confirmButtonText: 'Kirim Ulasan',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#10b981',
+        preConfirm: async () => {
+            const name = document.getElementById('swal-review-name').value.trim();
+            const rating = document.getElementById('swal-review-rating').value;
+            const comment = document.getElementById('swal-review-comment').value.trim();
+            
+            if (!name || !comment) {
+                Swal.showValidationMessage('Nama dan ulasan harus diisi');
+                return false;
+            }
+            
+            try {
+                const res = await fetch(\`\${API_URL}/reviews\`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, rating, comment, itemId })
+                });
+                
+                if (!res.ok) throw new Error('Gagal mengirim ulasan');
+                return true;
+            } catch (error) {
+                Swal.showValidationMessage(\`Request failed: \${error}\`);
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.fire('Terima Kasih!', 'Ulasan Anda berhasil dikirim.', 'success');
+            window.loadItemReviews(itemId);
+        }
+    });
+};
+
+window.applyPromo = async () => {
+    const promoCode = document.getElementById('co-promo-input').value.trim();
+    const msg = document.getElementById('promo-message');
+    const priceDisplay = document.getElementById('co-display-price');
+    const appliedInput = document.getElementById('co-promo-applied');
+    const discountInput = document.getElementById('co-promo-discount');
+    
+    if (!promoCode) {
+        msg.style.display = 'block';
+        msg.style.color = '#ef4444';
+        msg.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Masukkan kode promo terlebih dahulu.';
+        return;
+    }
+    
+    msg.style.display = 'block';
+    msg.style.color = '#0284c7';
+    msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memeriksa kode promo...';
+    
+    try {
+        const res = await fetch(`${API_URL}/promos/verify/${promoCode}`);
+        const data = await res.json();
+        
+        if (!data.valid) {
+            msg.style.color = '#ef4444';
+            msg.innerHTML = `<i class="fa-solid fa-circle-xmark"></i> ${data.message || 'Kode promo tidak valid.'}`;
+            appliedInput.value = '';
+            discountInput.value = '0';
+            
+            // Reset price display
+            if (priceDisplay && priceDisplay.dataset.basePrice) {
+                priceDisplay.innerHTML = formatPrice(Number(priceDisplay.dataset.basePrice));
+            }
+            return;
+        }
+        
+        const basePrice = Number(priceDisplay.dataset.basePrice);
+        let discount = 0;
+        if (data.discountType === 'percent') {
+            discount = basePrice * (data.discountValue / 100);
+            if (data.maxDiscount && discount > data.maxDiscount) {
+                discount = data.maxDiscount;
+            }
+        } else {
+            discount = data.discountValue;
+        }
+        
+        if (discount > basePrice) discount = basePrice; // Prevent negative price
+        
+        const finalPrice = basePrice - discount;
+        
+        msg.style.color = '#10b981';
+        msg.innerHTML = `<i class="fa-solid fa-circle-check"></i> Kode berhasil digunakan! Diskon: ${formatPrice(discount)}`;
+        appliedInput.value = promoCode;
+        discountInput.value = discount;
+        
+        // Update UI price
+        if (priceDisplay) {
+            priceDisplay.innerHTML = `<span style="text-decoration:line-through; font-size:0.9rem; color:#94a3b8; margin-right:10px;">${formatPrice(basePrice)}</span> ${formatPrice(finalPrice)}`;
+        }
+        
+    } catch (e) {
+        msg.style.color = '#ef4444';
+        msg.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Terjadi kesalahan saat memeriksa kode.';
+        console.error(e);
     }
 };
 
@@ -542,6 +774,7 @@ const createPackageCard = (item, index = 0) => {
     <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}" style="${isParent ? 'border:2px solid #fbbf24;' : ''}">
         <div class="img-wrapper" style="position:relative;">
             <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
             <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
             ${parentBadge}
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
@@ -619,6 +852,7 @@ window.openSubPackageModal = (parentId) => {
                 <!-- Image -->
                 <div style="position:relative; height:180px; overflow:hidden;">
                     <button onclick="event.stopPropagation(); window.shareItem('${child.id}', '${child.title.replace(/'/g, "\\'")}', '${formatPrice(child.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+                    <button id="btn-wishlist-${child.id}" onclick="event.stopPropagation(); window.toggleWishlist('${child.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(child.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(child.id) ? 'style="color:#ef4444;"' : ''}></i></button>
                     <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}"
                         style="width:100%; height:100%; object-fit:cover; transition: transform 0.5s ease;"
                         onmouseover="this.style.transform='scale(1.08)'"
@@ -691,6 +925,7 @@ const createFleetCard = (item, index = 0) => {
     <div class="card package-card fleet-card-v2" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="position:relative;">
             <button onclick="window.shareItem('${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
             <span class="tag"><i class="fa-solid ${categoryIcon}" style="margin-right: 4px;"></i> ${categoryLabel}</span>
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1449965408869-eaa3f722e40d?auto=format&fit=crop&q=80&w=800'">
         </div>
@@ -790,6 +1025,7 @@ const createDroneCard = (item, index = 0) => {
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="height: 250px; position: relative;">
             <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
             ${mediaHtml}
         </div>
         <div class="content" style="padding: 20px;">
@@ -1756,6 +1992,18 @@ window.openCheckoutModal = async (itemName, price) => {
                 </div>
             </div>
             ` : ''}
+
+            <!-- PROMO CODE -->
+            <div class="form-group mb-4" id="promo-container">
+                <label style="font-weight:700;color:var(--text-dark);">Kode Promo (Opsional)</label>
+                <div style="display:flex; gap:10px; margin-top:8px;">
+                    <input type="text" id="co-promo-input" class="form-control" placeholder="Masukkan kode promo" style="text-transform: uppercase;">
+                    <button type="button" onclick="window.applyPromo()" class="btn btn-blue" style="padding: 8px 15px; border-radius: 8px; font-weight: bold;">Gunakan</button>
+                </div>
+                <div id="promo-message" style="margin-top: 8px; font-size: 0.85rem; display:none;"></div>
+                <input type="hidden" id="co-promo-applied" value="">
+                <input type="hidden" id="co-promo-discount" value="0">
+            </div>
             <div class="form-group mb-4">
                 <label>Metode Pembayaran</label>
                 <select id="co-payment" class="form-control" required onchange="const d = document.getElementById('bank-details'); if(this.value==='manual') d.style.display='block'; else d.style.display='none';">
@@ -2033,14 +2281,34 @@ window.processCheckout = async (itemName, price) => {
             }
         } else {
             diffDays = Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24));
-        }
+    }
         if (diffDays < 1) diffDays = 1;
         finalPrice = price * diffDays;
     }
+    
+    const baseTotal = finalPrice; // Simpan total asli sebelum diskon dan DP
+    
+    // Terapkan diskon promo
+    const promoCode = document.getElementById('co-promo-applied')?.value || '';
+    const promoDiscount = Number(document.getElementById('co-promo-discount')?.value || 0);
+    let promoInfo = '';
+    
+    if (promoCode && promoDiscount > 0) {
+        finalPrice -= promoDiscount;
+        if (finalPrice < 0) finalPrice = 0;
+        promoInfo = `\n- Promo Digunakan: ${promoCode} (Diskon ${formatPrice(promoDiscount)})`;
+    }
+
+    const discountedTotal = finalPrice; // Total setelah diskon
 
     // Cek apakah user memilih DP
-    const isDp = price > 500200 && document.getElementById('pt-dp')?.checked === true;
-    if (isDp) finalPrice = 500200;
+    const isDp = baseTotal > 500200 && document.getElementById('pt-dp')?.checked === true;
+    let paymentAmount = discountedTotal;
+    
+    if (isDp) {
+        paymentAmount = 500200;
+        if (paymentAmount > discountedTotal) paymentAmount = discountedTotal;
+    }
 
     const bookingData = {
         itemName,
@@ -2048,10 +2316,12 @@ window.processCheckout = async (itemName, price) => {
         phone,
         startDate,
         endDate,
-        price: finalPrice,
+        price: paymentAmount,
         isDp: isDp,
-        fullPrice: isDp ? price : finalPrice,
-        customerEmail
+        fullPrice: discountedTotal,
+        customerEmail,
+        promoCode: promoCode,
+        promoDiscount: promoDiscount
     };
 
     // Store temporarily for QRIS success
@@ -2080,7 +2350,7 @@ window.processCheckout = async (itemName, price) => {
             });
         } catch (e) { console.error(e); }
 
-        const text = `Halo Admin Travel Lombok Airport,nnSaya telah melakukan Booking via Website dengan rincian:nn- ID Booking: ${transactionId}n- Item: ${itemName}n- Atas Nama: ${name}n- WhatsApp: ${phone}n- Tanggal: ${startDate} s/d ${endDate}n- Metode: Transfer ManualnnMohon instruksi untuk pembayaran selanjutnya. Terima kasih!`;
+        const text = `Halo Admin Travel Lombok Airport,\n\nSaya telah melakukan Booking via Website dengan rincian:\n\n- ID Booking: ${transactionId}\n- Item: ${itemName}\n- Atas Nama: ${name}\n- WhatsApp: ${phone}\n- Tanggal: ${startDate} s/d ${endDate}\n- Metode: Transfer Manual${promoInfo}\n\nMohon instruksi untuk pembayaran selanjutnya. Terima kasih!`;
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
         closeCheckoutModal();
         return;

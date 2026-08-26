@@ -59,6 +59,8 @@
           <li><a href="#" onclick="showTab('gallery')"><i class="fa-solid fa-camera"></i> Kelola Galeri</a></li>
           <li><a href="#" onclick="showTab('drivers')"><i class="fa-solid fa-car"></i> Manajemen Supir</a></li>
           <li><a href="#" onclick="showTab('reviews')"><i class="fa-solid fa-star"></i> Kelola Ulasan</a></li>
+          <li><a href="#" onclick="showTab('promos')"><i class="fa-solid fa-tags"></i> Kelola Promo</a></li>
+          <li><a href="#" onclick="showTab('blogs')"><i class="fa-solid fa-newspaper"></i> Kelola Blog</a></li>
           <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="#" onclick="showTab('analytics')"><i class="fa-solid fa-chart-line"></i> Statistik Pengunjung</a></li>
@@ -84,6 +86,8 @@
             <button id="add-booking-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Jadwal Manual</button>
             <button id="add-gallery-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Foto Galeri</button>
             <button id="add-driver-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Supir</button>
+            <button id="add-promo-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Promo</button>
+            <button id="add-blog-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Artikel Blog</button>
           </div>
         </header>
 
@@ -129,6 +133,46 @@
         </section>
 
         <!-- Orders Section (Web) -->
+                <!-- Promos Section -->
+        <section id="promos-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Kode Promo</th>
+                  <th>Diskon</th>
+                  <th>Batas Waktu</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="promos-tbody">
+                <!-- Data loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+                <!-- Blogs Section -->
+        <section id="blogs-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Gambar</th>
+                  <th>Judul</th>
+                  <th>Slug</th>
+                  <th>Dilihat</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="blogs-tbody">
+                <!-- Data loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <section id="orders-section" class="admin-content glass-panel mt-4" style="display: none;">
           <h2>Pesanan Web (Order)</h2>
           <div class="table-responsive mt-4">

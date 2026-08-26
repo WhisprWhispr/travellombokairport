@@ -239,7 +239,12 @@ router.post('/withdrawals', verifyToken, async (req, res) => {
 // GET all reviews
 router.get('/reviews', async (req, res) => {
     try {
-        const snapshot = await db.collection('reviews').get();
+        const { itemId } = req.query;
+        let query = db.collection('reviews');
+        if (itemId) {
+            query = query.where('itemId', '==', itemId);
+        }
+        const snapshot = await query.get();
         let reviews = [];
         snapshot.forEach(doc => {
             reviews.push({ id: doc.id, ...doc.data() });
@@ -262,7 +267,7 @@ router.get('/reviews', async (req, res) => {
 // POST a new review (public)
 router.post('/reviews', async (req, res) => {
     try {
-        const { name, rating, comment } = req.body;
+        const { name, rating, comment, itemId } = req.body;
         if (!name || !rating || !comment) {
             return res.status(400).json({ error: 'Name, rating, and comment are required' });
         }
@@ -272,7 +277,8 @@ router.post('/reviews', async (req, res) => {
             rating: Number(rating),
             comment,
             createdAt: new Date().toISOString(),
-            status: 'approved' 
+            status: 'approved',
+            itemId: itemId || null
         };
         
         const docRef = await db.collection('reviews').add(newReview);
