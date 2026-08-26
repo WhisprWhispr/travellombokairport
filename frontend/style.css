@@ -1493,15 +1493,16 @@ ul {
 
 
 /* Responsive */
-@media (max-width: 1450px) {
-  .nav-links { margin-left: 10px; gap: 8px; }
-  .nav-actions { gap: 5px; }
-  .nav-phone { padding: 6px 8px; font-size: 0.75rem; }
-  .nav-actions .btn-green { padding: 6px 10px; font-size: 0.75rem; }
-  .nav-links a { font-size: 0.75rem; }
-}
+  @media (max-width: 1450px) {
+    .nav-links { margin-left: 5px; gap: 5px; }
+    .nav-actions { gap: 4px; }
+    .nav-phone { padding: 5px 8px; font-size: 0.7rem; }
+    .nav-actions .btn-green { padding: 5px 8px; font-size: 0.7rem; }
+    .nav-links a { font-size: 0.7rem; }
+    .lang-btn { padding: 5px 8px; font-size: 0.7rem; }
+  }
 
-@media (max-width: 1250px) {
+@media (max-width: 1300px) {
   .nav-links { 
     display: none; 
     position: absolute;
