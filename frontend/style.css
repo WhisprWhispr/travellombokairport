@@ -1493,6 +1493,14 @@ ul {
 
 
 /* Responsive */
+@media (max-width: 1450px) {
+  .nav-links { margin-left: 10px; gap: 8px; }
+  .nav-actions { gap: 5px; }
+  .nav-phone { padding: 6px 8px; font-size: 0.75rem; }
+  .nav-actions .btn-green { padding: 6px 10px; font-size: 0.75rem; }
+  .nav-links a { font-size: 0.75rem; }
+}
+
 @media (max-width: 1250px) {
   .nav-links { 
     display: none; 
