@@ -25,7 +25,10 @@ export default defineConfig({
         login: resolve(__dirname, 'login.html'),
         register: resolve(__dirname, 'register.html'),
         riwayat: resolve(__dirname, 'riwayat.html'),
-        verify: resolve(__dirname, 'verify.html')
+        verify: resolve(__dirname, 'verify.html'),
+        blog: resolve(__dirname, 'blog.html'),
+        article: resolve(__dirname, 'article.html'),
+        wishlist: resolve(__dirname, 'wishlist.html')
       }
     }
   }
