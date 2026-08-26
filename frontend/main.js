@@ -492,11 +492,11 @@ window.closeTourModal = () => {
 };
 
 window.loadItemReviews = async (itemId) => {
-    const container = document.getElementById(\`item-reviews-container-\${itemId}\`);
+    const container = document.getElementById(`item-reviews-container-${itemId}`);
     if (!container) return;
     
     try {
-        const res = await fetch(\`\${API_URL}/reviews?itemId=\${itemId}\`);
+        const res = await fetch(`${API_URL}/reviews?itemId=${itemId}`);
         if (!res.ok) throw new Error('Failed to fetch item reviews');
         const reviews = await res.json();
         
@@ -512,17 +512,17 @@ window.loadItemReviews = async (itemId) => {
                 else stars += '<i class="fa-regular fa-star" style="color: #cbd5e1; font-size:0.7rem;"></i>';
             }
             const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
-            return \`
+            return `
             <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0;">
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
                     <div>
-                        <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-dark);">\${r.name}</div>
-                        <div style="display: flex; gap: 2px; margin-top: 2px;">\${stars}</div>
+                        <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-dark);">${r.name}</div>
+                        <div style="display: flex; gap: 2px; margin-top: 2px;">${stars}</div>
                     </div>
-                    <div style="font-size: 0.75rem; color: #94a3b8;">\${dateStr}</div>
+                    <div style="font-size: 0.75rem; color: #94a3b8;">${dateStr}</div>
                 </div>
-                <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0; line-height: 1.4;">\${r.comment}</p>
-            </div>\`;
+                <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0; line-height: 1.4;">${r.comment}</p>
+            </div>`;
         }).join('');
     } catch (e) {
         console.error("Failed to load item reviews:", e);
@@ -543,12 +543,12 @@ window.openItemReviewModal = (itemId, itemName) => {
 
     Swal.fire({
         title: 'Tulis Ulasan',
-        html: \`
+        html: `
             <div style="text-align: left;">
-                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Item: <strong>\${itemName}</strong></p>
+                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Item: <strong>${itemName}</strong></p>
                 <div class="form-group mb-3">
                     <label style="font-size:0.85rem; font-weight:600;">Nama Anda</label>
-                    <input type="text" id="swal-review-name" class="form-control" placeholder="Nama lengkap" value="\${nameValue}">
+                    <input type="text" id="swal-review-name" class="form-control" placeholder="Nama lengkap" value="${nameValue}">
                 </div>
                 <div class="form-group mb-3">
                     <label style="font-size:0.85rem; font-weight:600;">Rating (1-5)</label>
@@ -565,7 +565,7 @@ window.openItemReviewModal = (itemId, itemName) => {
                     <textarea id="swal-review-comment" class="form-control" rows="3" placeholder="Bagaimana pengalaman Anda?"></textarea>
                 </div>
             </div>
-        \`,
+        `,
         showCancelButton: true,
         confirmButtonText: 'Kirim Ulasan',
         cancelButtonText: 'Batal',
@@ -581,7 +581,7 @@ window.openItemReviewModal = (itemId, itemName) => {
             }
             
             try {
-                const res = await fetch(\`\${API_URL}/reviews\`, {
+                const res = await fetch(`${API_URL}/reviews`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ name, rating, comment, itemId })
@@ -590,7 +590,7 @@ window.openItemReviewModal = (itemId, itemName) => {
                 if (!res.ok) throw new Error('Gagal mengirim ulasan');
                 return true;
             } catch (error) {
-                Swal.showValidationMessage(\`Request failed: \${error}\`);
+                Swal.showValidationMessage(`Request failed: ${error}`);
             }
         }
     }).then((result) => {
