@@ -444,7 +444,7 @@ window.openTourModal = (id) => {
         <div style="padding: 20px; background: white; border-top: 1px solid #e2e8f0;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <h3 style="font-size: 1.1rem; color: var(--text-dark); margin: 0;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Ulasan Pelanggan</h3>
-                <button onclick="window.openItemReviewModal('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="btn btn-outline" style="padding: 5px 12px; font-size: 0.8rem; border-radius: 6px;"><i class="fa-solid fa-pen"></i> Tulis Ulasan</button>
+                <button onclick="window.openItemReviewModal('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="btn btn-outline" style="border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 5px 12px; font-size: 0.8rem; border-radius: 6px;"><i class="fa-solid fa-pen"></i> Tulis Ulasan</button>
             </div>
             <div id="item-reviews-container-${item.id}" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
                 <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 20px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat ulasan...</p>
