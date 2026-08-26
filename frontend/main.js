@@ -2389,6 +2389,7 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (navActions && langSwitcher) {
         const curr = localStorage.getItem('app_currency') || 'IDR';
+        const currencyHtml = `
         <div class="lang-switcher" id="curr-switcher" style="margin-right: 5px;">
            <button class="lang-btn" id="curr-btn" onclick="document.getElementById('curr-menu').classList.toggle('active')"><i class="fa-solid fa-coins"></i> ${curr} <i class="fa-solid fa-chevron-down" style="font-size: 0.7em; margin-left: 2px;"></i></button>
            <ul class="lang-menu" id="curr-menu">
