@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                             <p style="font-size: 0.9rem; color: #64748b; flex: 1; margin: 0 0 20px 0; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">${b.summary}</p>
                             
                             <div style="margin-top: auto; padding-top: 15px; border-top: 1px dashed #e2e8f0; text-align: right;">
-                                <span style="color: var(--primary-blue); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; justify-content: flex-end; gap: 5px;">
+                                <span style="color: var(--primary-blue); font-weight: 700; font-size: 0.9rem; display: flex; align-items: center; justify-content: flex-end; gap: 5px; white-space: nowrap;">
                                     Baca Selengkapnya <i class="fa-solid fa-arrow-right"></i>
                                 </span>
                             </div>
