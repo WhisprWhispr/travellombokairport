@@ -4,15 +4,43 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
 let globalItems = [];
 
-// Format currency
-const formatPrice = (price) => {
-    if (!price) return 'Rp 0';
-    // If the price is already formatted manually by user (e.g., "Rp 500.200"), return it
-    if (price.toString().toLowerCase().includes('rp')) return price;
+const EXCHANGE_RATES = {
+    IDR: 1,
+    USD: 15500,
+    AUD: 10000,
+    EUR: 16500
+};
 
-    // Otherwise, parse and format
-    const num = parseInt(price.toString().replace(/D/g, ''), 10);
+const formatPrice = (price) => {
+    const currency = localStorage.getItem('app_currency') || 'IDR';
+    const rate = EXCHANGE_RATES[currency] || 1;
+
+    if (!price) {
+        if (currency === 'USD') return '$0';
+        if (currency === 'AUD') return 'A$0';
+        if (currency === 'EUR') return '€0';
+        return 'Rp 0';
+    }
+    
+    // Parse the number regardless of existing formatting
+    let num = 0;
+    if (typeof price === 'string' && price.toLowerCase().includes('rp')) {
+        num = parseInt(price.replace(/\D/g, ''), 10);
+    } else {
+        num = parseInt(price.toString().replace(/\D/g, ''), 10);
+    }
+    
     if (isNaN(num)) return price;
+
+    const converted = num / rate;
+
+    if (currency === 'USD') {
+        return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'AUD') {
+        return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'EUR') {
+        return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(converted);
+    }
 
     return new Intl.NumberFormat('id-ID', {
         style: 'currency',
@@ -290,7 +318,7 @@ window.openTourModal = (id) => {
                 
                 <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
                     <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
-                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer deposit (booking fee) sebesar <strong>Rp 500.200</strong> ke rekening berikut:</p>
+                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer deposit (booking fee) sebesar <strong>${formatPrice(500200)}</strong> ke rekening berikut:</p>
                     <div class="bank-item" style="background: #f8fafc; border: none;">
                         <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>
@@ -1556,7 +1584,7 @@ window.openCheckoutModal = async (itemName, price) => {
                         <input type="radio" name="payment-type-radio" id="pt-dp" value="dp" checked style="accent-color:#f59e0b;width:16px;height:16px;margin-top:2px;">
                         <div>
                             <div style="font-weight:700;color:#d97706;font-size:0.88rem;">DP (Uang Muka)</div>
-                            <div style="font-size:0.75rem;color:#92400e;">Bayar Rp 500.200 sekarang, sisa lunas sebelum keberangkatan.</div>
+                            <div style="font-size:0.75rem;color:#92400e;">Bayar ${formatPrice(500200)} sekarang, sisa lunas sebelum keberangkatan.</div>
                         </div>
                     </label>
                     <label id="pt-full-label" onclick="window.setPaymentType('full')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#f0fdf4;border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
@@ -2349,6 +2377,46 @@ document.addEventListener("DOMContentLoaded", () => {
     window.checkAuthUI();
     loadStats();
     loadReviews();
+
+    // Multi-Currency Logic
+    window.changeCurrency = (curr) => {
+        localStorage.setItem('app_currency', curr);
+        window.location.reload();
+    };
+
+    const navActions = document.querySelector('.nav-actions');
+    const langSwitcher = document.querySelector('.lang-switcher');
+    
+    if (navActions && langSwitcher) {
+        const curr = localStorage.getItem('app_currency') || 'IDR';
+        const currencyHtml = `
+        <div class="curr-switcher" style="position:relative; margin-right: 15px;">
+           <button class="curr-btn" id="curr-btn" onclick="document.querySelector('.curr-menu').classList.toggle('active')" style="background: transparent; color: var(--text-dark); border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-coins"></i> ${curr} <i class="fa-solid fa-chevron-down" style="font-size: 0.7em;"></i></button>
+           <ul class="curr-menu" style="display:none; position: absolute; top: 100%; right: 0; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; z-index: 100; min-width: 120px; margin-top: 10px; padding:0; list-style:none;">
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('IDR')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇮🇩 IDR (Rp)</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('USD')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇺🇸 USD ($)</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('AUD')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇦🇺 AUD (A$)</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('EUR')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇪🇺 EUR (€)</a></li>
+           </ul>
+        </div>
+        `;
+        langSwitcher.insertAdjacentHTML('beforebegin', currencyHtml);
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.curr-switcher')) {
+                const menu = document.querySelector('.curr-menu');
+                if (menu && menu.classList.contains('active')) {
+                    menu.classList.remove('active');
+                    menu.style.display = 'none';
+                }
+            } else if (e.target.closest('.curr-btn')) {
+                const menu = document.querySelector('.curr-menu');
+                if (menu) {
+                    menu.style.display = menu.classList.contains('active') ? 'block' : 'none';
+                }
+            }
+        });
+    }
 
     // ── Restore checkout modal if user accidentally refreshed the page ──
     const savedCheckout = sessionStorage.getItem('checkoutState');
