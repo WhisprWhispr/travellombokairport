@@ -2150,7 +2150,7 @@ checkAuth();
 let promosData = [];
 async function loadPromos() {
     try {
-        const res = await fetch(`${API_URL}/promos`, { headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` } });
+        const res = await fetch(`${API_URL}/promos`, { headers: getAuthHeaders() });
         if (!res.ok) throw new Error('Failed to load promos');
         promosData = await res.json();
         renderPromos();
@@ -2244,10 +2244,7 @@ if (document.getElementById('promo-form')) {
         try {
             const res = await fetch(url, {
                 method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(data)
             });
             
@@ -2285,7 +2282,7 @@ window.deletePromo = async (id) => {
         try {
             const req = await fetch(`${API_URL}/promos/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+                headers: getAuthHeaders()
             });
             if (req.ok) {
                 Swal.fire('Terhapus!', 'Promo telah dihapus.', 'success');
@@ -2381,10 +2378,7 @@ if (document.getElementById('blog-form')) {
         try {
             const res = await fetch(url, {
                 method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-                },
+                headers: getAuthHeaders(),
                 body: JSON.stringify(data)
             });
             
@@ -2438,7 +2432,7 @@ window.deleteBlog = async (id) => {
         try {
             const req = await fetch(`${API_URL}/blogs/${id}`, {
                 method: 'DELETE',
-                headers: { 'Authorization': `Bearer ${localStorage.getItem('auth_token')}` }
+                headers: getAuthHeaders()
             });
             if (req.ok) {
                 Swal.fire('Terhapus!', 'Artikel telah dihapus.', 'success');
