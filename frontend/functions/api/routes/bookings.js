@@ -4,6 +4,17 @@ import { getDb } from '../config/firebase.js';
 
 const bookingsRoutes = new Hono();
 
+const autoExpire = (db, col, id, data) => {
+    if (data.status === 'PENDING') {
+        const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+        if (created > 0 && (Date.now() - created) > 2 * 60 * 60 * 1000) {
+            data.status = 'KADALUARSA';
+            db.collection(col).doc(id).update({ status: 'KADALUARSA' }).catch(()=>{});
+        }
+    }
+    return data;
+};
+
 // Middleware for auth
 const verifyToken = async (c, next) => {
     const authHeader = c.req.header('authorization');
@@ -38,7 +49,9 @@ bookingsRoutes.get('/', async (c) => {
         const snapshot = await query.get();
         let bookings = [];
         snapshot.forEach(doc => {
-            const data = doc.data();
+            let data = doc.data();
+            data = autoExpire(db, 'bookings', doc.id, data);
+            
             if (isPublic === 'true') {
                 bookings.push({
                     id: doc.id,
@@ -109,7 +122,9 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
 
         const bookings = [];
         bkgSnap.forEach(doc => {
-            const d = doc.data();
+            let d = doc.data();
+            d = autoExpire(db, 'bookings', doc.id, d);
+            
             bookings.push({
                 id: doc.id,
                 type: 'booking',
@@ -128,7 +143,9 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
 
         const orders = [];
         ordSnap.forEach(doc => {
-            const d = doc.data();
+            let d = doc.data();
+            d = autoExpire(db, 'orders', doc.id, d);
+            
             orders.push({
                 id: doc.id,
                 type: 'order',
@@ -193,7 +210,9 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             return c.json({ message: 'Transaksi tidak ditemukan. Pastikan ID (BKG-... atau ORD-...) yang Anda masukkan benar.' }, 404);
         }
 
-        const data = snap.docs[0].data();
+        let data = snap.docs[0].data();
+        data = autoExpire(db, collectionType, snap.docs[0].id, data);
+        
         return c.json({
             transactionId: data.transactionId || transactionId,
             itemName: data.itemName || data.packageName || data.serviceName || '-',
