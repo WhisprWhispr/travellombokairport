@@ -196,6 +196,7 @@ ul {
 .nav-links {
   display: flex;
   gap: 8px;
+  margin-left: 30px;
 }
 
 .nav-links a {
