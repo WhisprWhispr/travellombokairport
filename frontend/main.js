@@ -2389,30 +2389,23 @@ document.addEventListener("DOMContentLoaded", () => {
     
     if (navActions && langSwitcher) {
         const curr = localStorage.getItem('app_currency') || 'IDR';
-        const currencyHtml = `
-        <div class="curr-switcher" style="position:relative; margin-right: 15px;">
-           <button class="curr-btn" id="curr-btn" onclick="document.querySelector('.curr-menu').classList.toggle('active')" style="background: transparent; color: var(--text-dark); border: none; font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 5px;"><i class="fa-solid fa-coins"></i> ${curr} <i class="fa-solid fa-chevron-down" style="font-size: 0.7em;"></i></button>
-           <ul class="curr-menu" style="display:none; position: absolute; top: 100%; right: 0; background: white; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border-radius: 8px; overflow: hidden; z-index: 100; min-width: 120px; margin-top: 10px; padding:0; list-style:none;">
-             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('IDR')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇮🇩 IDR (Rp)</a></li>
-             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('USD')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇺🇸 USD ($)</a></li>
-             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('AUD')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇦🇺 AUD (A$)</a></li>
-             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('EUR')" style="display:block; padding: 10px 15px; color: var(--text-dark); text-decoration: none; font-weight:500;">🇪🇺 EUR (€)</a></li>
+        <div class="lang-switcher" id="curr-switcher" style="margin-right: 5px;">
+           <button class="lang-btn" id="curr-btn" onclick="document.getElementById('curr-menu').classList.toggle('active')"><i class="fa-solid fa-coins"></i> ${curr} <i class="fa-solid fa-chevron-down" style="font-size: 0.7em; margin-left: 2px;"></i></button>
+           <ul class="lang-menu" id="curr-menu">
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('IDR')">🇮🇩 IDR</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('USD')">🇺🇸 USD</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('AUD')">🇦🇺 AUD</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('EUR')">🇪🇺 EUR</a></li>
            </ul>
         </div>
         `;
         langSwitcher.insertAdjacentHTML('beforebegin', currencyHtml);
 
         document.addEventListener('click', (e) => {
-            if (!e.target.closest('.curr-switcher')) {
-                const menu = document.querySelector('.curr-menu');
+            if (!e.target.closest('#curr-switcher')) {
+                const menu = document.getElementById('curr-menu');
                 if (menu && menu.classList.contains('active')) {
                     menu.classList.remove('active');
-                    menu.style.display = 'none';
-                }
-            } else if (e.target.closest('.curr-btn')) {
-                const menu = document.querySelector('.curr-menu');
-                if (menu) {
-                    menu.style.display = menu.classList.contains('active') ? 'block' : 'none';
                 }
             }
         });
