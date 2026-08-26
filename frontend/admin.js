@@ -2170,9 +2170,15 @@ function renderPromos() {
         const validStr = p.validUntil ? new Date(p.validUntil).toLocaleDateString('id-ID') : 'Tanpa Batas';
         const statusBadge = p.isActive ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Tidak Aktif</span>';
         
+        let itemName = 'Semua Paket';
+        if (p.itemId) {
+            const found = typeof allAdminItems !== 'undefined' ? allAdminItems.find(i => i.id === p.itemId) : null;
+            itemName = found ? found.title : (window.globalItems?.find(i => i.id === p.itemId)?.title || 'Item Khusus');
+        }
+        
         return `
         <tr>
-            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}<br><span style="font-size:0.75rem; color:#64748b; font-weight:normal;">${p.itemId ? 'Item Khusus' : 'Semua Paket'}</span></td>
+            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}<br><span style="font-size:0.75rem; color:#64748b; font-weight:normal;">${itemName}</span></td>
             <td>${discountStr}</td>
             <td>${validStr}</td>
             <td>${statusBadge}</td>
@@ -2237,7 +2243,9 @@ if (document.getElementById('promo-form')) {
     document.getElementById('promo-form').addEventListener('submit', async (e) => {
         e.preventDefault();
         const id = document.getElementById('promo-id').value;
+        const itemId = document.getElementById('promo-item').value;
         const data = {
+            itemId: itemId || null,
             code: document.getElementById('promo-code').value,
             discountType: document.getElementById('promo-type').value,
             discountValue: Number(document.getElementById('promo-value').value),
