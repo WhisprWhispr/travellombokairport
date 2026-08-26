@@ -7,7 +7,7 @@ let globalItems = [];
 // Format currency
 const formatPrice = (price) => {
     if (!price) return 'Rp 0';
-    // If the price is already formatted manually by user (e.g., "Rp 500.000"), return it
+    // If the price is already formatted manually by user (e.g., "Rp 500.200"), return it
     if (price.toString().toLowerCase().includes('rp')) return price;
 
     // Otherwise, parse and format
@@ -290,7 +290,7 @@ window.openTourModal = (id) => {
                 
                 <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
                     <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
-                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer deposit (booking fee) sebesar <strong>Rp 500.000</strong> ke rekening berikut:</p>
+                    <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer deposit (booking fee) sebesar <strong>Rp 500.200</strong> ke rekening berikut:</p>
                     <div class="bank-item" style="background: #f8fafc; border: none;">
                         <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>
