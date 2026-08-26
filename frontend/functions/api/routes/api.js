@@ -256,11 +256,24 @@ apiRoutes.post('/withdrawals', verifyToken, async (c) => {
 apiRoutes.get('/reviews', async (c) => {
     try {
         const db = getDb(c);
-        const snapshot = await db.collection('reviews').get();
+        const itemId = c.req.query('itemId');
+        
+        let snapshot;
+        if (itemId) {
+            snapshot = await db.collection('reviews').where('itemId', '==', itemId).get();
+        } else {
+            // Main page reviews are those without an itemId (or we could just return all, but usually main page only shows general reviews)
+            snapshot = await db.collection('reviews').get();
+        }
+        
         let reviews = [];
         snapshot.forEach(doc => {
-            reviews.push({ id: doc.id, ...doc.data() });
+            const data = doc.data();
+            // If fetching general reviews (no itemId query), filter out item-specific ones
+            if (!itemId && data.itemId) return; 
+            reviews.push({ id: doc.id, ...data });
         });
+        
         // Sort in memory descending by createdAt
         reviews.sort((a, b) => {
             const da = a.createdAt ? new Date(a.createdAt) : new Date(0);
@@ -277,7 +290,7 @@ apiRoutes.get('/reviews', async (c) => {
 apiRoutes.post('/reviews', async (c) => {
     try {
         const db = getDb(c);
-        const { name, rating, comment } = await c.req.json();
+        const { name, rating, comment, itemId } = await c.req.json();
         if (!name || !rating || !comment) {
             return c.json({ error: 'Name, rating, and comment are required' }, 400);
         }
@@ -285,6 +298,7 @@ apiRoutes.post('/reviews', async (c) => {
             name,
             rating: Number(rating),
             comment,
+            itemId: itemId || null,
             createdAt: new Date().toISOString(),
             status: 'approved'
         };
