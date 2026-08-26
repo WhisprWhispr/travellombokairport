@@ -1519,7 +1519,7 @@ window.openCheckoutModal = async (itemName, price) => {
                             <option value="14">2 Minggu (14 Hari)</option>
                             <option value="custom">Custom (Ketik Sendiri)</option>
                         </select>
-                        <input type="number" id="co-duration-custom" class="form-control" min="1" placeholder="Berapa hari?" style="display:none; width:110px;">
+                        <input type="number" id="co-duration-custom" class="form-control" min="1" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<1 && this.value!==''){this.value=1;}">
                     </div>
                 </div>
                 <input type="hidden" id="co-end-date" required>
@@ -1671,6 +1671,8 @@ window.openCheckoutModal = async (itemName, price) => {
         if (durationSelectEl) {
             if (durationSelectEl.value === 'custom') {
                 currentDuration = durationCustomEl && durationCustomEl.value ? parseInt(durationCustomEl.value) : 1;
+                if (currentDuration > 60) currentDuration = 60;
+                if (currentDuration < 1) currentDuration = 1;
             } else {
                 currentDuration = parseInt(durationSelectEl.value);
             }
@@ -1751,6 +1753,8 @@ window.checkDateOverlap = () => {
                     if (durationSelect.value === 'custom') {
                         const customInput = document.getElementById('co-duration-custom');
                         diffDays = customInput && customInput.value ? parseInt(customInput.value) : 1;
+                        if (diffDays > 60) diffDays = 60;
+                        if (diffDays < 1) diffDays = 1;
                     } else {
                         diffDays = parseInt(durationSelect.value);
                     }
