@@ -567,6 +567,7 @@ const fetchAdminItems = async () => {
     try {
         const response = await fetch(`${API_URL}/items`);
         const items = await response.json();
+        window.globalItems = items; // Populate for promos dropdown
         renderTable(items);
         renderDroneTable(items);
         allAdminItems = items;
