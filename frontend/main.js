@@ -38,7 +38,12 @@ const EXCHANGE_RATES = {
     IDR: 1,
     USD: 15500,
     AUD: 10000,
-    EUR: 16500
+    EUR: 16500,
+    SGD: 11600,
+    MYR: 3500,
+    GBP: 19700,
+    CNY: 2200,
+    JPY: 105
 };
 
 const formatPrice = (price) => {
@@ -49,6 +54,11 @@ const formatPrice = (price) => {
         if (currency === 'USD') return '$0';
         if (currency === 'AUD') return 'A$0';
         if (currency === 'EUR') return '€0';
+        if (currency === 'SGD') return 'S$0';
+        if (currency === 'MYR') return 'RM0';
+        if (currency === 'GBP') return '£0';
+        if (currency === 'CNY') return '¥0';
+        if (currency === 'JPY') return '¥0';
         return 'Rp 0';
     }
     
@@ -70,6 +80,16 @@ const formatPrice = (price) => {
         return new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD', minimumFractionDigits: 0 }).format(converted);
     } else if (currency === 'EUR') {
         return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'SGD') {
+        return new Intl.NumberFormat('en-SG', { style: 'currency', currency: 'SGD', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'MYR') {
+        return new Intl.NumberFormat('ms-MY', { style: 'currency', currency: 'MYR', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'GBP') {
+        return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'CNY') {
+        return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'JPY') {
+        return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(converted);
     }
 
     return new Intl.NumberFormat('id-ID', {
@@ -2536,6 +2556,11 @@ document.addEventListener("DOMContentLoaded", () => {
              <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('USD')">🇺🇸 USD</a></li>
              <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('AUD')">🇦🇺 AUD</a></li>
              <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('EUR')">🇪🇺 EUR</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('SGD')">🇸🇬 SGD</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('MYR')">🇲🇾 MYR</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('GBP')">🇬🇧 GBP</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('CNY')">🇨🇳 CNY</a></li>
+             <li><a href="#" onclick="event.preventDefault(); window.changeCurrency('JPY')">🇯🇵 JPY</a></li>
            </ul>
         </div>
         `;
