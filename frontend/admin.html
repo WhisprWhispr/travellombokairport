@@ -720,6 +720,116 @@
       </div>
     </div>
 
+
+    <!-- ===== PROMO MODAL ===== -->
+    <div id="promo-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto;">
+      <div style="background:#fff; border-radius:16px; max-width:500px; width:90%; margin:40px auto; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 id="promo-modal-title" style="margin:0; font-size:1.3rem; font-weight:700; color:#1e293b;">Tambah Promo</h3>
+          <button onclick="closePromoModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+        </div>
+        <form id="promo-form">
+          <input type="hidden" id="promo-id">
+          
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Berlaku Untuk Paket (Opsional)</label>
+            <select id="promo-item" class="form-control" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+              <option value="">-- Semua Paket --</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Kode Promo</label>
+            <input type="text" id="promo-code" class="form-control" placeholder="contoh: LOMBOKHEBOH20" required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Tipe Diskon</label>
+            <select id="promo-type" class="form-control" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+              <option value="nominal">Nominal (Rp)</option>
+              <option value="percent">Persentase (%)</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Nilai Diskon</label>
+            <input type="number" id="promo-value" class="form-control" placeholder="contoh: 100000" required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Maksimum Diskon (Rp, opsional)</label>
+            <input type="number" id="promo-max" class="form-control" placeholder="Kosongkan jika tidak ada batas" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Berlaku Sampai</label>
+            <input type="date" id="promo-valid" class="form-control" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-4" style="display:flex; align-items:center; gap:10px;">
+            <input type="checkbox" id="promo-active" checked style="width:18px; height:18px; cursor:pointer;">
+            <label for="promo-active" style="font-weight:600; cursor:pointer; margin:0;">Aktifkan Promo</label>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-blue" style="flex:1; padding:12px; border-radius:8px; font-weight:600;">
+              <i class="fa-solid fa-save"></i> Simpan Promo
+            </button>
+            <button type="button" onclick="closePromoModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== BLOG MODAL ===== -->
+    <div id="blog-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto;">
+      <div style="background:#fff; border-radius:16px; max-width:620px; width:90%; margin:40px auto; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 id="blog-modal-title" style="margin:0; font-size:1.3rem; font-weight:700; color:#1e293b;">Tambah Artikel Blog</h3>
+          <button onclick="closeBlogModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+        </div>
+        <form id="blog-form">
+          <input type="hidden" id="blog-id">
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Judul Artikel</label>
+            <input type="text" id="blog-title" class="form-control" placeholder="Judul artikel yang menarik..." required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Ringkasan / Summary</label>
+            <textarea id="blog-summary" rows="2" placeholder="Ringkasan singkat artikel..." style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; resize:vertical;"></textarea>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">URL Gambar Cover</label>
+            <input type="url" id="blog-image" class="form-control" placeholder="https://..." style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Isi Artikel (HTML/Teks)</label>
+            <textarea id="blog-content" rows="8" required placeholder="Tulis isi artikel di sini..." style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; resize:vertical; font-family:monospace; font-size:0.9rem;"></textarea>
+          </div>
+
+          <div class="form-group mb-4">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Tags (pisahkan dengan koma)</label>
+            <input type="text" id="blog-tags" class="form-control" placeholder="wisata, lombok, pantai" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-green" style="flex:1; padding:12px; border-radius:8px; font-weight:600;">
+              <i class="fa-solid fa-save"></i> Simpan Artikel
+            </button>
+            <button type="button" onclick="closeBlogModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
     <script type="module" src="./admin.js"></script>
   <script type="module" src="/pwa.js"></script>
 </body>
