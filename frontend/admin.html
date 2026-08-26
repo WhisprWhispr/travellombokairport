@@ -507,7 +507,10 @@
           
           <div class="form-group">
             <label>Video URL (YouTube)</label>
-            <input type="url" id="item-droneVideo" placeholder="https://www.youtube.com/watch?v=...">
+            <div style="display: flex; gap: 10px;">
+              <input type="url" id="item-droneVideo" placeholder="https://www.youtube.com/watch?v=..." style="flex: 1;">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('item-droneVideo').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
+            </div>
           </div>
 
           <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
@@ -607,7 +610,10 @@
 
           <div class="form-group">
             <label>URL Video YouTube</label>
-            <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=...">
+            <div style="display: flex; gap: 10px;">
+              <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('drone-video-url').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
+            </div>
             <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Masukkan URL YouTube yang valid (contoh: https://youtu.be/...)</p>
           </div>
 
