@@ -1902,12 +1902,17 @@ window.fetchGlobalSettings = async () => {
             const data = await res.json();
             const droneStatus = document.getElementById('setting-drone-status');
             const dronePrice = document.getElementById('setting-drone-price');
+            const maintenanceToggle = document.getElementById('setting-maintenance-mode');
+            
             if (droneStatus && data.droneAvailable) {
                 droneStatus.value = data.droneAvailable;
             }
             if (dronePrice && data.dronePrice) {
                 // Format price with dots
                 dronePrice.value = data.dronePrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+            }
+            if (maintenanceToggle) {
+                maintenanceToggle.checked = data.maintenanceMode === true;
             }
         }
     } catch (e) {
@@ -1919,13 +1924,18 @@ window.saveGlobalSettings = async () => {
     const droneStatus = document.getElementById('setting-drone-status').value;
     const dronePriceRaw = document.getElementById('setting-drone-price').value || "";
     const dronePrice = dronePriceRaw.replace(/\./g, '');
+    const maintenanceMode = document.getElementById('setting-maintenance-mode') ? document.getElementById('setting-maintenance-mode').checked : false;
     
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
         const res = await fetch(`${API_URL}/settings`, {
             method: 'PUT',
             headers: getAuthHeaders(),
-            body: JSON.stringify({ droneAvailable: droneStatus, dronePrice: dronePrice })
+            body: JSON.stringify({ 
+                droneAvailable: droneStatus, 
+                dronePrice: dronePrice,
+                maintenanceMode: maintenanceMode
+            })
         });
         if (res.ok) {
             Swal.fire({icon: 'success', title: 'Berhasil', text: 'Pengaturan berhasil disimpan.', confirmButtonColor: '#22c55e'});

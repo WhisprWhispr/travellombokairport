@@ -756,11 +756,24 @@ const createDroneCard = (item, index = 0) => {
 const init = async () => {
     window.isDroneAvailable = true;
 
-    // Check Global Settings (e.g. Drone Availability)
+    // Check Global Settings (e.g. Drone Availability and Maintenance Mode)
     try {
         const res = await fetch(`/api/settings?_t=${new Date().getTime()}`, { cache: 'no-store' });
         if (res.ok) {
             const settings = await res.json();
+            
+            // Maintenance Mode Check
+            if (settings.maintenanceMode === true && !window.location.pathname.includes('/admin')) {
+                document.body.innerHTML = `
+                    <div style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: #f8fafc; z-index: 999999; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; font-family: 'Outfit', sans-serif;">
+                        <i class="fa-solid fa-person-digging" style="font-size: 5rem; color: var(--primary-blue); margin-bottom: 20px;"></i>
+                        <h1 style="color: var(--primary-blue); font-size: 2rem; font-weight: 800; margin-bottom: 10px;">Website Sedang Dalam Pemeliharaan</h1>
+                        <p style="color: #64748b; font-size: 1.1rem; max-width: 500px; line-height: 1.6;">Kami sedang melakukan pembaruan dan peningkatan sistem untuk memberikan pelayanan yang lebih baik. Silakan kembali beberapa saat lagi!</p>
+                    </div>
+                `;
+                return; // Stop further execution
+            }
+
             if (settings.droneAvailable === 'unavailable') {
                 window.isDroneAvailable = false;
 
