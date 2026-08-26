@@ -1949,3 +1949,17 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
 .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%; }
 input:checked + .slider { background-color: #ef4444; }
 input:checked + .slider:before { transform: translateX(22px); }
+
+/* Mobile Menu Cut-off Fix */
+.nav-content { flex-wrap: nowrap !important; }
+.nav-actions { flex-shrink: 0 !important; }
+.logo { min-width: 0 !important; flex-shrink: 1 !important; }
+.logo-text { min-width: 0 !important; }
+@media (max-width: 480px) {
+  .logo-title { font-size: 0.85rem !important; }
+  .logo-img { height: 30px !important; }
+  .logo { gap: 6px !important; }
+  .nav-actions { gap: 4px !important; }
+  .lang-btn { padding: 3px 6px !important; font-size: 0.75rem !important; letter-spacing: -0.5px; }
+  .mobile-menu-btn { padding: 3px 6px !important; font-size: 1.15rem !important; }
+}
