@@ -427,7 +427,10 @@
 
           <div class="form-group">
             <label>Image URL</label>
-            <input type="url" id="item-image" required placeholder="https://example.com/image.jpg">
+            <div style="display: flex; gap: 10px;">
+              <input type="url" id="item-image" required placeholder="https://example.com/image.jpg" style="flex: 1;">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('item-image').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
+            </div>
           </div>
 
           <!-- Transfer Matrix Section (Khusus Jasa Antar Jemput) -->
