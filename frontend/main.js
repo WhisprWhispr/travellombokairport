@@ -140,6 +140,8 @@ const formatPrice = (price) => {
     }).format(num);
 };
 
+window.formatPrice = formatPrice;
+
 // Fetch items from backend
 const fetchItems = async (category = null) => {
     try {
