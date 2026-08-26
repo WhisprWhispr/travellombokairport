@@ -1,3 +1,5 @@
+const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
+
 document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('article-container');
     if (!container) return;
