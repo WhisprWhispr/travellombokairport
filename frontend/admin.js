@@ -1047,7 +1047,11 @@ window.showTab = (tab) => {
     document.getElementById("web-bookings-section").style.display = "none";
     document.getElementById("gallery-section").style.display = "none";
     const reviewsSection = document.getElementById("reviews-section");
-    if (reviewsSection) reviewsSection.style.display = "none";
+      if (reviewsSection) reviewsSection.style.display = "none";
+      const promosSection = document.getElementById("promos-section");
+      if (promosSection) promosSection.style.display = "none";
+      const blogsSection = document.getElementById("blogs-section");
+      if (blogsSection) blogsSection.style.display = "none";
     document.getElementById("withdrawal-section").style.display = "none";
     document.getElementById("settings-section").style.display = "none";
     document.getElementById("drivers-section").style.display = "none";
@@ -1056,6 +1060,10 @@ window.showTab = (tab) => {
     document.getElementById("add-booking-btn").style.display = "none";
     document.getElementById("add-gallery-btn").style.display = "none";
     document.getElementById("add-driver-btn").style.display = "none";
+      const addPromoBtn = document.getElementById("add-promo-btn");
+      if (addPromoBtn) addPromoBtn.style.display = "none";
+      const addBlogBtn = document.getElementById("add-blog-btn");
+      if (addBlogBtn) addBlogBtn.style.display = "none";
     
     if (tab === "items") {
         document.getElementById("items-section").style.display = "block";
@@ -1088,7 +1096,19 @@ window.showTab = (tab) => {
         const reviewsSection = document.getElementById("reviews-section");
         if (reviewsSection) reviewsSection.style.display = "block";
         fetchAdminReviews();
-    } else if (tab === "withdrawals") {
+    } else if (tab === "promos") {
+          const promosSection = document.getElementById("promos-section");
+          if (promosSection) promosSection.style.display = "block";
+          const addPromoBtn = document.getElementById("add-promo-btn");
+          if (addPromoBtn) addPromoBtn.style.display = "inline-block";
+          if (typeof loadPromos === 'function') loadPromos();
+      } else if (tab === "blogs") {
+          const blogsSection = document.getElementById("blogs-section");
+          if (blogsSection) blogsSection.style.display = "block";
+          const addBlogBtn = document.getElementById("add-blog-btn");
+          if (addBlogBtn) addBlogBtn.style.display = "inline-block";
+          if (typeof loadBlogs === 'function') loadBlogs();
+      } else if (tab === "withdrawals") {
         document.getElementById("withdrawal-section").style.display = "block";
         fetchWithdrawals();
     } else if (tab === "drivers") {
@@ -2151,7 +2171,7 @@ function renderPromos() {
         
         return `
         <tr>
-            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}</td>
+            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}<br><span style="font-size:0.75rem; color:#64748b; font-weight:normal;">${p.itemId ? 'Item Khusus' : 'Semua Paket'}</span></td>
             <td>${discountStr}</td>
             <td>${validStr}</td>
             <td>${statusBadge}</td>
@@ -2164,11 +2184,26 @@ function renderPromos() {
     }).join('');
 }
 
+function populatePromoItems() {
+    const sel = document.getElementById('promo-item');
+    if (!sel) return;
+    const currentVal = sel.value;
+    sel.innerHTML = '<option value="">-- Semua Paket --</option>';
+    if (window.globalItems) {
+        window.globalItems.forEach(item => {
+            sel.innerHTML += `<option value="${item.id}">${item.title}</option>`;
+        });
+    }
+    sel.value = currentVal;
+}
+
 window.openPromoModal = (promo = null) => {
+    populatePromoItems();
     document.getElementById('promo-form').reset();
     if (promo) {
         document.getElementById('promo-modal-title').innerText = 'Edit Promo';
         document.getElementById('promo-id').value = promo.id;
+        document.getElementById('promo-item').value = promo.itemId || '';
         document.getElementById('promo-code').value = promo.code;
         document.getElementById('promo-type').value = promo.discountType;
         document.getElementById('promo-value').value = promo.discountValue;
@@ -2178,6 +2213,7 @@ window.openPromoModal = (promo = null) => {
     } else {
         document.getElementById('promo-modal-title').innerText = 'Tambah Promo';
         document.getElementById('promo-id').value = '';
+        document.getElementById('promo-item').value = '';
     }
     document.getElementById('promo-modal').style.display = 'block';
 };

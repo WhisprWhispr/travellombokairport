@@ -620,7 +620,7 @@ window.applyPromo = async () => {
     msg.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memeriksa kode promo...';
     
     try {
-        const res = await fetch(`${API_URL}/promos/verify/${promoCode}`);
+        const res = await fetch(`${API_URL}/promos/verify/${promoCode}?itemId=${window.currentCheckoutItemId || ""}`);
         const data = await res.json();
         
         if (!data.valid) {
@@ -1869,6 +1869,9 @@ window.closeCheckoutModal = () => {
 };
 
 window.openCheckoutModal = async (itemName, price) => {
+    // Find itemId
+    let matchedItem = window.globalItems ? window.globalItems.find(i => i.title === itemName) : null;
+    window.currentCheckoutItemId = matchedItem ? matchedItem.id : null;
     if (!window.checkAuthAndPrompt()) return;
 
     const modalBody = document.getElementById("checkout-modal-body");

@@ -35,6 +35,7 @@ router.get('/', verifyAdminToken, async (req, res) => {
 router.get('/verify/:code', async (req, res) => {
     try {
         const { code } = req.params;
+        const { itemId } = req.query; // get itemId from query
         const snapshot = await db.collection('promos').where('code', '==', code.toUpperCase()).where('isActive', '==', true).get();
         if (snapshot.empty) {
             return res.status(404).json({ valid: false, message: 'Kode promo tidak ditemukan atau tidak aktif' });
@@ -42,6 +43,11 @@ router.get('/verify/:code', async (req, res) => {
         
         let promo = null;
         snapshot.forEach(doc => { promo = { id: doc.id, ...doc.data() }; });
+        
+        // If promo is specific to an item, verify it
+        if (promo.itemId && promo.itemId !== itemId) {
+            return res.status(400).json({ valid: false, message: 'Kode promo tidak berlaku untuk paket/item ini' });
+        }
         
         // Check date validity
         const now = new Date();
@@ -61,7 +67,7 @@ router.get('/verify/:code', async (req, res) => {
 // POST /api/promos - Admin create promo
 router.post('/', verifyAdminToken, async (req, res) => {
     try {
-        const { code, discountType, discountValue, maxDiscount, validUntil, isActive } = req.body;
+        const { code, discountType, discountValue, maxDiscount, validUntil, isActive, itemId } = req.body;
         const newPromo = {
             code: code.toUpperCase(),
             discountType, // 'percent' or 'nominal'
@@ -69,6 +75,7 @@ router.post('/', verifyAdminToken, async (req, res) => {
             maxDiscount: maxDiscount ? Number(maxDiscount) : null,
             validUntil: validUntil || null,
             isActive: isActive !== undefined ? isActive : true,
+            itemId: itemId || null, // null means applies to all
             createdAt: new Date().toISOString()
         };
         const docRef = await db.collection('promos').add(newPromo);
