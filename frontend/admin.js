@@ -2185,19 +2185,22 @@ function renderPromos() {
     }).join('');
 }
 
-function populatePromoItems() {
+async function populatePromoItems() {
     const sel = document.getElementById('promo-item');
     if (!sel) return;
     const currentVal = sel.value;
-    sel.innerHTML = '<option value="">-- Semua Paket --</option>';
-    if (typeof allAdminItems !== 'undefined' && allAdminItems.length > 0) {
-        allAdminItems.forEach(item => {
+    sel.innerHTML = '<option value="">-- Memuat paket... --</option>';
+    try {
+        // Always fetch fresh from API to ensure items are available
+        const res = await fetch(`${API_URL}/items`);
+        const items = await res.json();
+        sel.innerHTML = '<option value="">-- Semua Paket --</option>';
+        items.forEach(item => {
             sel.innerHTML += `<option value="${item.id}">${item.title}</option>`;
         });
-    } else if (window.globalItems) {
-        window.globalItems.forEach(item => {
-            sel.innerHTML += `<option value="${item.id}">${item.title}</option>`;
-        });
+    } catch (e) {
+        sel.innerHTML = '<option value="">-- Semua Paket --</option>';
+        console.error('Failed to load items for promo dropdown', e);
     }
     sel.value = currentVal;
 }
@@ -2205,8 +2208,8 @@ function populatePromoItems() {
   const addPromoBtnRef = document.getElementById('add-promo-btn');
   if(addPromoBtnRef) addPromoBtnRef.onclick = () => window.openPromoModal();
   
-  window.openPromoModal = (promo = null) => {
-    populatePromoItems();
+  window.openPromoModal = async (promo = null) => {
+    await populatePromoItems();
     document.getElementById('promo-form').reset();
     if (promo) {
         document.getElementById('promo-modal-title').innerText = 'Edit Promo';
