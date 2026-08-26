@@ -2402,11 +2402,27 @@ document.addEventListener("DOMContentLoaded", () => {
         `;
         langSwitcher.insertAdjacentHTML('beforebegin', currencyHtml);
 
+        // Fix the original language switcher's onclick so it doesn't break due to multiple .lang-menu elements
+        const langBtn = langSwitcher.querySelector('.lang-btn');
+        if (langBtn) {
+            langBtn.removeAttribute('onclick');
+            langBtn.addEventListener('click', (e) => {
+                const menu = langSwitcher.querySelector('.lang-menu');
+                if (menu) menu.classList.toggle('active');
+            });
+        }
+
         document.addEventListener('click', (e) => {
             if (!e.target.closest('#curr-switcher')) {
-                const menu = document.getElementById('curr-menu');
-                if (menu && menu.classList.contains('active')) {
-                    menu.classList.remove('active');
+                const currMenu = document.getElementById('curr-menu');
+                if (currMenu && currMenu.classList.contains('active')) {
+                    currMenu.classList.remove('active');
+                }
+            }
+            if (!e.target.closest('.lang-switcher:not(#curr-switcher)')) {
+                const langMenu = langSwitcher.querySelector('.lang-menu');
+                if (langMenu && langMenu.classList.contains('active')) {
+                    langMenu.classList.remove('active');
                 }
             }
         });
