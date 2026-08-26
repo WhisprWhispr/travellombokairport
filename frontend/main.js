@@ -1187,6 +1187,7 @@ const init = async () => {
 
     // Fetch all data
     globalItems = await fetchItems();
+    window.globalItems = globalItems;
 
     // Categorize data - exclude child items (parentId set) from all main sections
     const childItemIds = new Set(globalItems.filter(i => i.parentId).map(i => i.id));
