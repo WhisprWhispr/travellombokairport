@@ -26,7 +26,7 @@ const verifyToken = async (c, next) => {
 promosRoutes.get('/', verifyToken, async (c) => {
     try {
         const db = getDb(c);
-        const snapshot = await db.collection('promos').orderBy('createdAt', 'desc').get();
+        const snapshot = await db.collection('promos').get();
         let promos = [];
         snapshot.forEach(doc => promos.push({ id: doc.id, ...doc.data() }));
         return c.json(promos);

@@ -2197,7 +2197,10 @@ function populatePromoItems() {
     sel.value = currentVal;
 }
 
-window.openPromoModal = (promo = null) => {
+  const addPromoBtnRef = document.getElementById('add-promo-btn');
+  if(addPromoBtnRef) addPromoBtnRef.onclick = () => window.openPromoModal();
+  
+  window.openPromoModal = (promo = null) => {
     populatePromoItems();
     document.getElementById('promo-form').reset();
     if (promo) {
@@ -2328,7 +2331,10 @@ function renderBlogs() {
     }).join('');
 }
 
-window.openBlogModal = (blog = null) => {
+  const addBlogBtnRef = document.getElementById('add-blog-btn');
+  if(addBlogBtnRef) addBlogBtnRef.onclick = () => window.openBlogModal();
+  
+  window.openBlogModal = (blog = null) => {
     document.getElementById('blog-form').reset();
     if (blog) {
         document.getElementById('blog-modal-title').innerText = 'Edit Artikel Blog';
