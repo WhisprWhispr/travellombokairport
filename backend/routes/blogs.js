@@ -41,11 +41,19 @@ router.get('/', async (req, res) => {
 // GET /api/blogs/:id - Get a specific blog
 router.get('/:id', async (req, res) => {
     try {
-        const doc = await db.collection('blogs').doc(req.params.id).get();
+        const docRef = db.collection('blogs').doc(req.params.id);
+        const doc = await docRef.get();
         if (!doc.exists) {
             return res.status(404).json({ message: 'Blog not found' });
         }
-        res.json({ id: doc.id, ...doc.data() });
+        
+        const data = doc.data();
+        const newViews = (data.views || 0) + 1;
+        
+        // Fire and forget view update
+        docRef.update({ views: newViews }).catch(err => console.error("Failed to update views", err));
+        
+        res.json({ id: doc.id, ...data, views: newViews });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
