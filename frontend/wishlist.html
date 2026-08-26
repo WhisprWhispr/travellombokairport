@@ -121,8 +121,10 @@
 
   <script>
     document.addEventListener("DOMContentLoaded", () => {
-        setTimeout(() => {
-            if (!window.globalItems || window.globalItems.length === 0) return;
+        const checkInterval = setInterval(() => {
+            if (!window.globalItems || window.globalItems.length === 0) return; // Keep waiting until loaded
+            
+            clearInterval(checkInterval); // Stop checking once items are loaded
             
             const wishlist = window.getWishlist ? window.getWishlist() : [];
             const grid = document.getElementById("wishlist-grid");
@@ -139,6 +141,12 @@
             
             const savedItems = window.globalItems.filter(item => wishlist.includes(item.id));
             
+            if (savedItems.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
             grid.innerHTML = savedItems.map(item => {
                 const formattedPrice = item.price ? (window.formatPrice ? window.formatPrice(item.price) : item.price) : '';
                 return `
@@ -170,7 +178,17 @@
                 </div>
                 `;
             }).join('');
-        }, 500);
+        }, 200);
+        
+        // Timeout darurat jika items gagal load setelah 5 detik
+        setTimeout(() => {
+            clearInterval(checkInterval);
+            const grid = document.getElementById("wishlist-grid");
+            if (grid && grid.innerHTML.trim() === '') {
+                const emptyState = document.getElementById("wishlist-empty");
+                if (emptyState) emptyState.style.display = 'block';
+            }
+        }, 5000);
     });
   </script>
 <!-- Footer -->
