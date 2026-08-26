@@ -74,11 +74,27 @@ blogsRoutes.get('/:idOrSlug', async (c) => {
                 return c.json({ message: 'Blog tidak ditemukan' }, 404);
             }
             let data = null;
-            slugSnapshot.forEach(d => data = { id: d.id, ...d.data() });
+            let actualDocRef = null;
+            slugSnapshot.forEach(d => {
+                data = { id: d.id, ...d.data() };
+                actualDocRef = d.ref;
+            });
+            
+            // Increment views
+            const newViews = (data.views || 0) + 1;
+            c.executionCtx.waitUntil(actualDocRef.update({ views: newViews }).catch(e => console.error(e)));
+            data.views = newViews;
+            
             return c.json(data);
         }
         
-        return c.json({ id: docSnapshot.id, ...docSnapshot.data() });
+        const data = docSnapshot.data();
+        const newViews = (data.views || 0) + 1;
+        
+        // Increment views
+        c.executionCtx.waitUntil(docRef.update({ views: newViews }).catch(e => console.error(e)));
+        
+        return c.json({ id: docSnapshot.id, ...data, views: newViews });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }
