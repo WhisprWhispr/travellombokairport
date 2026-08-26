@@ -987,7 +987,7 @@ window.generateEtiketPDF = (data) => {
                 <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
                 <div style="flex:1;">
                     <div style="font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">&#9888; Pembayaran DP &mdash; Belum Lunas</div>
-                    <div style="font-size:11px;color:#9a3412;">DP terbayar: <strong>Rp 500.000</strong> &nbsp;&bull;&nbsp; Sisa: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - 500000).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
+                    <div style="font-size:11px;color:#9a3412;">DP terbayar: <strong>Rp 500.200</strong> &nbsp;&bull;&nbsp; Sisa: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - 500200).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
                     <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sebelum tanggal keberangkatan.</div>
                 </div>
             </div>` : ''}
@@ -1548,7 +1548,7 @@ window.openCheckoutModal = async (itemName, price) => {
             </div>`;
     if (isOrder) {
         html += `
-            ${price > 500000 ? `
+            ${price > 500200 ? `
             <div class="form-group mb-4">
                 <label style="font-weight:700;color:var(--text-dark);">Tipe Pembayaran</label>
                 <div style="display:flex;gap:10px;margin-top:8px;" id="payment-type-container">
@@ -1556,7 +1556,7 @@ window.openCheckoutModal = async (itemName, price) => {
                         <input type="radio" name="payment-type-radio" id="pt-dp" value="dp" checked style="accent-color:#f59e0b;width:16px;height:16px;margin-top:2px;">
                         <div>
                             <div style="font-weight:700;color:#d97706;font-size:0.88rem;">DP (Uang Muka)</div>
-                            <div style="font-size:0.75rem;color:#92400e;">Bayar Rp 500.000 sekarang, sisa lunas sebelum keberangkatan.</div>
+                            <div style="font-size:0.75rem;color:#92400e;">Bayar Rp 500.200 sekarang, sisa lunas sebelum keberangkatan.</div>
                         </div>
                     </label>
                     <label id="pt-full-label" onclick="window.setPaymentType('full')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#f0fdf4;border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
@@ -1848,8 +1848,8 @@ window.processCheckout = async (itemName, price) => {
     }
 
     // Cek apakah user memilih DP
-    const isDp = price > 500000 && document.getElementById('pt-dp')?.checked === true;
-    if (isDp) finalPrice = 500000;
+    const isDp = price > 500200 && document.getElementById('pt-dp')?.checked === true;
+    if (isDp) finalPrice = 500200;
 
     const bookingData = {
         itemName,
