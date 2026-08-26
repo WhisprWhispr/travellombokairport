@@ -8,6 +8,8 @@ import paymentRoutes from './functions/api/routes/payment.js';
 import authRoutes from './functions/api/routes/auth.js';
 import driversRoutes from './functions/api/routes/drivers.js';
 import aiRoutes from './functions/api/routes/ai.js';
+import promosRoutes from './functions/api/routes/promos.js';
+import blogsRoutes from './functions/api/routes/blogs.js';
 
 const app = new Hono().basePath('/api');
 
@@ -29,6 +31,8 @@ app.route('/payment', paymentRoutes);
 app.route('/auth', authRoutes);
 app.route('/drivers', driversRoutes);
 app.route('/ai', aiRoutes);
+app.route('/promos', promosRoutes);
+app.route('/blogs', blogsRoutes);
 
 // For fallback in api.js
 app.route('/', apiRoutes);
