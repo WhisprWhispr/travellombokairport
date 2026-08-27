@@ -1959,7 +1959,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #e2e8f0;">
             <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">${method === 'wa' ? "Item Booking:" : (isOrder ? "Item yang diorder:" : "Rincian Booking:")}</p>
             <h3 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h3>
-            ${isOrder && method !== 'wa' ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
+            ${isOrder ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
         </div>
 
 
