@@ -1952,15 +1952,16 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
 
     let html = `
         <div style="text-align: center; margin-bottom: 20px;">
-            <h2 style="color: var(--primary-blue);">${isOrder ? "Checkout Pesanan" : "Form Booking"}</h2>
-            <p style="color: #64748b; font-size: 0.9rem;">${isOrder ? "Selesaikan pesanan item Anda." : "Lengkapi data untuk proses booking."}</p>
+            <h2 style="color: ${method === 'wa' ? '#22c55e' : 'var(--primary-blue)'};">${method === 'wa' ? '<i class="fa-brands fa-whatsapp"></i> Form Booking via WA' : (isOrder ? "Checkout Pesanan" : "Form Booking")}</h2>
+            <p style="color: #64748b; font-size: 0.9rem;">${method === 'wa' ? "Silakan lengkapi rincian booking Anda (Tanpa wajib login)." : (isOrder ? "Selesaikan pesanan item Anda." : "Lengkapi data untuk proses booking.")}</p>
         </div>
         
         <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #e2e8f0;">
-            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">${isOrder ? "Item yang diorder:" : "Rincian Booking:"}</p>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">${method === 'wa' ? "Item Booking:" : (isOrder ? "Item yang diorder:" : "Rincian Booking:")}</p>
             <h3 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h3>
-            ${isOrder ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
+            ${isOrder && method !== 'wa' ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
         </div>
+
 
         <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${price || 0}, '${method}');">
             <div class="form-group mb-3">
