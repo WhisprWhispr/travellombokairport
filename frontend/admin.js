@@ -2138,9 +2138,12 @@ window.fetchVisitorAnalytics = async () => {
             
             // 4. Render Chart.js (Tren 7 Hari Terakhir)
             renderAnalyticsChart(logs);
+        } else {
+            document.getElementById("analytics-table-body").innerHTML = `<tr><td colspan="4" class="text-center text-danger">Gagal memuat data dari server.</td></tr>`;
         }
     } catch (e) {
         console.error("Gagal mengambil data analytics:", e);
+        document.getElementById("analytics-table-body").innerHTML = `<tr><td colspan="4" class="text-center text-danger">Gagal mengambil data analytics: ${e.message}</td></tr>`;
     }
 };
 

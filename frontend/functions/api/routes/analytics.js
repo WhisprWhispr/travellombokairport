@@ -64,7 +64,7 @@ analyticsRoutes.get('/stats', verifyToken, async (c) => {
                 userAgent: data.userAgent,
                 ipHash: data.ipHash,
                 screenWidth: data.screenWidth,
-                timestamp: data.timestamp ? data.timestamp.toDate() : new Date()
+                timestamp: (data.timestamp && typeof data.timestamp.toDate === 'function') ? data.timestamp.toDate() : new Date(data.timestamp || Date.now())
             });
         });
         
