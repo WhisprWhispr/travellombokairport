@@ -1049,6 +1049,8 @@ window.showTab = (tab) => {
     document.getElementById("gallery-section").style.display = "none";
     const reviewsSection = document.getElementById("reviews-section");
       if (reviewsSection) reviewsSection.style.display = "none";
+    const itemReviewsSection = document.getElementById("item-reviews-section");
+      if (itemReviewsSection) itemReviewsSection.style.display = "none";
       const promosSection = document.getElementById("promos-section");
       if (promosSection) promosSection.style.display = "none";
       const blogsSection = document.getElementById("blogs-section");
@@ -1097,6 +1099,10 @@ window.showTab = (tab) => {
         const reviewsSection = document.getElementById("reviews-section");
         if (reviewsSection) reviewsSection.style.display = "block";
         fetchAdminReviews();
+    } else if (tab === "item-reviews") {
+        const itemReviewsSection = document.getElementById("item-reviews-section");
+        if (itemReviewsSection) itemReviewsSection.style.display = "block";
+        fetchAdminItemReviews();
     } else if (tab === "promos") {
           const promosSection = document.getElementById("promos-section");
           if (promosSection) promosSection.style.display = "block";
@@ -1757,28 +1763,21 @@ window.fetchAdminDrivers = async () => {
     }
 };
 
-// === Reviews Logic ===
 window.fetchAdminReviews = async () => {
     try {
-        const [res, itemsRes] = await Promise.all([
-            fetch(`${API_URL}/reviews`, { headers: getAuthHeaders() }),
-            fetch(`${API_URL}/items`)
-        ]);
-        
+        const res = await fetch(`${API_URL}/reviews`, { headers: getAuthHeaders() });
         const tbody = document.getElementById('admin-reviews-table');
         if (!tbody) return;
         if (!res.ok) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Gagal memuat ulasan</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Gagal memuat ulasan</td></tr>';
             return;
         }
         
-        const reviews = await res.json();
-        const items = itemsRes.ok ? await itemsRes.json() : [];
-        const itemMap = {};
-        items.forEach(item => itemMap[item.id] = item.title);
+        let reviews = await res.json();
+        reviews = reviews.filter(r => !r.itemId); // Only web reviews
         
         if (reviews.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada ulasan.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada ulasan web.</td></tr>';
             return;
         }
         
@@ -1795,7 +1794,62 @@ window.fetchAdminReviews = async () => {
                 else stars += '<i class="fa-regular fa-star" style="color:#cbd5e1;"></i>';
             }
             
-            const itemName = r.itemId ? (itemMap[r.itemId] || 'Item Tidak Diketahui') : '<span style="color:#10b981; font-size:0.8rem; border:1px solid #10b981; padding:2px 6px; border-radius:10px;">Ulasan Web</span>';
+            html += `<tr>
+                <td>${dateStr}</td>
+                <td style="font-weight:600;">${r.name}</td>
+                <td>${stars}</td>
+                <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${r.comment}">${r.comment}</td>
+                <td>
+                    <button class="btn" style="background:#fee2e2; color:#ef4444; padding:5px 10px; font-size:0.8rem;" onclick="deleteReview('${r.id}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+                </td>
+            </tr>`;
+        });
+        tbody.innerHTML = html;
+    } catch (e) {
+        console.error("Error fetching web reviews", e);
+    }
+};
+
+window.fetchAdminItemReviews = async () => {
+    try {
+        const [res, itemsRes] = await Promise.all([
+            fetch(`${API_URL}/reviews`, { headers: getAuthHeaders() }),
+            fetch(`${API_URL}/items`)
+        ]);
+        
+        const tbody = document.getElementById('admin-item-reviews-table');
+        if (!tbody) return;
+        if (!res.ok) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Gagal memuat ulasan item</td></tr>';
+            return;
+        }
+        
+        let reviews = await res.json();
+        reviews = reviews.filter(r => r.itemId); // Only item reviews
+        
+        const items = itemsRes.ok ? await itemsRes.json() : [];
+        const itemMap = {};
+        items.forEach(item => itemMap[item.id] = item.title);
+        
+        if (reviews.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada ulasan item.</td></tr>';
+            return;
+        }
+        
+        let html = '';
+        reviews.forEach(r => {
+            let dateStr = '-';
+            if (r.createdAt) {
+                const d = new Date(r.createdAt);
+                dateStr = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            }
+            let stars = '';
+            for (let i = 0; i < 5; i++) {
+                if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color:#f59e0b;"></i>';
+                else stars += '<i class="fa-regular fa-star" style="color:#cbd5e1;"></i>';
+            }
+            
+            const itemName = itemMap[r.itemId] || 'Item Tidak Diketahui';
             
             html += `<tr>
                 <td>${dateStr}</td>
@@ -1810,7 +1864,7 @@ window.fetchAdminReviews = async () => {
         });
         tbody.innerHTML = html;
     } catch (e) {
-        console.error("Error fetching reviews", e);
+        console.error("Error fetching item reviews", e);
     }
 };
 
@@ -1828,7 +1882,12 @@ window.deleteReview = (id) => {
                 const res = await fetch(`${API_URL}/reviews/${id}`, { method: 'DELETE', headers: getAuthHeaders() });
                 if (res.ok) {
                     Swal.fire('Terhapus!', 'Ulasan telah dihapus.', 'success');
-                    fetchAdminReviews();
+                    if (document.getElementById("reviews-section").style.display === "block") {
+                        fetchAdminReviews();
+                    }
+                    if (document.getElementById("item-reviews-section") && document.getElementById("item-reviews-section").style.display === "block") {
+                        fetchAdminItemReviews();
+                    }
                 } else {
                     Swal.fire('Gagal!', 'Terjadi kesalahan.', 'error');
                 }

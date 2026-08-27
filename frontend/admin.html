@@ -58,7 +58,8 @@
           <li><a href="#" onclick="showTab('bookings')"><i class="fa-solid fa-calendar-alt"></i> Jadwal Manual</a></li>
           <li><a href="#" onclick="showTab('gallery')"><i class="fa-solid fa-camera"></i> Kelola Galeri</a></li>
           <li><a href="#" onclick="showTab('drivers')"><i class="fa-solid fa-car"></i> Manajemen Supir</a></li>
-          <li><a href="#" onclick="showTab('reviews')"><i class="fa-solid fa-star"></i> Kelola Ulasan</a></li>
+          <li><a href="#" onclick="showTab('reviews')"><i class="fa-solid fa-star"></i> Kelola Ulasan Web</a></li>
+          <li><a href="#" onclick="showTab('item-reviews')"><i class="fa-solid fa-star-half-stroke"></i> Kelola Ulasan Item</a></li>
           <li><a href="#" onclick="showTab('promos')"><i class="fa-solid fa-tags"></i> Kelola Promo</a></li>
           <li><a href="#" onclick="showTab('blogs')"><i class="fa-solid fa-newspaper"></i> Kelola Blog</a></li>
           <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
@@ -409,7 +410,28 @@
 
         <!-- Reviews Section -->
         <section id="reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
-          <h2>Kelola Ulasan Pelanggan</h2>
+          <h2>Kelola Ulasan Web Utama</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Nama</th>
+                  <th>Bintang</th>
+                  <th>Ulasan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-reviews-table">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Item Reviews Section -->
+        <section id="item-reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Kelola Ulasan Khusus Item</h2>
           <div class="table-responsive mt-4">
             <table class="admin-table">
               <thead>
@@ -422,7 +444,7 @@
                   <th>Aksi</th>
                 </tr>
               </thead>
-              <tbody id="admin-reviews-table">
+              <tbody id="admin-item-reviews-table">
                 <!-- Loaded via JS -->
               </tbody>
             </table>
