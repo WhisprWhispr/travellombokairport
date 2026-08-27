@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { GoogleGenerativeAI } = require('@google/generative-ai');
+const { db } = require('../config/firebase');
 
 // Inisialisasi Gemini API
 // Pastikan GEMINI_API_KEY disetel di .env
@@ -65,6 +66,77 @@ Catatan:
     } catch (error) {
         console.error('Error scanning image:', error);
         res.status(500).json({ success: false, message: 'Gagal menganalisis gambar', error: error.message });
+    }
+});
+
+router.post('/chat', async (req, res) => {
+    try {
+        const { message, history } = req.body;
+        if (!message) {
+            return res.status(400).json({ success: false, message: 'Pesan kosong' });
+        }
+
+        if (!process.env.GEMINI_API_KEY) {
+            return res.status(500).json({ success: false, message: 'Server belum dikonfigurasi dengan GEMINI_API_KEY' });
+        }
+
+        // Fetch data context
+        let contextData = '';
+        try {
+            const snapshot = await db.collection('items').get();
+            const items = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                items.push(`ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${data.price} | Kategori: ${data.category} | Deskripsi Singkat: ${data.description ? data.description.substring(0,100) : ''}...`);
+            });
+            contextData = items.join('\\n');
+        } catch(e) {
+            console.error("Gagal menarik data untuk konteks chatbot", e);
+        }
+
+        const systemPrompt = `Anda adalah "Lombok AI", asisten customer service ramah dan cerdas untuk website travel "Travel Lombok Airport". 
+Anda ahli dalam merekomendasikan paket tour, sewa mobil/motor, dan jasa antar jemput.
+Gunakan sapaan sopan seperti "Kak" atau "Bapak/Ibu" saat menjawab. 
+
+Berikut adalah database layanan yang tersedia saat ini:
+${contextData}
+
+Aturan Penting:
+1. JANGAN MENGARANG HARGA ATAU LAYANAN. Hanya rekomendasikan apa yang ada di database di atas.
+2. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
+   Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
+3. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
+4. Gunakan emoji secukupnya agar percakapan lebih ramah.
+5. Format jawaban gunakan bullet points jika memberikan daftar.`;
+
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        
+        // Start a chat session
+        const chat = model.startChat({
+            history: [
+                {
+                    role: "user",
+                    parts: [{ text: systemPrompt }],
+                },
+                {
+                    role: "model",
+                    parts: [{ text: "Siap! Saya mengerti instruksi tersebut dan siap membantu pelanggan dengan ramah berdasarkan data layanan yang ada." }],
+                },
+                ...(history || [])
+            ],
+            generationConfig: {
+                maxOutputTokens: 500,
+            },
+        });
+
+        const result = await chat.sendMessage(message);
+        const response = result.response;
+        
+        res.json({ success: true, reply: response.text() });
+
+    } catch (error) {
+        console.error('Error in AI chat:', error);
+        res.status(500).json({ success: false, message: 'Gagal merespons obrolan', error: error.message });
     }
 });
 

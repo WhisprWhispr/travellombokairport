@@ -3466,3 +3466,110 @@ window.shareItem = (id, title, priceStr) => {
     });
 };
 
+// ========== AI CHATBOT LOGIC ==========
+let chatHistory = [];
+
+window.toggleChat = () => {
+    const chatWindow = document.getElementById('ai-chat-window');
+    chatWindow.classList.toggle('hidden');
+    if (!chatWindow.classList.contains('hidden')) {
+        document.getElementById('chat-input').focus();
+    }
+};
+
+window.handleChatKeyPress = (event) => {
+    if (event.key === 'Enter') {
+        window.sendChatMessage();
+    }
+};
+
+function parseMarkdownToHTML(markdown) {
+    let html = markdown;
+    // Bold
+    html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    // Links [Text](URL)
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+    // Newlines
+    html = html.replace(/\n/g, '<br>');
+    return html;
+}
+
+window.sendChatMessage = async () => {
+    const input = document.getElementById('chat-input');
+    const message = input.value.trim();
+    if (!message) return;
+
+    // Clear input
+    input.value = '';
+    
+    const messagesContainer = document.getElementById('chat-messages');
+    
+    // Add User Message
+    messagesContainer.innerHTML += `
+        <div class="message user-message">
+            ${message}
+        </div>
+    `;
+    
+    // Add Typing Indicator
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.innerHTML += `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+        </div>
+    `;
+    
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    try {
+        const response = await fetch(`${API_URL}/ai/chat`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ 
+                message,
+                history: chatHistory
+            })
+        });
+
+        const typingIndicator = document.getElementById(typingId);
+        if (typingIndicator) typingIndicator.remove();
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.success) {
+                // Update History
+                chatHistory.push({ role: "user", parts: [{ text: message }] });
+                chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+
+                // Render AI Message
+                const htmlReply = parseMarkdownToHTML(data.reply);
+                messagesContainer.innerHTML += `
+                    <div class="message ai-message">
+                        ${htmlReply}
+                    </div>
+                `;
+            } else {
+                throw new Error(data.message);
+            }
+        } else {
+            throw new Error('Gagal menghubungi AI');
+        }
+    } catch (error) {
+        console.error("Chat Error:", error);
+        const typingIndicator = document.getElementById(typingId);
+        if (typingIndicator) typingIndicator.remove();
+        
+        messagesContainer.innerHTML += `
+            <div class="message ai-message" style="color: #ef4444; background: #fee2e2;">
+                Maaf, layanan AI sedang sibuk atau ada gangguan jaringan. Silakan coba lagi.
+            </div>
+        `;
+    }
+    
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+
