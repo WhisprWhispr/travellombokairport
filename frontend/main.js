@@ -3011,6 +3011,13 @@ window.showRiwayatTransaksi = async (isPage = false) => {
         const data = await response.json();
 
         if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                // Token kadaluarsa / invalid, paksa logout dan tampilkan prompt login
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('auth_user');
+                window.checkAuthUI();
+                return window.showRiwayatTransaksi(isPage);
+            }
             throw new Error(data.error || data.message || 'Gagal memuat riwayat');
         }
 
