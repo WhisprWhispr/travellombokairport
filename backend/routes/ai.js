@@ -109,7 +109,7 @@ Aturan Penting:
 4. Gunakan emoji secukupnya agar percakapan lebih ramah.
 5. Format jawaban gunakan bullet points jika memberikan daftar.`;
 
-        const model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
         
         // Start a chat session
         const chat = model.startChat({
