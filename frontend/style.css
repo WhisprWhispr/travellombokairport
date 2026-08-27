@@ -1991,19 +1991,24 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 #ai-chat-btn {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    height: 55px;
+    padding: 0 25px;
+    border-radius: 30px;
     background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
     color: white;
     border: none;
     box-shadow: 0 10px 25px rgba(29, 78, 216, 0.4);
-    font-size: 1.8rem;
     cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
+    gap: 10px;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.chat-btn-text {
+    font-size: 1rem;
+    font-weight: 700;
 }
 
 #ai-chat-btn:hover {

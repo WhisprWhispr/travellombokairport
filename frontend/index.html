@@ -880,17 +880,20 @@
     <div id="ai-chat-widget">
         <!-- Floating Action Button -->
         <button id="ai-chat-btn" onclick="toggleChat()" title="Tanya Lombok AI">
-            <i class="fa-solid fa-robot"></i>
+            <i class="fa-solid fa-headset" style="font-size: 1.4rem;"></i>
+            <span class="chat-btn-text">Tanya AI</span>
         </button>
 
         <!-- Chat Window -->
         <div id="ai-chat-window" class="hidden">
             <div class="chat-header">
                 <div class="chat-header-info">
-                    <i class="fa-solid fa-robot" style="font-size: 1.2rem;"></i>
+                    <div style="width: 35px; height: 35px; background: white; color: #1d4ed8; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.1rem;">
+                        <i class="fa-solid fa-headset"></i>
+                    </div>
                     <div>
-                        <h4 style="margin: 0; font-size: 1rem; font-weight: 800;">Lombok AI</h4>
-                        <span style="font-size: 0.75rem; opacity: 0.8;">Asisten Virtual Pintar</span>
+                        <h4 style="margin: 0; font-size: 1rem; font-weight: 800;">Lombok AI (CS)</h4>
+                        <span style="font-size: 0.75rem; opacity: 0.9;">Online 24 Jam</span>
                     </div>
                 </div>
                 <button onclick="toggleChat()" class="close-chat-btn"><i class="fa-solid fa-xmark"></i></button>
