@@ -1890,9 +1890,48 @@ window.submitBooking = (method) => {
         return;
     }
 
+    let estimatedPrice = 0;
+    if (subLayanan && subLayanan !== "-") {
+        if (layanan === "Sewa Mobil" || layanan === "Paket Tour") {
+            const matched = window.globalItems ? window.globalItems.find(i => i.title === subLayanan) : null;
+            if (matched && matched.price) {
+                estimatedPrice = matched.price;
+            }
+        } else if (layanan === "Airport Transfer") {
+            const transferItems = window.globalItems ? window.globalItems.filter(item => {
+                const cat = item.category?.toLowerCase() || '';
+                return cat.includes("antar jemput") || cat.includes("transfer") || cat === "transfer";
+            }) : [];
+            
+            // Try to parse "Airport ⇔ Area Name (Vehicle)" or "Area Name (Vehicle)"
+            let areaName = subLayanan.replace("Airport ⇔ ", "");
+            let vehicle = "";
+            const match = areaName.match(/(.*?)\s*\((.*?)\)$/);
+            if (match) {
+                areaName = match[1].trim();
+                vehicle = match[2].trim();
+            }
+
+            for (let item of transferItems) {
+                if (item.transferMatrix && Array.isArray(item.transferMatrix)) {
+                    for (let matrix of item.transferMatrix) {
+                        let mArea = matrix.area || "";
+                        if (mArea.trim() === areaName || mArea.trim() === subLayanan.replace("Airport ⇔ ", "").trim()) {
+                            if (vehicle && matrix.prices && matrix.prices[vehicle]) {
+                                estimatedPrice = Number(matrix.prices[vehicle]);
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (estimatedPrice > 0) break;
+            }
+        }
+    }
+
     if (method === "wa") {
         // Build professional WhatsApp message without requiring login
-        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pemesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Layanan: ${layanan}\n${subLayanan !== "-" ? `- Pilihan: ${subLayanan}\n` : ""}- Tanggal: ${tanggal}\n- Jumlah Orang: ${jumlah}\n\nMohon informasi mengenai ketersediaan dan proses selanjutnya.\nTerima kasih.`;
+        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pemesanan (Quick Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Layanan: ${layanan}\n${subLayanan !== "-" ? `- Pilihan: ${subLayanan}\n` : ""}- Tanggal: ${tanggal}\n- Jumlah Orang: ${jumlah}\n${estimatedPrice > 0 ? `- Estimasi Harga: ${formatPrice(estimatedPrice)}\n` : ""}\nMohon informasi mengenai ketersediaan dan proses selanjutnya.\nTerima kasih.`;
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
     } else {
         // Require login for web checkout
@@ -1903,7 +1942,8 @@ window.submitBooking = (method) => {
             itemDetail = `${layanan} - ${subLayanan}`;
         }
         const itemName = `${itemDetail} (${jumlah} - ${tanggal})`;
-        openCheckoutModal(itemName, 0); // 0 means calculate later or follow up
+        // Use estimated price for web checkout if available, otherwise 0
+        openCheckoutModal(itemName, estimatedPrice);
     }
 };
 // Checkout & QRIS Flow
