@@ -801,6 +801,7 @@ const createPackageCard = (item, index = 0) => {
         </div>
         <div class="content">
             <h3>${item.title}</h3>
+            ${item.rating ? `<div style="display:flex; align-items:center; gap:5px; margin-top:8px; font-size:0.9rem; color:#f59e0b; font-weight:700;"><i class="fa-solid fa-star"></i> <span>${item.rating}</span> <span style="color:#64748b; font-size:0.75rem; font-weight:500;">(${item.reviewCount} ulasan)</span></div>` : ''}
             <ul>
                 <li><i class="fa-solid fa-check"></i> ${item.description || ''}</li>
             </ul>
@@ -951,6 +952,7 @@ const createFleetCard = (item, index = 0) => {
         </div>
         <div class="content">
             <h3 class="notranslate">${item.title}</h3>
+            ${item.rating ? `<div style="display:flex; align-items:center; gap:5px; margin-top:8px; font-size:0.9rem; color:#f59e0b; font-weight:700;"><i class="fa-solid fa-star"></i> <span>${item.rating}</span> <span style="color:#64748b; font-size:0.75rem; font-weight:500;">(${item.reviewCount} ulasan)</span></div>` : ''}
             ${featureTags ? `<div class="fleet-tags-row">${featureTags}</div>` : ''}
             ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
             <div class="price-row">
@@ -1208,6 +1210,27 @@ const init = async () => {
     // Fetch all data
     globalItems = await fetchItems();
     window.globalItems = globalItems;
+
+    try {
+        if (!window.allReviewsData) {
+            const reviewsRes = await fetch(`${API_URL}/reviews`);
+            if (reviewsRes.ok) {
+                window.allReviewsData = await reviewsRes.json();
+            }
+        }
+        if (window.allReviewsData) {
+            globalItems.forEach(item => {
+                const itemReviews = window.allReviewsData.filter(r => r.itemId === item.id && r.status === 'approved');
+                if (itemReviews.length > 0) {
+                    const avg = itemReviews.reduce((sum, r) => sum + r.rating, 0) / itemReviews.length;
+                    item.rating = avg.toFixed(1).replace('.0', '');
+                    item.reviewCount = itemReviews.length;
+                }
+            });
+        }
+    } catch (e) {
+        console.error("Failed to fetch reviews for items", e);
+    }
 
     // Categorize data - exclude child items (parentId set) from all main sections
     const childItemIds = new Set(globalItems.filter(i => i.parentId).map(i => i.id));
