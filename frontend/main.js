@@ -1876,49 +1876,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Handle WA Booking Form (No Login Required)
-window.openWaBookingForm = (itemTitle) => {
-    Swal.fire({
-        title: 'Form Booking via WA',
-        html: `
-            <div style="text-align: left;">
-                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">Silakan lengkapi data berikut sebelum melanjutkan ke WhatsApp (Tidak perlu login).</p>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Nama Lengkap</label>
-                    <input type="text" id="wa-nama" class="swal2-input" placeholder="Nama Anda" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Tanggal Pesanan</label>
-                    <input type="date" id="wa-tanggal" class="swal2-input" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Jumlah Orang</label>
-                    <input type="number" id="wa-jumlah" class="swal2-input" placeholder="Misal: 2" min="1" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;">
-                </div>
-            </div>
-        `,
-        confirmButtonText: '<i class="fa-brands fa-whatsapp"></i> Lanjut ke WA',
-        confirmButtonColor: '#22c55e',
-        showCancelButton: true,
-        cancelButtonText: 'Batal',
-        preConfirm: () => {
-            const nama = document.getElementById('wa-nama').value;
-            const tanggal = document.getElementById('wa-tanggal').value;
-            const jumlah = document.getElementById('wa-jumlah').value;
-            if (!nama || !tanggal || !jumlah) {
-                Swal.showValidationMessage('Semua kolom harus diisi');
-                return false;
-            }
-            return { nama, tanggal, jumlah };
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const { nama, tanggal, jumlah } = result.value;
-            const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pemesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Nama: ${nama}\n- Layanan: ${itemTitle}\n- Tanggal: ${tanggal}\n- Jumlah Orang: ${jumlah}\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.`;
-            window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
-        }
-    });
-};
+
 
 // Handle Quick Booking form
 window.submitBooking = (method) => {
@@ -1962,11 +1920,11 @@ window.closeCheckoutModal = () => {
     document.getElementById("checkout-modal").classList.remove("active");
 };
 
-window.openCheckoutModal = async (itemName, price) => {
+window.openCheckoutModal = async (itemName, price, method = 'web') => {
     // Find itemId
     let matchedItem = window.globalItems ? window.globalItems.find(i => i.title === itemName) : null;
     window.currentCheckoutItemId = matchedItem ? matchedItem.id : null;
-    if (!window.checkAuthAndPrompt()) return;
+    if (method !== 'wa' && !window.checkAuthAndPrompt()) return;
 
     const modalBody = document.getElementById("checkout-modal-body");
     const isOrder = price > 0;
@@ -2383,6 +2341,14 @@ window.processCheckout = async (itemName, price) => {
         finalPrice = price * diffDays;
     }
     
+    // Jika metode adalah WhatsApp, langsung alihkan ke WA tanpa simpan ke DB
+    if (method === 'wa') {
+        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.`;
+        window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
+        closeCheckoutModal();
+        return;
+    }
+
     const baseTotal = finalPrice; // Simpan total asli sebelum diskon dan DP
     
     // Terapkan diskon promo
