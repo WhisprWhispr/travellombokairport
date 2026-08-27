@@ -318,18 +318,28 @@ Aturan Penting:
             }
         });
 
-        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.5-flash:generateContent?key=${apiKey}`;
-        
-        const geminiResponse = await fetch(geminiUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: requestBody
-        });
+        const models = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-2.5-flash'];
+        let geminiResponse = null;
+        let lastError = '';
 
-        if (!geminiResponse.ok) {
+        for (const model of models) {
+            const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            
+            geminiResponse = await fetch(geminiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: requestBody
+            });
+
+            if (geminiResponse.ok) break;
+
             const errBody = await geminiResponse.text();
-            console.error('Gemini error:', errBody);
-            return c.json({ success: false, message: 'Gagal menghubungi server AI', detail: errBody }, 500);
+            lastError = errBody;
+            console.error(`Gemini error for model ${model}:`, errBody);
+        }
+
+        if (!geminiResponse || !geminiResponse.ok) {
+            return c.json({ success: false, message: 'Kuota API habis atau server sibuk. Silakan coba lagi nanti.', detail: lastError }, 503);
         }
 
         const geminiResult = await geminiResponse.json();
