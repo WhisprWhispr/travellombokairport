@@ -434,7 +434,7 @@ window.openTourModal = (id) => {
                     ` : ''}
 
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); window.open('https://wa.me/6289676963255?text=' + encodeURIComponent('Halo Admin Travel Lombok Airport,\n\nSaya tertarik dan ingin menanyakan detail atau melakukan pemesanan untuk paket berikut:\n\n*Nama Paket/Layanan*: ' + item.title + '\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.'), '_blank');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <a href="#" onclick="event.preventDefault(); window.openWaBookingForm('${item.title.replace(/'/g, "\\'")}');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
                         <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
@@ -1875,6 +1875,50 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+// Handle WA Booking Form (No Login Required)
+window.openWaBookingForm = (itemTitle) => {
+    Swal.fire({
+        title: 'Form Booking via WA',
+        html: `
+            <div style="text-align: left;">
+                <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">Silakan lengkapi data berikut sebelum melanjutkan ke WhatsApp (Tidak perlu login).</p>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Nama Lengkap</label>
+                    <input type="text" id="wa-nama" class="swal2-input" placeholder="Nama Anda" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Tanggal Pesanan</label>
+                    <input type="date" id="wa-tanggal" class="swal2-input" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; font-size: 0.85rem; font-weight: 600; color: #334155; margin-bottom: 5px;">Jumlah Orang</label>
+                    <input type="number" id="wa-jumlah" class="swal2-input" placeholder="Misal: 2" min="1" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;">
+                </div>
+            </div>
+        `,
+        confirmButtonText: '<i class="fa-brands fa-whatsapp"></i> Lanjut ke WA',
+        confirmButtonColor: '#22c55e',
+        showCancelButton: true,
+        cancelButtonText: 'Batal',
+        preConfirm: () => {
+            const nama = document.getElementById('wa-nama').value;
+            const tanggal = document.getElementById('wa-tanggal').value;
+            const jumlah = document.getElementById('wa-jumlah').value;
+            if (!nama || !tanggal || !jumlah) {
+                Swal.showValidationMessage('Semua kolom harus diisi');
+                return false;
+            }
+            return { nama, tanggal, jumlah };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const { nama, tanggal, jumlah } = result.value;
+            const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pemesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Nama: ${nama}\n- Layanan: ${itemTitle}\n- Tanggal: ${tanggal}\n- Jumlah Orang: ${jumlah}\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.`;
+            window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
+        }
+    });
+};
 
 // Handle Quick Booking form
 window.submitBooking = (method) => {
