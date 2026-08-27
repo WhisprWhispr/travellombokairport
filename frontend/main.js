@@ -449,9 +449,12 @@ window.openTourModal = (id) => {
             <div id="inline-review-form-container-${item.id}" style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
                 <!-- Form content will be injected here -->
             </div>
-            <div id="item-reviews-container-${item.id}" style="max-height: 250px; overflow-y: auto; padding-right: 5px;">
-                <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 20px 0;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat ulasan...</p>
+            <div id="item-reviews-container-${item.id}" style="display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 10px;">
+                <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 20px 0; width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat ulasan...</p>
             </div>
+            <style>
+                #item-reviews-container-${item.id}::-webkit-scrollbar { display: none; }
+            </style>
         </div>
 
         <div class="tm-footer" style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 25px 20px; border-radius: 0 0 20px 20px; border-top: 1px solid #e2e8f0;">
@@ -518,8 +521,8 @@ window.loadItemReviews = async (itemId) => {
             }
             const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
             return `
-            <div style="background: #f8fafc; padding: 12px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e2e8f0;">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 5px;">
+            <div style="flex: 0 0 85%; max-width: 320px; scroll-snap-align: start; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
                     <div>
                         <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-dark);">${r.name}</div>
                         <div style="display: flex; gap: 2px; margin-top: 2px;">${stars}</div>
