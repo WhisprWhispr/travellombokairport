@@ -125,7 +125,8 @@ Aturan Penting:
                 ...(history || [])
             ],
             generationConfig: {
-                maxOutputTokens: 500,
+                maxOutputTokens: 4096,
+                temperature: 0.7,
             },
         });
 
