@@ -1,5 +1,6 @@
 import { Hono } from 'hono';
 import { verify } from 'hono/jwt';
+import { getDb } from '../config/firebase.js';
 
 const aiRoutes = new Hono();
 
@@ -245,6 +246,100 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
         console.error('Error scanning image:', error);
         let debugText = responseText ? responseText.substring(0, 300) + '...' : 'empty';
         return c.json({ success: false, message: 'Gagal menganalisis gambar: ' + (error.message || 'Unknown error') + ' | RAW: ' + debugText }, 500);
+    }
+});
+
+aiRoutes.post('/chat', async (c) => {
+    try {
+        const body = await c.req.json();
+        const { message, history } = body;
+        
+        if (!message) {
+            return c.json({ success: false, message: 'Pesan kosong' }, 400);
+        }
+
+        const apiKey = c.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            return c.json({ success: false, message: 'Server belum dikonfigurasi dengan GEMINI_API_KEY' }, 500);
+        }
+
+        // Fetch data context
+        let contextData = '';
+        try {
+            const db = getDb(c);
+            const snapshot = await db.collection('items').get();
+            const items = [];
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                items.push(`ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${data.price} | Kategori: ${data.category} | Deskripsi Singkat: ${data.description ? data.description.substring(0,100) : ''}...`);
+            });
+            contextData = items.join('\\n');
+        } catch(e) {
+            console.error("Gagal menarik data untuk konteks chatbot", e);
+        }
+
+        const systemPrompt = `Anda adalah "Lombok AI", asisten customer service ramah dan cerdas untuk website travel "Travel Lombok Airport". 
+Anda ahli dalam merekomendasikan paket tour, sewa mobil/motor, dan jasa antar jemput.
+Gunakan sapaan sopan seperti "Kak" atau "Bapak/Ibu" saat menjawab. 
+
+Berikut adalah database layanan yang tersedia saat ini:
+${contextData}
+
+Aturan Penting:
+1. JANGAN MENGARANG HARGA ATAU LAYANAN. Hanya rekomendasikan apa yang ada di database di atas.
+2. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
+   Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
+3. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
+4. Gunakan emoji secukupnya agar percakapan lebih ramah.
+5. Format jawaban gunakan bullet points jika memberikan daftar.`;
+
+        // Combine history and new message
+        const contents = [
+            {
+                role: "user",
+                parts: [{ text: systemPrompt }]
+            },
+            {
+                role: "model",
+                parts: [{ text: "Siap! Saya mengerti instruksi tersebut dan siap membantu pelanggan dengan ramah berdasarkan data layanan yang ada." }]
+            },
+            ...(history || []),
+            {
+                role: "user",
+                parts: [{ text: message }]
+            }
+        ];
+
+        const requestBody = JSON.stringify({
+            contents: contents,
+            generationConfig: {
+                temperature: 0.7,
+                maxOutputTokens: 500
+            }
+        });
+
+        const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+        
+        const geminiResponse = await fetch(geminiUrl, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: requestBody
+        });
+
+        if (!geminiResponse.ok) {
+            const errBody = await geminiResponse.text();
+            console.error('Gemini error:', errBody);
+            return c.json({ success: false, message: 'Gagal menghubungi server AI' }, 500);
+        }
+
+        const geminiResult = await geminiResponse.json();
+        const replyText = geminiResult?.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak bisa merespons saat ini.";
+
+        return c.json({ success: true, reply: replyText });
+
+    } catch (error) {
+        console.error('Error in AI chat:', error);
+        return c.json({ success: false, message: 'Gagal merespons obrolan', error: error.message }, 500);
     }
 });
 
