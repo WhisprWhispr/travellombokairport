@@ -2025,7 +2025,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <div id="dynamic-date-warning" style="display: none; margin-bottom: 15px; font-size: 0.85rem; color: #ef4444; background: #fff1f2; padding: 10px; border-radius: 8px; border: 1px solid #fecdd3;">
                 <strong><i class="fa-solid fa-triangle-exclamation"></i> Maaf, rentang tanggal yang Anda pilih bentrok dengan jadwal yang sudah dipesan! Silakan pilih tanggal lain.</strong>
             </div>`;
-    if (isOrder) {
+    if (isOrder && method !== 'wa') {
         html += `
             ${price > 500200 ? `
             <div class="form-group mb-4">
@@ -2091,7 +2091,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     } else {
         html += `
             <input type="hidden" id="co-payment" value="booking_only">
-            <button type="submit" class="btn btn-green w-100" style="padding: 12px; font-size: 1.1rem;">KIRIM BOOKING</button>
+            <button type="submit" class="btn btn-green w-100" style="padding: 12px; font-size: 1.1rem; background: ${method === 'wa' ? '#22c55e' : 'var(--primary-green)'}; border-color: ${method === 'wa' ? '#22c55e' : 'var(--primary-green)'};">${method === 'wa' ? '<i class="fa-brands fa-whatsapp"></i> LANJUTKAN VIA WA' : 'KIRIM BOOKING'}</button>
         `;
     }
 
