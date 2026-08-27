@@ -86,7 +86,7 @@ Baca SEMUA teks yang terlihat di gambar dan masukkan ke field yang sesuai.
 Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSON.`;
 
         // Models to try (fallback if primary is overloaded)
-        const models = ['gemini-1.5-flash', 'gemini-1.5-flash-8b', 'gemini-1.5-pro', 'gemini-1.0-pro'];
+        const models = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
         const requestBody = JSON.stringify({
             contents: [{
                 parts: [
@@ -126,7 +126,7 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
 
                 // If 503 (overloaded) or 429 (quota), wait briefly and retry once, then try next model
                 if ((geminiResponse.status === 503 || geminiResponse.status === 429) && attempt < 2) {
-                    await new Promise(r => setTimeout(r, 1500));
+                    await new Promise(r => setTimeout(r, 2500));
                     continue;
                 }
                 break; // Try next model
@@ -318,7 +318,7 @@ Aturan Penting:
             }
         });
 
-        const models = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-2.5-flash'];
+        const models = ['gemini-3.5-flash', 'gemini-3.6-flash', 'gemini-2.5-flash', 'gemini-flash-latest'];
         let geminiResponse = null;
         let lastError = '';
 
@@ -336,6 +336,10 @@ Aturan Penting:
             const errBody = await geminiResponse.text();
             lastError = errBody;
             console.error(`Gemini error for model ${model}:`, errBody);
+
+            if (geminiResponse.status === 429 || geminiResponse.status === 503) {
+                await new Promise(resolve => setTimeout(resolve, 2500));
+            }
         }
 
         if (!geminiResponse || !geminiResponse.ok) {
