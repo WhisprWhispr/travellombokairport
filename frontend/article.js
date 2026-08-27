@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span style="display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-eye" style="color: var(--primary-green); font-size: 1.1rem;"></i> ${blog.views || 0} kali dibaca</span>
                     </div>
                     <div class="article-content" style="line-height: 1.9; color: #334155; font-size: 1.1rem; min-height: 200px;">
-                        ${blog.content}
+                        ${(blog.content || '').split('\\n').filter(p => p.trim() !== '').map(p => `<p style="margin-bottom: 1.5em; text-align: justify;">${p.trim()}</p>`).join('')}
                     </div>
                     ${tagsHtml ? `<div style="margin-top: 50px; padding-top: 25px; border-top: 2px dashed #f1f5f9; display: flex; gap: 10px; flex-wrap: wrap;">${tagsHtml}</div>` : ''}
                 </div>
