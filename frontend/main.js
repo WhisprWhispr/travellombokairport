@@ -434,7 +434,7 @@ window.openTourModal = (id) => {
                     ` : ''}
 
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); window.openWaBookingForm('${item.title.replace(/'/g, "\\'")}');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${item.price}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
                         <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
@@ -970,7 +970,7 @@ const createFleetCard = (item, index = 0) => {
                 </div>
                 <div class="action-buttons">
                     <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
-                    <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
+                    <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${item.price}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
                 </div>
             </div>
         </div>
@@ -1962,7 +1962,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             ${isOrder ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
         </div>
 
-        <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${price || 0});">
+        <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${price || 0}, '${method}');">
             <div class="form-group mb-3">
                 <label>Nama Lengkap</label>
                 <input type="text" id="co-name" class="form-control" required placeholder="Masukkan nama Anda">
