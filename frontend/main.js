@@ -184,23 +184,6 @@ const formatPrice = (price) => {
     }).format(num);
 };
 
-window.setCurrencyFromLang = (langCode) => {
-    let currency = 'IDR';
-    if (langCode === 'EN') currency = 'USD';
-    else if (langCode === 'ZH') currency = 'CNY';
-    else if (langCode === 'AR') currency = 'SAR'; // SAR is not in our list, we will fallback to USD or add it
-    
-    localStorage.setItem('app_currency', currency);
-    
-    // Re-render
-    if (document.getElementById('packages-grid') && document.getElementById('packages-grid').innerHTML !== '') {
-        loadItems('paket');
-    }
-    if (document.getElementById('cars-grid') && document.getElementById('cars-grid').innerHTML !== '') {
-        loadItems('mobil');
-    }
-};
-
 window.formatPrice = formatPrice;
 
 // Fetch items from backend
