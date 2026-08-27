@@ -2739,12 +2739,15 @@ window.renderReviewsList = () => {
     const container = document.getElementById('reviews-container');
     if (!container) return;
 
-    if (window.allReviewsData.length === 0) {
+    // Hanya tampilkan ulasan web utama (tanpa itemId)
+    const generalReviews = (window.allReviewsData || []).filter(r => !r.itemId);
+
+    if (generalReviews.length === 0) {
         container.innerHTML = '<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada ulasan. Jadilah yang pertama memberikan ulasan!</p>';
         return;
     }
 
-    const toShow = window.showingAllReviews ? window.allReviewsData : window.allReviewsData.slice(0, 3);
+    const toShow = window.showingAllReviews ? generalReviews : generalReviews.slice(0, 3);
 
     let html = '';
     toShow.forEach(r => {
@@ -2778,11 +2781,11 @@ window.renderReviewsList = () => {
     });
 
     // Add "See all" button if there are more than 3 reviews
-    if (window.allReviewsData.length > 3) {
+    if (generalReviews.length > 3) {
         html += `
         <div class="text-center w-100 mt-3" style="grid-column: 1/-1;">
             <button onclick="window.toggleAllReviews()" class="btn btn-outline" style="border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 8px 24px; border-radius: 20px; font-weight: 600;">
-                ${window.showingAllReviews ? 'Sembunyikan' : `Lihat Semua Ulasan (${window.allReviewsData.length})`}
+                ${window.showingAllReviews ? 'Sembunyikan' : `Lihat Semua Ulasan (${generalReviews.length})`}
             </button>
         </div>
         `;
