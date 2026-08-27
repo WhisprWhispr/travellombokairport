@@ -848,7 +848,9 @@
             setTimeout(function() { doGTranslate(langPair) }, 500);
         } else {
             teCombo.value = lang;
-            if (document.createEvent) {
+            if (typeof Event === 'function') {
+                teCombo.dispatchEvent(new Event('change', { bubbles: true }));
+            } else if (document.createEvent) {
                 var evt = document.createEvent('HTMLEvents');
                 evt.initEvent('change', true, true);
                 teCombo.dispatchEvent(evt);
