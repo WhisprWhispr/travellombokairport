@@ -329,7 +329,7 @@ Aturan Penting:
         if (!geminiResponse.ok) {
             const errBody = await geminiResponse.text();
             console.error('Gemini error:', errBody);
-            return c.json({ success: false, message: 'Gagal menghubungi server AI' }, 500);
+            return c.json({ success: false, message: 'Gagal menghubungi server AI', detail: errBody }, 500);
         }
 
         const geminiResult = await geminiResponse.json();
