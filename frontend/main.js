@@ -434,7 +434,7 @@ window.openTourModal = (id) => {
                     ` : ''}
 
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); window.open('https://wa.me/6289676963255?text=Halo%20admin,%20saya%20ingin%20booking%20${encodeURIComponent(item.title)}', '_blank');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <a href="#" onclick="event.preventDefault(); window.open('https://wa.me/6289676963255?text=' + encodeURIComponent('Halo Admin Travel Lombok Airport,\n\nSaya tertarik dan ingin menanyakan detail atau melakukan pemesanan untuk paket berikut:\n\n*Nama Paket/Layanan*: ' + item.title + '\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.'), '_blank');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
                         <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
@@ -1878,8 +1878,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Handle Quick Booking form
 window.submitBooking = (method) => {
-    if (!window.checkAuthAndPrompt()) return;
-
     const layanan = document.getElementById("qb-layanan").value;
     const subLayanan = document.getElementById("qb-sub-layanan").value;
     const tanggal = document.getElementById("qb-tanggal").value;
@@ -1890,16 +1888,19 @@ window.submitBooking = (method) => {
         return;
     }
 
-    let itemDetail = layanan;
-    if (subLayanan && subLayanan !== "-") {
-        itemDetail = `${layanan} - ${subLayanan}`;
-    }
-    const itemName = `${itemDetail} (${jumlah} - ${tanggal})`;
-
     if (method === "wa") {
-        const text = `Halo Admin Travel Lombok Airport,nnSaya ingin melakukan pemesanan (Booking) dengan rincian sebagai berikut:nn- Layanan: ${layanan}n${subLayanan !== "-" ? `- Pilihan: ${subLayanan}n` : ""}- Tanggal: ${tanggal}n- Jumlah Orang: ${jumlah}nnMohon informasi mengenai ketersediaan dan proses selanjutnya. Terima kasih!`;
+        // Build professional WhatsApp message without requiring login
+        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pemesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Layanan: ${layanan}\n${subLayanan !== "-" ? `- Pilihan: ${subLayanan}\n` : ""}- Tanggal: ${tanggal}\n- Jumlah Orang: ${jumlah}\n\nMohon informasi mengenai ketersediaan dan proses selanjutnya.\nTerima kasih.`;
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
     } else {
+        // Require login for web checkout
+        if (!window.checkAuthAndPrompt()) return;
+        
+        let itemDetail = layanan;
+        if (subLayanan && subLayanan !== "-") {
+            itemDetail = `${layanan} - ${subLayanan}`;
+        }
+        const itemName = `${itemDetail} (${jumlah} - ${tanggal})`;
         openCheckoutModal(itemName, 0); // 0 means calculate later or follow up
     }
 };
