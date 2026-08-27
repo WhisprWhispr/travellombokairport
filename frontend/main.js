@@ -3468,6 +3468,57 @@ window.shareItem = (id, title, priceStr) => {
 
 // ========== AI CHATBOT LOGIC ==========
 let chatHistory = [];
+try {
+    const saved = sessionStorage.getItem('aiChatHistory');
+    if (saved) chatHistory = JSON.parse(saved);
+} catch (e) {
+    console.error('Failed to load chat history', e);
+}
+
+// Function to render chat history on page load
+window.renderChatHistory = () => {
+    if (chatHistory.length === 0) return;
+    
+    const messagesContainer = document.getElementById('chat-messages');
+    if (!messagesContainer) return;
+
+    // Clear initial greeting if we have history
+    messagesContainer.innerHTML = '';
+
+    chatHistory.forEach(msg => {
+        if (msg.role === 'user') {
+            messagesContainer.innerHTML += `
+                <div class="message user-message">
+                    ${msg.parts[0].text}
+                </div>
+            `;
+        } else {
+            const htmlReply = parseMarkdownToHTML(msg.parts[0].text);
+            messagesContainer.innerHTML += `
+                <div class="message ai-message">
+                    ${htmlReply}
+                </div>
+            `;
+        }
+    });
+    
+    // Add default greeting at top if missing? No, we just append history.
+    // Actually, let's prepend the greeting so it always starts with it.
+    messagesContainer.insertAdjacentHTML('afterbegin', `
+        <div class="message ai-message">
+            Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
+        </div>
+    `);
+    
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+
+// Call render when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+    if (document.getElementById('chat-messages')) {
+        window.renderChatHistory();
+    }
+});
 
 window.toggleChat = () => {
     const chatWindow = document.getElementById('ai-chat-window');
@@ -3544,6 +3595,7 @@ window.sendChatMessage = async () => {
                 // Update History
                 chatHistory.push({ role: "user", parts: [{ text: message }] });
                 chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+                sessionStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
 
                 // Render AI Message
                 const htmlReply = parseMarkdownToHTML(data.reply);
