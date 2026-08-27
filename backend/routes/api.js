@@ -153,6 +153,35 @@ router.get('/stats', async (req, res) => {
     }
 });
 
+// GET rates (public)
+let cachedRates = null;
+let lastRatesFetch = 0;
+router.get('/rates', async (req, res) => {
+    try {
+        const now = Date.now();
+        // Cache for 12 hours
+        if (cachedRates && now - lastRatesFetch < 12 * 60 * 60 * 1000) {
+            return res.json(cachedRates);
+        }
+
+        // Fetch from free API
+        const response = await fetch('https://open.er-api.com/v6/latest/IDR');
+        if (!response.ok) throw new Error('Failed to fetch rates');
+        
+        const data = await response.json();
+        if (data.rates) {
+            cachedRates = data.rates;
+            lastRatesFetch = now;
+            res.json(cachedRates);
+        } else {
+            throw new Error('Invalid rates data');
+        }
+    } catch (error) {
+        console.error('Rates fetch error:', error);
+        res.status(500).json({ error: 'Gagal mengambil kurs mata uang' });
+    }
+});
+
 // POST stats (protected)
 router.post('/stats', verifyToken, async (req, res) => {
     try {

@@ -75,7 +75,7 @@ window.toggleWishlist = (id) => {
     // alert(wishlist.includes(id) ? 'Disimpan ke Wishlist!' : 'Dihapus dari Wishlist');
 };
 
-const EXCHANGE_RATES = {
+let EXCHANGE_RATES = {
     IDR: 1,
     USD: 15500,
     AUD: 10000,
@@ -86,6 +86,47 @@ const EXCHANGE_RATES = {
     CNY: 2200,
     JPY: 105
 };
+
+// Fetch real-time exchange rates
+const fetchRealtimeRates = async () => {
+    try {
+        const response = await fetch(`${API_URL}/rates`);
+        if (!response.ok) return;
+        const rates = await response.json();
+        
+        // Rates are relative to USD usually in free APIs, wait, we fetched open.er-api.com/v6/latest/IDR
+        // So the rates are relative to IDR.
+        // e.g., 1 IDR = 0.000064 USD
+        // Our formula converted = num / rate. So rate = IDR per 1 USD (e.g. 15500)
+        // If API gives USD = 0.000064, then rate = 1 / 0.000064 = ~15625
+        if (rates && rates.USD) {
+            EXCHANGE_RATES = {
+                USD: 1 / rates.USD,
+                AUD: 1 / rates.AUD,
+                EUR: 1 / rates.EUR,
+                SGD: 1 / rates.SGD,
+                MYR: 1 / rates.MYR,
+                GBP: 1 / rates.GBP,
+                CNY: 1 / rates.CNY,
+                JPY: 1 / rates.JPY,
+                SAR: 1 / rates.SAR
+            };
+            
+            // Re-render items if they are already loaded
+            if (document.getElementById('packages-grid') && document.getElementById('packages-grid').innerHTML !== '') {
+                loadItems('paket');
+            }
+            if (document.getElementById('cars-grid') && document.getElementById('cars-grid').innerHTML !== '') {
+                loadItems('mobil');
+            }
+        }
+    } catch (error) {
+        console.error('Failed to fetch realtime rates:', error);
+    }
+};
+
+// Call fetch on load
+fetchRealtimeRates();
 
 const formatPrice = (price) => {
     const currency = localStorage.getItem('app_currency') || 'IDR';
@@ -100,6 +141,7 @@ const formatPrice = (price) => {
         if (currency === 'GBP') return '£0';
         if (currency === 'CNY') return '¥0';
         if (currency === 'JPY') return '¥0';
+        if (currency === 'SAR') return 'ر.س0';
         return 'Rp 0';
     }
     
@@ -131,6 +173,8 @@ const formatPrice = (price) => {
         return new Intl.NumberFormat('zh-CN', { style: 'currency', currency: 'CNY', minimumFractionDigits: 0 }).format(converted);
     } else if (currency === 'JPY') {
         return new Intl.NumberFormat('ja-JP', { style: 'currency', currency: 'JPY', minimumFractionDigits: 0 }).format(converted);
+    } else if (currency === 'SAR') {
+        return new Intl.NumberFormat('ar-SA', { style: 'currency', currency: 'SAR', minimumFractionDigits: 0 }).format(converted);
     }
 
     return new Intl.NumberFormat('id-ID', {
@@ -138,6 +182,23 @@ const formatPrice = (price) => {
         currency: 'IDR',
         minimumFractionDigits: 0
     }).format(num);
+};
+
+window.setCurrencyFromLang = (langCode) => {
+    let currency = 'IDR';
+    if (langCode === 'EN') currency = 'USD';
+    else if (langCode === 'ZH') currency = 'CNY';
+    else if (langCode === 'AR') currency = 'SAR'; // SAR is not in our list, we will fallback to USD or add it
+    
+    localStorage.setItem('app_currency', currency);
+    
+    // Re-render
+    if (document.getElementById('packages-grid') && document.getElementById('packages-grid').innerHTML !== '') {
+        loadItems('paket');
+    }
+    if (document.getElementById('cars-grid') && document.getElementById('cars-grid').innerHTML !== '') {
+        loadItems('mobil');
+    }
 };
 
 window.formatPrice = formatPrice;

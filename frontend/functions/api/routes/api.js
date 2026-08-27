@@ -163,6 +163,35 @@ apiRoutes.get('/stats', async (c) => {
     }
 });
 
+// GET rates (public)
+let cachedRatesWorker = null;
+let lastRatesFetchWorker = 0;
+apiRoutes.get('/rates', async (c) => {
+    try {
+        const now = Date.now();
+        // Cache for 12 hours
+        if (cachedRatesWorker && now - lastRatesFetchWorker < 12 * 60 * 60 * 1000) {
+            return c.json(cachedRatesWorker);
+        }
+
+        // Fetch from free API
+        const response = await fetch('https://open.er-api.com/v6/latest/IDR');
+        if (!response.ok) throw new Error('Failed to fetch rates');
+        
+        const data = await response.json();
+        if (data.rates) {
+            cachedRatesWorker = data.rates;
+            lastRatesFetchWorker = now;
+            return c.json(cachedRatesWorker);
+        } else {
+            throw new Error('Invalid rates data');
+        }
+    } catch (error) {
+        console.error('Rates fetch error:', error);
+        return c.json({ error: 'Gagal mengambil kurs mata uang' }, 500);
+    }
+});
+
 // POST stats (protected)
 apiRoutes.post('/stats', verifyToken, async (c) => {
     try {

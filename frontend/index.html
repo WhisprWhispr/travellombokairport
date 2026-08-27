@@ -861,6 +861,9 @@
     function updateLangBtn(langCode) {
         document.getElementById('lang-btn').innerHTML = '<i class="fa-solid fa-globe"></i> ' + langCode + ' <i class="fa-solid fa-chevron-down" style="font-size: 0.7em; margin-left: 5px;"></i>';
         document.querySelector('.lang-menu').classList.remove('active');
+        if (window.setCurrencyFromLang) {
+            window.setCurrencyFromLang(langCode);
+        }
     }
   </script>
   <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
