@@ -1760,17 +1760,25 @@ window.fetchAdminDrivers = async () => {
 // === Reviews Logic ===
 window.fetchAdminReviews = async () => {
     try {
-        const res = await fetch(`${API_URL}/reviews`, { headers: getAuthHeaders() });
+        const [res, itemsRes] = await Promise.all([
+            fetch(`${API_URL}/reviews`, { headers: getAuthHeaders() }),
+            fetch(`${API_URL}/items`)
+        ]);
+        
         const tbody = document.getElementById('admin-reviews-table');
         if (!tbody) return;
         if (!res.ok) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Gagal memuat ulasan</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Gagal memuat ulasan</td></tr>';
             return;
         }
+        
         const reviews = await res.json();
+        const items = itemsRes.ok ? await itemsRes.json() : [];
+        const itemMap = {};
+        items.forEach(item => itemMap[item.id] = item.title);
         
         if (reviews.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada ulasan.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Belum ada ulasan.</td></tr>';
             return;
         }
         
@@ -1786,8 +1794,12 @@ window.fetchAdminReviews = async () => {
                 if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color:#f59e0b;"></i>';
                 else stars += '<i class="fa-regular fa-star" style="color:#cbd5e1;"></i>';
             }
+            
+            const itemName = r.itemId ? (itemMap[r.itemId] || 'Item Tidak Diketahui') : '<span style="color:#10b981; font-size:0.8rem; border:1px solid #10b981; padding:2px 6px; border-radius:10px;">Ulasan Web</span>';
+            
             html += `<tr>
                 <td>${dateStr}</td>
+                <td style="font-size:0.9rem;">${itemName}</td>
                 <td style="font-weight:600;">${r.name}</td>
                 <td>${stars}</td>
                 <td style="max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${r.comment}">${r.comment}</td>
