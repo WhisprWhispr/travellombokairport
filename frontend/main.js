@@ -2344,7 +2344,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     
     // Jika metode adalah WhatsApp, langsung alihkan ke WA tanpa simpan ke DB
     if (method === 'wa') {
-        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.`;
+        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.`;
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
         closeCheckoutModal();
         return;
