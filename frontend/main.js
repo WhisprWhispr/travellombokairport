@@ -2278,8 +2278,8 @@ window.setPaymentType = (type) => {
     }
 };
 
-window.processCheckout = async (itemName, price) => {
-    if (!window.checkAuthAndPrompt()) return;
+window.processCheckout = async (itemName, price, method = 'web') => {
+    if (method !== 'wa' && !window.checkAuthAndPrompt()) return;
 
     const name = document.getElementById("co-name").value;
     const phone = document.getElementById("co-phone").value;
