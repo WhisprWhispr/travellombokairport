@@ -269,8 +269,6 @@ apiRoutes.get('/reviews', async (c) => {
         let reviews = [];
         snapshot.forEach(doc => {
             const data = doc.data();
-            // If fetching general reviews (no itemId query), filter out item-specific ones
-            if (!itemId && data.itemId) return; 
             reviews.push({ id: doc.id, ...data });
         });
         
