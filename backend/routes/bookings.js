@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { db, admin } = require('../config/firebase');
+const { sendStatusChangeEmail } = require('../services/mailer');
 
 // Middleware for auth (optional for POST if public booking, required for GET if admin)
 const verifyToken = async (req, res, next) => {
@@ -126,6 +127,13 @@ router.put('/by-txid/:transactionId/status', async (req, res) => {
         if (snapshot.empty) return res.status(404).json({ message: 'Booking not found' });
         const docId = snapshot.docs[0].id;
         await db.collection('bookings').doc(docId).update({ status });
+        
+        // Fetch full booking data to send email
+        const updatedDoc = await db.collection('bookings').doc(docId).get();
+        if (updatedDoc.exists) {
+            sendStatusChangeEmail({ id: docId, ...updatedDoc.data() });
+        }
+
         res.json({ message: 'Booking status updated', transactionId, status });
     } catch (error) {
         res.status(500).json({ error: error.message });
@@ -142,6 +150,12 @@ router.put('/:id/status', verifyToken, async (req, res) => {
         }
         
         await db.collection('bookings').doc(id).update({ status });
+        
+        const updatedDoc = await db.collection('bookings').doc(id).get();
+        if (updatedDoc.exists) {
+            sendStatusChangeEmail({ id, ...updatedDoc.data() });
+        }
+
         res.json({ message: 'Booking status updated successfully', status });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -288,15 +288,27 @@ window.openTourModal = (id) => {
 
     const commitDay = () => {
         if (currentDay) {
+            let mapHtml = '';
+            if (currentDests.length > 0) {
+                if (currentDests.length === 1) {
+                    const query = encodeURIComponent(currentDests[0] + ' Lombok');
+                    mapHtml = `<a href="https://www.google.com/maps/search/?api=1&query=${query}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-map-location-dot"></i> Lihat Peta di Google Maps</a>`;
+                } else {
+                    const dirUrl = `https://www.google.com/maps/dir/${currentDests.map(d => encodeURIComponent(d + ' Lombok')).join('/')}`;
+                    mapHtml = `<a href="${dirUrl}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-route"></i> Buka Rute di Google Maps</a>`;
+                }
+            }
+
             itineraryHTML += `
             <div class="tm-day">
                 <div class="tm-day-header">
                     <div class="tm-day-badge">DAY<br><span>${currentDay.replace('DAY', '').trim()}</span></div>
                     <div class="tm-day-title">${currentTitle}</div>
                 </div>
-                <ul class="tm-day-list">
+                <ul class="tm-day-list" style="margin-bottom: 8px;">
                     ${currentDests.map(d => `<li>${d}</li>`).join('')}
                 </ul>
+                ${mapHtml}
             </div>`;
         }
     };
