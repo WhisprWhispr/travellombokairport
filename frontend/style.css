@@ -2185,14 +2185,23 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 @media (max-width: 480px) {
     #ai-chat-window {
-        width: 100vw;
-        height: 100vh;
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
         bottom: 0;
-        right: -30px;
+        right: 0;
         border-radius: 0;
+        z-index: 10000;
+    }
+    #ai-chat-window.hidden {
+        opacity: 0;
+        transform: scale(0.9) translateY(50px);
     }
     #ai-chat-btn {
         bottom: 20px;
         right: 20px;
+        z-index: 9999;
     }
 }
