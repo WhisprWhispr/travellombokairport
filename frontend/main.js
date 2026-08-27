@@ -1217,6 +1217,18 @@ const init = async () => {
     window.globalItems = globalItems;
 
     try {
+        const bReq = await fetch(`${API_URL}/bookings?public=true`);
+        if (bReq.ok) {
+            window.globalBookings = await bReq.json();
+        } else {
+            window.globalBookings = [];
+        }
+    } catch (e) {
+        console.error("Failed to fetch bookings", e);
+        window.globalBookings = [];
+    }
+
+    try {
         if (!window.allReviewsData) {
             const reviewsRes = await fetch(`${API_URL}/reviews`);
             if (reviewsRes.ok) {
@@ -1852,6 +1864,40 @@ window.updateSubLayanan = () => {
 document.addEventListener('DOMContentLoaded', () => {
     init().then(() => {
         window.updateSubLayanan(); // initialize dropdowns
+        
+        const qbTanggal = document.getElementById("qb-tanggal");
+        if (qbTanggal) {
+            // Validate date against existing bookings
+            qbTanggal.addEventListener('change', (e) => {
+                const selectedDate = e.target.value;
+                const subLayanan = document.getElementById("qb-sub-layanan").value;
+                if (!selectedDate || subLayanan === "-") return;
+                
+                if (window.globalBookings && window.globalBookings.length > 0) {
+                    const isBooked = window.globalBookings.some(b => {
+                        return b.startDate === selectedDate && b.itemName === subLayanan && (b.status === 'PAID' || b.status === 'CONFIRMED' || b.status === 'PENDING');
+                    });
+                    if (isBooked) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Tanggal Penuh',
+                            text: 'Maaf, layanan ini sudah terisi pada tanggal tersebut. Silakan pilih tanggal lain.',
+                            confirmButtonColor: '#22c55e'
+                        });
+                        e.target.value = ''; // clear the date
+                    }
+                }
+            });
+
+            const qbSubLayanan = document.getElementById("qb-sub-layanan");
+            if (qbSubLayanan) {
+                qbSubLayanan.addEventListener('change', () => {
+                    if (qbTanggal.value) {
+                        qbTanggal.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+        }
         
         // Auto-open shared item
         const urlParams = new URLSearchParams(window.location.search);
