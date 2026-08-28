@@ -3591,6 +3591,11 @@ window.toggleChat = () => {
     chatWindow.classList.toggle('hidden');
     if (!chatWindow.classList.contains('hidden')) {
         document.getElementById('chat-input').focus();
+        // Check and show guest limit card if needed
+        window.checkGuestLimit();
+        // Scroll to bottom
+        const msgs = document.getElementById('chat-messages');
+        if (msgs) msgs.scrollTop = msgs.scrollHeight;
     }
 };
 
