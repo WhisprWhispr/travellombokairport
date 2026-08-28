@@ -273,7 +273,12 @@ aiRoutes.post('/chat', async (c) => {
             const items = [];
             snapshot.forEach(doc => {
                 const data = doc.data();
-                items.push(`ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${data.price} | Kategori: ${data.category} | Deskripsi Singkat: ${data.description ? data.description.substring(0,100) : ''}...`);
+                let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${data.price} | Kategori: ${data.category}`;
+                if (data.description) itemInfo += ` | Deskripsi: ${data.description}`;
+                if (data.facilities) itemInfo += ` | Fasilitas: ${data.facilities}`;
+                if (data.include) itemInfo += ` | Include: ${data.include}`;
+                if (data.exclude) itemInfo += ` | Exclude: ${data.exclude}`;
+                items.push(itemInfo);
             });
             contextData = items.join('\\n');
         } catch(e) {
@@ -288,12 +293,13 @@ Berikut adalah database layanan yang tersedia saat ini:
 ${contextData}
 
 Aturan Penting:
-1. JANGAN MENGARANG HARGA ATAU LAYANAN. Hanya rekomendasikan apa yang ada di database di atas.
-2. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
+1. JANGAN MENGARANG HARGA, LAYANAN ATAU FASILITAS. Hanya rekomendasikan dan jelaskan apa yang benar-benar ada di database di atas.
+2. PERHATIKAN dengan sangat teliti bagian "Include" dan "Exclude". JANGAN PERNAH bilang tiket destinasi atau fasilitas lain itu termasuk (include) jika di data tertulis "Exclude" atau jika tidak disebutkan sama sekali di "Include".
+3. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
    Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
-3. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
-4. Gunakan emoji secukupnya agar percakapan lebih ramah.
-5. Format jawaban gunakan bullet points jika memberikan daftar.`;
+4. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
+5. Gunakan emoji secukupnya agar percakapan lebih ramah.
+6. Format jawaban gunakan bullet points jika memberikan daftar.`;
 
         // Combine history and new message
         const contents = [
