@@ -252,7 +252,7 @@ Pastikan HANYA mengembalikan JSON yang valid. Jangan tambahkan apapun selain JSO
 aiRoutes.post('/chat', async (c) => {
     try {
         const body = await c.req.json();
-        const { message, history } = body;
+        const { message, history, sessionId } = body;
         
         if (!message) {
             return c.json({ success: false, message: 'Pesan kosong' }, 400);
@@ -349,11 +349,46 @@ Aturan Penting:
         const geminiResult = await geminiResponse.json();
         const replyText = geminiResult?.candidates?.[0]?.content?.parts?.[0]?.text || "Maaf, saya tidak bisa merespons saat ini.";
 
+        // Save to Firebase chat_sessions
+        try {
+            const db = getDb(c);
+            const currentSessionId = sessionId || 'guest_' + Date.now();
+            const docRef = db.collection('chat_sessions').doc(currentSessionId);
+            
+            const savedHistory = history ? [...history] : [];
+            savedHistory.push({ role: 'user', parts: [{ text: message }] });
+            savedHistory.push({ role: 'model', parts: [{ text: replyText }] });
+
+            await docRef.set({
+                sessionId: currentSessionId,
+                lastUpdate: new Date().toISOString(),
+                isGuest: currentSessionId.startsWith('guest_'),
+                history: savedHistory
+            }, { merge: true });
+        } catch(dbErr) {
+            console.error('Failed to save chat session:', dbErr);
+        }
+
         return c.json({ success: true, reply: replyText });
 
     } catch (error) {
         console.error('Error in AI chat:', error);
         return c.json({ success: false, message: 'Gagal merespons obrolan', error: error.message }, 500);
+    }
+});
+
+aiRoutes.get('/sessions', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const snapshot = await db.collection('chat_sessions').orderBy('lastUpdate', 'desc').limit(50).get();
+        const sessions = [];
+        snapshot.forEach(doc => {
+            sessions.push({ id: doc.id, ...doc.data() });
+        });
+        return c.json({ success: true, data: sessions });
+    } catch (error) {
+        console.error('Error fetching chat sessions:', error);
+        return c.json({ success: false, message: 'Gagal mengambil riwayat obrolan' }, 500);
     }
 });
 
