@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - Travel Lombok Airport</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      background: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated background */
+    .bg-orbs {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.15;
+      animation: float 8s ease-in-out infinite;
+    }
+    .orb-1 { width: 500px; height: 500px; background: #3b82f6; top: -100px; left: -100px; animation-delay: 0s; }
+    .orb-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-delay: -3s; }
+    .orb-3 { width: 300px; height: 300px; background: #06b6d4; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -6s; }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-30px) scale(1.05); }
+    }
+
+    /* Grid lines background */
+    .grid {
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+    }
+
+    .container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 40px 20px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    /* Gear animation */
+    .gear-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: -10px;
+      margin-bottom: 32px;
+    }
+    .gear-icon {
+      font-size: 3.5rem;
+      color: #3b82f6;
+      animation: spin 4s linear infinite;
+      display: inline-block;
+    }
+    .gear-icon.reverse {
+      font-size: 2.5rem;
+      color: #8b5cf6;
+      animation: spin-reverse 3s linear infinite;
+      margin-left: -8px;
+    }
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    @keyframes spin-reverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(59,130,246,0.15);
+      border: 1px solid rgba(59,130,246,0.3);
+      color: #93c5fd;
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 16px;
+    }
+    h1 span {
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    p.subtitle {
+      color: #94a3b8;
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 40px;
+    }
+
+    /* Info cards */
+    .info-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 40px;
+    }
+    .info-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 20px 16px;
+      backdrop-filter: blur(10px);
+    }
+    .info-card i {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .info-card .label { color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+    .info-card .value { color: #e2e8f0; font-weight: 600; font-size: 0.95rem; }
+
+    /* Contact buttons */
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 32px;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+      color: white;
+      box-shadow: 0 4px 15px rgba(59,130,246,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.5); }
+    .btn-outline {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #e2e8f0;
+    }
+    .btn-outline:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
+
+    .footer-note {
+      color: #475569;
+      font-size: 0.8rem;
+    }
+    .footer-note a { color: #64748b; text-decoration: underline; }
+
+    /* Progress bar */
+    .progress-wrap {
+      margin-bottom: 32px;
+    }
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      color: #64748b;
+      font-size: 0.8rem;
+      margin-bottom: 8px;
+    }
+    .progress-bar {
+      height: 4px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+      border-radius: 4px;
+      animation: progress 3s ease-in-out infinite alternate;
+    }
+    @keyframes progress {
+      from { width: 30%; }
+      to { width: 85%; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-orbs">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+  </div>
+  <div class="grid"></div>
+
+  <div class="container">
+    <div class="gear-wrap">
+      <i class="fa-solid fa-gear gear-icon"></i>
+      <i class="fa-solid fa-gear gear-icon reverse"></i>
+    </div>
+
+    <div class="badge">
+      <i class="fa-solid fa-circle" style="font-size:0.5rem; color:#fbbf24;"></i>
+      Sedang dalam perbaikan
+    </div>
+
+    <h1>Website Sedang <span>Dalam Maintenance</span></h1>
+
+    <p class="subtitle">
+      Kami sedang melakukan peningkatan sistem untuk memberikan pengalaman terbaik bagi Anda. 
+      Mohon maaf atas ketidaknyamanannya, kami akan segera kembali! 🚀
+    </p>
+
+    <div class="progress-wrap">
+      <div class="progress-label">
+        <span>Proses peningkatan...</span>
+        <span>Segera selesai</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+
+    <div class="info-cards">
+      <div class="info-card">
+        <i class="fa-solid fa-headset" style="color: #3b82f6;"></i>
+        <div class="label">Dukungan</div>
+        <div class="value">24/7 via WA</div>
+      </div>
+      <div class="info-card">
+        <i class="fa-solid fa-location-dot" style="color: #10b981;"></i>
+        <div class="label">Lokasi</div>
+        <div class="value">Lombok, NTB</div>
+      </div>
+      <div class="info-card">
+        <i class="fa-solid fa-shield-halved" style="color: #8b5cf6;"></i>
+        <div class="label">Status</div>
+        <div class="value">Aman & Terjaga</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="https://wa.me/6281337000000" class="btn btn-primary" target="_blank">
+        <i class="fa-brands fa-whatsapp"></i> Hubungi via WhatsApp
+      </a>
+      <button onclick="window.location.reload()" class="btn btn-outline">
+        <i class="fa-solid fa-rotate-right"></i> Coba Lagi
+      </button>
+    </div>
+
+    <p class="footer-note">
+      Travel Lombok Airport &copy; 2025 &mdash; <a href="mailto:info@travellombokairport.com">info@travellombokairport.com</a>
+    </p>
+  </div>
+</body>
+</html>

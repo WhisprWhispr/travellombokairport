@@ -3,6 +3,31 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
 // Changed so that localhost hits Vite proxy on /api exactly like production
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
 
+// ====== MAINTENANCE MODE CHECK ======
+// Run ASAP before page renders, skip for admin/maintenance/login pages
+(async () => {
+    const path = window.location.pathname;
+    const skipPaths = ['/admin', '/maintenance', '/login', '/register', '/verify', '/driver'];
+    const isSkipped = skipPaths.some(p => path.includes(p));
+    if (isSkipped) return;
+
+    // Check if admin is logged in (admins bypass maintenance)
+    const adminToken = localStorage.getItem('adminToken');
+    if (adminToken) return;
+
+    try {
+        const res = await fetch('/api/settings', { cache: 'no-store' });
+        if (res.ok) {
+            const data = await res.json();
+            if (data.maintenanceMode === true) {
+                window.location.replace('/maintenance.html');
+            }
+        }
+    } catch (e) {
+        // If API fails, don't block the page
+    }
+})();
+
 // ====== ANALYTICS TRACKING ======
 if (!window.location.pathname.includes("admin") && !window.location.pathname.includes("driver")) {
     const trackVisitor = async () => {
