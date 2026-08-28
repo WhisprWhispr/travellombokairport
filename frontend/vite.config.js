@@ -28,7 +28,8 @@ export default defineConfig({
         verify: resolve(__dirname, 'verify.html'),
         blog: resolve(__dirname, 'blog.html'),
         article: resolve(__dirname, 'article.html'),
-        wishlist: resolve(__dirname, 'wishlist.html')
+        wishlist: resolve(__dirname, 'wishlist.html'),
+        maintenance: resolve(__dirname, 'maintenance.html')
       }
     }
   }
