@@ -83,6 +83,12 @@
       margin: 0 auto 25px;
       box-shadow: 0 10px 25px rgba(0,0,0,0.2);
       padding: 10px;
+      animation: float-logo 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes float-logo {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-15px); }
     }
 
     .logo-wrap img {
@@ -269,6 +275,11 @@
         margin-bottom: 20px;
       }
     }
+
+    /* For very small screens */
+    @media (max-height: 700px) {
+      body { align-items: flex-start; overflow-y: auto; padding: 20px 0; }
+    }
   </style>
 </head>
 <body>
@@ -320,7 +331,7 @@
     </div>
 
     <div class="actions">
-      <a href="https://wa.me/6289676963255?text=Halo%20Admin%20Travel%20Lombok%20Airport.%20Selamat%20pagi%2Fsiang%2Fsore.%20Saya%20ingin%20bertanya%20seputar%20layanan%20travel%20dan%20pemesanan.%20Mohon%20informasinya,%20terima%20kasih." class="btn btn-wa" target="_blank">
+      <a href="#" id="wa-btn" class="btn btn-wa" target="_blank">
         <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Hubungi Admin
       </a>
       <button onclick="window.location.reload()" class="btn btn-refresh">
@@ -329,5 +340,23 @@
     </div>
   </div>
 
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hour = new Date().getHours();
+      let greeting = "pagi";
+      
+      if (hour >= 10 && hour < 15) {
+        greeting = "siang";
+      } else if (hour >= 15 && hour < 18) {
+        greeting = "sore";
+      } else if (hour >= 18 || hour < 4) {
+        greeting = "malam";
+      }
+
+      const text = `Halo Admin Travel Lombok Airport. Selamat ${greeting}. Saya ingin bertanya seputar layanan travel dan pemesanan. Mohon informasinya, terima kasih.`;
+      const encodedText = encodeURIComponent(text);
+      document.getElementById('wa-btn').href = `https://wa.me/6289676963255?text=${encodedText}`;
+    });
+  </script>
 </body>
 </html>
