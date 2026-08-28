@@ -71,7 +71,7 @@ Catatan:
 
 router.post('/chat', async (req, res) => {
     try {
-        const { message, history, sessionId } = req.body;
+        const { message, history, sessionId, userTimeZone } = req.body;
         if (!message) {
             return res.status(400).json({ success: false, message: 'Pesan kosong' });
         }
@@ -100,14 +100,19 @@ router.post('/chat', async (req, res) => {
         }
 
         const dateObj = new Date();
-        const timeOptions = { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', hour12: false };
-        const currentTimeWITA = new Intl.DateTimeFormat('id-ID', timeOptions).format(dateObj);
+        const timeZoneToUse = userTimeZone || 'Asia/Makassar';
+        let currentTimeLocal = '';
+        try {
+            currentTimeLocal = new Intl.DateTimeFormat('id-ID', { timeZone: timeZoneToUse, hour: '2-digit', minute: '2-digit', hour12: false }).format(dateObj);
+        } catch(e) {
+            currentTimeLocal = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', hour12: false }).format(dateObj);
+        }
 
         const systemPrompt = `Anda adalah "Lombok AI", asisten customer service ramah dan cerdas untuk website travel "Travel Lombok Airport". 
 Anda ahli dalam merekomendasikan paket tour, sewa mobil/motor, dan jasa antar jemput.
 Gunakan sapaan sopan seperti "Kak" atau "Bapak/Ibu" saat menjawab. 
 
-Saat ini waktu di Lombok (WITA) adalah jam ${currentTimeWITA}.
+Saat ini waktu di lokasi pengguna (berdasarkan zona waktu lokalnya) adalah jam ${currentTimeLocal}.
 
 Berikut adalah database layanan yang tersedia saat ini:
 ${contextData}
@@ -122,7 +127,7 @@ Aturan Penting:
 6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
 7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
 8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. Cek "waktu di Lombok (WITA)" di atas. Jika waktu tersebut berdekatan atau masuk dalam jadwal sholat wajib di Lombok (Subuh ~05:00, Dzuhur ~12:20, Ashar ~15:30, Maghrib ~18:20, Isya ~19:30), WAJIB awali balasan Anda dengan pengingat sholat yang sopan, profesional, dan Islami (contoh: "Selamat sore Kak. Sekadar mengingatkan, saat ini sudah memasuki waktu sholat Maghrib untuk wilayah Lombok dan sekitarnya..."). Setelah kalimat pengingat tersebut, langsung lanjutkan membalas pertanyaan pengguna seperti biasa.`;
+9. Cek "waktu di lokasi pengguna" di atas. Jika waktu tersebut berdekatan atau masuk dalam jadwal sholat wajib di daerahnya (umumnya Subuh ~04:30-05:00, Dzuhur ~12:00-12:30, Ashar ~15:00-15:30, Maghrib ~17:45-18:30, Isya ~19:00-19:30 waktu setempat), WAJIB awali balasan Anda dengan pengingat sholat yang sopan, profesional, dan Islami (contoh: "Selamat sore Kak. Sekadar mengingatkan, saat ini sudah memasuki waktu sholat Maghrib di wilayah Kakak..."). Setelah kalimat pengingat tersebut, langsung lanjutkan membalas pertanyaan pengguna seperti biasa.`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         

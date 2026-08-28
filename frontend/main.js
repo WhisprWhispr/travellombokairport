@@ -3719,7 +3719,8 @@ window.sendChatMessage = async () => {
             body: JSON.stringify({ 
                 message,
                 history: chatHistory,
-                sessionId: sessionId
+                sessionId: sessionId,
+                userTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
             })
         });
 
