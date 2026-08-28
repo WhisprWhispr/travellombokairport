@@ -29,7 +29,8 @@ export default defineConfig({
         blog: resolve(__dirname, 'blog.html'),
         article: resolve(__dirname, 'article.html'),
         wishlist: resolve(__dirname, 'wishlist.html'),
-        maintenance: resolve(__dirname, 'maintenance.html')
+        maintenance: resolve(__dirname, 'maintenance.html'),
+        jadwalSholat: resolve(__dirname, 'jadwal-sholat.html')
       }
     }
   }
