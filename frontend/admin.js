@@ -2556,7 +2556,12 @@ window.fetchAdminAiChats = async () => {
         const tbody = document.getElementById('admin-ai-chats-table');
         tbody.innerHTML = '';
         
-        if (data.success && data.data.length > 0) {
+        if (!data.success) {
+            tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">API Error: ${data.message} ${data.error ? '('+data.error+')' : ''}</td></tr>`;
+            return;
+        }
+
+        if (data.data.length > 0) {
             data.data.forEach(session => {
                 const tr = document.createElement('tr');
                 const lastUpdate = new Date(session.lastUpdate).toLocaleString('id-ID');

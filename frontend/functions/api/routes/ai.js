@@ -380,12 +380,16 @@ Aturan Penting:
 aiRoutes.get('/sessions', verifyToken, async (c) => {
     try {
         const db = getDb(c);
-        // Custom FirestoreClient doesn't support .limit(), so we just order it.
-        const snapshot = await db.collection('chat_sessions').orderBy('lastUpdate', 'desc').get();
+        // Custom FirestoreClient runQuery might be failing, so we fetch all and sort in JS
+        const snapshot = await db.collection('chat_sessions').get();
         const sessions = [];
         snapshot.forEach(doc => {
             sessions.push({ id: doc.id, ...doc.data() });
         });
+        
+        // Sort by lastUpdate descending
+        sessions.sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
+        
         return c.json({ success: true, data: sessions });
     } catch (error) {
         console.error('Error fetching chat sessions:', error);
