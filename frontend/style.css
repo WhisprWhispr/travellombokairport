@@ -2017,11 +2017,13 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 #ai-chat-window {
-    position: absolute;
-    bottom: 80px;
-    right: 0;
-    width: 350px;
-    height: 500px;
+    position: fixed;
+    bottom: 100px;
+    right: 30px;
+    width: 360px;
+    height: auto;
+    max-height: calc(100vh - 130px);
+    min-height: 300px;
     background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(15px);
     border-radius: 20px;
