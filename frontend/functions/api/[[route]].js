@@ -34,7 +34,7 @@ app.route('/auth', authRoutes);
 app.route('/drivers', driversRoutes);
 app.route('/ai', aiRoutes);
 app.route('/analytics', analyticsRoutes);
-app.route('/', uploadRoutes);
+app.route('/upload', uploadRoutes);
 
 // For fallback in api.js
 app.route('/', apiRoutes);
