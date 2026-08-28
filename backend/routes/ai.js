@@ -113,7 +113,7 @@ Aturan Penting:
    Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
 4. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
 5. Gunakan emoji secukupnya agar percakapan lebih ramah.
-6. Format jawaban gunakan bullet points jika memberikan daftar.`;
+6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         
