@@ -2,7 +2,7 @@ import { Hono } from 'hono';
 
 const router = new Hono();
 
-router.post('/', async (c) => {
+router.post('/upload', async (c) => {
     try {
         // Parse the incoming form data
         const body = await c.req.parseBody();
