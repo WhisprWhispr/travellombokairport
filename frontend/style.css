@@ -2194,21 +2194,29 @@ input:checked + .slider:before { transform: translateX(22px); }
     #ai-chat-window {
         position: fixed;
         width: 100%;
-        height: 100%;
+        height: 100vh;
+        height: 100dvh; /* Dynamic viewport height - handles mobile browser bars */
+        max-height: 100dvh;
+        min-height: unset;
         top: 0;
         left: 0;
         bottom: 0;
         right: 0;
         border-radius: 0;
-        z-index: 10000;
+        z-index: 10001;
     }
     #ai-chat-window.hidden {
         opacity: 0;
         transform: scale(0.9) translateY(50px);
     }
+    /* Hide Tanya AI button when chat is open on mobile */
+    #ai-chat-window:not(.hidden) ~ * #ai-chat-btn,
     #ai-chat-btn {
         bottom: 20px;
         right: 20px;
         z-index: 9999;
+    }
+    #ai-chat-widget:has(#ai-chat-window:not(.hidden)) #ai-chat-btn {
+        display: none;
     }
 }
