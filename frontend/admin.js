@@ -2547,7 +2547,7 @@ window.deleteBlog = async (id) => {
 // ==========================================
 window.fetchAdminAiChats = async () => {
     try {
-        const token = localStorage.getItem('auth_token');
+        const token = localStorage.getItem('adminToken');
         const response = await fetch(`${API_URL}/ai/sessions`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
