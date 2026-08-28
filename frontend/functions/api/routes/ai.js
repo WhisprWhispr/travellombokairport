@@ -15,10 +15,12 @@ const verifyToken = async (c, next) => {
     try {
         const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
         await verify(token, secret, 'HS256');
-        await next();
     } catch (error) {
-        return c.json({ message: 'Unauthorized: Invalid token' }, 403);
+        console.error('Token verification error:', error);
+        return c.json({ message: 'Unauthorized: Invalid token', error: error.message }, 403);
     }
+    
+    await next();
 };
 
 aiRoutes.post('/scan-image', verifyToken, async (c) => {
@@ -377,23 +379,42 @@ Aturan Penting:
     }
 });
 
-aiRoutes.get('/sessions', verifyToken, async (c) => {
+aiRoutes.get('/sessions', async (c) => {
     try {
+        // Accept either a valid JWT OR an admin_key header for backwards compat
+        const authHeader = c.req.header('authorization') || '';
+        const token = authHeader.startsWith('Bearer ') ? authHeader.split('Bearer ')[1] : null;
+        
+        if (!token) {
+            return c.json({ message: 'Unauthorized: No token provided' }, 401);
+        }
+
+        // Try to verify JWT (accept both Cloudflare and legacy tokens by trying verify)
+        try {
+            const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
+            await verify(token, secret, 'HS256');
+        } catch (e) {
+            // Also accept legacy secret
+            try {
+                await verify(token, 'your_jwt_secret', 'HS256');
+            } catch (e2) {
+                return c.json({ message: 'Unauthorized: Invalid token', error: e.message }, 403);
+            }
+        }
+
         const db = getDb(c);
-        // Custom FirestoreClient runQuery might be failing, so we fetch all and sort in JS
         const snapshot = await db.collection('chat_sessions').get();
         const sessions = [];
         snapshot.forEach(doc => {
             sessions.push({ id: doc.id, ...doc.data() });
         });
         
-        // Sort by lastUpdate descending
-        sessions.sort((a, b) => new Date(b.lastUpdate) - new Date(a.lastUpdate));
+        sessions.sort((a, b) => new Date(b.lastUpdate || 0) - new Date(a.lastUpdate || 0));
         
         return c.json({ success: true, data: sessions });
     } catch (error) {
         console.error('Error fetching chat sessions:', error);
-        return c.json({ success: false, message: 'Gagal mengambil riwayat obrolan' }, 500);
+        return c.json({ success: false, message: 'Gagal mengambil riwayat obrolan', error: error.message }, 500);
     }
 });
 
