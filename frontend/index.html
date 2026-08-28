@@ -769,6 +769,22 @@
                 </div>
             </div>
 
+            <!-- Guest limit banner - shown above input when limit reached -->
+            <div id="guest-limit-banner" style="display:none; padding: 0;">
+                <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%); padding: 14px 16px; text-align: center;">
+                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:6px;">
+                        <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                            <i class="fa-solid fa-crown" style="color:#fbbf24;font-size:0.9rem;"></i>
+                        </div>
+                        <h4 style="margin:0;color:white;font-size:0.9rem;font-weight:700;">Batas Percakapan Tercapai</h4>
+                    </div>
+                    <p style="margin:0 0 10px;color:rgba(255,255,255,0.9);font-size:0.75rem;">Anda telah menggunakan 3 pertanyaan gratis. Login untuk bertanya <strong>tanpa batas!</strong></p>
+                    <button onclick="window.openAuthModal('login')" style="width:100%;background:white;color:#1e40af;border:none;padding:9px;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.83rem;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
+                        <i class="fa-solid fa-right-to-bracket" style="margin-right:5px;"></i> Masuk / Daftar Sekarang
+                    </button>
+                </div>
+            </div>
+
             <div class="chat-input-area">
                 <input type="text" id="chat-input" placeholder="Tanya rekomendasi paket..." onkeypress="handleChatKeyPress(event)">
                 <button onclick="sendChatMessage()" id="send-chat-btn"><i class="fa-solid fa-paper-plane"></i></button>

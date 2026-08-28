@@ -3577,13 +3577,12 @@ window.clearChatHistory = () => {
             </div>
         `;
     }
-    // Re-enable input in case guest limit was shown
+    const banner = document.getElementById('guest-limit-banner');
+    if (banner) banner.style.display = 'none';
     const inputArea = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-chat-btn');
     if (inputArea) { inputArea.disabled = false; inputArea.placeholder = 'Tanya rekomendasi paket...'; }
     if (sendBtn) sendBtn.disabled = false;
-    const prompt = document.getElementById('login-prompt-msg');
-    if (prompt) prompt.remove();
 };
 
 window.toggleChat = () => {
@@ -3617,46 +3616,25 @@ function parseMarkdownToHTML(markdown) {
 }
 
 window.checkGuestLimit = () => {
-    const isLogged = !!localStorage.getItem('auth_token');
+    const isLogged = !!localStorage.getItem('auth_token') || !!localStorage.getItem('auth_user');
     const inputArea = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-chat-btn');
-    const messagesContainer = document.getElementById('chat-messages');
+    const banner = document.getElementById('guest-limit-banner');
     
     if (!isLogged) {
         // count user messages
         const userMessagesCount = chatHistory.filter(msg => msg.role === 'user').length;
         if (userMessagesCount >= 3) {
-            inputArea.disabled = true;
-            inputArea.placeholder = 'Batas 3 pertanyaan harian telah habis.';
-            sendBtn.disabled = true;
-            
-            // Tampilkan info login
-            if (!document.getElementById('login-prompt-msg')) {
-                messagesContainer.innerHTML += `
-                    <div id="login-prompt-msg" style="margin: 8px 4px; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 20px rgba(0,0,0,0.12);">
-                        <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%); padding: 16px; text-align: center;">
-                            <div style="width: 48px; height: 48px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; backdrop-filter: blur(10px);">
-                                <i class="fa-solid fa-crown" style="color: #fbbf24; font-size: 1.3rem;"></i>
-                            </div>
-                            <h4 style="margin: 0 0 4px; color: white; font-size: 0.95rem; font-weight: 700;">Batas Percakapan Tercapai</h4>
-                            <p style="margin: 0; color: rgba(255,255,255,0.85); font-size: 0.78rem;">Anda telah menggunakan 3 pertanyaan gratis hari ini</p>
-                        </div>
-                        <div style="background: white; padding: 14px 16px;">
-                            <div style="display: flex; align-items: center; gap: 8px; background: #f0f9ff; border-radius: 10px; padding: 10px 12px; margin-bottom: 12px; border-left: 3px solid #3b82f6;">
-                                <i class="fa-solid fa-infinity" style="color: #3b82f6; font-size: 0.9rem;"></i>
-                                <span style="font-size: 0.78rem; color: #374151; font-weight: 500;">Login untuk bertanya <strong>tanpa batas</strong> kapan saja!</span>
-                            </div>
-                            <button onclick="window.openAuthModal('login')" style="width: 100%; background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; border: none; padding: 10px; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 0.85rem; letter-spacing: 0.3px; box-shadow: 0 4px 12px rgba(59,130,246,0.4); transition: all 0.2s;">
-                                <i class="fa-solid fa-right-to-bracket" style="margin-right: 6px;"></i> Masuk / Daftar Sekarang
-                            </button>
-                        </div>
-                    </div>
-                `;
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
-            }
+            if (inputArea) { inputArea.disabled = true; inputArea.placeholder = 'Login untuk bertanya lebih banyak...'; }
+            if (sendBtn) sendBtn.disabled = true;
+            if (banner) banner.style.display = 'block';
             return true;
         }
     }
+    // Hide banner if logged in or under limit
+    if (banner) banner.style.display = 'none';
+    if (inputArea) { inputArea.disabled = false; inputArea.placeholder = 'Tanya rekomendasi paket...'; }
+    if (sendBtn) sendBtn.disabled = false;
     return false;
 };
 
