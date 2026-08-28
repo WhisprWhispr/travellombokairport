@@ -13,273 +13,304 @@
     body {
       font-family: 'Outfit', sans-serif;
       min-height: 100vh;
-      background: #0f172a;
       display: flex;
       align-items: center;
       justify-content: center;
       overflow: hidden;
       position: relative;
+      background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0ea5e9, #0284c7);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
     }
 
-    /* Animated background */
-    .bg-orbs {
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Airplane Animation */
+    .airplane-wrap {
       position: fixed;
-      inset: 0;
-      z-index: 0;
-      overflow: hidden;
+      top: 20%;
+      left: -150px;
+      z-index: 1;
+      animation: fly 12s linear infinite;
+      opacity: 0.8;
     }
-    .orb {
-      position: absolute;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.15;
-      animation: float 8s ease-in-out infinite;
-    }
-    .orb-1 { width: 500px; height: 500px; background: #3b82f6; top: -100px; left: -100px; animation-delay: 0s; }
-    .orb-2 { width: 400px; height: 400px; background: #8b5cf6; bottom: -100px; right: -100px; animation-delay: -3s; }
-    .orb-3 { width: 300px; height: 300px; background: #06b6d4; top: 50%; left: 50%; transform: translate(-50%,-50%); animation-delay: -6s; }
-    @keyframes float {
-      0%, 100% { transform: translateY(0) scale(1); }
-      50% { transform: translateY(-30px) scale(1.05); }
+    
+    .airplane-icon {
+      font-size: 4rem;
+      color: rgba(255, 255, 255, 0.4);
+      transform: rotate(15deg);
+      filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2));
     }
 
-    /* Grid lines background */
-    .grid {
+    /* Clouds Animation */
+    .cloud {
       position: fixed;
-      inset: 0;
+      color: rgba(255, 255, 255, 0.1);
       z-index: 0;
-      background-image: 
-        linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-      background-size: 50px 50px;
+      animation: float-cloud linear infinite;
+    }
+    .cloud-1 { top: 15%; font-size: 8rem; animation-duration: 40s; animation-delay: -10s; left: 100%; }
+    .cloud-2 { top: 60%; font-size: 12rem; animation-duration: 60s; animation-delay: -30s; left: 100%; }
+    .cloud-3 { top: 40%; font-size: 6rem; animation-duration: 35s; animation-delay: 0s; left: 100%; }
+
+    @keyframes fly {
+      0% { transform: translateX(-10vw) translateY(0) scale(1); }
+      50% { transform: translateX(50vw) translateY(-20px) scale(1.1); }
+      100% { transform: translateX(120vw) translateY(-50px) scale(0.9); }
     }
 
+    @keyframes float-cloud {
+      from { transform: translateX(100vw); }
+      to { transform: translateX(-250px); }
+    }
+
+    /* Glassmorphism Container */
     .container {
       position: relative;
       z-index: 10;
       text-align: center;
-      padding: 40px 20px;
-      max-width: 600px;
-      width: 100%;
+      padding: 50px 40px;
+      max-width: 650px;
+      width: 90%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2), 
+                  inset 0 1px 0 rgba(255,255,255,0.3);
     }
 
-    /* Gear animation */
-    .gear-wrap {
+    .logo-wrap {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #ffffff, #f1f5f9);
+      border-radius: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: -10px;
-      margin-bottom: 32px;
+      margin: 0 auto 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      animation: float-logo 3s ease-in-out infinite alternate;
     }
-    .gear-icon {
-      font-size: 3.5rem;
-      color: #3b82f6;
-      animation: spin 4s linear infinite;
-      display: inline-block;
-    }
-    .gear-icon.reverse {
+
+    .logo-wrap i {
       font-size: 2.5rem;
-      color: #8b5cf6;
-      animation: spin-reverse 3s linear infinite;
-      margin-left: -8px;
+      background: linear-gradient(135deg, #1d4ed8, #0ea5e9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    @keyframes spin-reverse { from { transform: rotate(0deg); } to { transform: rotate(-360deg); } }
+
+    @keyframes float-logo {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-10px); }
+    }
 
     .badge {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      background: rgba(59,130,246,0.15);
-      border: 1px solid rgba(59,130,246,0.3);
-      color: #93c5fd;
-      padding: 6px 16px;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff;
+      padding: 8px 20px;
       border-radius: 100px;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       font-weight: 600;
-      letter-spacing: 1px;
+      letter-spacing: 1.5px;
       text-transform: uppercase;
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .badge .pulse {
+      width: 8px;
+      height: 8px;
+      background: #fbbf24;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+      animation: pulsing 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+
+    @keyframes pulsing {
+      to { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
     }
 
     h1 {
-      font-size: clamp(2rem, 5vw, 3rem);
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
       font-weight: 800;
       color: white;
-      line-height: 1.2;
-      margin-bottom: 16px;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
+    
     h1 span {
-      background: linear-gradient(135deg, #3b82f6, #8b5cf6, #06b6d4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+      color: #fbbf24;
     }
 
     p.subtitle {
-      color: #94a3b8;
-      font-size: 1.05rem;
-      line-height: 1.7;
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      line-height: 1.6;
       margin-bottom: 40px;
+      font-weight: 300;
     }
 
-    /* Info cards */
-    .info-cards {
+    /* Travel specific cards */
+    .travel-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
       margin-bottom: 40px;
     }
-    .info-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px;
-      padding: 20px 16px;
-      backdrop-filter: blur(10px);
+    
+    .t-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 20px 15px;
+      transition: all 0.3s ease;
     }
-    .info-card i {
-      font-size: 1.5rem;
-      margin-bottom: 10px;
+
+    .t-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-5px);
+    }
+
+    .t-card i {
+      font-size: 2rem;
+      margin-bottom: 15px;
       display: block;
     }
-    .info-card .label { color: #64748b; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
-    .info-card .value { color: #e2e8f0; font-weight: 600; font-size: 0.95rem; }
 
-    /* Contact buttons */
+    .c-1 i { color: #fbbf24; }
+    .c-2 i { color: #34d399; }
+    .c-3 i { color: #60a5fa; }
+
+    .t-card .title {
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .t-card .desc {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.75rem;
+    }
+
+    /* Actions */
     .actions {
       display: flex;
-      gap: 12px;
+      gap: 15px;
       justify-content: center;
       flex-wrap: wrap;
-      margin-bottom: 32px;
     }
+
     .btn {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-weight: 600;
-      font-size: 0.9rem;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
       text-decoration: none;
-      transition: all 0.2s;
-      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
       border: none;
+      cursor: pointer;
     }
-    .btn-primary {
-      background: linear-gradient(135deg, #1d4ed8, #3b82f6);
+
+    .btn-wa {
+      background: #25D366;
       color: white;
-      box-shadow: 0 4px 15px rgba(59,130,246,0.4);
+      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
     }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(59,130,246,0.5); }
-    .btn-outline {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.15);
-      color: #e2e8f0;
-    }
-    .btn-outline:hover { background: rgba(255,255,255,0.1); transform: translateY(-2px); }
 
-    .footer-note {
-      color: #475569;
-      font-size: 0.8rem;
+    .btn-wa:hover {
+      background: #128C7E;
+      transform: scale(1.05);
+      box-shadow: 0 15px 30px rgba(37, 211, 102, 0.4);
     }
-    .footer-note a { color: #64748b; text-decoration: underline; }
 
-    /* Progress bar */
-    .progress-wrap {
-      margin-bottom: 32px;
+    .btn-refresh {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
     }
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      color: #64748b;
-      font-size: 0.8rem;
-      margin-bottom: 8px;
+
+    .btn-refresh:hover {
+      background: rgba(255,255,255,0.2);
+      transform: scale(1.05);
     }
-    .progress-bar {
-      height: 4px;
-      background: rgba(255,255,255,0.08);
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .progress-fill {
-      height: 100%;
-      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
-      border-radius: 4px;
-      animation: progress 3s ease-in-out infinite alternate;
-    }
-    @keyframes progress {
-      from { width: 30%; }
-      to { width: 85%; }
+
+    @media (max-width: 600px) {
+      .travel-cards { grid-template-columns: 1fr; }
+      .container { padding: 40px 25px; }
+      h1 { font-size: 2rem; }
     }
   </style>
 </head>
 <body>
-  <div class="bg-orbs">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
-    <div class="orb orb-3"></div>
+
+  <!-- Background Animations -->
+  <i class="fa-solid fa-cloud cloud cloud-1"></i>
+  <i class="fa-solid fa-cloud cloud cloud-2"></i>
+  <i class="fa-solid fa-cloud cloud cloud-3"></i>
+  
+  <div class="airplane-wrap">
+    <i class="fa-solid fa-plane airplane-icon"></i>
   </div>
-  <div class="grid"></div>
 
   <div class="container">
-    <div class="gear-wrap">
-      <i class="fa-solid fa-gear gear-icon"></i>
-      <i class="fa-solid fa-gear gear-icon reverse"></i>
+    <div class="logo-wrap">
+      <i class="fa-solid fa-plane-departure"></i>
     </div>
 
     <div class="badge">
-      <i class="fa-solid fa-circle" style="font-size:0.5rem; color:#fbbf24;"></i>
-      Sedang dalam perbaikan
+      <div class="pulse"></div>
+      System Upgrade
     </div>
 
-    <h1>Website Sedang <span>Dalam Maintenance</span></h1>
+    <h1>Siap Untuk <span>Penerbangan</span> Lebih Baik</h1>
 
     <p class="subtitle">
-      Kami sedang melakukan peningkatan sistem untuk memberikan pengalaman terbaik bagi Anda. 
-      Mohon maaf atas ketidaknyamanannya, kami akan segera kembali! 🚀
+      Website Travel Lombok Airport sedang dalam pemeliharaan rutin untuk meningkatkan kualitas layanan dan kecepatan pemesanan tiket Anda.
     </p>
 
-    <div class="progress-wrap">
-      <div class="progress-label">
-        <span>Proses peningkatan...</span>
-        <span>Segera selesai</span>
+    <div class="travel-cards">
+      <div class="t-card c-1">
+        <i class="fa-solid fa-bolt"></i>
+        <div class="title">Lebih Cepat</div>
+        <div class="desc">Optimasi server booking</div>
       </div>
-      <div class="progress-bar">
-        <div class="progress-fill"></div>
+      <div class="t-card c-2">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div class="title">Lebih Aman</div>
+        <div class="desc">Peningkatan keamanan data</div>
       </div>
-    </div>
-
-    <div class="info-cards">
-      <div class="info-card">
-        <i class="fa-solid fa-headset" style="color: #3b82f6;"></i>
-        <div class="label">Dukungan</div>
-        <div class="value">24/7 via WA</div>
-      </div>
-      <div class="info-card">
-        <i class="fa-solid fa-location-dot" style="color: #10b981;"></i>
-        <div class="label">Lokasi</div>
-        <div class="value">Lombok, NTB</div>
-      </div>
-      <div class="info-card">
-        <i class="fa-solid fa-shield-halved" style="color: #8b5cf6;"></i>
-        <div class="label">Status</div>
-        <div class="value">Aman & Terjaga</div>
+      <div class="t-card c-3">
+        <i class="fa-solid fa-star"></i>
+        <div class="title">Lebih Mudah</div>
+        <div class="desc">Fitur baru segera hadir</div>
       </div>
     </div>
 
     <div class="actions">
-      <a href="https://wa.me/6281337000000" class="btn btn-primary" target="_blank">
-        <i class="fa-brands fa-whatsapp"></i> Hubungi via WhatsApp
+      <a href="https://wa.me/6281337000000" class="btn btn-wa" target="_blank">
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> CS 24 Jam
       </a>
-      <button onclick="window.location.reload()" class="btn btn-outline">
-        <i class="fa-solid fa-rotate-right"></i> Coba Lagi
+      <button onclick="window.location.reload()" class="btn btn-refresh">
+        <i class="fa-solid fa-rotate-right"></i> Refresh Halaman
       </button>
     </div>
-
-    <p class="footer-note">
-      Travel Lombok Airport &copy; 2025 &mdash; <a href="mailto:info@travellombokairport.com">info@travellombokairport.com</a>
-    </p>
   </div>
+
 </body>
 </html>
