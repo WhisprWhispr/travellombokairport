@@ -37,7 +37,7 @@
     // INSTANT MAINTENANCE CHECK (Anti-Flash for PWA)
     // If maintenance was true last time, hide the body immediately to prevent flashing old cached content.
     if (localStorage.getItem('maintenanceMode') === 'true' && !localStorage.getItem('adminToken')) {
-      document.write('<style>body { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; transition: opacity 0.3s; }</style>');
+      document.write('<style id="anti-flash">body { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }</style>');
     }
   </script>
 

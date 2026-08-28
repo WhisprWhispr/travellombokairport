@@ -25,6 +25,8 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
                 return;
             } else {
                 localStorage.setItem('maintenanceMode', 'false');
+                const antiFlash = document.getElementById('anti-flash');
+                if (antiFlash) antiFlash.remove();
                 document.body.style.opacity = '1';
                 document.body.style.visibility = 'visible';
                 document.body.style.pointerEvents = 'auto';
