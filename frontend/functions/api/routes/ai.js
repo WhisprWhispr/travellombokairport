@@ -380,7 +380,8 @@ Aturan Penting:
 aiRoutes.get('/sessions', verifyToken, async (c) => {
     try {
         const db = getDb(c);
-        const snapshot = await db.collection('chat_sessions').orderBy('lastUpdate', 'desc').limit(50).get();
+        // Custom FirestoreClient doesn't support .limit(), so we just order it.
+        const snapshot = await db.collection('chat_sessions').orderBy('lastUpdate', 'desc').get();
         const sessions = [];
         snapshot.forEach(doc => {
             sessions.push({ id: doc.id, ...doc.data() });
