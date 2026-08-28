@@ -10,6 +10,7 @@ import authRoutes from './routes/auth.js';
 import driversRoutes from './routes/drivers.js';
 import aiRoutes from './routes/ai.js';
 import analyticsRoutes from './routes/analytics.js';
+import uploadRoutes from './routes/upload.js';
 
 const app = new Hono().basePath('/api');
 
@@ -33,6 +34,7 @@ app.route('/auth', authRoutes);
 app.route('/drivers', driversRoutes);
 app.route('/ai', aiRoutes);
 app.route('/analytics', analyticsRoutes);
+app.route('/upload', uploadRoutes);
 
 // For fallback in api.js
 app.route('/', apiRoutes);

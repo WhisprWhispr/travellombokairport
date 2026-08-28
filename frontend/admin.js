@@ -2622,3 +2622,58 @@ window.viewChatHistory = (history) => {
         showConfirmButton: false
     });
 };
+
+// --- IMAGE UPLOAD TO CLOUDINARY VIA API ---
+window.uploadImageToServer = async function(fileInput, targetInputId) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const targetInput = document.getElementById(targetInputId);
+    const btn = fileInput.nextElementSibling;
+    const originalText = btn.innerHTML;
+    
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah...';
+    btn.disabled = true;
+
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+        const response = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('adminToken')
+            }
+        });
+
+        if (!response.ok) {
+            const err = await response.json();
+            throw new Error(err.error || 'Gagal mengupload gambar');
+        }
+
+        const data = await response.json();
+        
+        if (data.url) {
+            targetInput.value = data.url;
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: 'Gambar berhasil diupload',
+                timer: 2000,
+                showConfirmButton: false
+            });
+        }
+    } catch (error) {
+        console.error('Upload Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: error.message || 'Terjadi kesalahan saat mengunggah gambar'
+        });
+    } finally {
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        fileInput.value = ''; // Reset input
+    }
+};
