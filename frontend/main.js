@@ -3565,6 +3565,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+window.clearChatHistory = () => {
+    if (!confirm('Hapus semua riwayat percakapan dengan Lombok AI?')) return;
+    chatHistory = [];
+    localStorage.removeItem('aiChatHistory');
+    const messagesContainer = document.getElementById('chat-messages');
+    if (messagesContainer) {
+        messagesContainer.innerHTML = `
+            <div class="message ai-message">
+                Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
+            </div>
+        `;
+    }
+    // Re-enable input in case guest limit was shown
+    const inputArea = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-chat-btn');
+    if (inputArea) { inputArea.disabled = false; inputArea.placeholder = 'Tanya rekomendasi paket...'; }
+    if (sendBtn) sendBtn.disabled = false;
+    const prompt = document.getElementById('login-prompt-msg');
+    if (prompt) prompt.remove();
+};
+
 window.toggleChat = () => {
     const chatWindow = document.getElementById('ai-chat-window');
     chatWindow.classList.toggle('hidden');
