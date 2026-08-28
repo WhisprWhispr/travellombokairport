@@ -20,7 +20,14 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
         if (res.ok) {
             const data = await res.json();
             if (data.maintenanceMode === true) {
+                localStorage.setItem('maintenanceMode', 'true');
                 window.location.replace('/maintenance.html');
+                return;
+            } else {
+                localStorage.setItem('maintenanceMode', 'false');
+                document.body.style.opacity = '1';
+                document.body.style.visibility = 'visible';
+                document.body.style.pointerEvents = 'auto';
             }
         }
     } catch (e) {
