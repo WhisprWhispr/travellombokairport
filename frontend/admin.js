@@ -2654,8 +2654,11 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
 
         const data = await response.json();
         
+        let isSuccess = false;
+        
         if (data.url) {
             targetInput.value = data.url;
+            isSuccess = true;
             Swal.fire({
                 icon: 'success',
                 title: 'Berhasil',
@@ -2672,7 +2675,14 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
             text: error.message || 'Terjadi kesalahan saat mengunggah gambar'
         });
     } finally {
-        btn.innerHTML = originalText;
+        if (typeof isSuccess !== 'undefined' && isSuccess) {
+            btn.innerHTML = '<i class="fa-solid fa-check" style="color: #4CAF50;"></i> Berhasil Upload';
+            setTimeout(() => {
+                if (btn) btn.innerHTML = originalText;
+            }, 3000);
+        } else {
+            btn.innerHTML = originalText;
+        }
         btn.disabled = false;
         fileInput.value = ''; // Reset input
     }
