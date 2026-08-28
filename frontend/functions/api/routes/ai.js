@@ -285,9 +285,15 @@ aiRoutes.post('/chat', async (c) => {
             console.error("Gagal menarik data untuk konteks chatbot", e);
         }
 
+        const dateObj = new Date();
+        const timeOptions = { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', hour12: false };
+        const currentTimeWITA = new Intl.DateTimeFormat('id-ID', timeOptions).format(dateObj);
+
         const systemPrompt = `Anda adalah "Lombok AI", asisten customer service ramah dan cerdas untuk website travel "Travel Lombok Airport". 
 Anda ahli dalam merekomendasikan paket tour, sewa mobil/motor, dan jasa antar jemput.
 Gunakan sapaan sopan seperti "Kak" atau "Bapak/Ibu" saat menjawab. 
+
+Saat ini waktu di Lombok (WITA) adalah jam ${currentTimeWITA}.
 
 Berikut adalah database layanan yang tersedia saat ini:
 ${contextData}
@@ -299,7 +305,10 @@ Aturan Penting:
    Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
 4. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
 5. Gunakan emoji secukupnya agar percakapan lebih ramah.
-6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.`;
+6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
+7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
+8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
+9. Cek "waktu di Lombok (WITA)" di atas. Jika waktu tersebut berdekatan atau masuk dalam jadwal sholat wajib di Lombok (Subuh ~05:00, Dzuhur ~12:20, Ashar ~15:30, Maghrib ~18:20, Isya ~19:30), WAJIB awali balasan Anda dengan pengingat sholat yang sopan, profesional, dan Islami (contoh: "Selamat sore Kak. Sekadar mengingatkan, saat ini sudah memasuki waktu sholat Maghrib untuk wilayah Lombok dan sekitarnya..."). Setelah kalimat pengingat tersebut, langsung lanjutkan membalas pertanyaan pengguna seperti biasa.`;
 
         // Combine history and new message
         const contents = [
