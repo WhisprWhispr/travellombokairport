@@ -3513,7 +3513,7 @@ window.shareItem = (id, title, priceStr) => {
 // ========== AI CHATBOT LOGIC ==========
 let chatHistory = [];
 try {
-    const saved = sessionStorage.getItem('aiChatHistory');
+    const saved = localStorage.getItem('aiChatHistory');
     if (saved) chatHistory = JSON.parse(saved);
 } catch (e) {
     console.error('Failed to load chat history', e);
@@ -3546,8 +3546,7 @@ window.renderChatHistory = () => {
         }
     });
     
-    // Add default greeting at top if missing? No, we just append history.
-    // Actually, let's prepend the greeting so it always starts with it.
+    // Prepend the greeting so it always starts with it.
     messagesContainer.insertAdjacentHTML('afterbegin', `
         <div class="message ai-message">
             Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
@@ -3555,6 +3554,8 @@ window.renderChatHistory = () => {
     `);
     
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    window.checkGuestLimit();
 };
 
 // Call render when DOM is ready
@@ -3589,7 +3590,41 @@ function parseMarkdownToHTML(markdown) {
     return html;
 }
 
+window.checkGuestLimit = () => {
+    const isLogged = !!localStorage.getItem('auth_token');
+    const inputArea = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-chat-btn');
+    const messagesContainer = document.getElementById('chat-messages');
+    
+    if (!isLogged) {
+        // count user messages
+        const userMessagesCount = chatHistory.filter(msg => msg.role === 'user').length;
+        if (userMessagesCount >= 3) {
+            inputArea.disabled = true;
+            inputArea.placeholder = 'Batas 3 pertanyaan harian telah habis.';
+            sendBtn.disabled = true;
+            
+            // Tampilkan info login
+            if (!document.getElementById('login-prompt-msg')) {
+                messagesContainer.innerHTML += `
+                    <div id="login-prompt-msg" class="message ai-message" style="background: #fef9c3; border: 1px solid #fef08a;">
+                        <i class="fa-solid fa-lock" style="color: #ca8a04; margin-right: 5px;"></i>
+                        Batas pertanyaan Anda sebagai Guest telah habis (Maks. 3 kali). Silakan login untuk bertanya tanpa batas!
+                        <br><br>
+                        <button onclick="window.openAuthModal('login')" style="background: #ca8a04; color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%;">Login Akun</button>
+                    </div>
+                `;
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }
+            return true;
+        }
+    }
+    return false;
+};
+
 window.sendChatMessage = async () => {
+    if (window.checkGuestLimit()) return;
+
     const input = document.getElementById('chat-input');
     const message = input.value.trim();
     if (!message) return;
@@ -3619,6 +3654,13 @@ window.sendChatMessage = async () => {
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
     try {
+        // Send email/user info if logged in
+        let sessionId = localStorage.getItem('visitor_session_id') || 'guest';
+        const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+        if (user && user.email) {
+            sessionId = user.email;
+        }
+
         const response = await fetch(`${API_URL}/ai/chat`, {
             method: 'POST',
             headers: {
@@ -3626,7 +3668,8 @@ window.sendChatMessage = async () => {
             },
             body: JSON.stringify({ 
                 message,
-                history: chatHistory
+                history: chatHistory,
+                sessionId: sessionId
             })
         });
 
@@ -3639,7 +3682,7 @@ window.sendChatMessage = async () => {
                 // Update History
                 chatHistory.push({ role: "user", parts: [{ text: message }] });
                 chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
-                sessionStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
+                localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
 
                 // Render AI Message
                 const htmlReply = parseMarkdownToHTML(data.reply);
@@ -3648,6 +3691,8 @@ window.sendChatMessage = async () => {
                         ${htmlReply}
                     </div>
                 `;
+                
+                window.checkGuestLimit();
             } else {
                 throw new Error(data.message);
             }
