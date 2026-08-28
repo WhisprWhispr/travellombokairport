@@ -3915,10 +3915,10 @@ window.renderPrayerTimes = (data) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const path = window.location.pathname;
-    if (path.includes('jadwal-sholat.html') || path === '/' || path === '/index.html') {
+    if (path.includes('jadwal-sholat') || path === '/' || path === '/index.html') {
         if (!localStorage.getItem('prayerData')) {
             window.requestPrayerLocation(false);
-        } else if (path.includes('jadwal-sholat.html')) {
+        } else if (path.includes('jadwal-sholat')) {
             window.requestPrayerLocation(false);
         }
     }
