@@ -1043,6 +1043,8 @@ window.showTab = (tab) => {
     document.getElementById("stats-section").style.display = "none";
     const analyticsSection = document.getElementById("analytics-section");
     if (analyticsSection) analyticsSection.style.display = "none";
+    const aiChatsSection = document.getElementById("ai-chats-section");
+    if (aiChatsSection) aiChatsSection.style.display = "none";
     document.getElementById("bookings-section").style.display = "none";
     document.getElementById("orders-section").style.display = "none";
     document.getElementById("web-bookings-section").style.display = "none";
@@ -1090,6 +1092,12 @@ window.showTab = (tab) => {
         if (analyticsSection) {
             analyticsSection.style.display = "block";
             fetchVisitorAnalytics();
+        }
+    } else if (tab === "ai-chats") {
+        const aiChatsSection = document.getElementById("ai-chats-section");
+        if (aiChatsSection) {
+            aiChatsSection.style.display = "block";
+            fetchAdminAiChats();
         }
     } else if (tab === "gallery") {
         document.getElementById("gallery-section").style.display = "block";
@@ -2532,4 +2540,80 @@ window.deleteBlog = async (id) => {
             Swal.fire('Error', 'Gagal menghapus artikel', 'error');
         }
     }
+};
+
+// ==========================================
+// AI CHAT HISTORY MANAGEMENT
+// ==========================================
+window.fetchAdminAiChats = async () => {
+    try {
+        const token = localStorage.getItem('auth_token');
+        const response = await fetch(`${API_URL}/ai/sessions`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const tbody = document.getElementById('admin-ai-chats-table');
+        tbody.innerHTML = '';
+        
+        if (data.success && data.data.length > 0) {
+            data.data.forEach(session => {
+                const tr = document.createElement('tr');
+                const lastUpdate = new Date(session.lastUpdate).toLocaleString('id-ID');
+                const msgCount = (session.history || []).filter(msg => msg.role === 'user').length;
+                
+                tr.innerHTML = `
+                    <td>${lastUpdate}</td>
+                    <td>${session.sessionId}</td>
+                    <td>
+                        <span class="badge ${session.isGuest ? 'bg-secondary' : 'bg-primary'}" style="padding: 5px 10px; border-radius: 4px; color: white; background: ${session.isGuest ? '#6b7280' : '#3b82f6'};">
+                            ${session.isGuest ? 'Guest' : 'Member'}
+                        </span>
+                    </td>
+                    <td>${msgCount}</td>
+                    <td>
+                        <button class="btn btn-sm" style="background: #10b981; color: white;" onclick='viewChatHistory(${JSON.stringify(session.history || []).replace(/'/g, "&#39;")})'>
+                            <i class="fa-solid fa-eye"></i> Lihat
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada riwayat chat AI.</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error fetching AI chats:', error);
+        document.getElementById('admin-ai-chats-table').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat riwayat.</td></tr>';
+    }
+};
+
+window.viewChatHistory = (history) => {
+    let html = '<div style="text-align: left; max-height: 400px; overflow-y: auto; background: #f8fafc; padding: 15px; border-radius: 8px;">';
+    
+    if (!history || history.length === 0) {
+        html += '<p>Tidak ada pesan.</p>';
+    } else {
+        history.forEach(msg => {
+            const role = msg.role === 'user' ? 'User' : 'AI';
+            const color = msg.role === 'user' ? '#1d4ed8' : '#ca8a04';
+            const bg = msg.role === 'user' ? '#dbeafe' : '#fef3c7';
+            const text = msg.parts[0].text;
+            html += `
+                <div style="margin-bottom: 10px; padding: 10px; border-radius: 6px; background: ${bg}; border-left: 4px solid ${color};">
+                    <strong>${role}:</strong><br>
+                    <span style="font-size: 0.9rem; white-space: pre-wrap;">${text}</span>
+                </div>
+            `;
+        });
+    }
+    html += '</div>';
+
+    Swal.fire({
+        title: 'Detail Chat',
+        html: html,
+        width: 600,
+        showCloseButton: true,
+        showConfirmButton: false
+    });
 };

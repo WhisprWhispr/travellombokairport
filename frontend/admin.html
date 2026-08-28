@@ -65,6 +65,7 @@
           <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="#" onclick="showTab('analytics')"><i class="fa-solid fa-chart-line"></i> Statistik Pengunjung</a></li>
+          <li><a href="#" onclick="showTab('ai-chats')"><i class="fa-solid fa-comments"></i> Riwayat Chat AI</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
@@ -210,6 +211,27 @@
               </thead>
               <tbody id="admin-web-bookings-table">
                 <tr><td colspan="5" class="text-center">Loading web bookings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- AI Chat Sessions Section -->
+        <section id="ai-chats-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Riwayat Chat AI</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Sesi / User</th>
+                  <th>Tipe User</th>
+                  <th>Jml Pesan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-ai-chats-table">
+                <tr><td colspan="5" class="text-center">Loading chats...</td></tr>
               </tbody>
             </table>
           </div>
