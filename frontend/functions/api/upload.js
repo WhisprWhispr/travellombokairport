@@ -1,15 +1,11 @@
-import { Hono } from 'hono';
-
-const router = new Hono();
-
-router.post('/', async (c) => {
+export async function onRequestPost(context) {
     try {
-        // Parse the incoming form data
-        const body = await c.req.parseBody();
-        const file = body['file'];
+        const { request } = context;
+        const formData = await request.formData();
+        const file = formData.get('file');
 
         if (!file) {
-            return c.json({ error: 'No file uploaded' }, 400);
+            return new Response(JSON.stringify({ error: 'No file uploaded' }), { status: 400 });
         }
 
         const cloudName = 'mvhjuh83';
@@ -44,22 +40,20 @@ router.post('/', async (c) => {
 
         if (!cloudinaryRes.ok) {
             const errResult = await cloudinaryRes.text();
-            console.error("Cloudinary upload failed:", errResult);
-            return c.json({ error: 'Failed to upload to Cloudinary', details: errResult }, 500);
+            return new Response(JSON.stringify({ error: 'Failed to upload to Cloudinary', details: errResult }), { status: 500 });
         }
 
         const result = await cloudinaryRes.json();
         
-        return c.json({
+        return new Response(JSON.stringify({
             success: true,
             url: result.secure_url,
             public_id: result.public_id
+        }), {
+            headers: { 'Content-Type': 'application/json' }
         });
 
     } catch (error) {
-        console.error('Upload error:', error);
-        return c.json({ error: 'Internal Server Error', message: error.message }, 500);
+        return new Response(JSON.stringify({ error: 'Internal Server Error', message: error.message }), { status: 500 });
     }
-});
-
-export default router;
+}
