@@ -71,7 +71,7 @@ Catatan:
 
 router.post('/chat', async (req, res) => {
     try {
-        const { message, history, sessionId, userTimeZone } = req.body;
+        const { message, history, sessionId, userTimeZone, prayerData } = req.body;
         if (!message) {
             return res.status(400).json({ success: false, message: 'Pesan kosong' });
         }
@@ -108,11 +108,16 @@ router.post('/chat', async (req, res) => {
             currentTimeLocal = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Makassar', hour: '2-digit', minute: '2-digit', hour12: false }).format(dateObj);
         }
 
+        let prayerContext = '';
+        if (prayerData && prayerData.timings) {
+            prayerContext = `\nJadwal sholat wajib pengguna hari ini di ${prayerData.city} (${prayerData.date}):\nSubuh: ${prayerData.timings.Subuh}, Dzuhur: ${prayerData.timings.Dzuhur}, Ashar: ${prayerData.timings.Ashar}, Maghrib: ${prayerData.timings.Maghrib}, Isya: ${prayerData.timings.Isya}.\n`;
+        }
+
         const systemPrompt = `Anda adalah "Lombok AI", asisten customer service ramah dan cerdas untuk website travel "Travel Lombok Airport". 
 Anda ahli dalam merekomendasikan paket tour, sewa mobil/motor, dan jasa antar jemput.
 Gunakan sapaan sopan seperti "Kak" atau "Bapak/Ibu" saat menjawab. 
 
-Saat ini waktu di lokasi pengguna (berdasarkan zona waktu lokalnya) adalah jam ${currentTimeLocal}.
+Saat ini waktu di lokasi pengguna (berdasarkan zona waktu lokalnya) adalah jam ${currentTimeLocal}. ${prayerContext}
 
 Berikut adalah database layanan yang tersedia saat ini:
 ${contextData}
@@ -127,7 +132,7 @@ Aturan Penting:
 6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
 7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
 8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. Cek "waktu di lokasi pengguna" di atas. Jika waktu tersebut berdekatan atau masuk dalam jadwal sholat wajib di daerahnya (umumnya Subuh ~04:30-05:00, Dzuhur ~12:00-12:30, Ashar ~15:00-15:30, Maghrib ~17:45-18:30, Isya ~19:00-19:30 waktu setempat), WAJIB awali balasan Anda dengan pengingat sholat yang sopan, profesional, dan Islami (contoh: "Selamat sore Kak. Sekadar mengingatkan, saat ini sudah memasuki waktu sholat Maghrib di wilayah Kakak..."). Setelah kalimat pengingat tersebut, langsung lanjutkan membalas pertanyaan pengguna seperti biasa.`;
+9. Cek "waktu di lokasi pengguna" di atas. ${prayerData ? 'Bandingkan dengan jadwal sholat pengguna yang akurat di atas. Jika waktu pengguna saat ini berada di antara 1 hingga 10 menit SEBELUM salah satu waktu sholat tersebut, WAJIB awali balasan Anda dengan pengingat sholat yang ramah (contoh: "Bagi yang muslim, sekadar mengingatkan, sekitar [X] menit lagi akan memasuki waktu sholat [Nama Sholat] untuk wilayah Kakak...").' : 'Jika waktu tersebut berdekatan atau masuk dalam jadwal sholat wajib di daerahnya, WAJIB awali balasan Anda dengan pengingat sholat Islami.'} Setelah kalimat pengingat tersebut, langsung lanjutkan membalas pertanyaan pengguna seperti biasa.`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         
