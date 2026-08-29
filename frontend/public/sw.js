@@ -1,8 +1,22 @@
-const CACHE_NAME = 'travel-lombok-v1';
+const CACHE_NAME = 'travel-lombok-v2-offline';
+const PRECACHE_URLS = [
+  '/',
+  '/index.html',
+  '/offline.html',
+  '/main.js',
+  '/index.css',
+  '/style.css',
+  '/manifest.json'
+];
 
-// Install event: skip cache logic for simplicity to ensure users always get fresh data
+// Install event: Precache core assets
 self.addEventListener('install', (event) => {
   self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then((cache) => {
+      return cache.addAll(PRECACHE_URLS).catch(err => console.log('Precache failed:', err));
+    })
+  );
 });
 
 // Activate event: clean up old caches if any
@@ -26,7 +40,7 @@ self.addEventListener('fetch', (event) => {
   if (event.request.method !== 'GET') return;
   
   // Skip API calls
-  if (event.request.url.includes('/api/')) return;
+  if (event.request.url.includes('/api/') || event.request.url.includes('firestore')) return;
   
   event.respondWith(
     fetch(event.request)
@@ -40,9 +54,17 @@ self.addEventListener('fetch', (event) => {
         }
         return response;
       })
-      .catch(() => {
+      .catch(async () => {
         // Fallback to cache if network fails (offline)
-        return caches.match(event.request);
+        const cachedResponse = await caches.match(event.request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        
+        // If it's a navigation request and not in cache, show offline.html
+        if (event.request.mode === 'navigate') {
+          return caches.match('/offline.html');
+        }
       })
   );
 });

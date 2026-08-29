@@ -3672,6 +3672,67 @@ window.checkGuestLimit = () => {
     return false;
 };
 
+let aiSpeechRecognition = null;
+let isAiRecording = false;
+
+window.toggleVoiceInput = () => {
+    const micBtn = document.getElementById('mic-chat-btn');
+    const input = document.getElementById('chat-input');
+    
+    if (isAiRecording) {
+        if (aiSpeechRecognition) aiSpeechRecognition.stop();
+        return;
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+        alert('Browser Anda belum mendukung fitur Voice Command. Silakan gunakan Google Chrome versi terbaru.');
+        return;
+    }
+
+    aiSpeechRecognition = new SpeechRecognition();
+    aiSpeechRecognition.lang = 'id-ID';
+    aiSpeechRecognition.interimResults = false;
+    aiSpeechRecognition.maxAlternatives = 1;
+
+    aiSpeechRecognition.onstart = () => {
+        isAiRecording = true;
+        if(!document.getElementById('mic-pulse-css')) {
+            const style = document.createElement('style');
+            style.id = 'mic-pulse-css';
+            style.innerHTML = `@keyframes pulse-mic { 0% { transform: scale(1); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }`;
+            document.head.appendChild(style);
+        }
+        if (micBtn) {
+            micBtn.style.color = '#ef4444';
+            micBtn.style.animation = 'pulse-mic 1s infinite';
+        }
+        if (input) input.placeholder = 'Mendengarkan suara Anda...';
+    };
+
+    aiSpeechRecognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        if (input) input.value = transcript;
+        setTimeout(() => window.sendChatMessage(), 300);
+    };
+
+    aiSpeechRecognition.onerror = (event) => {
+        console.error('Speech recognition error', event.error);
+        alert('Gagal mendeteksi suara. Pastikan mikrofon diizinkan (allow microphone).');
+    };
+
+    aiSpeechRecognition.onend = () => {
+        isAiRecording = false;
+        if (micBtn) {
+            micBtn.style.color = '#64748b';
+            micBtn.style.animation = 'none';
+        }
+        if (input) input.placeholder = 'Tanya rekomendasi paket...';
+    };
+
+    aiSpeechRecognition.start();
+};
+
 window.sendChatMessage = async () => {
     if (window.checkGuestLimit()) return;
 

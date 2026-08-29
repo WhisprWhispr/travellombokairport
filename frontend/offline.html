@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline | Travel Lombok Airport</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            text-align: center;
+            padding: 20px;
+        }
+        .container {
+            background: rgba(255,255,255,0.05);
+            padding: 40px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        .icon {
+            font-size: 5rem;
+            color: #ef4444;
+            margin-bottom: 20px;
+        }
+        h1 {
+            font-size: 2rem;
+            margin: 0 0 10px;
+            font-weight: 800;
+        }
+        p {
+            color: #94a3b8;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .contact-box {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: 700;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 4px 15px rgba(34, 197, 94, 0.4);
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 197, 94, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <i class="fa-solid fa-wifi-slash icon" style="font-size: 4rem;"></i>
+        <h1>Anda Sedang Offline</h1>
+        <p>Sepertinya koneksi internet Anda terputus. Anda masih dapat mengakses fitur-fitur tersimpan, atau menghubungi kami jika ada keperluan mendesak.</p>
+        
+        <div class="contact-box">
+            <h3 style="margin-top: 0; font-size: 1.1rem; color: white;">Kontak Darurat / Driver</h3>
+            <p style="margin-bottom: 0; color: #cbd5e1;"><i class="fa-brands fa-whatsapp" style="color: #22c55e;"></i> WhatsApp: <strong>+62 813-5334-1926</strong></p>
+        </div>
+
+        <a href="/" class="btn"><i class="fa-solid fa-rotate-right"></i> Coba Muat Ulang</a>
+    </div>
+</body>
+</html>
