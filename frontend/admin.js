@@ -2668,17 +2668,13 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
         if (data.url) {
             targetInput.value = data.url;
             isSuccess = true;
-            Toast.fire({
-                icon: 'success',
-                title: 'Gambar berhasil diupload'
-            });
-
+            
             // Tampilkan tulisan "Selesai diunggah!" di bawahnya
-            let oldMsg = targetInput.parentNode.parentNode.querySelector('.upload-success-msg');
+            let oldMsg = targetInput.parentNode.parentNode.querySelector('.upload-msg');
             if (oldMsg) oldMsg.remove();
             
             const msgNode = document.createElement('div');
-            msgNode.className = 'upload-success-msg';
+            msgNode.className = 'upload-msg';
             msgNode.style.color = '#10b981';
             msgNode.style.fontSize = '0.85rem';
             msgNode.style.marginTop = '8px';
@@ -2689,16 +2685,20 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
         }
     } catch (error) {
         console.error('Upload Error:', error);
-        const Toast = Swal.mixin({
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000
-        });
-        Toast.fire({
-            icon: 'error',
-            title: error.message || 'Gagal mengunggah gambar'
-        });
+        
+        let oldMsg = targetInput.parentNode.parentNode.querySelector('.upload-msg');
+        if (oldMsg) oldMsg.remove();
+        
+        const msgNode = document.createElement('div');
+        msgNode.className = 'upload-msg';
+        msgNode.style.color = '#ef4444';
+        msgNode.style.fontSize = '0.85rem';
+        msgNode.style.marginTop = '8px';
+        msgNode.style.fontWeight = '600';
+        msgNode.style.textAlign = 'left';
+        msgNode.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Gagal: ' + (error.message || 'Terjadi kesalahan saat mengunggah gambar');
+        targetInput.parentNode.parentNode.insertBefore(msgNode, targetInput.parentNode.nextSibling);
+
     } finally {
         if (typeof isSuccess !== 'undefined' && isSuccess) {
             btn.innerHTML = '<i class="fa-solid fa-check" style="color: #4CAF50;"></i> Berhasil Upload';
