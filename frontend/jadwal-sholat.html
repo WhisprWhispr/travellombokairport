@@ -98,6 +98,57 @@
   
   
   
+  <style>
+    .prayer-box {
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      padding: 40px 30px;
+      border-radius: 30px;
+      box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: white;
+    }
+    .prayer-title {
+      font-weight: 800; font-size: 2rem; margin-bottom: 5px; 
+      background: linear-gradient(to right, #34d399, #38bdf8); 
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+    }
+    .prayer-countdown {
+      font-size: 3rem; font-weight: 800; font-family: 'Inter', monospace; letter-spacing: -1px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+    .prayer-cards-container {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      gap: 12px;
+      padding-bottom: 10px;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .prayer-cards-container::-webkit-scrollbar {
+      display: none;
+    }
+    
+    @media (max-width: 600px) {
+      .prayer-box {
+        padding: 30px 15px;
+        border-radius: 20px;
+      }
+      .prayer-title {
+        font-size: 1.6rem;
+      }
+      .prayer-countdown {
+        font-size: 2.2rem;
+      }
+      .prayer-cards-container {
+        gap: 10px;
+      }
+    }
+  </style>
+
   <section class="section prayer-section" style="position: relative; min-height: calc(100vh - 80px); display: flex; align-items: center; justify-content: center; overflow: hidden; padding: 120px 20px 60px;">
     <!-- Dynamic Background Elements -->
     <div id="prayer-bg" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: -1; background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%); transition: background 1s ease;"></div>
@@ -106,10 +157,10 @@
 
     <div class="container" style="max-width: 900px; width: 100%;">
       
-      <div style="background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); padding: 40px 30px; border-radius: 30px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white;">
+      <div class="prayer-box">
         
         <div class="text-center" style="margin-bottom: 30px;">
-            <h2 style="font-weight: 800; font-size: 2rem; margin-bottom: 5px; background: linear-gradient(to right, #34d399, #38bdf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Jadwal Sholat</h2>
+            <h2 class="prayer-title">Jadwal Sholat</h2>
             <div id="prayer-city" style="color: #94a3b8; font-size: 1rem; font-weight: 500;"><i class="fa-solid fa-location-dot"></i> Memuat Lokasi...</div>
             <div id="prayer-date" style="color: #64748b; font-size: 0.85rem; margin-top: 5px;"></div>
         </div>
@@ -133,11 +184,11 @@
             <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05); position: relative; overflow: hidden;">
                 <div style="position: absolute; bottom: 0; left: 0; height: 4px; background: linear-gradient(90deg, #34d399, #38bdf8); width: 0%; transition: width 1s linear;" id="prayer-progress"></div>
                 <h4 style="color: #94a3b8; font-size: 0.9rem; font-weight: 500; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1px;">Menuju <span id="next-prayer-name" style="color: white; font-weight: 700;">...</span></h4>
-                <div id="next-prayer-countdown" style="font-size: 3rem; font-weight: 800; font-family: 'Inter', monospace; letter-spacing: -1px; line-height: 1; text-shadow: 0 4px 10px rgba(0,0,0,0.3);">--:--:--</div>
+                <div id="next-prayer-countdown" class="prayer-countdown">--:--:--</div>
             </div>
 
             <!-- Schedule List -->
-            <div id="prayer-cards" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 15px;">
+            <div id="prayer-cards" class="prayer-cards-container">
                 <!-- Injected via JS -->
             </div>
             

@@ -3892,7 +3892,7 @@ window.renderPrayerTimes = (data) => {
         lastMins = prayerMins;
 
         cardsContainer.innerHTML += `
-            <div style="background: rgba(255,255,255,0.05); padding: 20px 15px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; border: 1px solid ${isNext ? 'rgba(52,211,153,0.5)' : 'rgba(255,255,255,0.05)'}; transition: transform 0.3s, background 0.3s; transform: scale(${isNext ? '1.05' : '1'}); background: ${isNext ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)'}; box-shadow: ${isNext ? '0 10px 25px -5px rgba(52,211,153,0.2)' : 'none'}">
+            <div class="prayer-card" style="background: rgba(255,255,255,0.05); padding: 20px 15px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; border: 1px solid ${isNext ? 'rgba(52,211,153,0.5)' : 'rgba(255,255,255,0.05)'}; transition: transform 0.3s, background 0.3s; transform: scale(${isNext ? '1.05' : '1'}); background: ${isNext ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)'}; box-shadow: ${isNext ? '0 10px 25px -5px rgba(52,211,153,0.2)' : 'none'}; min-width: 120px; flex-shrink: 0; scroll-snap-align: center;">
                 <div style="font-size: 1rem; color: ${isNext ? '#34d399' : '#94a3b8'}; font-weight: ${isNext ? '700' : '500'}; text-transform: uppercase; letter-spacing: 1px;">${name}</div>
                 <div style="font-size: 1.6rem; font-weight: 800; color: white;">${timeStr}</div>
             </div>
