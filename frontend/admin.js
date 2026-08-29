@@ -2026,6 +2026,7 @@ window.fetchGlobalSettings = async () => {
             const droneStatus = document.getElementById('setting-drone-status');
             const dronePrice = document.getElementById('setting-drone-price');
             const maintenanceToggle = document.getElementById('setting-maintenance-mode');
+            const aiMaintenanceToggle = document.getElementById('setting-ai-maintenance');
             
             if (droneStatus && data.droneAvailable) {
                 droneStatus.value = data.droneAvailable;
@@ -2064,6 +2065,9 @@ window.fetchGlobalSettings = async () => {
                     }
                 }
             }
+            if (aiMaintenanceToggle) {
+                aiMaintenanceToggle.checked = data.aiMaintenanceMode === true;
+            }
         }
     } catch (e) {
         console.error("Error fetching settings:", e);
@@ -2075,6 +2079,7 @@ window.saveGlobalSettings = async () => {
     const dronePriceRaw = document.getElementById('setting-drone-price').value || "";
     const dronePrice = dronePriceRaw.replace(/\./g, '');
     const maintenanceMode = document.getElementById('setting-maintenance-mode') ? document.getElementById('setting-maintenance-mode').checked : false;
+    const aiMaintenanceMode = document.getElementById('setting-ai-maintenance') ? document.getElementById('setting-ai-maintenance').checked : false;
     
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
@@ -2084,7 +2089,8 @@ window.saveGlobalSettings = async () => {
             body: JSON.stringify({ 
                 droneAvailable: droneStatus, 
                 dronePrice: dronePrice,
-                maintenanceMode: maintenanceMode
+                maintenanceMode: maintenanceMode,
+                aiMaintenanceMode: aiMaintenanceMode
             })
         });
         if (res.ok) {

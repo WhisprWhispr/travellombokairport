@@ -3619,15 +3619,51 @@ window.clearChatHistory = () => {
     if (sendBtn) sendBtn.disabled = false;
 };
 
-window.toggleChat = () => {
+window.toggleChat = async () => {
     const chatWindow = document.getElementById('ai-chat-window');
     chatWindow.classList.toggle('hidden');
     if (!chatWindow.classList.contains('hidden')) {
+        const inputArea = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-chat-btn');
+        const micBtn = document.getElementById('mic-chat-btn');
+        const msgs = document.getElementById('chat-messages');
+
+        try {
+            const res = await fetch(`${API_URL}/settings`);
+            if (res.ok) {
+                const settings = await res.json();
+                if (settings.aiMaintenanceMode) {
+                    if (inputArea) { inputArea.disabled = true; inputArea.placeholder = 'AI sedang dalam perbaikan...'; }
+                    if (sendBtn) sendBtn.disabled = true;
+                    if (micBtn) micBtn.disabled = true;
+                    
+                    if (msgs && !msgs.innerHTML.includes('pemeliharaan')) {
+                        msgs.innerHTML += `
+                            <div class="message ai-message" style="background-color: #fef3c7; color: #92400e; border: 1px solid #f59e0b;">
+                                <i class="fa-solid fa-person-digging"></i> Mohon maaf, fitur Lombok AI sedang dalam pemeliharaan dan peningkatan sistem. Silakan hubungi kami via WhatsApp sementara waktu.
+                            </div>
+                        `;
+                        msgs.scrollTop = msgs.scrollHeight;
+                    }
+                    return; // Stop further checks
+                } else {
+                    // Reset if previously disabled
+                    if (inputArea && inputArea.placeholder === 'AI sedang dalam perbaikan...') {
+                        inputArea.disabled = false;
+                        inputArea.placeholder = 'Tanya rekomendasi paket...';
+                        if (sendBtn) sendBtn.disabled = false;
+                        if (micBtn) micBtn.disabled = false;
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Failed to check AI settings', e);
+        }
+
         document.getElementById('chat-input').focus();
         // Check and show guest limit card if needed
         window.checkGuestLimit();
         // Scroll to bottom
-        const msgs = document.getElementById('chat-messages');
         if (msgs) msgs.scrollTop = msgs.scrollHeight;
     }
 };

@@ -80,6 +80,19 @@ router.post('/chat', async (req, res) => {
             return res.status(500).json({ success: false, message: 'Server belum dikonfigurasi dengan GEMINI_API_KEY' });
         }
 
+        try {
+            const settingsDoc = await db.collection('settings').doc('global').get();
+            if (settingsDoc.exists && settingsDoc.data().aiMaintenanceMode) {
+                return res.json({
+                    success: true,
+                    reply: 'Mohon maaf, fitur Lombok AI saat ini sedang dalam pemeliharaan dan peningkatan sistem. Silakan coba beberapa saat lagi atau hubungi kami via WhatsApp.',
+                    sessionId
+                });
+            }
+        } catch (e) {
+            console.error('Error checking AI maintenance mode:', e);
+        }
+
         // Fetch data context
         let contextData = '';
         try {
