@@ -285,6 +285,43 @@ aiRoutes.post('/chat', async (c) => {
             console.error("Gagal menarik data untuk konteks chatbot", e);
         }
 
+        // Fetch Knowledge Base
+        let knowledgeBaseContext = '';
+        try {
+            const db = getDb(c);
+            const snapshot = await db.collection('ai_knowledge_base').where('isActive', '==', true).get();
+            const rules = [];
+            snapshot.forEach(doc => rules.push(doc.data().rule));
+            if (rules.length > 0) {
+                knowledgeBaseContext = `\nINSTRUKSI KHUSUS DARI ADMIN (KNOWLEDGE BASE):\n` + rules.map((r, i) => `${i+1}. ${r}`).join('\n');
+            }
+        } catch (e) {
+            console.error("Gagal menarik data knowledge base", e);
+        }
+
+        // Fetch Recent Chats for Context
+        let recentChatsContext = '';
+        try {
+            const db = getDb(c);
+            const recentChatsSnapshot = await db.collection('chat_sessions').orderBy('lastUpdate', 'desc').limit(10).get();
+            const recentQuestions = [];
+            recentChatsSnapshot.forEach(doc => {
+                const sessionHistory = doc.data().history || [];
+                sessionHistory.forEach(msg => {
+                    if (msg.role === 'user') {
+                        recentQuestions.push(msg.parts[0].text);
+                    }
+                });
+            });
+            
+            if (recentQuestions.length > 0) {
+                const uniqueQuestions = [...new Set(recentQuestions)].slice(0, 10);
+                recentChatsContext = `\nKONTEKS TREN PERTANYAAN (10 Pertanyaan terakhir dari pengguna lain, gunakan hanya jika relevan):\n` + uniqueQuestions.map(q => `- "${q}"`).join('\n');
+            }
+        } catch (e) {
+            console.error("Gagal menarik data riwayat obrolan terbaru", e);
+        }
+
         const dateObj = new Date();
         const timeZoneToUse = userTimeZone || 'Asia/Makassar';
         let currentTimeLocal = '';
@@ -342,7 +379,9 @@ Aturan Penting:
 6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
 7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
 8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}`;
+9. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+${knowledgeBaseContext}
+${recentChatsContext}`;
 
         // Combine history and new message
         const contents = [
@@ -464,6 +503,58 @@ aiRoutes.get('/sessions', async (c) => {
     } catch (error) {
         console.error('Error fetching chat sessions:', error);
         return c.json({ success: false, message: 'Gagal mengambil riwayat obrolan', error: error.message }, 500);
+    }
+});
+
+// GET Knowledge Base
+aiRoutes.get('/knowledge-base', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const snapshot = await db.collection('ai_knowledge_base').orderBy('createdAt', 'desc').get();
+        const rules = [];
+        snapshot.forEach(doc => {
+            rules.push({ id: doc.id, ...doc.data() });
+        });
+        return c.json({ success: true, data: rules });
+    } catch (error) {
+        console.error('Error fetching knowledge base:', error);
+        return c.json({ success: false, message: 'Gagal mengambil knowledge base' }, 500);
+    }
+});
+
+// POST Knowledge Base
+aiRoutes.post('/knowledge-base', verifyToken, async (c) => {
+    try {
+        const { rule } = await c.req.json();
+        if (!rule) {
+            return c.json({ success: false, message: 'Aturan tidak boleh kosong' }, 400);
+        }
+        
+        const newRule = {
+            rule,
+            isActive: true,
+            createdAt: new Date().toISOString()
+        };
+        
+        const db = getDb(c);
+        const docRef = await db.collection('ai_knowledge_base').add(newRule);
+        return c.json({ success: true, message: 'Aturan berhasil ditambahkan', data: { id: docRef.id, ...newRule } });
+    } catch (error) {
+        console.error('Error adding knowledge base:', error);
+        return c.json({ success: false, message: 'Gagal menambahkan aturan' }, 500);
+    }
+});
+
+// DELETE Knowledge Base
+aiRoutes.delete('/knowledge-base/:id', verifyToken, async (c) => {
+    try {
+        const id = c.req.param('id');
+        const db = getDb(c);
+        await db.collection('ai_knowledge_base').doc(id).delete();
+        return c.json({ success: true, message: 'Aturan berhasil dihapus' });
+    } catch (error) {
+        console.error('Error deleting knowledge base:', error);
+        return c.json({ success: false, message: 'Gagal menghapus aturan' }, 500);
     }
 });
 
