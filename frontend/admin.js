@@ -2667,6 +2667,20 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
                 timer: 2000,
                 showConfirmButton: false
             });
+
+            // Tampilkan tulisan "Selesai diunggah!" di bawahnya
+            let oldMsg = targetInput.parentNode.parentNode.querySelector('.upload-success-msg');
+            if (oldMsg) oldMsg.remove();
+            
+            const msgNode = document.createElement('div');
+            msgNode.className = 'upload-success-msg';
+            msgNode.style.color = '#10b981';
+            msgNode.style.fontSize = '0.85rem';
+            msgNode.style.marginTop = '8px';
+            msgNode.style.fontWeight = '600';
+            msgNode.style.textAlign = 'left';
+            msgNode.innerHTML = '<i class="fa-solid fa-circle-check"></i> Proses mengunggah selesai!';
+            targetInput.parentNode.parentNode.insertBefore(msgNode, targetInput.parentNode.nextSibling);
         }
     } catch (error) {
         console.error('Upload Error:', error);
