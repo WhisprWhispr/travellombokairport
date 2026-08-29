@@ -3891,10 +3891,20 @@ window.renderPrayerTimes = (data) => {
         }
         lastMins = prayerMins;
 
+        let iconHtml = '';
+        if (name.toLowerCase() === 'subuh') iconHtml = '<i class="fa-solid fa-cloud-sun" style="font-size: 1.5rem;"></i>';
+        else if (name.toLowerCase() === 'dzuhur') iconHtml = '<i class="fa-solid fa-sun" style="font-size: 1.5rem;"></i>';
+        else if (name.toLowerCase() === 'ashar') iconHtml = '<i class="fa-solid fa-cloud" style="font-size: 1.5rem;"></i>';
+        else if (name.toLowerCase() === 'maghrib') iconHtml = '<i class="fa-solid fa-moon" style="font-size: 1.5rem;"></i>';
+        else if (name.toLowerCase() === 'isya') iconHtml = '<i class="fa-solid fa-star-and-crescent" style="font-size: 1.5rem;"></i>';
+        else iconHtml = '<i class="fa-solid fa-clock" style="font-size: 1.5rem;"></i>';
+
         cardsContainer.innerHTML += `
-            <div class="prayer-card" style="background: rgba(255,255,255,0.05); padding: 20px 15px; border-radius: 16px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 8px; border: 1px solid ${isNext ? 'rgba(52,211,153,0.5)' : 'rgba(255,255,255,0.05)'}; transition: transform 0.3s, background 0.3s; transform: scale(${isNext ? '1.05' : '1'}); background: ${isNext ? 'rgba(52,211,153,0.1)' : 'rgba(255,255,255,0.05)'}; box-shadow: ${isNext ? '0 10px 25px -5px rgba(52,211,153,0.2)' : 'none'}; min-width: 120px; flex-shrink: 0; scroll-snap-align: center;">
-                <div style="font-size: 1rem; color: ${isNext ? '#34d399' : '#94a3b8'}; font-weight: ${isNext ? '700' : '500'}; text-transform: uppercase; letter-spacing: 1px;">${name}</div>
-                <div style="font-size: 1.6rem; font-weight: 800; color: white;">${timeStr}</div>
+            <div class="prayer-card" style="background: rgba(255,255,255,0.05); padding: 25px 15px; border-radius: 20px; display: flex; flex-direction: column; justify-content: center; align-items: center; gap: 4px; border: 1px solid ${isNext ? 'rgba(52,211,153,0.6)' : 'rgba(255,255,255,0.08)'}; transition: transform 0.3s, background 0.3s; transform: scale(${isNext ? '1.05' : '1'}); background: ${isNext ? 'linear-gradient(135deg, rgba(16,185,129,0.15) 0%, rgba(5,150,105,0.15) 100%)' : 'rgba(255,255,255,0.03)'}; box-shadow: ${isNext ? '0 15px 30px -10px rgba(16,185,129,0.3)' : 'none'}; min-width: 120px; flex-shrink: 0; scroll-snap-align: center; position: relative; overflow: hidden;">
+                ${isNext ? '<div style="position: absolute; top: -10px; right: -10px; width: 50px; height: 50px; background: rgba(52,211,153,0.15); border-radius: 50%; filter: blur(10px);"></div>' : ''}
+                <div style="color: ${isNext ? '#34d399' : '#64748b'}; margin-bottom: 5px;">${iconHtml}</div>
+                <div style="font-size: 0.85rem; color: ${isNext ? '#34d399' : '#94a3b8'}; font-weight: ${isNext ? '800' : '600'}; text-transform: uppercase; letter-spacing: 1.5px;">${name}</div>
+                <div style="font-size: 1.8rem; font-weight: 800; color: ${isNext ? 'white' : '#e2e8f0'}; font-family: 'Inter', monospace; margin-top: 2px;">${timeStr}</div>
             </div>
         `;
     }
