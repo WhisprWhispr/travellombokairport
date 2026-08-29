@@ -3565,18 +3565,18 @@ window.renderChatHistory = () => {
 
     chatHistory.forEach(msg => {
         if (msg.role === 'user') {
-            messagesContainer.innerHTML += `
+            messagesContainer.insertAdjacentHTML('beforeend', `
                 <div class="message user-message">
                     ${msg.parts[0].text}
                 </div>
-            `;
+            `);
         } else {
             const htmlReply = parseMarkdownToHTML(msg.parts[0].text);
-            messagesContainer.innerHTML += `
+            messagesContainer.insertAdjacentHTML('beforeend', `
                 <div class="message ai-message">
                     ${htmlReply}
                 </div>
-            `;
+            `);
         }
     });
     
@@ -3685,21 +3685,21 @@ window.sendChatMessage = async () => {
     const messagesContainer = document.getElementById('chat-messages');
     
     // Add User Message
-    messagesContainer.innerHTML += `
+    messagesContainer.insertAdjacentHTML('beforeend', `
         <div class="message user-message">
             ${message}
         </div>
-    `;
+    `);
     
     // Add Typing Indicator
     const typingId = 'typing-' + Date.now();
-    messagesContainer.innerHTML += `
+    messagesContainer.insertAdjacentHTML('beforeend', `
         <div id="${typingId}" class="typing-indicator">
             <div class="typing-dot"></div>
             <div class="typing-dot"></div>
             <div class="typing-dot"></div>
         </div>
-    `;
+    `);
     
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -3742,9 +3742,9 @@ window.sendChatMessage = async () => {
         if (response.ok) {
             if (response.headers.get('content-type')?.includes('text/event-stream')) {
                 const msgId = 'ai-msg-' + Date.now();
-                messagesContainer.innerHTML += `
+                messagesContainer.insertAdjacentHTML('beforeend', `
                     <div id="${msgId}" class="message ai-message"></div>
-                `;
+                `);
                 const msgContainer = document.getElementById(msgId);
                 
                 const reader = response.body.getReader();
@@ -3793,11 +3793,11 @@ window.sendChatMessage = async () => {
                     chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
                     localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
                     const htmlReply = parseMarkdownToHTML(data.reply);
-                    messagesContainer.innerHTML += `
+                    messagesContainer.insertAdjacentHTML('beforeend', `
                         <div class="message ai-message">
                             ${htmlReply}
                         </div>
-                    `;
+                    `);
                     window.checkGuestLimit();
                 } else {
                     throw new Error(data.message);
@@ -3811,11 +3811,11 @@ window.sendChatMessage = async () => {
         const typingIndicator = document.getElementById(typingId);
         if (typingIndicator) typingIndicator.remove();
         
-        messagesContainer.innerHTML += `
+        messagesContainer.insertAdjacentHTML('beforeend', `
             <div class="message ai-message" style="color: #ef4444; background: #fee2e2;">
                 Maaf, layanan AI sedang sibuk atau ada gangguan jaringan. Silakan coba lagi.
             </div>
-        `;
+        `);
     }
     
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
