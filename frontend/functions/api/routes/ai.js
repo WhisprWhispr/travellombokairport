@@ -295,8 +295,32 @@ aiRoutes.post('/chat', async (c) => {
         }
 
         let prayerContext = '';
+        let prayerReminderAlert = '';
         if (prayerData && prayerData.timings) {
             prayerContext = `\nJadwal sholat wajib pengguna hari ini di ${prayerData.city} (${prayerData.date}):\nSubuh: ${prayerData.timings.Subuh}, Dzuhur: ${prayerData.timings.Dzuhur}, Ashar: ${prayerData.timings.Ashar}, Maghrib: ${prayerData.timings.Maghrib}, Isya: ${prayerData.timings.Isya}.\n`;
+            
+            // Hitung selisih waktu menggunakan JavaScript agar presisi 100%
+            try {
+                const [currH, currM] = currentTimeLocal.replace('.', ':').split(':').map(Number);
+                const currTotalMins = currH * 60 + currM;
+                
+                const prayersToCheck = ['Subuh', 'Dzuhur', 'Ashar', 'Maghrib', 'Isya'];
+                for (const prayer of prayersToCheck) {
+                    if (prayerData.timings[prayer]) {
+                        const timeStr = prayerData.timings[prayer].split(' ')[0]; // Bersihkan zona waktu jika ada
+                        const [pH, pM] = timeStr.split(':').map(Number);
+                        const pTotalMins = pH * 60 + pM;
+                        
+                        const diff = pTotalMins - currTotalMins;
+                        if (diff >= 1 && diff <= 10) {
+                            prayerReminderAlert = `\n[INSTRUKSI MUTLAK]: Saat ini adalah ${diff} menit menuju sholat ${prayer}. WAJIB awali balasan Anda dengan pengingat sholat yang ramah (contoh: "Sekadar mengingatkan, sekitar ${diff} menit lagi akan masuk waktu sholat ${prayer}...").\n`;
+                            break;
+                        }
+                    }
+                }
+            } catch(e) {
+                console.error("Gagal menghitung selisih waktu sholat", e);
+            }
         }
 
         const systemPrompt = `Anda adalah "Lombok AI", asisten customer service ramah dan cerdas untuk website travel "Travel Lombok Airport". 
@@ -318,7 +342,7 @@ Aturan Penting:
 6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
 7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
 8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. Cek "waktu di lokasi pengguna" di atas. ${prayerData ? 'Bandingkan dengan jadwal sholat pengguna yang akurat di atas. Jika waktu pengguna saat ini berada di antara 1 hingga 10 menit SEBELUM salah satu waktu sholat tersebut, WAJIB awali balasan Anda dengan pengingat sholat yang ramah (contoh: "Bagi yang muslim, sekadar mengingatkan, sekitar [X] menit lagi akan memasuki waktu sholat [Nama Sholat] untuk wilayah Kakak...").' : 'Jika waktu tersebut berdekatan atau masuk dalam jadwal sholat wajib di daerahnya, WAJIB awali balasan Anda dengan pengingat sholat Islami.'} Setelah kalimat pengingat tersebut, langsung lanjutkan membalas pertanyaan pengguna seperti biasa.`;
+9. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}`;
 
         // Combine history and new message
         const contents = [
