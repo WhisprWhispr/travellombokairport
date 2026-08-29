@@ -3718,7 +3718,23 @@ window.toggleVoiceInput = () => {
 
     aiSpeechRecognition.onerror = (event) => {
         console.error('Speech recognition error', event.error);
-        alert('Gagal mendeteksi suara. Pastikan mikrofon diizinkan (allow microphone).');
+        
+        isAiRecording = false;
+        if (micBtn) {
+            micBtn.style.color = '#64748b';
+            micBtn.style.animation = 'none';
+        }
+        if (input) input.placeholder = 'Tanya rekomendasi paket...';
+
+        const messagesContainer = document.getElementById('chat-messages');
+        if (messagesContainer) {
+            messagesContainer.insertAdjacentHTML('beforeend', `
+                <div class="message ai-message" style="background-color: #fee2e2; color: #991b1b; border: 1px solid #f87171;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Gagal mendeteksi mikrofon. Browser Anda menolak akses. Pastikan Anda mengklik "Allow/Izinkan" pada setelan mikrofon di browser.
+                </div>
+            `);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
     };
 
     aiSpeechRecognition.onend = () => {
