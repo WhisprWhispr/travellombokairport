@@ -1548,7 +1548,8 @@ document.getElementById("add-gallery-btn").addEventListener("click", () => {
         html: `
             <div style="display: flex; gap: 10px; margin: 1em auto; justify-content: center; width: 100%; max-width: 100%; box-sizing: border-box; align-items: center;">
               <input id="swal-g-img" class="swal2-input" placeholder="URL Gambar (JPG/PNG)" style="margin: 0; flex: 1; width: auto;">
-              <button type="button" class="swal2-confirm swal2-styled" style="margin: 0; background-color: transparent; color: #3b82f6; border: 1px solid #3b82f6; width: auto; padding: 0 15px; height: 3.375em;" onclick="navigator.clipboard.readText().then(text => document.getElementById('swal-g-img').value = text).catch(err => alert('Gagal mengakses clipboard: ' + err))"><i class="fa-solid fa-paste"></i> Paste</button>
+              <input type="file" id="swal-g-img-upload" accept="image/*" style="display: none;" onchange="uploadImageToServer(this, 'swal-g-img')">
+              <button type="button" class="swal2-confirm swal2-styled" style="margin: 0; background-color: transparent; color: #3b82f6; border: 1px solid #3b82f6; width: auto; padding: 0 15px; height: 3.375em; white-space: nowrap;" onclick="document.getElementById('swal-g-img-upload').click()"><i class="fa-solid fa-cloud-arrow-up"></i> Upload</button>
             </div>
             <input id="swal-g-title" class="swal2-input" placeholder="Judul (contoh: Trip Gili Trawangan)">
             <input id="swal-g-desc" class="swal2-input" placeholder="Deskripsi Singkat (Opsional)">
