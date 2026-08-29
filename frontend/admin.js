@@ -2657,15 +2657,20 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
         
         let isSuccess = false;
         
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+        });
+
         if (data.url) {
             targetInput.value = data.url;
             isSuccess = true;
-            Swal.fire({
+            Toast.fire({
                 icon: 'success',
-                title: 'Berhasil',
-                text: 'Gambar berhasil diupload',
-                timer: 2000,
-                showConfirmButton: false
+                title: 'Gambar berhasil diupload'
             });
 
             // Tampilkan tulisan "Selesai diunggah!" di bawahnya
@@ -2684,10 +2689,15 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
         }
     } catch (error) {
         console.error('Upload Error:', error);
-        Swal.fire({
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        Toast.fire({
             icon: 'error',
-            title: 'Gagal',
-            text: error.message || 'Terjadi kesalahan saat mengunggah gambar'
+            title: error.message || 'Gagal mengunggah gambar'
         });
     } finally {
         if (typeof isSuccess !== 'undefined' && isSuccess) {
