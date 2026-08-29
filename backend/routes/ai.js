@@ -99,6 +99,42 @@ router.post('/chat', async (req, res) => {
             console.error("Gagal menarik data untuk konteks chatbot", e);
         }
 
+        // Fetch AI Knowledge Base (Aturan tambahan dari Admin)
+        let knowledgeBaseContext = '';
+        try {
+            const kbSnapshot = await db.collection('ai_knowledge_base').where('isActive', '==', true).get();
+            const rules = [];
+            kbSnapshot.forEach(doc => {
+                rules.push(`- ${doc.data().rule}`);
+            });
+            if (rules.length > 0) {
+                knowledgeBaseContext = `\nCatatan Penting Tambahan (Knowledge Base):\n${rules.join('\\n')}\n`;
+            }
+        } catch(e) {
+            console.error("Gagal menarik data knowledge base", e);
+        }
+
+        // Fetch Recent Chats Context (agar AI tahu apa yang sering ditanyakan)
+        let recentChatsContext = '';
+        try {
+            const recentSnapshot = await db.collection('chat_sessions').orderBy('lastUpdate', 'desc').limit(10).get();
+            const recentQuestions = [];
+            recentSnapshot.forEach(doc => {
+                const data = doc.data();
+                if (data.history && data.history.length > 0) {
+                    const userMsgs = data.history.filter(msg => msg.role === 'user');
+                    if (userMsgs.length > 0) {
+                        recentQuestions.push(`"${userMsgs[userMsgs.length - 1].parts[0].text}"`);
+                    }
+                }
+            });
+            if (recentQuestions.length > 0) {
+                recentChatsContext = `\nSebagai referensi tren, berikut beberapa pertanyaan terakhir dari pelanggan lain: ${recentQuestions.slice(0, 5).join(', ')}.\n`;
+            }
+        } catch(e) {
+            console.error("Gagal menarik data recent chats", e);
+        }
+
         const dateObj = new Date();
         const timeZoneToUse = userTimeZone || 'Asia/Makassar';
         let currentTimeLocal = '';
@@ -156,7 +192,9 @@ Aturan Penting:
 6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
 7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
 8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}`;
+9. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+${knowledgeBaseContext}
+${recentChatsContext}`;
 
         const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
         
@@ -241,6 +279,55 @@ router.get('/sessions', async (req, res) => {
     } catch (error) {
         console.error('Error fetching chat sessions:', error);
         res.status(500).json({ success: false, message: 'Gagal mengambil riwayat obrolan' });
+    }
+});
+
+// GET Knowledge Base
+router.get('/knowledge-base', async (req, res) => {
+    try {
+        const snapshot = await db.collection('ai_knowledge_base').orderBy('createdAt', 'desc').get();
+        const rules = [];
+        snapshot.forEach(doc => {
+            rules.push({ id: doc.id, ...doc.data() });
+        });
+        res.json({ success: true, data: rules });
+    } catch (error) {
+        console.error('Error fetching knowledge base:', error);
+        res.status(500).json({ success: false, message: 'Gagal mengambil knowledge base' });
+    }
+});
+
+// POST Knowledge Base
+router.post('/knowledge-base', async (req, res) => {
+    try {
+        const { rule } = req.body;
+        if (!rule) {
+            return res.status(400).json({ success: false, message: 'Aturan tidak boleh kosong' });
+        }
+        
+        const newRule = {
+            rule,
+            isActive: true,
+            createdAt: new Date().toISOString()
+        };
+        
+        const docRef = await db.collection('ai_knowledge_base').add(newRule);
+        res.json({ success: true, message: 'Aturan berhasil ditambahkan', data: { id: docRef.id, ...newRule } });
+    } catch (error) {
+        console.error('Error adding knowledge base:', error);
+        res.status(500).json({ success: false, message: 'Gagal menambahkan aturan' });
+    }
+});
+
+// DELETE Knowledge Base
+router.delete('/knowledge-base/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        await db.collection('ai_knowledge_base').doc(id).delete();
+        res.json({ success: true, message: 'Aturan berhasil dihapus' });
+    } catch (error) {
+        console.error('Error deleting knowledge base:', error);
+        res.status(500).json({ success: false, message: 'Gagal menghapus aturan' });
     }
 });
 

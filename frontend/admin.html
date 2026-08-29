@@ -66,6 +66,7 @@
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="#" onclick="showTab('analytics')"><i class="fa-solid fa-chart-line"></i> Statistik Pengunjung</a></li>
           <li><a href="#" onclick="showTab('ai-chats')"><i class="fa-solid fa-comments"></i> Riwayat Chat AI</a></li>
+          <li><a href="#" onclick="showTab('ai-knowledge')"><i class="fa-solid fa-brain"></i> Ajari AI (Knowledge Base)</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
@@ -358,6 +359,27 @@
         </section>
         
         <!-- Gallery Section -->
+        <section id="ai-knowledge-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Knowledge Base AI</h2>
+            <button class="btn btn-primary" onclick="showAddRuleModal()"><i class="fa-solid fa-plus"></i> Tambah Aturan</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Aturan / Instruksi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="ai-knowledge-table">
+                <!-- Rules will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <section id="gallery-section" class="admin-content glass-panel mt-4" style="display: none;">
           <h2>Kelola Galeri Perjalanan</h2>
           <div class="table-container" style="margin-top: 20px;">
@@ -824,6 +846,32 @@
               <i class="fa-solid fa-save"></i> Simpan Promo
             </button>
             <button type="button" onclick="closePromoModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== AI KNOWLEDGE BASE MODAL ===== -->
+    <div id="ai-knowledge-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto;">
+      <div style="background:#fff; border-radius:16px; max-width:600px; width:90%; margin:40px auto; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 style="margin:0; font-size:1.3rem; font-weight:700; color:#1e293b;">Ajari AI (Tambah Aturan)</h3>
+          <button onclick="closeKnowledgeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+        </div>
+        <form id="ai-knowledge-form">
+          <div class="form-group mb-4">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Instruksi/Aturan untuk AI</label>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 0; margin-bottom: 10px;">Berikan instruksi yang jelas. Contoh: "Jika ada yang bertanya harga promo, pastikan tawarkan diskon 10% untuk kode LOMBOKHEBOH."</p>
+            <textarea id="ai-knowledge-rule" class="form-control" rows="4" placeholder="Ketik aturan di sini..." required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; resize:vertical;"></textarea>
+          </div>
+          
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-primary" style="flex:1; padding:12px; border-radius:8px; font-weight:600;">
+              <i class="fa-solid fa-save"></i> Simpan Aturan
+            </button>
+            <button type="button" onclick="closeKnowledgeModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
               Batal
             </button>
           </div>

@@ -1045,6 +1045,8 @@ window.showTab = (tab) => {
     if (analyticsSection) analyticsSection.style.display = "none";
     const aiChatsSection = document.getElementById("ai-chats-section");
     if (aiChatsSection) aiChatsSection.style.display = "none";
+    const aiKnowledgeSection = document.getElementById("ai-knowledge-section");
+    if (aiKnowledgeSection) aiKnowledgeSection.style.display = "none";
     document.getElementById("bookings-section").style.display = "none";
     document.getElementById("orders-section").style.display = "none";
     document.getElementById("web-bookings-section").style.display = "none";
@@ -1098,6 +1100,12 @@ window.showTab = (tab) => {
         if (aiChatsSection) {
             aiChatsSection.style.display = "block";
             fetchAdminAiChats();
+        }
+    } else if (tab === "ai-knowledge") {
+        const aiKnowledgeSection = document.getElementById("ai-knowledge-section");
+        if (aiKnowledgeSection) {
+            aiKnowledgeSection.style.display = "block";
+            fetchAiKnowledgeBase();
         }
     } else if (tab === "gallery") {
         document.getElementById("gallery-section").style.display = "block";
@@ -2620,7 +2628,16 @@ window.viewChatHistory = (history) => {
         html: html,
         width: 600,
         showCloseButton: true,
-        showConfirmButton: false
+        showConfirmButton: true,
+        confirmButtonText: '<i class="fa-solid fa-brain"></i> Ajari AI dari Chat Ini',
+        confirmButtonColor: '#3b82f6',
+        showCancelButton: true,
+        cancelButtonText: 'Tutup'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            Swal.close();
+            showAddRuleModal();
+        }
     });
 };
 
@@ -2711,4 +2728,109 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
         btn.disabled = false;
         fileInput.value = ''; // Reset input
     }
+};
+
+// ====== AI KNOWLEDGE BASE ======
+window.fetchAiKnowledgeBase = async () => {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_URL}/ai/knowledge-base`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const tbody = document.getElementById('ai-knowledge-table');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        if (data.success && data.data && data.data.length > 0) {
+            data.data.forEach(rule => {
+                const tr = document.createElement('tr');
+                const date = new Date(rule.createdAt).toLocaleString('id-ID');
+                tr.innerHTML = `
+                    <td style="white-space: nowrap;">${date}</td>
+                    <td style="white-space: pre-wrap;">${rule.rule}</td>
+                    <td>
+                        <button class="btn btn-sm" style="background: #ef4444; color: white;" onclick="deleteAiKnowledgeRule('${rule.id}')">
+                            <i class="fa-solid fa-trash"></i> Hapus
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">Belum ada aturan Knowledge Base.</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error fetching knowledge base:', error);
+    }
+};
+
+window.showAddRuleModal = () => {
+    document.getElementById('ai-knowledge-form').reset();
+    document.getElementById('ai-knowledge-modal').style.display = 'block';
+};
+
+window.closeKnowledgeModal = () => {
+    document.getElementById('ai-knowledge-modal').style.display = 'none';
+};
+
+document.getElementById('ai-knowledge-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const rule = document.getElementById('ai-knowledge-rule').value;
+    if (!rule) return;
+
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_URL}/ai/knowledge-base`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ rule })
+        });
+        
+        const data = await response.json();
+        if (data.success) {
+            Swal.fire({icon: 'success', title: 'Berhasil', text: 'Aturan baru untuk AI disimpan!', timer: 2000, showConfirmButton: false});
+            closeKnowledgeModal();
+            fetchAiKnowledgeBase();
+        } else {
+            Swal.fire('Gagal', data.message || 'Gagal menyimpan aturan', 'error');
+        }
+    } catch (error) {
+        console.error('Error saving rule:', error);
+        Swal.fire('Error', 'Terjadi kesalahan sistem', 'error');
+    }
+});
+
+window.deleteAiKnowledgeRule = (id) => {
+    Swal.fire({
+        title: 'Hapus aturan ini?',
+        text: "AI tidak akan lagi menggunakan aturan ini.",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        confirmButtonText: 'Ya, Hapus!'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const token = localStorage.getItem('adminToken');
+                const response = await fetch(`${API_URL}/ai/knowledge-base/${id}`, {
+                    method: 'DELETE',
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await response.json();
+                if (data.success) {
+                    Swal.fire({icon: 'success', title: 'Terhapus!', timer: 1500, showConfirmButton: false});
+                    fetchAiKnowledgeBase();
+                } else {
+                    Swal.fire('Gagal', data.message || 'Gagal menghapus aturan', 'error');
+                }
+            } catch (error) {
+                console.error('Error deleting rule:', error);
+            }
+        }
+    });
 };
