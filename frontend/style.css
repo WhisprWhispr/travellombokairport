@@ -1349,13 +1349,13 @@ ul {
   letter-spacing: 0.05em;
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 2px solid #e2e8f0;
+  border: 1px solid #e2e8f0;
   white-space: nowrap;
 }
 .admin-table td {
   padding: 14px 16px;
   text-align: left;
-  border-bottom: 1px solid #f1f5f9;
+  border: 1px solid #e2e8f0;
   color: #334155;
   vertical-align: middle;
 }
@@ -1363,7 +1363,7 @@ ul {
   background: #fafbfc;
 }
 .admin-table tr:last-child td {
-  border-bottom: none;
+  /* removed border-bottom none to keep the grid */
 }
 .admin-table img {
   width: 52px;
@@ -1388,16 +1388,16 @@ ul {
   letter-spacing: 0.05em;
   padding: 12px 16px;
   text-align: left;
-  border-bottom: 2px solid #e2e8f0;
+  border: 1px solid #e2e8f0;
 }
 .data-table td {
   padding: 14px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border: 1px solid #e2e8f0;
   color: #334155;
   vertical-align: middle;
 }
 .data-table tr:hover td { background: #fafbfc; }
-.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:last-child td { /* removed border-bottom none */ }
 
 /* ---- ACTION BUTTONS ---- */
 .action-btn {
