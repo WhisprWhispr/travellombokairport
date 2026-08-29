@@ -3740,24 +3740,68 @@ window.sendChatMessage = async () => {
         if (typingIndicator) typingIndicator.remove();
 
         if (response.ok) {
-            const data = await response.json();
-            if (data.success) {
-                // Update History
-                chatHistory.push({ role: "user", parts: [{ text: message }] });
-                chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
-                localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
-
-                // Render AI Message
-                const htmlReply = parseMarkdownToHTML(data.reply);
+            if (response.headers.get('content-type')?.includes('text/event-stream')) {
+                const msgId = 'ai-msg-' + Date.now();
                 messagesContainer.innerHTML += `
-                    <div class="message ai-message">
-                        ${htmlReply}
-                    </div>
+                    <div id="${msgId}" class="message ai-message"></div>
                 `;
+                const msgContainer = document.getElementById(msgId);
                 
-                window.checkGuestLimit();
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder('utf-8');
+                let fullReply = '';
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+                    
+                    for (const line of lines) {
+                        if (line.startsWith('data: ')) {
+                            const dataStr = line.replace('data: ', '').trim();
+                            if (dataStr === '[DONE]') {
+                                chatHistory.push({ role: "user", parts: [{ text: message }] });
+                                chatHistory.push({ role: "model", parts: [{ text: fullReply }] });
+                                localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
+                                window.checkGuestLimit();
+                                break;
+                            }
+                            
+                            try {
+                                const data = JSON.parse(dataStr);
+                                if (data.error) throw new Error(data.error);
+                                
+                                if (data.text) {
+                                    fullReply += data.text;
+                                    msgContainer.innerHTML = parseMarkdownToHTML(fullReply);
+                                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                                }
+                            } catch (e) {
+                                console.error('Error parsing SSE data', e);
+                            }
+                        }
+                    }
+                }
             } else {
-                throw new Error(data.message);
+                const data = await response.json();
+                if (data.success) {
+                    chatHistory.push({ role: "user", parts: [{ text: message }] });
+                    chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
+                    localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
+                    const htmlReply = parseMarkdownToHTML(data.reply);
+                    messagesContainer.innerHTML += `
+                        <div class="message ai-message">
+                            ${htmlReply}
+                        </div>
+                    `;
+                    window.checkGuestLimit();
+                } else {
+                    throw new Error(data.message);
+                }
             }
         } else {
             throw new Error('Gagal menghubungi AI');

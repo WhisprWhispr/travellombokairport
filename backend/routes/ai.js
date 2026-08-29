@@ -179,20 +179,34 @@ Aturan Penting:
             },
         });
 
-        const result = await chat.sendMessage(message);
-        const response = result.response;
-        const replyText = response.text();
+        // Set header untuk Server-Sent Events (SSE)
+        res.writeHead(200, {
+            'Content-Type': 'text/event-stream',
+            'Cache-Control': 'no-cache',
+            'Connection': 'keep-alive'
+        });
+
+        const result = await chat.sendMessageStream(message);
+        let fullReply = '';
+
+        for await (const chunk of result.stream) {
+            const chunkText = chunk.text();
+            fullReply += chunkText;
+            res.write(`data: ${JSON.stringify({ text: chunkText })}\n\n`);
+        }
+
+        // Kirim tanda selesai
+        res.write(`data: [DONE]\n\n`);
+        res.end();
         
-        // Save to Firebase chat_sessions
+        // Simpan ke Firebase di background (tanpa memblokir response ke klien)
         try {
             const currentSessionId = sessionId || 'guest_' + Date.now();
-            // We use the ID to update or create
             const docRef = db.collection('chat_sessions').doc(currentSessionId);
             
-            // Generate full history array to save
             const savedHistory = history ? [...history] : [];
             savedHistory.push({ role: 'user', parts: [{ text: message }] });
-            savedHistory.push({ role: 'model', parts: [{ text: replyText }] });
+            savedHistory.push({ role: 'model', parts: [{ text: fullReply }] });
 
             await docRef.set({
                 sessionId: currentSessionId,
@@ -203,12 +217,15 @@ Aturan Penting:
         } catch(dbErr) {
             console.error('Failed to save chat session:', dbErr);
         }
-        
-        res.json({ success: true, reply: replyText });
 
     } catch (error) {
         console.error('Error in AI chat:', error);
-        res.status(500).json({ success: false, message: 'Gagal merespons obrolan', error: error.message });
+        if (!res.headersSent) {
+            res.status(500).json({ success: false, message: 'Gagal merespons obrolan', error: error.message });
+        } else {
+            res.write(`data: ${JSON.stringify({ error: 'Terjadi kesalahan sistem AI' })}\n\n`);
+            res.end();
+        }
     }
 });
 
