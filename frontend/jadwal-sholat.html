@@ -132,6 +132,20 @@
       display: none;
     }
     
+    .swipe-hint {
+      display: none;
+      text-align: center;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      margin-bottom: 10px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 0.6; }
+      50% { opacity: 1; transform: translateX(3px); }
+      100% { opacity: 0.6; }
+    }
+    
     @media (max-width: 600px) {
       .prayer-box {
         padding: 30px 15px;
@@ -145,6 +159,9 @@
       }
       .prayer-cards-container {
         gap: 10px;
+      }
+      .swipe-hint {
+        display: block;
       }
     }
   </style>
@@ -188,6 +205,7 @@
             </div>
 
             <!-- Schedule List -->
+            <div class="swipe-hint"><i class="fa-solid fa-hand-pointer"></i> Geser kartu untuk melihat lainnya 👉</div>
             <div id="prayer-cards" class="prayer-cards-container">
                 <!-- Injected via JS -->
             </div>
