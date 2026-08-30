@@ -3132,12 +3132,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // ── Auth Handling Logic ──
 window._authMode = 'login';
-window.openAuthModal = (mode = 'login') => {
+window.openAuthModal = (mode) => {
+    const finalMode = mode || window._authMode || 'login';
+
     // Remember where the user was trying to go (so they can come back)
     sessionStorage.setItem('redirect_after_auth', window.location.href);
 
     // Redirect to dedicated auth files
-    if (mode === 'register') {
+    if (finalMode === 'register') {
         window.location.href = '/register.html';
     } else {
         window.location.href = '/login.html';
