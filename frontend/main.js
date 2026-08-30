@@ -3785,24 +3785,32 @@ window.toggleVoiceInput = () => {
     aiSpeechRecognition.start();
 };
 
-window.sendChatMessage = async () => {
+window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => {
     if (window.checkGuestLimit()) return;
 
     const input = document.getElementById('chat-input');
-    const message = input.value.trim();
+    const message = retryMessage || input.value.trim();
     if (!message) return;
 
-    // Clear input
-    input.value = '';
+    if (!retryMessage) {
+        // Clear input
+        input.value = '';
+    }
     
     const messagesContainer = document.getElementById('chat-messages');
     
-    // Add User Message
-    messagesContainer.insertAdjacentHTML('beforeend', `
-        <div class="message user-message">
-            ${message}
-        </div>
-    `);
+    if (errorBubbleElem) {
+        errorBubbleElem.remove();
+    }
+    
+    if (!retryMessage) {
+        // Add User Message
+        messagesContainer.insertAdjacentHTML('beforeend', `
+            <div class="message user-message">
+                ${message}
+            </div>
+        `);
+    }
     
     // Add Typing Indicator
     const typingId = 'typing-' + Date.now();
@@ -3924,9 +3932,12 @@ window.sendChatMessage = async () => {
         const typingIndicator = document.getElementById(typingId);
         if (typingIndicator) typingIndicator.remove();
         
+        const encodedMsg = encodeURIComponent(message).replace(/'/g, "\\'");
+        
         messagesContainer.insertAdjacentHTML('beforeend', `
-            <div class="message ai-message" style="color: #ef4444; background: #fee2e2;">
-                Maaf, layanan AI sedang sibuk atau ada gangguan jaringan. Silakan coba lagi.
+            <div class="message ai-message" style="color: #ef4444; background: #fee2e2; border: 1px solid #fca5a5;">
+                <div style="margin-bottom: 8px;"><i class="fa-solid fa-triangle-exclamation"></i> Maaf, layanan AI sedang sibuk atau ada gangguan jaringan.</div>
+                <button onclick="window.sendChatMessage(decodeURIComponent('${encodedMsg}'), this.parentElement)" style="background: white; color: #ef4444; border: 1px solid #ef4444; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: bold; transition: all 0.2s;"><i class="fa-solid fa-rotate-right"></i> Kirim Ulang</button>
             </div>
         `);
     }
