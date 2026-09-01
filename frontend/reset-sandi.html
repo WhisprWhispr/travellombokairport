@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reset Sandi - Travel Lombok Airport</title>
+  <!-- Halaman internal - tidak perlu diindex oleh Google -->
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+      background: #f8fafc;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 20px;
+    }
+    .auth-card {
+      background: white;
+      width: 100%;
+      max-width: 400px;
+      border-radius: 20px;
+      padding: 40px 30px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    }
+    .auth-logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    .auth-logo img {
+      height: 60px;
+      object-fit: contain;
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .auth-title {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 5px;
+    }
+    .auth-subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1rem;
+      outline: none;
+      transition: all 0.3s;
+      box-sizing: border-box;
+    }
+    .form-control:focus {
+      border-color: var(--primary-blue);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--primary-blue), #1e40af);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 10px;
+    }
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+    }
+    .auth-footer {
+      text-align: center;
+      margin-top: 25px;
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+    .auth-link {
+      color: var(--primary-blue);
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .auth-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="auth-card">
+    <div class="auth-logo">
+      <img src="https://ik.imagekit.io/2q0xtz4n2/Blue%20and%20White%20Clean%20Plane%20Travel%20%26%20Tour%20Logo.png" alt="Travel Lombok Airport Logo">
+    </div>
+    
+    <div class="auth-header">
+      <h1 class="auth-title">Ubah Sandi</h1>
+      <p class="auth-subtitle">Masukkan kata sandi baru untuk akun Anda.</p>
+    </div>
+
+    <form id="reset-form">
+      <div class="form-group">
+        <label for="new-password">Kata Sandi Baru</label>
+        <input type="password" id="new-password" class="form-control" placeholder="Minimal 6 karakter" required minlength="6">
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">Konfirmasi Kata Sandi Baru</label>
+        <input type="password" id="confirm-password" class="form-control" placeholder="Ulangi kata sandi baru" required minlength="6">
+      </div>
+
+      <button type="submit" class="btn-submit" id="submit-btn">Simpan Kata Sandi</button>
+    </form>
+
+    <div class="auth-footer">
+      <a href="/login.html" class="auth-link">Kembali ke halaman Login</a>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Parse the query string to get oobCode
+        const urlParams = new URLSearchParams(window.location.search);
+        const oobCode = urlParams.get('oobCode');
+
+        if (!oobCode) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Link Tidak Valid',
+                text: 'Kode reset sandi tidak ditemukan pada link ini. Pastikan Anda mengklik link yang benar dari email.',
+                allowOutsideClick: false,
+                confirmButtonText: 'Kembali ke Login'
+            }).then(() => {
+                window.location.href = '/login.html';
+            });
+            return;
+        }
+
+        const resetForm = document.getElementById("reset-form");
+        const submitBtn = document.getElementById("submit-btn");
+
+        resetForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            if (newPassword.length < 6) {
+                Swal.fire('Perhatian', 'Kata sandi minimal 6 karakter', 'warning');
+                return;
+            }
+
+            if (newPassword !== confirmPassword) {
+                Swal.fire('Perhatian', 'Konfirmasi kata sandi tidak cocok dengan kata sandi baru.', 'warning');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Menyimpan...';
+
+            try {
+                const response = await fetch('/api/auth/confirm-reset-password', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ oobCode: oobCode, newPassword: newPassword })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Kata sandi Anda telah berhasil diubah.',
+                        confirmButtonText: 'Login Sekarang',
+                        allowOutsideClick: false
+                    }).then(() => {
+                        window.location.href = '/login.html';
+                    });
+                } else {
+                    throw new Error(data.error || 'Gagal mereset kata sandi.');
+                }
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: error.message
+                });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Simpan Kata Sandi';
+            }
+        });
+    });
+  </script>
+</body>
+</html>

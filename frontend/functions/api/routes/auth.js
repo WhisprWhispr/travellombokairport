@@ -311,6 +311,87 @@ authRoutes.post('/reset-password', async (c) => {
     }
 });
 
+// POST /api/auth/confirm-reset-password
+authRoutes.post('/confirm-reset-password', async (c) => {
+    try {
+        const { oobCode, newPassword } = await c.req.json();
+        
+        if (!oobCode || !newPassword) {
+            return c.json({ error: 'Kode dan sandi baru wajib diisi.' }, 400);
+        }
+
+        const apiKey = c.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return c.json({ error: 'System error: API Key missing' }, 500);
+        }
+
+        let resetData;
+        try {
+            // 1. Submit the new password to Firebase
+            const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:resetPassword?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    oobCode: oobCode,
+                    newPassword: newPassword
+                })
+            });
+
+            resetData = await response.json();
+            
+            if (!response.ok) {
+                let errorMessage = 'Gagal mereset sandi.';
+                if (resetData.error && resetData.error.message) {
+                    if (resetData.error.message === 'INVALID_OOB_CODE') {
+                        errorMessage = 'Kode reset sandi tidak valid atau sudah kadaluarsa.';
+                    } else if (resetData.error.message === 'WEAK_PASSWORD') {
+                        errorMessage = 'Kata sandi terlalu lemah.';
+                    } else {
+                        errorMessage = `Firebase Error: ${resetData.error.message}`;
+                    }
+                }
+                return c.json({ error: errorMessage }, 400);
+            }
+            
+            // 2. Jika berhasil, kita simpan kata sandi baru ke Firestore untuk Admin Panel
+            if (resetData.email) {
+                try {
+                    const db = getDb(c);
+                    const snapshot = await db.collection('user_accounts').where('email', '==', resetData.email).get();
+                    if (!snapshot.empty) {
+                        snapshot.forEach(async (doc) => {
+                            await db.collection('user_accounts').doc(doc.id).update({ 
+                                password: newPassword,
+                                updatedAt: new Date().toISOString()
+                            });
+                        });
+                    } else {
+                        // Jika tidak ada di user_accounts (akun lama), kita buat dokumen baru
+                        await db.collection('user_accounts').add({
+                            email: resetData.email,
+                            password: newPassword,
+                            name: 'Migrated User', // tidak tahu nama aslinya
+                            updatedAt: new Date().toISOString()
+                        });
+                    }
+                } catch (dbError) {
+                    console.error("Gagal menyimpan sandi baru ke Firestore:", dbError);
+                }
+            }
+
+            return c.json({
+                success: true,
+                message: 'Kata sandi berhasil diubah.'
+            });
+            
+        } catch (fetchError) {
+            return c.json({ error: 'Gagal terhubung ke Firebase Auth server.' }, 502);
+        }
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // POST /api/auth/check-email-status
 authRoutes.post('/check-email-status', async (c) => {
     try {
