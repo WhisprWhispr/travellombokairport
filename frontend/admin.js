@@ -2033,6 +2033,7 @@ window.fetchGlobalSettings = async () => {
             const dronePrice = document.getElementById('setting-drone-price');
             const maintenanceToggle = document.getElementById('setting-maintenance-mode');
             const aiMaintenanceToggle = document.getElementById('setting-ai-maintenance');
+            const qrisMaintenanceToggle = document.getElementById('setting-qris-maintenance');
             
             if (droneStatus && data.droneAvailable) {
                 droneStatus.value = data.droneAvailable;
@@ -2074,6 +2075,9 @@ window.fetchGlobalSettings = async () => {
             if (aiMaintenanceToggle) {
                 aiMaintenanceToggle.checked = data.aiMaintenanceMode === true;
             }
+            if (qrisMaintenanceToggle) {
+                qrisMaintenanceToggle.checked = data.qrisMaintenanceMode === true;
+            }
         }
     } catch (e) {
         console.error("Error fetching settings:", e);
@@ -2086,6 +2090,7 @@ window.saveGlobalSettings = async () => {
     const dronePrice = dronePriceRaw.replace(/\./g, '');
     const maintenanceMode = document.getElementById('setting-maintenance-mode') ? document.getElementById('setting-maintenance-mode').checked : false;
     const aiMaintenanceMode = document.getElementById('setting-ai-maintenance') ? document.getElementById('setting-ai-maintenance').checked : false;
+    const qrisMaintenanceMode = document.getElementById('setting-qris-maintenance') ? document.getElementById('setting-qris-maintenance').checked : false;
     
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
@@ -2096,7 +2101,8 @@ window.saveGlobalSettings = async () => {
                 droneAvailable: droneStatus, 
                 dronePrice: dronePrice,
                 maintenanceMode: maintenanceMode,
-                aiMaintenanceMode: aiMaintenanceMode
+                aiMaintenanceMode: aiMaintenanceMode,
+                qrisMaintenanceMode: qrisMaintenanceMode
             })
         });
         if (res.ok) {

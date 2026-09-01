@@ -1164,6 +1164,7 @@ const init = async () => {
         const res = await fetch(`/api/settings?_t=${new Date().getTime()}`, { cache: 'no-store' });
         if (res.ok) {
             const settings = await res.json();
+            window.globalSettings = settings;
             
             // Maintenance Mode Check
             if (settings.maintenanceMode === true && !window.location.pathname.includes('/admin')) {
@@ -2239,12 +2240,13 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <div class="form-group mb-4">
                 <label>Metode Pembayaran</label>
                 <select id="co-payment" class="form-control" required onchange="const d = document.getElementById('bank-details'); if(this.value==='manual') d.style.display='block'; else d.style.display='none';">
-                    <option value="qris">QRIS Otomatis (Verifikasi Instan)</option>
-                    <option value="manual">Transfer Manual (Verifikasi WA)</option>
+                    ${window.globalSettings && window.globalSettings.qrisMaintenanceMode 
+                        ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option><option value="manual" selected>Transfer Manual (Verifikasi WA)</option>'
+                        : '<option value="qris">QRIS Otomatis (Verifikasi Instan)</option><option value="manual">Transfer Manual (Verifikasi WA)</option>'}
                 </select>
             </div>
             
-            <div id="bank-details" style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
+            <div id="bank-details" style="display: ${window.globalSettings && window.globalSettings.qrisMaintenanceMode ? 'block' : 'none'}; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Silakan transfer ke salah satu rekening berikut:</p>
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
                     <img src="/mandiri.svg" style="height: 25px; object-fit: contain;" alt="Mandiri">
