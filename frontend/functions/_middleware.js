@@ -9,7 +9,8 @@ export async function onRequest(context) {
         '/admin', '/admin.html', 
         '/login', '/login.html', 
         '/register', '/register.html',
-        '/driver', '/driver.html'
+        '/driver', '/driver.html',
+        '/reset-sandi', '/reset-sandi.html'
     ];
     
     // Check extensions
