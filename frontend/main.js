@@ -3611,6 +3611,11 @@ window.clearChatHistory = () => {
             <div class="message ai-message">
                 Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
             </div>
+            <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
+                <button onclick="window.sendDeterministicReply('Saya sudah reset sandi, tapi kok masih tidak bisa login?', 'Mohon maaf atas ketidaknyamanan ini Kak 🙏\\n\\nMengingat sistem kami baru saja ditingkatkan, **kami menyarankan Anda untuk mendaftar (register) ulang kembali** menggunakan email Anda tersebut.\\n\\nAkun baru Anda akan langsung tersinkronisasi dengan sistem keamanan kami yang terbaru.')" style="text-align: left; background: white; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s;">
+                    <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Sudah reset sandi tapi tidak bisa login?
+                </button>
+            </div>
         `;
     }
     const banner = document.getElementById('guest-limit-banner');
@@ -3785,6 +3790,47 @@ window.toggleVoiceInput = () => {
     };
 
     aiSpeechRecognition.start();
+};
+
+window.sendDeterministicReply = (userText, aiText) => {
+    const qrContainer = document.getElementById('ai-quick-replies');
+    if (qrContainer) qrContainer.remove();
+
+    const messagesContainer = document.getElementById('chat-messages');
+    
+    // Add user message
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div class="message user-message">
+            ${userText}
+        </div>
+    `);
+    
+    chatHistory.push({ role: 'user', parts: [{ text: userText }] });
+    
+    // Typing indicator
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    setTimeout(() => {
+        const t = document.getElementById(typingId);
+        if (t) t.remove();
+        
+        const htmlReply = parseMarkdownToHTML(aiText);
+        messagesContainer.insertAdjacentHTML('beforeend', `
+            <div class="message ai-message">
+                ${htmlReply}
+            </div>
+        `);
+        
+        chatHistory.push({ role: 'model', parts: [{ text: aiText }] });
+        localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 800);
 };
 
 window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => {
