@@ -250,7 +250,17 @@ apiRoutes.delete('/gallery/:id', verifyToken, async (c) => {
 apiRoutes.get('/withdrawals', verifyToken, async (c) => {
     try {
         const db = getDb(c);
-        const snapshot = await db.collection('withdrawals').orderBy('createdAt', 'desc').get();
+        const user = c.get('user'); // Get user from verifyToken middleware
+        const isMainAdmin = user && user.email === 'ridhosandhika18022022@gmail.com';
+        
+        let query = db.collection('withdrawals').orderBy('createdAt', 'desc');
+        
+        // If not main admin, only show their own withdrawals
+        if (!isMainAdmin) {
+            query = query.where('adminEmail', '==', user?.email);
+        }
+        
+        const snapshot = await query.get();
         let withdrawals = [];
         snapshot.forEach(doc => {
             withdrawals.push({ id: doc.id, ...doc.data() });
@@ -266,6 +276,7 @@ apiRoutes.post('/withdrawals', verifyToken, async (c) => {
     try {
         const db = getDb(c);
         const withdrawalData = await c.req.json();
+        const user = c.get('user');
         if (withdrawalData.amount < 100000) {
             return c.json({ error: 'Minimal penarikan adalah Rp 100.000' }, 400);
         }
@@ -273,9 +284,39 @@ apiRoutes.post('/withdrawals', verifyToken, async (c) => {
         const newDoc = await db.collection('withdrawals').add({
             ...withdrawalData,
             status: 'PENDING',
+            adminEmail: user?.email,
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
-        return c.json({ id: newDoc.id, ...withdrawalData, status: 'PENDING' }, 201);
+        return c.json({ id: newDoc.id, ...withdrawalData, status: 'PENDING', adminEmail: user?.email }, 201);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// PUT update withdrawal status (Main Admin Only)
+apiRoutes.put('/withdrawals/:id/status', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const user = c.get('user');
+        const isMainAdmin = user && user.email === 'ridhosandhika18022022@gmail.com';
+        
+        if (!isMainAdmin) {
+            return c.json({ error: 'Hanya Admin Pusat yang dapat mengubah status penarikan' }, 403);
+        }
+        
+        const id = c.req.param('id');
+        const { status } = await c.req.json(); // 'COMPLETED' or 'REJECTED'
+        
+        if (!['COMPLETED', 'REJECTED'].includes(status)) {
+            return c.json({ error: 'Status tidak valid' }, 400);
+        }
+        
+        await db.collection('withdrawals').doc(id).update({
+            status,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+        
+        return c.json({ success: true, message: 'Status berhasil diubah' });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }

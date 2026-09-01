@@ -234,7 +234,16 @@ router.delete('/gallery/:id', verifyToken, async (req, res) => {
 // GET all withdrawals (protected)
 router.get('/withdrawals', verifyToken, async (req, res) => {
     try {
-        const snapshot = await db.collection('withdrawals').orderBy('createdAt', 'desc').get();
+        const isMainAdmin = req.user && req.user.email === 'ridhosandhika18022022@gmail.com';
+        
+        let query = db.collection('withdrawals').orderBy('createdAt', 'desc');
+        
+        // If not main admin, only show their own withdrawals
+        if (!isMainAdmin) {
+            query = query.where('adminEmail', '==', req.user.email);
+        }
+        
+        const snapshot = await query.get();
         let withdrawals = [];
         snapshot.forEach(doc => {
             withdrawals.push({ id: doc.id, ...doc.data() });
@@ -257,9 +266,36 @@ router.post('/withdrawals', verifyToken, async (req, res) => {
         const newDoc = await db.collection('withdrawals').add({
             ...withdrawalData,
             status: 'PENDING',
+            adminEmail: req.user.email,
             createdAt: admin.firestore.FieldValue.serverTimestamp()
         });
-        res.status(201).json({ id: newDoc.id, ...withdrawalData, status: 'PENDING' });
+        res.status(201).json({ id: newDoc.id, ...withdrawalData, status: 'PENDING', adminEmail: req.user.email });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// PUT update withdrawal status (Main Admin Only)
+router.put('/withdrawals/:id/status', verifyToken, async (req, res) => {
+    try {
+        const isMainAdmin = req.user && req.user.email === 'ridhosandhika18022022@gmail.com';
+        if (!isMainAdmin) {
+            return res.status(403).json({ error: 'Hanya Admin Pusat yang dapat mengubah status penarikan' });
+        }
+        
+        const { id } = req.params;
+        const { status } = req.body; // 'COMPLETED' or 'REJECTED'
+        
+        if (!['COMPLETED', 'REJECTED'].includes(status)) {
+            return res.status(400).json({ error: 'Status tidak valid' });
+        }
+        
+        await db.collection('withdrawals').doc(id).update({
+            status,
+            updatedAt: admin.firestore.FieldValue.serverTimestamp()
+        });
+        
+        res.json({ success: true, message: 'Status berhasil diubah' });
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

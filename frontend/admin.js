@@ -1640,6 +1640,19 @@ let currentBalance = 0;
 
 window.fetchWithdrawals = async () => {
     try {
+        // Cek apakah admin utama
+        const currentAdminEmail = localStorage.getItem('adminEmail');
+        const isMainAdmin = currentAdminEmail === 'ridhosandhika18022022@gmail.com';
+        
+        // Show/hide table headers
+        if (isMainAdmin) {
+            document.getElementById('th-admin-email').style.display = 'table-cell';
+            document.getElementById('th-admin-aksi').style.display = 'table-cell';
+        } else {
+            document.getElementById('th-admin-email').style.display = 'none';
+            document.getElementById('th-admin-aksi').style.display = 'none';
+        }
+        
         // Fetch all bookings to calculate revenue
         const bReq = await fetch(`${API_URL}/bookings`, { headers: getAuthHeaders() });
         const bookings = await bReq.json();
@@ -1660,7 +1673,8 @@ window.fetchWithdrawals = async () => {
         list.innerHTML = "";
         
         if (withdrawals.length === 0) {
-            list.innerHTML = `<tr><td colspan="5" class="text-center">Belum ada riwayat penarikan.</td></tr>`;
+            const colspan = isMainAdmin ? 7 : 5;
+            list.innerHTML = `<tr><td colspan="${colspan}" class="text-center">Belum ada riwayat penarikan.</td></tr>`;
         } else {
             withdrawals.forEach(w => {
                 if (w.status !== 'REJECTED') totalWithdrawn += (w.amount || 0);
@@ -1670,13 +1684,23 @@ window.fetchWithdrawals = async () => {
                 if (w.status === 'COMPLETED') statusBadge = '<span style="background: #10b981; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Selesai</span>';
                 if (w.status === 'REJECTED') statusBadge = '<span style="background: #ef4444; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Ditolak</span>';
                 
+                let actions = '';
+                if (isMainAdmin && w.status === 'PENDING') {
+                    actions = `
+                        <button onclick="updateWithdrawalStatus('${w.id}', 'COMPLETED')" class="btn" style="background: #10b981; color: white; padding: 4px 8px; font-size: 0.8rem; border: none; border-radius: 4px; margin-right: 4px;">Terima</button>
+                        <button onclick="updateWithdrawalStatus('${w.id}', 'REJECTED')" class="btn" style="background: #ef4444; color: white; padding: 4px 8px; font-size: 0.8rem; border: none; border-radius: 4px;">Tolak</button>
+                    `;
+                }
+                
                 list.innerHTML += `
                     <tr>
                         <td>${w.id.substring(0,8)}</td>
-                        <td>${new Date(w.createdAt?._seconds ? w.createdAt._seconds * 1000 : Date.now()).toLocaleDateString('id-ID')}</td>
+                        ${isMainAdmin ? `<td><small style="color: #475569;">${w.adminEmail || '-'}</small></td>` : ''}
+                        <td>${new Date(w.createdAt?._seconds ? w.createdAt._seconds * 1000 : (w.createdAt || Date.now())).toLocaleDateString('id-ID')}</td>
                         <td><strong>${w.bankName}</strong><br><small>${w.accountNumber}</small></td>
                         <td>Rp ${w.amount.toLocaleString('id-ID')}</td>
                         <td>${statusBadge}</td>
+                        ${isMainAdmin ? `<td>${actions}</td>` : ''}
                     </tr>
                 `;
             });
@@ -1687,6 +1711,41 @@ window.fetchWithdrawals = async () => {
         
     } catch (e) {
         console.error("Error fetching withdrawals:", e);
+        document.getElementById("withdrawal-list").innerHTML = `<tr><td colspan="7" class="text-center text-danger">Gagal memuat data penarikan.</td></tr>`;
+    }
+};
+
+window.updateWithdrawalStatus = async (id, status) => {
+    try {
+        const result = await Swal.fire({
+            title: status === 'COMPLETED' ? 'Setujui Penarikan?' : 'Tolak Penarikan?',
+            text: status === 'COMPLETED' ? 'Pastikan Anda telah mentransfer dana ke rekening yang dituju.' : 'Penarikan ini akan dibatalkan.',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: status === 'COMPLETED' ? '#10b981' : '#ef4444',
+            cancelButtonColor: '#64748b',
+            confirmButtonText: 'Ya, Lanjutkan',
+            cancelButtonText: 'Batal'
+        });
+
+        if (result.isConfirmed) {
+            Swal.fire({title: 'Memproses...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+            const res = await fetch(`${API_URL}/withdrawals/${id}/status`, {
+                method: 'PUT',
+                headers: getAuthHeaders(),
+                body: JSON.stringify({ status })
+            });
+            const data = await res.json();
+            
+            if (res.ok) {
+                Swal.fire('Berhasil!', data.message, 'success');
+                fetchWithdrawals();
+            } else {
+                throw new Error(data.error || 'Gagal mengubah status');
+            }
+        }
+    } catch (error) {
+        Swal.fire('Error', error.message, 'error');
     }
 };
 
