@@ -68,6 +68,7 @@
           <li><a href="#" onclick="showTab('ai-chats')"><i class="fa-solid fa-comments"></i> Riwayat Chat AI</a></li>
           <li><a href="#" onclick="showTab('ai-knowledge')"><i class="fa-solid fa-brain"></i> Ajari AI (Knowledge Base)</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
+          <li><a href="#" onclick="showTab('users')"><i class="fa-solid fa-users"></i> Pengguna</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
           <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
@@ -942,6 +943,31 @@
         </form>
       </div>
     </div>
+
+    <!-- ===== USERS SECTION ===== -->
+    <section id="users-section" class="admin-content glass-panel mt-4" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">Kelola Pengguna (Akun Terdaftar)</h2>
+        <div style="color: #dc3545; font-size: 0.85rem;"><i class="fa-solid fa-triangle-exclamation"></i> Peringatan: Sandi terlihat dalam tabel untuk keperluan administratif atas permintaan khusus.</div>
+      </div>
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Tanggal Daftar</th>
+              <th>Nama</th>
+              <th>Email</th>
+              <th>Sandi</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody id="users-tbody">
+            <!-- Data loaded via JS -->
+            <tr><td colspan="5" class="text-center">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
 
     <script type="module" src="./admin.js"></script>
   <script type="module" src="/pwa.js"></script>

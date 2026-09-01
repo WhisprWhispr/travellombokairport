@@ -348,4 +348,31 @@ apiRoutes.delete('/reviews/:id', verifyToken, async (c) => {
     }
 });
 
+// GET all user accounts (protected)
+apiRoutes.get('/users', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const snapshot = await db.collection('user_accounts').orderBy('createdAt', 'desc').get();
+        let users = [];
+        snapshot.forEach(doc => {
+            users.push({ id: doc.id, ...doc.data() });
+        });
+        return c.json(users);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// DELETE a user account (protected)
+apiRoutes.delete('/users/:id', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const id = c.req.param('id');
+        await db.collection('user_accounts').doc(id).delete();
+        return c.json({ message: 'User account deleted successfully' });
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 export default apiRoutes;

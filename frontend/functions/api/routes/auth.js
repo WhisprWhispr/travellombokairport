@@ -214,6 +214,19 @@ authRoutes.post('/register', async (c) => {
                 })
             });
 
+            // Save to Firestore for admin panel
+            try {
+                const db = getDb(c);
+                await db.collection('user_accounts').doc(firebaseUser.localId).set({
+                    email: email,
+                    password: password,
+                    name: name || '',
+                    createdAt: new Date().toISOString()
+                });
+            } catch (dbError) {
+                console.error("Gagal menyimpan akun ke Firestore:", dbError);
+            }
+
         } catch (fetchError) {
             return c.json({ error: 'Gagal terhubung ke Firebase Auth server.' }, 502);
         }

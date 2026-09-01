@@ -1061,6 +1061,8 @@ window.showTab = (tab) => {
       if (blogsSection) blogsSection.style.display = "none";
     document.getElementById("withdrawal-section").style.display = "none";
     document.getElementById("settings-section").style.display = "none";
+    const usersSection = document.getElementById("users-section");
+    if (usersSection) usersSection.style.display = "none";
     document.getElementById("drivers-section").style.display = "none";
     document.getElementById("guide-item-btn").style.display = "none";
     document.getElementById("add-item-btn").style.display = "none";
@@ -1141,6 +1143,10 @@ window.showTab = (tab) => {
     } else if (tab === "settings") {
         document.getElementById("settings-section").style.display = "block";
         fetchGlobalSettings();
+    } else if (tab === "users") {
+        const usersSection = document.getElementById("users-section");
+        if (usersSection) usersSection.style.display = "block";
+        fetchAdminUsers();
     }
 };
 
@@ -2836,6 +2842,72 @@ window.deleteAiKnowledgeRule = (id) => {
                 }
             } catch (error) {
                 console.error('Error deleting rule:', error);
+            }
+        }
+    });
+};
+
+// ====== USERS MANAGEMENT ======
+window.fetchAdminUsers = async () => {
+    const tbody = document.getElementById('users-tbody');
+    if (!tbody) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/users`, {
+            headers: getAuthHeaders()
+        });
+        const users = await response.json();
+        
+        if (users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada akun pengguna.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = users.map(user => {
+            const date = user.createdAt ? new Date(user.createdAt).toLocaleString('id-ID') : '-';
+            return `
+                <tr>
+                    <td>${date}</td>
+                    <td>${user.name || '-'}</td>
+                    <td>${user.email || '-'}</td>
+                    <td><span style="font-family: monospace; background: #fee2e2; color: #b91c1c; padding: 2px 6px; border-radius: 4px;">${user.password || '-'}</span></td>
+                    <td>
+                        <button class="action-btn btn-delete" onclick="deleteUser('${user.id}')"><i class="fa-solid fa-trash"></i> Hapus</button>
+                    </td>
+                </tr>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat pengguna.</td></tr>';
+    }
+};
+
+window.deleteUser = async (id) => {
+    if (!authToken) return Swal.fire({icon: 'info', title: 'Pemberitahuan', text: "Anda harus login!", confirmButtonColor: '#22c55e'});
+    
+    Swal.fire({
+        title: 'Hapus Pengguna?',
+        text: "Apakah Anda yakin ingin menghapus data pengguna ini dari tabel admin? (Ini tidak menghapus akun di sistem otentikasi Firebase)",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#64748b',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            try {
+                const res = await fetch(`${API_URL}/users/${id}`, { 
+                    method: "DELETE",
+                    headers: getAuthHeaders()
+                });
+                if (!res.ok) throw new Error("Delete failed");
+                fetchAdminUsers();
+                Swal.fire({icon: 'success', title: 'Terhapus!', text: 'Data pengguna berhasil dihapus.', confirmButtonColor: '#22c55e'});
+            } catch (error) {
+                console.error("Error deleting user:", error);
+                Swal.fire({icon: 'error', title: 'Gagal', text: "Gagal menghapus pengguna", confirmButtonColor: '#22c55e'});
             }
         }
     });
