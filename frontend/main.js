@@ -3612,8 +3612,8 @@ window.clearChatHistory = () => {
                 Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
             </div>
             <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
-                <button onclick="window.sendDeterministicReply('Saya sudah reset sandi, tapi kok masih tidak bisa login?', 'Mohon maaf atas ketidaknyamanan ini Kak 🙏\\n\\nMengingat sistem kami baru saja ditingkatkan, **kami menyarankan Anda untuk mendaftar (register) ulang kembali** menggunakan email Anda tersebut.\\n\\nAkun baru Anda akan langsung tersinkronisasi dengan sistem keamanan kami yang terbaru.')" style="text-align: left; background: white; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s;">
-                    <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Sudah reset sandi tapi tidak bisa login?
+                <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami.<br><br>Sehubungan dengan adanya pembaruan dan peningkatan sistem keamanan kami, fitur penyetelan ulang sandi saat ini sedang dalam penyesuaian.<br><br>Oleh karena itu, **kami menyarankan Anda untuk mendaftar ulang (Register) menggunakan alamat email yang sama**.<br><br>Data dan akun Anda akan secara otomatis terintegrasi dengan sistem keamanan kami yang terbaru.')" style="text-align: left; background: white; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s;">
+                    <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Kendala Login Setelah Reset Sandi
                 </button>
             </div>
         `;
