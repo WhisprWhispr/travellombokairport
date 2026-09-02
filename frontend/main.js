@@ -2295,6 +2295,17 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             </div>
         `;
     } else if (category === 'tour') {
+        let vehicleOptions = '';
+        if (window.globalItems) {
+            const cars = window.globalItems.filter(i => i.category === 'mobil');
+            cars.forEach(car => {
+                vehicleOptions += `<option value="${car.title}" data-price="${car.price}">${car.title} (+ ${formatPrice(car.price)})</option>`;
+            });
+        }
+        if (!vehicleOptions) {
+            vehicleOptions = `<option value="Avanza" data-price="0">Avanza (Database kosong)</option>`;
+        }
+
         html += `
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-map-location-dot"></i> Detail Tour</h4>
@@ -2324,11 +2335,8 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 </div>
                 <div class="form-group mb-3">
                     <label>Pilihan Kendaraan</label>
-                    <select id="co-tour-vehicle" class="form-control" required>
-                        <option value="Avanza">Avanza</option>
-                        <option value="New Avanza">New Avanza</option>
-                        <option value="Innova">Innova</option>
-                        <option value="Hiace">Hiace</option>
+                    <select id="co-tour-vehicle" class="form-control" required onchange="window.updateTourPrice(this)">
+                        ${vehicleOptions}
                     </select>
                 </div>
                 <div class="form-group mb-0">
@@ -2421,6 +2429,14 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
 
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
+
+    // Call updateTourPrice once to set the initial total including the default selected vehicle
+    if (category === 'tour') {
+        setTimeout(() => {
+            const tourVehicleSelect = document.getElementById('co-tour-vehicle');
+            if (tourVehicleSelect) window.updateTourPrice(tourVehicleSelect);
+        }, 50);
+    }
 
     // Auto-fill email dari akun login jika tersedia
     try {
@@ -2577,6 +2593,23 @@ window.checkDateOverlap = () => {
     }
 };
 
+window.updateTourPrice = (selectEl) => {
+    const basePriceEl = document.getElementById("co-display-price");
+    if (!basePriceEl) return;
+    
+    const basePrice = parseInt(basePriceEl.getAttribute("data-original-price") || basePriceEl.getAttribute("data-base-price") || 0);
+    
+    if (!basePriceEl.hasAttribute("data-original-price")) {
+        basePriceEl.setAttribute("data-original-price", basePrice);
+    }
+    
+    const carPrice = parseInt(selectEl.selectedOptions[0].getAttribute('data-price') || 0);
+    const newTotal = basePrice + carPrice;
+    
+    basePriceEl.setAttribute("data-base-price", newTotal);
+    basePriceEl.innerHTML = formatPrice(newTotal);
+};
+
 window.getCurrentLocation = (inputId, event) => {
     if (navigator.geolocation) {
         const btn = event.currentTarget;
@@ -2681,6 +2714,14 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     }
 
     let finalPrice = price;
+    if (category === 'tour') {
+        const vehicleSelect = document.getElementById('co-tour-vehicle');
+        if (vehicleSelect && vehicleSelect.selectedOptions.length > 0) {
+            const carPrice = parseInt(vehicleSelect.selectedOptions[0].getAttribute('data-price') || 0);
+            finalPrice += carPrice;
+        }
+    }
+
     const matchDays = itemName.match(/(\d+)\s*H/i);
     const isPackage = matchDays && parseInt(matchDays[1]) > 0;
     if (!isPackage && price > 0) {
