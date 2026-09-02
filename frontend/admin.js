@@ -1218,7 +1218,15 @@ Salam hangat,
                             <i class="fa-regular fa-copy" onclick="navigator.clipboard.writeText('${trxId}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'ID disalin!', showConfirmButton:false, timer:1500})" style="cursor:pointer; color:#94a3b8; transition:color 0.2s; margin-left:4px;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='#94a3b8'" title="Salin ID"></i>
                             <br><small>${startDateStr} - ${new Date(b.endDate).toLocaleDateString('id-ID')}</small>
                         </td>
-                        <td><strong>${b.itemName}</strong></td>
+                        <td>
+                            <strong>${b.itemName}</strong>
+                            ${b.details?.pickup ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Pickup:</b> ${b.details.pickup}</small>` : ''}
+                            ${b.details?.dropoff ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Drop-off:</b> ${b.details.dropoff}</small>` : ''}
+                            ${b.details?.flightNumber ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Flight:</b> ${b.details.flightNumber}</small>` : ''}
+                            ${b.details?.pax ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Pax:</b> ${b.details.pax}</small>` : ''}
+                            ${b.details?.vehicle ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Vehicle:</b> ${b.details.vehicle}</small>` : ''}
+                            ${b.details?.notes ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Notes:</b> ${b.details.notes}</small>` : ''}
+                        </td>
                         <td>${b.customerName}<br>
                             <small>
                                 <a href="https://wa.me/${cleanWa}?text=${waMsg}" target="_blank" style="color: #10b981; text-decoration: none; font-weight: bold;">
