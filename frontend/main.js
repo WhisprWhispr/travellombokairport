@@ -2216,11 +2216,17 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-location-dot"></i> Detail Lokasi & Waktu</h4>
                 <div class="form-group mb-3">
                     <label>Tempat Pengambilan (GPS/Alamat)</label>
-                    <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="flex: 1;">
+                        <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     <label>Tempat Pengembalian (GPS/Alamat)</label>
-                    <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="flex: 1;">
+                        <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
                 </div>
                 <div style="display: flex; gap: 15px;">
                     <div class="form-group mb-0" style="flex: 1;">
@@ -2240,11 +2246,17 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-plane-arrival"></i> Detail Penjemputan</h4>
                 <div class="form-group mb-3">
                     <label>Lokasi Penjemputan (GPS/Alamat)</label>
-                    <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Hotel">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Hotel" style="flex: 1;">
+                        <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     <label>Alamat Tujuan (GPS/Alamat)</label>
-                    <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Tujuan Anda">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Tujuan Anda" style="flex: 1;">
+                        <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     <label>Nomor Penerbangan</label>
@@ -2268,11 +2280,17 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-map-location-dot"></i> Detail Tour</h4>
                 <div class="form-group mb-3">
                     <label>Lokasi Jemput (GPS/Alamat)</label>
-                    <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Senggigi">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Senggigi" style="flex: 1;">
+                        <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     <label>Lokasi Drop Off</label>
-                    <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Hotel Kuta">
+                    <div style="display: flex; gap: 5px;">
+                        <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Hotel Kuta" style="flex: 1;">
+                        <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    </div>
                 </div>
                 <div class="form-group mb-3">
                     <label>Pilihan Kendaraan</label>
@@ -2526,6 +2544,28 @@ window.checkDateOverlap = () => {
                 basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
             }
         }
+    }
+};
+
+window.getCurrentLocation = (inputId, event) => {
+    if (navigator.geolocation) {
+        const btn = event.currentTarget;
+        const originalHtml = btn.innerHTML;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+        navigator.geolocation.getCurrentPosition(
+            (position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                document.getElementById(inputId).value = `https://maps.google.com/?q=${lat},${lon}`;
+                btn.innerHTML = originalHtml;
+            },
+            (error) => {
+                Swal.fire({ icon: 'error', title: 'Gagal', text: 'Tidak dapat mengambil lokasi. Pastikan izin lokasi (GPS) diaktifkan di browser/HP Anda.' });
+                btn.innerHTML = originalHtml;
+            }
+        );
+    } else {
+        Swal.fire({ icon: 'error', title: 'Oops', text: 'Browser Anda tidak mendukung fitur lokasi.' });
     }
 };
 
