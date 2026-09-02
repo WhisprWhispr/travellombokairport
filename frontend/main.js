@@ -1443,6 +1443,7 @@ const init = async () => {
             style="cursor:pointer; position:relative; border-radius:14px; overflow:hidden; aspect-ratio:1/1; box-shadow:0 8px 25px rgba(0,0,0,0.12); transition:transform 0.3s,box-shadow 0.3s; display:flex; flex-direction:column; justify-content:center; align-items:center;"
             onmouseover="this.style.transform='scale(1.03)';this.style.boxShadow='0 12px 35px rgba(0,0,0,0.2)'"
             onmouseout="this.style.transform='scale(1)';this.style.boxShadow='0 8px 25px rgba(0,0,0,0.12)'">
+            <button onclick="event.stopPropagation(); window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', 'Berbagai Pilihan Tour Menarik!')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:4; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             <img src="${item.imageUrl}" alt="${item.title}"
                 style="width:100%;height:100%;object-fit:cover;position:absolute;top:0;left:0;z-index:1;"
                 onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
