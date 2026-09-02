@@ -2080,21 +2080,18 @@ window.submitBooking = (method) => {
         }
     }
 
+    let itemDetail = layanan;
+    if (subLayanan && subLayanan !== "-") {
+        itemDetail = `${layanan} - ${subLayanan}`;
+    }
+    const itemName = `${itemDetail} (${jumlah} - ${tanggal})`;
+
     if (method === "wa") {
-        // Build professional WhatsApp message without requiring login
-        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pemesanan (Quick Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Layanan: ${layanan}\n${subLayanan !== "-" ? `- Pilihan: ${subLayanan}\n` : ""}- Tanggal: ${tanggal}\n- Jumlah Orang: ${jumlah}\n${estimatedPrice > 0 ? `- Estimasi Harga: ${formatPrice(estimatedPrice)}\n` : ""}\nMohon informasi mengenai ketersediaan dan proses selanjutnya.\nTerima kasih.`;
-        window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
+        openCheckoutModal(itemName, estimatedPrice, 'wa');
     } else {
         // Require login for web checkout
         if (!window.checkAuthAndPrompt()) return;
-        
-        let itemDetail = layanan;
-        if (subLayanan && subLayanan !== "-") {
-            itemDetail = `${layanan} - ${subLayanan}`;
-        }
-        const itemName = `${itemDetail} (${jumlah} - ${tanggal})`;
-        // Use estimated price for web checkout if available, otherwise 0
-        openCheckoutModal(itemName, estimatedPrice);
+        openCheckoutModal(itemName, estimatedPrice, 'web');
     }
 };
 // Checkout & QRIS Flow
@@ -2296,7 +2293,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                     <label>Nomor Penerbangan</label>
                     <input type="text" id="co-flight-num" class="form-control" required placeholder="Contoh: GA-123">
                 </div>
-                <div style="display: flex; gap: 15px;">
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
                     <div class="form-group mb-0" style="flex: 1;">
                         <label>Jam Penjemputan</label>
                         <input type="time" id="co-pickup-time" class="form-control" required>
@@ -2305,6 +2302,10 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                         <label>Jumlah Penumpang</label>
                         <input type="number" id="co-pax" class="form-control" required min="1" placeholder="Misal: 2">
                     </div>
+                </div>
+                <div class="form-group mb-0">
+                    <label>Catatan</label>
+                    <textarea id="co-notes" class="form-control" placeholder="Tuliskan catatan khusus Anda..."></textarea>
                 </div>
             </div>
         `;
@@ -2765,7 +2766,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         } else if (category === 'mobil') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.200) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'airport') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nNama: ${name}\nLayanan: ${itemName}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\n${paymentInfo}`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 500.200\nSisa Pembayaran: ${finalPrice > 500200 ? formatPrice(finalPrice - 500200) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
         } else {
