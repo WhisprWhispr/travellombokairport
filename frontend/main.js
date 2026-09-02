@@ -2175,10 +2175,12 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             </div>
             <div style="display: flex; gap: 15px;">
                 <div class="form-group mb-3" style="flex: 1;">
-                    <label>Tanggal Mulai</label>
+                    <label>${category === 'airport' ? 'Tanggal' : 'Tanggal Mulai'}</label>
                     <input type="date" id="co-start-date" class="form-control" required>
                 </div>
-                ${durationDays === 0 ? `
+                ${category === 'airport' ? `
+                <input type="hidden" id="co-end-date" required>
+                ` : (durationDays === 0 ? `
                 <div class="form-group mb-3" style="flex: 1; display:flex; flex-direction:column;">
                     <label>Durasi Sewa</label>
                     <div style="display:flex; gap:10px;">
@@ -2202,7 +2204,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                     <label>Tanggal Selesai <span style="font-size:0.75rem;color:#0ea5e9;font-weight:600;">● Otomatis</span></label>
                     <input type="date" id="co-end-date" class="form-control" required readonly style="background:#f1f5f9;cursor:not-allowed;">
                 </div>
-                `}
+                `)}
             </div>
             <div id="date-duration-info" style="display:${durationDays > 0 ? 'flex' : 'none'}; align-items:center; gap:10px; margin-bottom:16px; background:linear-gradient(135deg,#eff6ff,#e0f2fe); border:1px solid #bae6fd; border-radius:12px; padding:12px 16px;">
                 <div style="width:36px;height:36px;background:#0ea5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
