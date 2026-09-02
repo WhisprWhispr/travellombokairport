@@ -214,7 +214,7 @@ Tempat Pengembalian (lokasi gps/alamat): .......................
 Jam Pengambilan: .......................
 Jam Pengembalian: .......................
 
-Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.000) diterima.
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.200) diterima.
 💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
 BANK: Bank Rakyat Indonesia
 Nama: Lalu Renggane
@@ -233,7 +233,7 @@ Tempat Pengembalian (lokasi gps/alamat): .......................
 Jam Pengambilan: .......................
 Jam Pengembalian: .......................
 
-Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima.
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.200) diterima.
 💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
 BANK: Bank Rakyat Indonesia
 Nama: Lalu Renggane
@@ -281,7 +281,7 @@ Kendaraan (pilih dari item yang tersedia):
 ☐ Hiace
 
 Total Harga: Rp __________
-DP/Booking Fee: Rp 500.000
+DP/Booking Fee: Rp 500.200
 Sisa Pembayaran: Rp __________
 Catatan/Request: .......................
 

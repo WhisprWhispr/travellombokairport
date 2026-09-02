@@ -2291,9 +2291,14 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         `;
     }
 
+    let dpAmount = 500200;
+    if (category === 'motor') dpAmount = 100200;
+    else if (category === 'mobil') dpAmount = 200200;
+    else if (category === 'tour') dpAmount = 500200;
+
     if (isOrder && method !== 'wa') {
         html += `
-            ${price > 500200 ? `
+            ${price > dpAmount ? `
             <div class="form-group mb-4">
                 <label style="font-weight:700;color:var(--text-dark);">Tipe Pembayaran</label>
                 <div style="display:flex;gap:10px;margin-top:8px;" id="payment-type-container">
@@ -2301,7 +2306,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                         <input type="radio" name="payment-type-radio" id="pt-dp" value="dp" checked style="accent-color:#f59e0b;width:16px;height:16px;margin-top:2px;">
                         <div>
                             <div style="font-weight:700;color:#d97706;font-size:0.88rem;">DP (Uang Muka)</div>
-                            <div style="font-size:0.75rem;color:#92400e;">Bayar ${formatPrice(500200)} sekarang, sisa lunas sebelum keberangkatan.</div>
+                            <div style="font-size:0.75rem;color:#92400e;">Bayar ${formatPrice(dpAmount)} sekarang, sisa lunas sebelum keberangkatan.</div>
                         </div>
                     </label>
                     <label id="pt-full-label" onclick="window.setPaymentType('full')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#f0fdf4;border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
@@ -2631,13 +2636,13 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         let introText = isManual ? "Saya telah melakukan Booking via Website dengan rincian:" : "Saya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:";
 
         if (category === 'motor') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.200) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'mobil') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.200) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nNama: ${name}\nLayanan: ${itemName}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 500.000\nSisa Pembayaran: ${finalPrice > 500200 ? formatPrice(finalPrice - 500000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 500.200\nSisa Pembayaran: ${finalPrice > 500200 ? formatPrice(finalPrice - 500200) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
         } else {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon instruksi selanjutnya. Terima kasih.`;
         }
@@ -2672,12 +2677,17 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 
     const discountedTotal = finalPrice; // Total setelah diskon
 
+    let dpAmount = 500200;
+    if (category === 'motor') dpAmount = 100200;
+    else if (category === 'mobil') dpAmount = 200200;
+    else if (category === 'tour') dpAmount = 500200;
+
     // Cek apakah user memilih DP
-    const isDp = baseTotal > 500200 && document.getElementById('pt-dp')?.checked === true;
+    const isDp = baseTotal > dpAmount && document.getElementById('pt-dp')?.checked === true;
     let paymentAmount = discountedTotal;
     
     if (isDp) {
-        paymentAmount = 500200;
+        paymentAmount = dpAmount;
         if (paymentAmount > discountedTotal) paymentAmount = discountedTotal;
     }
 
