@@ -2297,7 +2297,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     } else if (category === 'tour') {
         let vehicleOptions = '';
         if (window.globalItems) {
-            const cars = window.globalItems.filter(i => i.category === 'mobil');
+            const cars = window.globalItems.filter(i => i.category === 'car');
             cars.forEach(car => {
                 vehicleOptions += `<option value="${car.title}" data-price="${car.price}">${car.title} (+ ${formatPrice(car.price)})</option>`;
             });
