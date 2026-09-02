@@ -120,6 +120,52 @@
 <script src="/protect.js"></script>
 </head>
 <body>
+  <!-- Cloudflare Verification Overlay -->
+  <div id="cf-overlay" style="position: fixed; inset: 0; background: #fff; z-index: 2147483647; display: flex; flex-direction: column; font-family: Arial, Helvetica, sans-serif; padding: 40px 20px;">
+    <div style="max-width: 600px; width: 100%; margin: 0 auto; margin-top: 20vh;">
+      <h1 style="font-size: 36px; font-weight: 700; color: #333; margin: 0 0 15px;">travellombokairport.com</h1>
+      <h2 style="font-size: 26px; font-weight: 600; color: #333; margin: 0 0 20px;">Melakukan verifikasi keamanan</h2>
+      <p style="font-size: 16px; color: #333; line-height: 1.5; margin: 0 0 40px;">
+        Situs web menggunakan layanan keamanan untuk melindungi dari bot jahat. Halaman ini ditunjukkan semasa kami memverifikasi bahwa Anda bukan bot.
+      </p>
+      
+      <div id="cf-status-container" style="display: flex; flex-direction: column; gap: 15px;">
+         <div id="cf-spinner" style="width: 34px; height: 34px; border: 3px solid #f3f3f3; border-top: 3px solid #333; border-radius: 50%; animation: cf-spin 1s linear infinite;"></div>
+         <h2 id="cf-status-text" style="font-size: 26px; font-weight: 600; color: #333; margin: 0; display: none;">Verifikasi berhasil. Menunggu<br>response dari<br>travellombokairport.com...</h2>
+      </div>
+      
+      <style>
+        @keyframes cf-spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+      </style>
+    </div>
+    
+    <div style="margin-top: auto; max-width: 600px; width: 100%; margin-left: auto; margin-right: auto; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #555; font-size: 13px; line-height: 1.6;">
+      Ray ID: <span id="cf-ray-id"></span><br>
+      Performa dan Keamanan dari <a href="#" style="color: #0051c3; text-decoration: underline;">Cloudflare</a> | <a href="#" style="color: #0051c3; text-decoration: underline;">Privasi</a>
+    </div>
+  </div>
+
+  <script>
+    const generateRayId = () => {
+      const chars = '0123456789abcdef';
+      let id = '';
+      for (let i = 0; i < 16; i++) id += chars[Math.floor(Math.random() * chars.length)];
+      return id;
+    };
+    document.getElementById('cf-ray-id').textContent = generateRayId();
+
+    setTimeout(() => {
+      document.getElementById('cf-spinner').style.display = 'none';
+      document.getElementById('cf-status-text').style.display = 'block';
+      
+      setTimeout(() => {
+        const overlay = document.getElementById('cf-overlay');
+        overlay.style.transition = 'opacity 0.5s ease';
+        overlay.style.opacity = '0';
+        setTimeout(() => overlay.remove(), 500);
+      }, 1500);
+    }, 2500);
+  </script>
   <!-- Navbar -->
   <nav class="navbar">
     <div class="container nav-content">
