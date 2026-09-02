@@ -2127,6 +2127,13 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     const matchDays = itemName.match(/(\d+)\s*H/i);
     const durationDays = matchDays ? parseInt(matchDays[1]) : 0;
 
+    const nameLower = itemName.toLowerCase();
+    let category = "other";
+    if (nameLower.includes("motor")) category = "motor";
+    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
+    else if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar")) category = "airport";
+    else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+
     let html = `
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="color: ${method === 'wa' ? '#22c55e' : 'var(--primary-blue)'};">${method === 'wa' ? '<i class="fa-brands fa-whatsapp"></i> Form Booking via WA' : (isOrder ? "Checkout Pesanan" : "Form Booking")}</h2>
@@ -2202,6 +2209,88 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <div id="dynamic-date-warning" style="display: none; margin-bottom: 15px; font-size: 0.85rem; color: #ef4444; background: #fff1f2; padding: 10px; border-radius: 8px; border: 1px solid #fecdd3;">
                 <strong><i class="fa-solid fa-triangle-exclamation"></i> Maaf, rentang tanggal yang Anda pilih bentrok dengan jadwal yang sudah dipesan! Silakan pilih tanggal lain.</strong>
             </div>`;
+
+    if (category === 'motor' || category === 'mobil') {
+        html += `
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-location-dot"></i> Detail Lokasi & Waktu</h4>
+                <div class="form-group mb-3">
+                    <label>Tempat Pengambilan (GPS/Alamat)</label>
+                    <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Tempat Pengembalian (GPS/Alamat)</label>
+                    <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X">
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group mb-0" style="flex: 1;">
+                        <label>Jam Pengambilan</label>
+                        <input type="time" id="co-pickup-time" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-0" style="flex: 1;">
+                        <label>Jam Pengembalian</label>
+                        <input type="time" id="co-dropoff-time" class="form-control" required>
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (category === 'airport') {
+        html += `
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-plane-arrival"></i> Detail Penjemputan</h4>
+                <div class="form-group mb-3">
+                    <label>Lokasi Penjemputan (GPS/Alamat)</label>
+                    <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Hotel">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Alamat Tujuan (GPS/Alamat)</label>
+                    <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Tujuan Anda">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Nomor Penerbangan</label>
+                    <input type="text" id="co-flight-num" class="form-control" required placeholder="Contoh: GA-123">
+                </div>
+                <div style="display: flex; gap: 15px;">
+                    <div class="form-group mb-0" style="flex: 1;">
+                        <label>Jam Penjemputan</label>
+                        <input type="time" id="co-pickup-time" class="form-control" required>
+                    </div>
+                    <div class="form-group mb-0" style="flex: 1;">
+                        <label>Jumlah Penumpang</label>
+                        <input type="number" id="co-pax" class="form-control" required min="1" placeholder="Misal: 2">
+                    </div>
+                </div>
+            </div>
+        `;
+    } else if (category === 'tour') {
+        html += `
+            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-map-location-dot"></i> Detail Tour</h4>
+                <div class="form-group mb-3">
+                    <label>Lokasi Jemput (GPS/Alamat)</label>
+                    <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Senggigi">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Lokasi Drop Off</label>
+                    <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Hotel Kuta">
+                </div>
+                <div class="form-group mb-3">
+                    <label>Pilihan Kendaraan</label>
+                    <select id="co-tour-vehicle" class="form-control" required>
+                        <option value="Avanza">Avanza</option>
+                        <option value="New Avanza">New Avanza</option>
+                        <option value="Innova">Innova</option>
+                        <option value="Hiace">Hiace</option>
+                    </select>
+                </div>
+                <div class="form-group mb-0">
+                    <label>Catatan / Request Khusus</label>
+                    <textarea id="co-notes" class="form-control" placeholder="Tuliskan permintaan khusus Anda..."></textarea>
+                </div>
+            </div>
+        `;
+    }
+
     if (isOrder && method !== 'wa') {
         html += `
             ${price > 500200 ? `
@@ -2467,6 +2556,22 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     const payment = document.getElementById("co-payment").value;
     const modalBody = document.getElementById("checkout-modal-body");
 
+    const nameLower = itemName.toLowerCase();
+    let category = "other";
+    if (nameLower.includes("motor")) category = "motor";
+    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
+    else if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar")) category = "airport";
+    else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+
+    const pickupLoc = document.getElementById("co-pickup-loc")?.value || "";
+    const dropoffLoc = document.getElementById("co-dropoff-loc")?.value || "";
+    const pickupTime = document.getElementById("co-pickup-time")?.value || "";
+    const dropoffTime = document.getElementById("co-dropoff-time")?.value || "";
+    const flightNum = document.getElementById("co-flight-num")?.value || "";
+    const pax = document.getElementById("co-pax")?.value || "";
+    const tourVehicle = document.getElementById("co-tour-vehicle")?.value || "";
+    const notes = document.getElementById("co-notes")?.value || "";
+
     if (!startDate || !endDate) {
         Swal.fire({ icon: 'info', title: 'Pemberitahuan', text: "Mohon isi tanggal mulai dan selesai.", confirmButtonColor: '#22c55e' });
         return;
@@ -2520,10 +2625,34 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         finalPrice = price * diffDays;
     }
     
-    // Jika metode adalah WhatsApp, langsung alihkan ke WA tanpa simpan ke DB
+    const getWaText = (isManual, transactionId = null, promoInfoText = "") => {
+        let waText = "";
+        let paymentInfo = "Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee diterima.\\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\\nBANK: Bank Rakyat Indonesia\\nNama: Lalu Renggane\\nNomor Rekening: 759801017387536\\n\\nBANK: Mandiri\\nNama: Lalu Renggane\\nNomor Rekening: 1610017191425";
+        let introText = isManual ? "Saya telah melakukan Booking via Website dengan rincian:" : "Saya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:";
+
+        if (category === 'motor') {
+            waText = \`Halo Admin Travel Lombok Airport,\\n\\n\${introText}\\n\\nFORM BOOKING SEWA MOTOR\\nTempat Pengambilan (lokasi gps/alamat): \${pickupLoc}\\nTempat Pengembalian (lokasi gps/alamat): \${dropoffLoc}\\nJam Pengambilan: \${pickupTime}\\nJam Pengembalian: \${dropoffTime}\\nNama: \${name}\\nLayanan: \${itemName}\\nTgl Mulai: \${startDate}\\nTgl Selesai: \${endDate}\\nNo HP/WA: \${phone}\\nEmail: \${customerEmail || '-'}\\n\\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.000) diterima.\\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\\nBANK: Bank Rakyat Indonesia\\nNama: Lalu Renggane\\nNomor Rekening: 759801017387536\\n\\nBANK: Mandiri\\nNama: Lalu Renggane\\nNomor Rekening: 1610017191425\`;
+        } else if (category === 'mobil') {
+            waText = \`Halo Admin Travel Lombok Airport,\\n\\n\${introText}\\n\\nFORM BOOKING SEWA MOBIL\\nTanggal Pengambilan: \${startDate}\\nTanggal Pengembalian: \${endDate}\\nTempat Pengambilan (lokasi gps/alamat): \${pickupLoc}\\nTempat Pengembalian (lokasi gps/alamat): \${dropoffLoc}\\nJam Pengambilan: \${pickupTime}\\nJam Pengembalian: \${dropoffTime}\\nNama: \${name}\\nLayanan: \${itemName}\\nNo HP/WA: \${phone}\\nEmail: \${customerEmail || '-'}\\n\\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima.\\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\\nBANK: Bank Rakyat Indonesia\\nNama: Lalu Renggane\\nNomor Rekening: 759801017387536\\n\\nBANK: Mandiri\\nNama: Lalu Renggane\\nNomor Rekening: 1610017191425\`;
+        } else if (category === 'airport') {
+            waText = \`Halo Admin Travel Lombok Airport,\\n\\n\${introText}\\n\\nFORM BOOKING AIRPORT TRANSFER\\nLokasi penjemputan (gps lokasi/alamat): \${pickupLoc}\\nAlamat Tujuan (gps lokasi/alamat): \${dropoffLoc}\\nNomor penerbangan: \${flightNum}\\nJam penjemputan: \${pickupTime}\\nJumlah penumpang: \${pax}\\nNama: \${name}\\nLayanan: \${itemName}\\nTanggal: \${startDate}\\nNo HP/WA: \${phone}\\nEmail: \${customerEmail || '-'}\\n\\n\${paymentInfo}\`;
+        } else if (category === 'tour') {
+            waText = \`Halo Admin Travel Lombok Airport,\\n\\n\${introText}\\n\\nFORM BOOKING PRIVATE TOUR LOMBOK\\nMohon isi data berikut untuk proses booking:\\nLokasi Jemput (berdasarkan GPS/Alamat): \${pickupLoc}\\nLokasi Drop Off: \${dropoffLoc}\\n\\nPaket yang Dipilih: \${itemName}\\nKendaraan: \${tourVehicle}\\n\\nTotal Harga: \${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\\nDP/Booking Fee: Rp 500.000\\nSisa Pembayaran: \${finalPrice > 500200 ? formatPrice(finalPrice - 500000) : 'Rp __________'}\\nCatatan/Request: \${notes || '-'}\\nNama: \${name}\\nTanggal: \${startDate}\\nNo HP/WA: \${phone}\\n\\n\${paymentInfo}\`;
+        } else {
+            waText = \`Halo Admin Travel Lombok Airport,\\n\\n\${introText}\\n\\n*Detail Pesanan*\\n- Nama: \${name}\\n- Layanan: \${itemName}\\n- Tgl Mulai: \${startDate}\\n- Tgl Selesai: \${endDate}\\n\${isPackage ? '' : \`- Durasi: \${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\\n\`}\${finalPrice > 0 ? \`- Total Estimasi: \${formatPrice(finalPrice)}\\n\` : ''}- No HP/WA: \${phone}\\n- Email: \${customerEmail || '-'}\\n\\nMohon instruksi selanjutnya. Terima kasih.\`;
+        }
+        
+        if (isManual && transactionId) {
+            waText = waText.replace('FORM BOOKING', \`ID Booking: \${transactionId}\\n\\nFORM BOOKING\`).replace('*Detail Pesanan*', \`*Detail Pesanan*\\n- ID Booking: \${transactionId}\`);
+            if (promoInfoText) waText += promoInfoText;
+        }
+
+        return waText;
+    };
+
     if (method === 'wa') {
-        const text = `Halo Admin Travel Lombok Airport,\n\nSaya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon informasi ketersediaan dan panduan proses selanjutnya.\nTerima kasih.`;
-        window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
+        const text = getWaText(false);
+        window.open(\`https://wa.me/6289676963255?text=\${encodeURIComponent(text)}\`, "_blank");
         closeCheckoutModal();
         return;
     }
@@ -2592,7 +2721,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             });
         } catch (e) { console.error(e); }
 
-        const text = `Halo Admin Travel Lombok Airport,\n\nSaya telah melakukan Booking via Website dengan rincian:\n\n- ID Booking: ${transactionId}\n- Item: ${itemName}\n- Atas Nama: ${name}\n- WhatsApp: ${phone}\n- Tanggal: ${startDate} s/d ${endDate}\n- Metode: Transfer Manual${promoInfo}\n\nMohon instruksi untuk pembayaran selanjutnya. Terima kasih!`;
+        const text = getWaText(true, transactionId, promoInfo);
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
         closeCheckoutModal();
         return;

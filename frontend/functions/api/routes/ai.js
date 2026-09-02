@@ -379,7 +379,96 @@ Aturan Penting:
 6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
 7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
 8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+9. JIKA PELANGGAN INGIN BOOKING/ORDER, berikan template form berikut sesuai layanannya (WAJIB berikan form ini persis seperti teks di bawah agar diisi pelanggan):
+
+[Form Sewa Motor]
+FORM BOOKING SEWA MOTOR
+Tempat Pengambilan (lokasi gps/alamat): .......................
+Tempat Pengembalian (lokasi gps/alamat): .......................
+Jam Pengambilan: .......................
+Jam Pengembalian: .......................
+
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.000) diterima.
+💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
+BANK: Bank Rakyat Indonesia
+Nama: Lalu Renggane
+Nomor Rekening: 759801017387536 
+
+BANK: Mandiri
+Nama: Lalu Renggane
+Nomor Rekening: 1610017191425
+
+[Form Sewa Mobil Tanpa Driver]
+FORM BOOKING SEWA MOBIL
+Tanggal Pengambilan: .......................
+Tanggal Pengembalian: .......................
+Tempat Pengambilan (lokasi gps/alamat): .......................
+Tempat Pengembalian (lokasi gps/alamat): .......................
+Jam Pengambilan: .......................
+Jam Pengembalian: .......................
+
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima.
+💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
+BANK: Bank Rakyat Indonesia
+Nama: Lalu Renggane
+Nomor Rekening: 759801017387536 
+
+BANK: Mandiri
+Nama: Lalu Renggane
+Nomor Rekening: 1610017191425
+
+[Form Airport Transfer]
+FORM BOOKING AIRPORT TRANSFER
+Lokasi penjemputan (gps lokasi/alamat): .......................
+Alamat Tujuan (gps lokasi/alamat): .......................
+Nomor penerbangan: .......................
+Jam penjemputan: .......................
+Jumlah penumpang: .......................
+
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee diterima.
+💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
+BANK: Bank Rakyat Indonesia
+Nama: Lalu Renggane
+Nomor Rekening: 759801017387536 
+
+BANK: Mandiri
+Nama: Lalu Renggane
+Nomor Rekening: 1610017191425
+
+[Form Private Tour Lombok]
+FORM BOOKING PRIVATE TOUR LOMBOK
+Mohon isi data berikut untuk proses booking:
+Lokasi Jemput (berdasarkan GPS/Alamat): .......................
+Lokasi Drop Off: .......................
+
+Paket yang Dipilih (pilih dari item yang tersedia):
+☐ 2H1M
+☐ 3H2M
+☐ 4H3M
+☐ 5H4M
+☐ Custom Itinerary
+
+Kendaraan (pilih dari item yang tersedia):
+☐ Avanza
+☐ New Avanza
+☐ Innova
+☐ Hiace
+
+Total Harga: Rp __________
+DP/Booking Fee: Rp 500.000
+Sisa Pembayaran: Rp __________
+Catatan/Request: .......................
+
+💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
+BANK: Bank Rakyat Indonesia
+Nama: Lalu Renggane
+Nomor Rekening: 759801017387536 
+
+BANK: Mandiri
+Nama: Lalu Renggane
+Nomor Rekening: 1610017191425
+
+10. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
 ${knowledgeBaseContext}
 ${recentChatsContext}`;
 
