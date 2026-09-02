@@ -2140,9 +2140,9 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
 
     const nameLower = itemName.toLowerCase();
     let category = "other";
-    if (nameLower.includes("motor")) category = "motor";
+    if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
+    else if (nameLower.includes("motor")) category = "motor";
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
-    else if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar")) category = "airport";
     else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
 
     let html = `
@@ -2681,9 +2681,9 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 
     const nameLower = itemName.toLowerCase();
     let category = "other";
-    if (nameLower.includes("motor")) category = "motor";
+    if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
+    else if (nameLower.includes("motor")) category = "motor";
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
-    else if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar")) category = "airport";
     else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
 
     const pickupLoc = document.getElementById("co-pickup-loc")?.value || "";
