@@ -2215,17 +2215,27 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-location-dot"></i> Detail Lokasi & Waktu</h4>
                 <div class="form-group mb-3">
-                    <label>Tempat Pengambilan (GPS/Alamat)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="flex: 1;">
-                        <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label>Tempat Pengambilan (GPS/Alamat)</label>
+                            <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label>Tempat Pengembalian (GPS/Alamat)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="flex: 1;">
-                        <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label>Tempat Pengembalian (GPS/Alamat)</label>
+                            <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div style="display: flex; gap: 15px;">
@@ -2245,17 +2255,27 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-plane-arrival"></i> Detail Penjemputan</h4>
                 <div class="form-group mb-3">
-                    <label>Lokasi Penjemputan (GPS/Alamat)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Hotel" style="flex: 1;">
-                        <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label>Lokasi Penjemputan (GPS/Alamat)</label>
+                            <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Hotel" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label>Alamat Tujuan (GPS/Alamat)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Tujuan Anda" style="flex: 1;">
-                        <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label>Alamat Tujuan (GPS/Alamat)</label>
+                            <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Tujuan Anda" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group mb-3">
@@ -2279,17 +2299,27 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
                 <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-map-location-dot"></i> Detail Tour</h4>
                 <div class="form-group mb-3">
-                    <label>Lokasi Jemput (GPS/Alamat)</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Senggigi" style="flex: 1;">
-                        <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label>Lokasi Jemput (GPS/Alamat)</label>
+                            <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara / Senggigi" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group mb-3">
-                    <label>Lokasi Drop Off</label>
-                    <div style="display: flex; gap: 5px;">
-                        <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Hotel Kuta" style="flex: 1;">
-                        <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                    <div style="display: flex; gap: 8px;">
+                        <div style="flex: 1;">
+                            <label>Lokasi Drop Off</label>
+                            <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Hotel Kuta" style="width: 100%;">
+                        </div>
+                        <div>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
+                        </div>
                     </div>
                 </div>
                 <div class="form-group mb-3">
