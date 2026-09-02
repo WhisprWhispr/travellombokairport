@@ -1644,6 +1644,20 @@ window.generateEtiketPDF = (data) => {
                 <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.flightNumber}</div>
                 </div>
                 ` : ''}
+                ${data.details?.vehicle ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Pilihan Kendaraan</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.vehicle}</div>
+                </div>
+                ` : ''}
+                ${data.details?.notes ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;grid-column:1/-1;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Catatan Khusus</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.notes}</div>
+                </div>
+                ` : ''}
                 ${data.endDate ? (() => {
             const itemName = (data.itemName || "").toLowerCase();
             const isPackage = itemName.includes('paket') || itemName.includes('tour') || itemName.includes('trip') || itemName.includes('honeymoon') || (data.transactionId && data.transactionId.startsWith('ORD-'));
@@ -2813,7 +2827,16 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         fullPrice: discountedTotal,
         customerEmail,
         promoCode: promoCode,
-        promoDiscount: promoDiscount
+        promoDiscount: promoDiscount,
+        details: {
+            pickup: pickupLoc,
+            dropoff: dropoffLoc,
+            time: pickupTime || dropoffTime,
+            pax: pax,
+            flightNumber: flightNum,
+            vehicle: tourVehicle,
+            notes: notes
+        }
     };
 
     // Store temporarily for QRIS success
@@ -3109,6 +3132,12 @@ window.downloadPdfInvoice = (id) => {
                     <tr>
                         <td style="padding: 20px 15px; border-bottom: 1px solid #e2e8f0; font-size: 16px; font-weight: 500;">
                             ${itemName}
+                            ${item.details?.pickup ? `<br><small style="color: #64748b; font-size: 13px; margin-top: 5px; display: inline-block;"><b>Pickup:</b> ${item.details.pickup}</small>` : ''}
+                            ${item.details?.dropoff ? `<br><small style="color: #64748b; font-size: 13px;"><b>Drop-off:</b> ${item.details.dropoff}</small>` : ''}
+                            ${item.details?.flightNumber ? `<br><small style="color: #64748b; font-size: 13px;"><b>Flight:</b> ${item.details.flightNumber}</small>` : ''}
+                            ${item.details?.pax ? `<br><small style="color: #64748b; font-size: 13px;"><b>Pax:</b> ${item.details.pax}</small>` : ''}
+                            ${item.details?.vehicle ? `<br><small style="color: #64748b; font-size: 13px;"><b>Vehicle:</b> ${item.details.vehicle}</small>` : ''}
+                            ${item.details?.notes ? `<br><small style="color: #64748b; font-size: 13px;"><b>Notes:</b> ${item.details.notes}</small>` : ''}
                         </td>
                         <td style="padding: 20px 15px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 16px; font-weight: 700; color: #0284c7;">
                             ${total}
