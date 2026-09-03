@@ -1185,6 +1185,7 @@ const fetchAdminBookings = async () => {
                     if (b.status === 'COMPLETED') statusColor = '#10b981';
                     
                     const trxId = b.transactionId || b.id.substring(0, 8);
+                    const orderDateStr = b.createdAt ? new Date(b.createdAt).toLocaleString('id-ID') : '-';
                     const waNumber = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
                     const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
                     const startDateStr = new Date(b.startDate).toLocaleDateString('id-ID');
@@ -1222,6 +1223,7 @@ Salam hangat,
                         <td>
                             <strong style="color:var(--primary-blue); font-size: 0.9rem;">${trxId}</strong>
                             <i class="fa-regular fa-copy" onclick="navigator.clipboard.writeText('${trxId}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'ID disalin!', showConfirmButton:false, timer:1500})" style="cursor:pointer; color:#94a3b8; transition:color 0.2s; margin-left:4px;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='#94a3b8'" title="Salin ID"></i>
+                            <br><small style="color: #64748b; font-size: 0.75rem;"><i class="fa-regular fa-clock"></i> Pesan: ${orderDateStr}</small>
                             <br><small>${startDateStr} - ${new Date(b.endDate).toLocaleDateString('id-ID')}</small>
                         </td>
                         <td>
