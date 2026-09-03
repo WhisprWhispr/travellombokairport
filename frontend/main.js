@@ -3971,11 +3971,38 @@ function parseMarkdownToHTML(markdown) {
     // Bold
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     // Links [Text](URL)
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2">$1</a>');
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
     // Newlines
     html = html.replace(/\n/g, '<br>');
+    
+    // Tambahkan tombol copy pesan
+    const encodedText = encodeURIComponent(markdown).replace(/'/g, "\\'");
+    html += `
+    <div style="text-align: right; margin-top: 8px;">
+        <button onclick="window.copyAiMessage(this, decodeURIComponent('${encodedText}'))" class="copy-ai-msg-btn" title="Salin Pesan" style="background: rgba(255,255,255,0.5); border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; cursor: pointer; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;">
+            <i class="fa-regular fa-copy"></i> Salin
+        </button>
+    </div>`;
+
     return html;
 }
+
+window.copyAiMessage = (btnElem, text) => {
+    navigator.clipboard.writeText(text).then(() => {
+        const originalHtml = btnElem.innerHTML;
+        const originalStyle = btnElem.style.cssText;
+        
+        btnElem.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin';
+        btnElem.style.color = '#16a34a';
+        btnElem.style.borderColor = '#16a34a';
+        btnElem.style.background = '#dcfce7';
+        
+        setTimeout(() => {
+            btnElem.innerHTML = originalHtml;
+            btnElem.style.cssText = originalStyle;
+        }, 2000);
+    }).catch(err => console.error('Gagal menyalin:', err));
+};
 
 window.checkGuestLimit = () => {
     const isLogged = !!localStorage.getItem('auth_token') || !!localStorage.getItem('auth_user');
