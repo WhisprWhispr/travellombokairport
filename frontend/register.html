@@ -305,16 +305,46 @@
             
         } catch (err) {
             if (window.turnstile) window.turnstile.reset();
+
+            if (err.message.includes('Terlalu banyak percobaan')) {
+                localStorage.setItem('block_auth_until', Date.now() + 15 * 60 * 1000);
+                checkRateLimitBlock();
+            } else {
+                btn.disabled = false;
+                btn.innerHTML = 'Daftar Sekarang';
+            }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Pendaftaran Gagal',
                 text: err.message,
                 confirmButtonColor: '#16a34a'
             });
-            btn.disabled = false;
-            btn.innerHTML = 'Daftar Sekarang';
         }
     });
+
+    // Rate Limit Blocker Logic
+    function checkRateLimitBlock() {
+        const blockUntil = localStorage.getItem('block_auth_until');
+        if (blockUntil) {
+            const timeRemaining = parseInt(blockUntil) - Date.now();
+            const btn = document.getElementById('btn-submit');
+            if (timeRemaining > 0) {
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
+                btn.style.cursor = 'not-allowed';
+                btn.innerHTML = `Diblokir (${Math.ceil(timeRemaining / 60000)}m)`;
+                setTimeout(checkRateLimitBlock, 60000);
+            } else {
+                localStorage.removeItem('block_auth_until');
+                btn.disabled = false;
+                btn.style.opacity = '1';
+                btn.style.cursor = 'pointer';
+                btn.innerHTML = 'Daftar Sekarang';
+            }
+        }
+    }
+    checkRateLimitBlock();
   </script>
 </body>
 </html>
