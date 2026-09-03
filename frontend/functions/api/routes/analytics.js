@@ -113,13 +113,13 @@ analyticsRoutes.delete('/gallery-ping', async (c) => {
     }
 });
 
-// GET gallery visitors - hitung pengunjung aktif (lastSeen < 20 detik) (public)
+// GET gallery visitors - hitung pengunjung aktif (lastSeen < 35 detik) (public)
 analyticsRoutes.get('/gallery-visitors', async (c) => {
     try {
         const db = getDb(c);
         // Ambil semua session, filter di server (tidak butuh Firestore index)
         const snapshot = await db.collection('gallery_sessions').get();
-        const cutoff = Date.now() - 20 * 1000;
+        const cutoff = Date.now() - 35 * 1000; // 35 detik buffer
         let count = 0;
         snapshot.forEach(doc => {
             const data = doc.data();

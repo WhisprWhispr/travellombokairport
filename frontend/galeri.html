@@ -490,12 +490,18 @@
     // Kirim heartbeat ping ke server
     async function sendPing() {
         try {
-            await fetch(`${API}/gallery-ping`, {
+            const res = await fetch(`${API}/gallery-ping`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ sessionId })
             });
-        } catch(e) { /* silent fail */ }
+            if (!res.ok) {
+                const t = await res.text().catch(() => '');
+                console.warn('[Gallery] Ping gagal:', res.status, t);
+            }
+        } catch(e) {
+            console.warn('[Gallery] Ping error:', e);
+        }
     }
 
     // Ambil jumlah pengunjung aktif dari server
@@ -529,8 +535,8 @@
         }).catch(() => {});
     }
 
-    // Mulai: ping dulu baru fetch count (await agar session sudah tersimpan)
-    sendPing().then(() => fetchVisitors());
+    // Mulai: ping dulu, tunggu 800ms agar Firestore commit selesai, baru fetch count
+    sendPing().then(() => setTimeout(fetchVisitors, 800));
 
     // Polling: setiap 10 detik kirim heartbeat + update counter
     const interval = setInterval(() => {
