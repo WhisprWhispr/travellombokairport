@@ -262,7 +262,7 @@
                 
                 localStorage.setItem('auth_token', data.token);
                 if (data.user) {
-                    localStorage.setItem('user_info', JSON.stringify(data.user));
+                    localStorage.setItem('auth_user', JSON.stringify(data.user || data.admin));
                 }
                 
                 Swal.fire({
