@@ -2315,7 +2315,10 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     } else if (category === 'tour') {
         let vehicleOptions = '';
         if (window.globalItems) {
-            const cars = window.globalItems.filter(i => i.category === 'car');
+            const cars = window.globalItems.filter(i => {
+                const cat = (i.category || '').toLowerCase();
+                return (cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car' || cat === 'mobil') && !cat.includes('motor');
+            });
             const multiplier = durationDays > 0 ? durationDays : 1;
             cars.forEach(car => {
                 const totalCarPrice = car.price * multiplier;
@@ -2324,7 +2327,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             });
         }
         if (!vehicleOptions) {
-            vehicleOptions = `<option value="Avanza" data-price="0">Avanza (Database kosong)</option>`;
+            vehicleOptions = `<option value="Avanza" data-price="0">Pilihan Kendaraan Tidak Ditemukan</option>`;
         }
 
         html += `
