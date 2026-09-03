@@ -2989,3 +2989,38 @@ window.deleteUser = async (id) => {
         }
     });
 };
+
+// ====== AUTO LOGOUT ON INACTIVITY ======
+let inactivityTimer;
+const INACTIVITY_LIMIT = 15 * 60 * 1000; // 15 minutes
+
+const resetInactivityTimer = () => {
+    clearTimeout(inactivityTimer);
+    // Only run timer if admin is logged in
+    if (localStorage.getItem('adminToken') || localStorage.getItem('auth_token')) {
+        inactivityTimer = setTimeout(autoLogout, INACTIVITY_LIMIT);
+    }
+};
+
+const autoLogout = () => {
+    localStorage.removeItem('adminToken');
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+    
+    Swal.fire({
+        icon: 'warning',
+        title: 'Sesi Berakhir',
+        text: 'Anda telah logout otomatis karena tidak ada aktivitas (idle) selama 15 menit untuk keamanan.',
+        confirmButtonColor: '#22c55e'
+    }).then(() => {
+        window.location.href = '/login.html';
+    });
+};
+
+// Listen for user activity events on the page
+['click', 'mousemove', 'keypress', 'scroll', 'touchstart'].forEach(evt => 
+    document.addEventListener(evt, resetInactivityTimer, { passive: true })
+);
+
+// Initialize timer on load
+resetInactivityTimer();
