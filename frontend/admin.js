@@ -3090,7 +3090,7 @@ window.fetchLoginLogs = async () => {
             if (type === 'login') {
                 typeBadge = `<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-right-to-bracket" style="margin-right:4px;"></i>Login</span>`;
             } else if (type === 'refresh') {
-                typeBadge = `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-rotate" style="margin-right:4px;"></i>Refresh</span>`;
+                typeBadge = `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;margin-right:5px;"><i class="fa-solid fa-rotate" style="margin-right:4px;"></i>Refresh</span><span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-right-to-bracket" style="margin-right:4px;"></i>Login</span>`;
             } else if (type === 'logout') {
                 typeBadge = `<span style="background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-right-from-bracket" style="margin-right:4px;"></i>Logout</span>`;
             } else {
@@ -3116,12 +3116,8 @@ window.fetchLoginLogs = async () => {
 // sessionStorage tidak persisten antar tab baru/close, tapi persisten saat refresh
 if (authToken) {
     if (sessionStorage.getItem('adminSessionActive')) {
-        // Admin refresh halaman = masih login aktif + tindakan refresh
-        // Catat DUA aktivitas sekaligus: Login (konfirmasi sesi) + Refresh (tindakan reload)
-        Promise.all([
-            logSessionActivity('login'),
-            logSessionActivity('refresh')
-        ]);
+        // Admin refresh halaman = catat 1 log type 'refresh' (di tabel tampil Refresh + Login)
+        logSessionActivity('refresh');
     } else {
         // Pertama kali buka tab baru dengan token sudah ada
         sessionStorage.setItem('adminSessionActive', '1');
