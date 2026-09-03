@@ -156,6 +156,7 @@ authRoutes.post('/login', async (c) => {
                 email: firebaseUser.email,
                 ip: ip,
                 userAgent: userAgent,
+                type: 'login',
                 timestamp: new Date().toISOString()
             });
         } catch (logErr) {

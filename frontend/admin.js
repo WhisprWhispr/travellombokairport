@@ -441,6 +441,8 @@ loginForm.addEventListener("submit", async (e) => {
             } else if (data.user && data.user.email) {
                 localStorage.setItem('adminEmail', data.user.email);
             }
+            // Tandai sesi sudah aktif, agar refresh halaman berikutnya tercatat sebagai 'refresh' bukan fresh login
+            sessionStorage.setItem('adminSessionActive', '1');
             checkAuth();
         } else {
             throw new Error(data.error || "Email atau password salah");
@@ -461,6 +463,7 @@ logoutBtn.addEventListener("click", (e) => {
     authToken = null;
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminEmail');
+    sessionStorage.removeItem('adminSessionActive');
     checkAuth();
 });
 
@@ -3059,23 +3062,62 @@ window.fetchLoginLogs = async () => {
         const logs = await response.json();
         
         if (logs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada log login.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada log aktivitas.</td></tr>';
             return;
         }
         
         tbody.innerHTML = logs.map(log => {
             const date = log.timestamp ? new Date(log.timestamp).toLocaleString('id-ID') : '-';
+            const type = log.type || 'login';
+            let typeBadge;
+            if (type === 'login') {
+                typeBadge = `<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-right-to-bracket" style="margin-right:4px;"></i>Login</span>`;
+            } else if (type === 'refresh') {
+                typeBadge = `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-rotate" style="margin-right:4px;"></i>Refresh</span>`;
+            } else {
+                typeBadge = `<span style="background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">${type}</span>`;
+            }
             return `
                 <tr>
                     <td>${date}</td>
                     <td>${log.email || '-'}</td>
                     <td>${log.ip || '-'}</td>
+                    <td>${typeBadge}</td>
                     <td style="font-size: 0.8rem; color: #64748b; max-width: 250px; word-wrap: break-word; white-space: normal;">${log.userAgent || '-'}</td>
                 </tr>
             `;
         }).join('');
     } catch (error) {
         console.error('Error fetching login logs:', error);
-        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Gagal memuat log login: ${error.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat log: ${error.message}</td></tr>`;
     }
 };
+
+// ====== LOG REFRESH HALAMAN ======
+// Kirim log ke server setiap kali admin reload/refresh halaman (bukan pertama kali login)
+const logSessionActivity = async (type = 'refresh') => {
+    const token = authToken;
+    if (!token) return; // Hanya log jika sudah login
+    try {
+        await fetch(`${API_URL}/session-log`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ type })
+        });
+    } catch (e) {
+        // Gagal log tidak perlu mengganggu UI
+        console.warn('Session log gagal:', e);
+    }
+};
+
+// Deteksi: apakah ini refresh halaman atau pertama kali buka?
+// sessionStorage tidak persisten antar tab baru/close, tapi persisten saat refresh
+if (authToken) {
+    if (sessionStorage.getItem('adminSessionActive')) {
+        // Ini adalah refresh - kirim log refresh
+        logSessionActivity('refresh');
+    } else {
+        // Pertama kali buka tab baru dengan token sudah ada
+        sessionStorage.setItem('adminSessionActive', '1');
+    }
+}

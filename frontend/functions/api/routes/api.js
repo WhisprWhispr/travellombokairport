@@ -433,4 +433,29 @@ apiRoutes.get('/login-logs', verifyToken, async (c) => {
     }
 });
 
+// POST session log - catat aktivitas refresh halaman (protected)
+apiRoutes.post('/session-log', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const user = c.get('user');
+        const ip = c.req.header('cf-connecting-ip') || c.req.header('x-forwarded-for') || 'unknown';
+        const userAgent = c.req.header('user-agent') || 'Unknown';
+        const body = await c.req.json().catch(() => ({}));
+        const type = body.type || 'refresh';
+
+        await db.collection('login_logs').add({
+            email: user.email || '-',
+            ip: ip,
+            userAgent: userAgent,
+            type: type,
+            timestamp: new Date().toISOString()
+        });
+
+        return c.json({ success: true });
+    } catch (error) {
+        console.error('Failed to save session log:', error);
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 export default apiRoutes;
