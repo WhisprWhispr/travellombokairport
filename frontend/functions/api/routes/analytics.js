@@ -75,4 +75,60 @@ analyticsRoutes.get('/stats', verifyToken, async (c) => {
     }
 });
 
+// POST gallery ping - catat sesi pengunjung aktif di halaman galeri (public)
+analyticsRoutes.post('/gallery-ping', async (c) => {
+    try {
+        const db = getDb(c);
+        const { sessionId } = await c.req.json().catch(() => ({}));
+        if (!sessionId) return c.json({ error: 'sessionId required' }, 400);
+
+        const ipHash = c.req.header('cf-connecting-ip') || c.req.header('x-forwarded-for') || 'unknown';
+        const now = new Date().toISOString();
+
+        // Upsert: set/update dokumen berdasarkan sessionId
+        await db.collection('gallery_sessions').doc(sessionId).set({
+            sessionId,
+            lastSeen: now,
+            ipHash
+        });
+
+        return c.json({ success: true });
+    } catch (error) {
+        console.error('Gallery ping error:', error);
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// DELETE gallery ping - hapus sesi saat user meninggalkan halaman (public)
+analyticsRoutes.delete('/gallery-ping', async (c) => {
+    try {
+        const db = getDb(c);
+        const { sessionId } = await c.req.json().catch(() => ({}));
+        if (!sessionId) return c.json({ error: 'sessionId required' }, 400);
+
+        await db.collection('gallery_sessions').doc(sessionId).delete();
+        return c.json({ success: true });
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
+// GET gallery visitors - hitung pengunjung aktif (lastSeen < 20 detik) (public)
+analyticsRoutes.get('/gallery-visitors', async (c) => {
+    try {
+        const db = getDb(c);
+        // Batas waktu: 20 detik yang lalu
+        const cutoff = new Date(Date.now() - 20 * 1000).toISOString();
+
+        const snapshot = await db.collection('gallery_sessions')
+            .where('lastSeen', '>=', cutoff)
+            .get();
+
+        return c.json({ count: snapshot.size });
+    } catch (error) {
+        console.error('Gallery visitors error:', error);
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 export default analyticsRoutes;
