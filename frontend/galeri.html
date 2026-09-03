@@ -162,67 +162,100 @@
         }
       </style>
       <style>
-        /* ===== LIVE VISITOR COUNTER ===== */
+        /* ===== PREMIUM LIVE VISITOR COUNTER ===== */
         .gallery-live-badge {
           display: inline-flex;
           align-items: center;
-          gap: 10px;
-          background: rgba(255,255,255,0.85);
-          backdrop-filter: blur(12px);
-          border: 1px solid rgba(37,99,235,0.15);
+          gap: 12px;
+          background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+          border: 1px solid rgba(255, 255, 255, 0.1);
           border-radius: 50px;
-          padding: 10px 22px;
-          box-shadow: 0 4px 24px rgba(37,99,235,0.10), 0 1px 4px rgba(0,0,0,0.07);
+          padding: 12px 28px;
+          box-shadow: 0 10px 30px -5px rgba(37,99,235,0.25), inset 0 1px 0 rgba(255,255,255,0.1);
           font-size: 0.95rem;
-          font-weight: 600;
-          color: #1e293b;
-          margin: 18px auto 0 auto;
+          font-weight: 500;
+          color: #cbd5e1;
+          margin: 18px auto 20px auto;
           user-select: none;
-          transition: box-shadow 0.3s;
+          position: relative;
+          overflow: hidden;
+          transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .gallery-live-badge:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 15px 35px -5px rgba(37,99,235,0.35), inset 0 1px 0 rgba(255,255,255,0.15);
+        }
+        /* Animasi kilauan cahaya melintasi badge */
+        .gallery-live-badge::after {
+          content: "";
+          position: absolute;
+          top: 0;
+          left: -100%;
+          width: 50%;
+          height: 100%;
+          background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0) 100%);
+          transform: skewX(-25deg);
+          animation: shine 4s infinite;
+        }
+        @keyframes shine {
+          0% { left: -100%; }
+          20% { left: 200%; }
+          100% { left: 200%; }
         }
         .gallery-live-dot {
-          width: 10px;
-          height: 10px;
+          width: 12px;
+          height: 12px;
           border-radius: 50%;
           background: #22c55e;
-          box-shadow: 0 0 0 0 rgba(34,197,94,0.6);
-          animation: gallery-pulse 1.6s infinite;
+          box-shadow: 0 0 12px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0.4);
+          animation: gallery-pulse 1.8s infinite cubic-bezier(0.4, 0, 0.2, 1);
           flex-shrink: 0;
+          position: relative;
+          z-index: 2;
         }
         @keyframes gallery-pulse {
-          0%   { box-shadow: 0 0 0 0 rgba(34,197,94,0.6); }
-          70%  { box-shadow: 0 0 0 8px rgba(34,197,94,0); }
-          100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); }
+          0%   { box-shadow: 0 0 12px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0.6); }
+          70%  { box-shadow: 0 0 12px rgba(34,197,94,0.8), 0 0 0 10px rgba(34,197,94,0); }
+          100% { box-shadow: 0 0 12px rgba(34,197,94,0.8), 0 0 0 0 rgba(34,197,94,0); }
         }
         .gallery-visitor-count {
-          font-size: 1.15rem;
+          font-size: 1.25rem;
           font-weight: 800;
-          color: #2563eb;
-          transition: transform 0.25s cubic-bezier(.34,1.56,.64,1), color 0.2s;
+          background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+          display: inline-block;
         }
         .gallery-visitor-count.bump {
-          transform: scale(1.35);
-          color: #16a34a;
+          transform: scale(1.4);
+          background: linear-gradient(135deg, #4ade80 0%, #22c55e 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
         }
         .gallery-live-label {
-          background: #ef4444;
-          color: white;
-          font-size: 0.68rem;
-          font-weight: 800;
-          letter-spacing: 0.08em;
-          border-radius: 6px;
-          padding: 2px 7px;
-          margin-left: 2px;
+          background: rgba(239, 68, 68, 0.15);
+          color: #ef4444;
+          border: 1px solid rgba(239, 68, 68, 0.3);
+          font-size: 0.7rem;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          border-radius: 8px;
+          padding: 3px 8px;
+          margin-left: 6px;
+          text-shadow: 0 0 8px rgba(239,68,68,0.4);
+          position: relative;
+          z-index: 2;
         }
       </style>
 
       <!-- Live Visitor Counter Widget -->
-      <div style="text-align:center; margin-bottom: 10px;">
+      <div style="text-align:center; margin-bottom: 25px;" data-aos="fade-down">
         <div class="gallery-live-badge" id="gallery-live-badge">
           <span class="gallery-live-dot"></span>
           <span>
             <span class="gallery-visitor-count" id="gallery-visitor-count">—</span>
-            <span style="color:#475569; font-weight:500;"> orang sedang melihat galeri ini</span>
+            <span style="font-weight: 500; letter-spacing: 0.5px;"> orang sedang melihat galeri ini</span>
           </span>
           <span class="gallery-live-label">LIVE</span>
         </div>
@@ -498,11 +531,9 @@
             if (!res.ok) {
                 const t = await res.text().catch(() => '');
                 console.warn('[Gallery] Ping gagal:', res.status, t);
-                alert('DEBUG POST ERROR: ' + res.status + ' - ' + t);
             }
         } catch(e) {
             console.warn('[Gallery] Ping error:', e);
-            alert('DEBUG POST NETWORK ERROR: ' + e.message);
         }
     }
 
@@ -519,12 +550,10 @@
             } else {
                 const errText = await res.text().catch(() => '');
                 console.warn('Gallery visitors API error:', res.status, errText);
-                alert('DEBUG GET ERROR: ' + res.status + ' - ' + errText); // TAMPILKAN ERROR KE LAYAR
                 setCount(1);
             }
         } catch(e) {
             console.warn('Gallery visitors fetch error:', e);
-            alert('DEBUG NETWORK ERROR: ' + e.message);
             setCount(1);
         }
     }
