@@ -534,6 +534,63 @@
             </table>
           </div>
         </section>
+
+        <!-- ===== USERS SECTION ===== -->
+        <section id="users-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Kelola Pengguna (Akun Terdaftar)</h2>
+          </div>
+          
+          <div style="background: #fff5f5; border-left: 4px solid #ef4444; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 8px 0; color: #b91c1c; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-shield-halved"></i> Protokol Keamanan & Privasi Data Tertinggi
+            </h4>
+            <p style="margin: 0; color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
+              <strong>PERHATIAN PENTING:</strong> Akses ke modul ini diawasi secara ketat. Kata sandi pengguna saat ini ditampilkan dalam format teks (<em>plaintext</em>) secara eksklusif untuk keperluan operasional administratif dan pemulihan akun. Segala bentuk penyalahgunaan, pencatatan ilegal, atau penyebaran data kredensial dari halaman ini merupakan pelanggaran berat terhadap kebijakan privasi dan integritas perusahaan. Pastikan Anda menjaga kerahasiaan layar ini dari pihak yang tidak berkepentingan.
+            </p>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal Daftar</th>
+                  <th>Nama</th>
+                  <th>Email</th>
+                  <th>Sandi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <!-- Data loaded via JS -->
+                <tr><td colspan="5" class="text-center">Loading users...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== LOGIN LOGS SECTION ===== -->
+        <section id="login-logs-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Log Aktivitas Login</h2>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu (WIB)</th>
+                  <th>Email</th>
+                  <th>IP Address</th>
+                  <th>Perangkat / Browser</th>
+                </tr>
+              </thead>
+              <tbody id="login-logs-tbody">
+                <!-- Data loaded via JS -->
+                <tr><td colspan="4" class="text-center">Loading logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
       </main>
     </div>
 
@@ -972,62 +1029,6 @@
       </div>
     </div>
 
-    <!-- ===== USERS SECTION ===== -->
-    <section id="users-section" class="admin-content glass-panel mt-4" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0;">Kelola Pengguna (Akun Terdaftar)</h2>
-      </div>
-      
-      <div style="background: #fff5f5; border-left: 4px solid #ef4444; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-        <h4 style="margin: 0 0 8px 0; color: #b91c1c; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
-          <i class="fa-solid fa-shield-halved"></i> Protokol Keamanan & Privasi Data Tertinggi
-        </h4>
-        <p style="margin: 0; color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
-          <strong>PERHATIAN PENTING:</strong> Akses ke modul ini diawasi secara ketat. Kata sandi pengguna saat ini ditampilkan dalam format teks (<em>plaintext</em>) secara eksklusif untuk keperluan operasional administratif dan pemulihan akun. Segala bentuk penyalahgunaan, pencatatan ilegal, atau penyebaran data kredensial dari halaman ini merupakan pelanggaran berat terhadap kebijakan privasi dan integritas perusahaan. Pastikan Anda menjaga kerahasiaan layar ini dari pihak yang tidak berkepentingan.
-        </p>
-      </div>
-      <div class="table-responsive">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Tanggal Daftar</th>
-              <th>Nama</th>
-              <th>Email</th>
-              <th>Sandi</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-          <tbody id="users-tbody">
-            <!-- Data loaded via JS -->
-            <tr><td colspan="5" class="text-center">Loading users...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- ===== LOGIN LOGS SECTION ===== -->
-    <section id="login-logs-section" class="admin-content glass-panel mt-4" style="display: none;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h2 style="margin: 0;">Log Aktivitas Login</h2>
-      </div>
-      
-      <div class="table-responsive">
-        <table class="admin-table">
-          <thead>
-            <tr>
-              <th>Waktu (WIB)</th>
-              <th>Email</th>
-              <th>IP Address</th>
-              <th>Perangkat / Browser</th>
-            </tr>
-          </thead>
-          <tbody id="login-logs-tbody">
-            <!-- Data loaded via JS -->
-            <tr><td colspan="4" class="text-center">Loading logs...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
 
     <script type="module" src="./admin.js?v=2"></script>
   <script type="module" src="/pwa.js"></script>
