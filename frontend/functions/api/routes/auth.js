@@ -4,8 +4,43 @@ import { getDb } from '../config/firebase.js';
 
 const authRoutes = new Hono();
 
+// Simple in-memory rate limiter
+const rateLimitMap = new Map();
+const checkRateLimit = (ip) => {
+    const now = Date.now();
+    const windowMs = 15 * 60 * 1000; // 15 menit
+    const max = 5; // maksimal 5 kali
+
+    if (!rateLimitMap.has(ip)) {
+        rateLimitMap.set(ip, []);
+    }
+    
+    let timestamps = rateLimitMap.get(ip);
+    // Hapus timestamp yang sudah lebih dari 15 menit
+    timestamps = timestamps.filter(t => now - t < windowMs);
+    
+    if (timestamps.length >= max) {
+        return false;
+    }
+    
+    timestamps.push(now);
+    rateLimitMap.set(ip, timestamps);
+    
+    // Basic cleanup agar map tidak bocor memorinya terlalu besar
+    if (rateLimitMap.size > 10000) {
+        rateLimitMap.clear();
+    }
+    
+    return true;
+};
+
 authRoutes.post('/login', async (c) => {
     try {
+        const ip = c.req.header('cf-connecting-ip') || 'unknown';
+        if (!checkRateLimit(ip)) {
+            return c.json({ error: 'Terlalu banyak percobaan, silakan coba lagi setelah 15 menit.' }, 429);
+        }
+
         const db = getDb(c);
         const { email, password, turnstileToken } = await c.req.json();
         
@@ -129,6 +164,11 @@ authRoutes.post('/login', async (c) => {
 // POST /api/auth/register
 authRoutes.post('/register', async (c) => {
     try {
+        const ip = c.req.header('cf-connecting-ip') || 'unknown';
+        if (!checkRateLimit(ip)) {
+            return c.json({ error: 'Terlalu banyak percobaan, silakan coba lagi setelah 15 menit.' }, 429);
+        }
+
         const { email, password, name, turnstileToken } = await c.req.json();
         
         if (!email || !password) {

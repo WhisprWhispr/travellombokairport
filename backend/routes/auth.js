@@ -2,6 +2,16 @@ const express = require('express');
 const router = express.Router();
 const { db } = require('../config/firebase');
 const axios = require('axios'); // Tambahkan axios untuk request REST API
+const rateLimit = require('express-rate-limit');
+
+// Rate limiter: maksimal 5 kali percobaan dalam 15 menit
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 menit
+    max: 5, // limit setiap IP maksimal 5 request per windowMs
+    message: { error: 'Terlalu banyak percobaan, silakan coba lagi setelah 15 menit.' },
+    standardHeaders: true,
+    legacyHeaders: false,
+});
 
 // Simple JWT-like token generation (for local dev)
 const generateToken = (payload) => {
@@ -15,7 +25,7 @@ const generateToken = (payload) => {
 };
 
 // POST /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', authLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
 
