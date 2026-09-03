@@ -512,12 +512,7 @@
     // Hapus session saat user meninggalkan halaman
     function sendLeave() {
         const body = JSON.stringify({ sessionId });
-        // Gunakan sendBeacon agar tetap terkirim walau tab ditutup
-        if (navigator.sendBeacon) {
-            const blob = new Blob([body], { type: 'application/json' });
-            navigator.sendBeacon(`${API}/gallery-ping-leave`, blob);
-        }
-        // Fallback: fetch synchronous-like via keepalive
+        // Gunakan fetch dengan keepalive agar tetap terkirim walau tab ditutup
         fetch(`${API}/gallery-ping`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
