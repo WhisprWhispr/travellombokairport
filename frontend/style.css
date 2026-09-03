@@ -1590,12 +1590,15 @@ ul {
 
 /* Responsive */
   @media (max-width: 1450px) {
-    .nav-links { margin-left: auto; margin-right: 15px; gap: 10px; }
+    .logo-img { height: 42px; }
+    .logo-title { font-size: 1.05rem; }
+    .logo { gap: 8px; }
+    .nav-links { margin-left: auto; margin-right: 10px; gap: 8px; }
     .nav-actions { gap: 4px; }
-    .nav-phone { padding: 5px 8px; font-size: 0.75rem; }
-    .nav-actions .btn-green { padding: 5px 8px; font-size: 0.75rem; }
-    .nav-links a { font-size: 0.85rem; }
-    .lang-btn { padding: 5px 8px; font-size: 0.75rem; }
+    .nav-phone { padding: 5px 8px; font-size: 0.75rem; letter-spacing: -0.3px; }
+    .nav-actions .btn-green { padding: 5px 10px; font-size: 0.75rem; }
+    .nav-links a { font-size: 0.85rem; letter-spacing: -0.2px; }
+    .lang-btn { padding: 5px 6px; font-size: 0.7rem; }
   }
 
 @media (max-width: 1250px) {
