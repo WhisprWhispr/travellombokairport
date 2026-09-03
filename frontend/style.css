@@ -195,14 +195,14 @@ ul {
 
 .nav-links {
   display: flex;
-  gap: 8px;
+  gap: 15px;
   margin-left: auto;
   margin-right: 30px;
 }
 
 .nav-links a {
   font-weight: 600;
-  font-size: 0.8rem;
+  font-size: 0.95rem;
   color: var(--text-dark);
   white-space: nowrap;
 }
@@ -1585,12 +1585,12 @@ ul {
 
 /* Responsive */
   @media (max-width: 1450px) {
-    .nav-links { margin-left: auto; margin-right: 15px; gap: 5px; }
+    .nav-links { margin-left: auto; margin-right: 15px; gap: 10px; }
     .nav-actions { gap: 4px; }
-    .nav-phone { padding: 5px 8px; font-size: 0.7rem; }
-    .nav-actions .btn-green { padding: 5px 8px; font-size: 0.7rem; }
-    .nav-links a { font-size: 0.7rem; }
-    .lang-btn { padding: 5px 8px; font-size: 0.7rem; }
+    .nav-phone { padding: 5px 8px; font-size: 0.75rem; }
+    .nav-actions .btn-green { padding: 5px 8px; font-size: 0.75rem; }
+    .nav-links a { font-size: 0.85rem; }
+    .lang-btn { padding: 5px 8px; font-size: 0.75rem; }
   }
 
 @media (max-width: 1250px) {
