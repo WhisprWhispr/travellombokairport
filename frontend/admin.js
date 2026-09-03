@@ -3066,7 +3066,7 @@ window.fetchLoginLogs = async () => {
                     <td>${date}</td>
                     <td>${log.email || '-'}</td>
                     <td>${log.ip || '-'}</td>
-                    <td style="font-size: 0.8rem; color: #64748b;">${log.userAgent || '-'}</td>
+                    <td style="font-size: 0.8rem; color: #64748b; max-width: 250px; word-wrap: break-word; white-space: normal;">${log.userAgent || '-'}</td>
                 </tr>
             `;
         }).join('');
