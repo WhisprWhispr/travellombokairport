@@ -1220,7 +1220,7 @@ Salam hangat,
                     
                     return `
                     <tr>
-                        <td style="font-size: 0.85rem; color: #475569;">
+                        <td style="font-size: 0.85rem; color: #475569; white-space: nowrap;">
                             <i class="fa-regular fa-clock"></i> ${orderDateStr}
                         </td>
                         <td>

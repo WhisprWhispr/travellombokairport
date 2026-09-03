@@ -1289,6 +1289,7 @@ ul {
 /* ---- MAIN AREA ---- */
 .admin-main {
   flex: 1;
+  min-width: 0;
   padding: 24px;
   overflow-y: auto;
   background: #f0f4f8;
