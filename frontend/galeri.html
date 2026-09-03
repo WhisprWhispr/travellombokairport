@@ -507,7 +507,10 @@
     // Ambil jumlah pengunjung aktif dari server
     async function fetchVisitors() {
         try {
-            const res = await fetch(`${API}/gallery-visitors`);
+            // Gunakan query param timestamp untuk mencegah cache
+            const res = await fetch(`${API}/gallery-visitors?_t=` + Date.now(), {
+                cache: 'no-store'
+            });
             if (res.ok) {
                 const data = await res.json();
                 setCount(data.count >= 1 ? data.count : 1);

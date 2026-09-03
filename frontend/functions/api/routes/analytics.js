@@ -124,7 +124,14 @@ analyticsRoutes.get('/gallery-visitors', async (c) => {
             .where('lastSeen', '>=', cutoff)
             .get();
 
-        return c.json({ count: snapshot.docs ? snapshot.docs.length : 0 });
+        const count = snapshot.docs ? snapshot.docs.length : 0;
+        
+        // Mencegah Cloudflare CDN cache
+        c.header('Cache-Control', 'no-cache, no-store, must-revalidate');
+        c.header('Pragma', 'no-cache');
+        c.header('Expires', '0');
+        
+        return c.json({ count });
     } catch (error) {
         console.error('Gallery visitors error:', error);
         return c.json({ error: error.message }, 500);
