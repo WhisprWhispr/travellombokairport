@@ -420,10 +420,12 @@ apiRoutes.delete('/users/:id', verifyToken, async (c) => {
 apiRoutes.get('/login-logs', verifyToken, async (c) => {
     try {
         const db = getDb(c);
-        const snapshot = await db.collection('login_logs').orderBy('timestamp', 'desc').limit(100).get();
+        const snapshot = await db.collection('login_logs').orderBy('timestamp', 'desc').get();
         let logs = [];
         snapshot.forEach(doc => {
-            logs.push({ id: doc.id, ...doc.data() });
+            if (logs.length < 100) {
+                logs.push({ id: doc.id, ...doc.data() });
+            }
         });
         return c.json(logs);
     } catch (error) {

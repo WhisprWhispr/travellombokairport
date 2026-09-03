@@ -3040,6 +3040,18 @@ window.fetchLoginLogs = async () => {
         const response = await fetch(`${API_URL}/login-logs`, {
             headers: getAuthHeaders()
         });
+        
+        if (!response.ok) {
+            let errorMsg = 'Gagal memuat';
+            try {
+                const errData = await response.json();
+                errorMsg = errData.error || errData.message || errorMsg;
+            } catch(e) {
+                errorMsg = `Status ${response.status} - ${response.statusText}`;
+            }
+            throw new Error(errorMsg);
+        }
+        
         const logs = await response.json();
         
         if (logs.length === 0) {
@@ -3060,6 +3072,6 @@ window.fetchLoginLogs = async () => {
         }).join('');
     } catch (error) {
         console.error('Error fetching login logs:', error);
-        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Gagal memuat log login.</td></tr>';
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center text-danger">Gagal memuat log login: ${error.message}</td></tr>`;
     }
 };
