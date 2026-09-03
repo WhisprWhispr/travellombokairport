@@ -2305,3 +2305,26 @@ input:checked + .slider:before { transform: translateX(22px); }
         display: none;
     }
 }
+
+/* Extra small devices (phones like iPhone SE) */
+@media (max-width: 450px) {
+  .logo-img { height: 28px !important; }
+  .logo-title { font-size: 0.75rem !important; }
+  .logo-subtitle { font-size: 0.5rem !important; }
+  .nav-actions { gap: 4px !important; }
+  
+  /* Hide the text "IDR" and "ID", keep only icons */
+  .lang-btn { 
+      padding: 6px !important; 
+      font-size: 0 !important; 
+      min-width: unset !important;
+  }
+  .lang-btn i { 
+      font-size: 0.85rem !important; 
+      margin: 0 !important; 
+  }
+  .mobile-menu-btn { 
+      font-size: 1.2rem !important; 
+      padding: 4px 6px !important; 
+  }
+}
