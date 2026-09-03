@@ -117,17 +117,14 @@ analyticsRoutes.delete('/gallery-ping', async (c) => {
 analyticsRoutes.get('/gallery-visitors', async (c) => {
     try {
         const db = getDb(c);
-        // Ambil semua session, filter di server (tidak butuh Firestore index)
-        const snapshot = await db.collection('gallery_sessions').get();
-        const cutoff = Date.now() - 35 * 1000; // 35 detik buffer
-        let count = 0;
-        snapshot.forEach(doc => {
-            const data = doc.data();
-            if (data.lastSeen && new Date(data.lastSeen).getTime() >= cutoff) {
-                count++;
-            }
-        });
-        return c.json({ count });
+        const cutoff = new Date(Date.now() - 35 * 1000).toISOString();
+
+        // Gunakan query where (hanya butuh single-field index yang otomatis ada)
+        const snapshot = await db.collection('gallery_sessions')
+            .where('lastSeen', '>=', cutoff)
+            .get();
+
+        return c.json({ count: snapshot.docs ? snapshot.docs.length : 0 });
     } catch (error) {
         console.error('Gallery visitors error:', error);
         return c.json({ error: error.message }, 500);
