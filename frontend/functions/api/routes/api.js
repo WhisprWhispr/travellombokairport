@@ -416,4 +416,19 @@ apiRoutes.delete('/users/:id', verifyToken, async (c) => {
     }
 });
 
+// GET login logs (protected)
+apiRoutes.get('/login-logs', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const snapshot = await db.collection('login_logs').orderBy('timestamp', 'desc').limit(100).get();
+        let logs = [];
+        snapshot.forEach(doc => {
+            logs.push({ id: doc.id, ...doc.data() });
+        });
+        return c.json(logs);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 export default apiRoutes;

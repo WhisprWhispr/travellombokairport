@@ -150,6 +150,18 @@ authRoutes.post('/login', async (c) => {
         
         const token = await sign(payload, secret);
         
+        try {
+            const userAgent = c.req.header('user-agent') || 'Unknown';
+            await db.collection('login_logs').add({
+                email: firebaseUser.email,
+                ip: ip,
+                userAgent: userAgent,
+                timestamp: new Date().toISOString()
+            });
+        } catch (logErr) {
+            console.error('Failed to save login log:', logErr);
+        }
+        
         return c.json({
             success: true,
             token,

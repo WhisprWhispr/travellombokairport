@@ -1063,6 +1063,8 @@ window.showTab = (tab) => {
     document.getElementById("settings-section").style.display = "none";
     const usersSection = document.getElementById("users-section");
     if (usersSection) usersSection.style.display = "none";
+    const loginLogsSection = document.getElementById("login-logs-section");
+    if (loginLogsSection) loginLogsSection.style.display = "none";
     document.getElementById("drivers-section").style.display = "none";
     document.getElementById("guide-item-btn").style.display = "none";
     document.getElementById("add-item-btn").style.display = "none";
@@ -1147,6 +1149,10 @@ window.showTab = (tab) => {
         const usersSection = document.getElementById("users-section");
         if (usersSection) usersSection.style.display = "block";
         fetchAdminUsers();
+    } else if (tab === "login-logs") {
+        const loginLogsSection = document.getElementById("login-logs-section");
+        if (loginLogsSection) loginLogsSection.style.display = "block";
+        fetchLoginLogs();
     }
 };
 
@@ -3024,3 +3030,36 @@ const autoLogout = () => {
 
 // Initialize timer on load
 resetInactivityTimer();
+
+// ====== LOGIN LOGS ======
+window.fetchLoginLogs = async () => {
+    const tbody = document.getElementById('login-logs-tbody');
+    if (!tbody) return;
+    
+    try {
+        const response = await fetch(`${API_URL}/login-logs`, {
+            headers: getAuthHeaders()
+        });
+        const logs = await response.json();
+        
+        if (logs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="text-center">Belum ada log login.</td></tr>';
+            return;
+        }
+        
+        tbody.innerHTML = logs.map(log => {
+            const date = log.timestamp ? new Date(log.timestamp).toLocaleString('id-ID') : '-';
+            return `
+                <tr>
+                    <td>${date}</td>
+                    <td>${log.email || '-'}</td>
+                    <td>${log.ip || '-'}</td>
+                    <td style="font-size: 0.8rem; color: #64748b;">${log.userAgent || '-'}</td>
+                </tr>
+            `;
+        }).join('');
+    } catch (error) {
+        console.error('Error fetching login logs:', error);
+        tbody.innerHTML = '<tr><td colspan="4" class="text-center text-danger">Gagal memuat log login.</td></tr>';
+    }
+};

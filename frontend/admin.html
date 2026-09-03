@@ -83,6 +83,7 @@
           <li><a href="#" onclick="showTab('ai-knowledge')"><i class="fa-solid fa-brain"></i> Ajari AI (Knowledge Base)</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
           <li><a href="#" onclick="showTab('users')"><i class="fa-solid fa-users"></i> Pengguna</a></li>
+          <li><a href="#" onclick="showTab('login-logs')"><i class="fa-solid fa-history"></i> Log Aktivitas Login</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
           <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
@@ -999,6 +1000,30 @@
           <tbody id="users-tbody">
             <!-- Data loaded via JS -->
             <tr><td colspan="5" class="text-center">Loading users...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ===== LOGIN LOGS SECTION ===== -->
+    <section id="login-logs-section" class="admin-content glass-panel mt-4" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0;">Log Aktivitas Login</h2>
+      </div>
+      
+      <div class="table-responsive">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Waktu (WIB)</th>
+              <th>Email</th>
+              <th>IP Address</th>
+              <th>Perangkat / Browser</th>
+            </tr>
+          </thead>
+          <tbody id="login-logs-tbody">
+            <!-- Data loaded via JS -->
+            <tr><td colspan="4" class="text-center">Loading logs...</td></tr>
           </tbody>
         </table>
       </div>
