@@ -504,15 +504,23 @@
             const res = await fetch(`${API}/gallery-visitors`);
             if (res.ok) {
                 const data = await res.json();
-                setCount(data.count || 1);
+                setCount(data.count >= 1 ? data.count : 1);
+            } else {
+                // API error - minimal tampilkan 1 (diri sendiri)
+                const errText = await res.text().catch(() => '');
+                console.warn('Gallery visitors API error:', res.status, errText);
+                setCount(1);
             }
-        } catch(e) { /* silent fail */ }
+        } catch(e) {
+            // Network error - minimal tampilkan 1
+            console.warn('Gallery visitors fetch error:', e);
+            setCount(1);
+        }
     }
 
     // Hapus session saat user meninggalkan halaman
     function sendLeave() {
         const body = JSON.stringify({ sessionId });
-        // Gunakan fetch dengan keepalive agar tetap terkirim walau tab ditutup
         fetch(`${API}/gallery-ping`, {
             method: 'DELETE',
             headers: { 'Content-Type': 'application/json' },
@@ -521,9 +529,8 @@
         }).catch(() => {});
     }
 
-    // Mulai: ping + fetch langsung saat halaman dibuka
-    sendPing();
-    fetchVisitors();
+    // Mulai: ping dulu baru fetch count (await agar session sudah tersimpan)
+    sendPing().then(() => fetchVisitors());
 
     // Polling: setiap 10 detik kirim heartbeat + update counter
     const interval = setInterval(() => {
