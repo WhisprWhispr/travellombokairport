@@ -360,12 +360,10 @@ class FirestoreClient {
 
     async setDocument(colName, id, data) {
         // Firestore REST: PATCH untuk update, tapi PATCH gagal 404 jika dokumen belum ada.
-        // Gunakan ?currentDocument.exists=false untuk create jika belum ada,
-        // atau coba PATCH dulu lalu fallback ke create jika 404.
         const url = `${this.baseUrl}/${colName}/${id}`;
         const fields = mapToFirestoreFields(data);
         try {
-            // Coba update/create langsung dengan PATCH (works if doc exists)
+            // Coba update langsung dengan PATCH
             const doc = await this.request(url, {
                 method: "PATCH",
                 body: JSON.stringify({ fields })
@@ -373,11 +371,10 @@ class FirestoreClient {
             return { id, ...mapFromFirestoreFields(doc.fields || {}) };
         } catch (err) {
             if (err.status === 404) {
-                // Dokumen belum ada — buat dengan PATCH + ?currentDocument.exists=false
-                // Ini adalah "create-if-not-exists" di Firestore REST API
-                const createUrl = `${url}?currentDocument.exists=false`;
+                // Dokumen belum ada — buat dengan POST ke collection + ?documentId=xxx
+                const createUrl = `${this.baseUrl}/${colName}?documentId=${encodeURIComponent(id)}`;
                 const doc = await this.request(createUrl, {
-                    method: "PATCH",
+                    method: "POST",
                     body: JSON.stringify({ fields })
                 });
                 return { id, ...mapFromFirestoreFields(doc.fields || {}) };
