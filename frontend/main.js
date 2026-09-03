@@ -2316,8 +2316,11 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         let vehicleOptions = '';
         if (window.globalItems) {
             const cars = window.globalItems.filter(i => i.category === 'car');
+            const multiplier = durationDays > 0 ? durationDays : 1;
             cars.forEach(car => {
-                vehicleOptions += `<option value="${car.title}" data-price="${car.price}">${car.title} (+ ${formatPrice(car.price)})</option>`;
+                const totalCarPrice = car.price * multiplier;
+                const dailyText = durationDays > 0 ? ` x ${multiplier} Hari` : ``;
+                vehicleOptions += `<option value="${car.title}" data-price="${totalCarPrice}">${car.title} (+ ${formatPrice(car.price)}/hari${dailyText})</option>`;
             });
         }
         if (!vehicleOptions) {
