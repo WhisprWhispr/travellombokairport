@@ -236,6 +236,50 @@
       cursor: not-allowed;
       transform: none;
     }
+    .auth-separator {
+      display: flex;
+      align-items: center;
+      text-align: center;
+      margin: 20px 0;
+      color: #94a3b8;
+      font-size: 0.9rem;
+    }
+    .auth-separator::before, .auth-separator::after {
+      content: '';
+      flex: 1;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .auth-separator span {
+      padding: 0 10px;
+    }
+    .btn-google {
+      width: 100%;
+      padding: 12px;
+      background: white;
+      color: #334155;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.3s;
+    }
+    .btn-google:hover {
+      background: #f8fafc;
+      border-color: #cbd5e1;
+    }
+    .btn-google img {
+      width: 24px;
+      height: 24px;
+    }
+    .btn-google:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
   </style>
 <script src="/protect.js"></script>
 </head>
@@ -268,13 +312,91 @@
       <div class="form-group" style="display: flex; justify-content: center; margin-top: 10px; margin-bottom: 20px;">
         <div class="cf-turnstile" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS" data-theme="light"></div>
       </div>
-      <button type="submit" class="btn-submit" id="btn-submit">Login Sekarang</button>
+      <button type="submit" class="btn-submit" id="btn-submit"><i class="fa-regular fa-envelope" style="margin-right: 8px;"></i>Lanjutkan dengan Email</button>
+      
+      <div class="auth-separator">
+        <span>Atau</span>
+      </div>
+      
+      <button type="button" class="btn-google" id="btn-google">
+        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google">
+        Lanjutkan dengan Google
+      </button>
     </form>
     
     <div class="auth-footer">
       Belum punya akun? <a href="/register.html" class="auth-link">Daftar di sini</a>
     </div>
   </div>
+
+  <!-- Firebase JS SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyA6iPEJgUiZpRkt6YMaIk4Z2tglVF1MiBs",
+      authDomain: "travellombokairport.firebaseapp.com",
+      projectId: "travellombokairport"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const provider = new GoogleAuthProvider();
+
+    const btnGoogle = document.getElementById('btn-google');
+    if(btnGoogle) {
+        btnGoogle.addEventListener('click', async () => {
+            btnGoogle.disabled = true;
+            btnGoogle.innerHTML = '<i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i>Memproses...';
+            
+            try {
+                const result = await signInWithPopup(auth, provider);
+                const idToken = await result.user.getIdToken();
+                
+                // Send to backend
+                const res = await fetch(`${API_URL}/api/auth/google`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ idToken })
+                });
+                
+                const data = await res.json();
+                
+                if (!res.ok) {
+                    throw new Error(data.error || 'Login Google gagal');
+                }
+                
+                localStorage.setItem('auth_token', data.token);
+                if (data.user) {
+                    localStorage.setItem('user_info', JSON.stringify(data.user));
+                }
+                
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: 'Login berhasil!',
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    const params = new URLSearchParams(window.location.search);
+                    const returnUrl = params.get('return') || '/';
+                    window.location.href = returnUrl;
+                });
+                
+            } catch (error) {
+                console.error("Google Login Error:", error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Login Gagal',
+                    text: error.message || 'Terjadi kesalahan saat login dengan Google.'
+                });
+                btnGoogle.disabled = false;
+                btnGoogle.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Lanjutkan dengan Google';
+            }
+        });
+    }
+  </script>
 
   <!-- Modal Lupa Sandi -->
   <div class="modal-overlay" id="forgot-modal" role="dialog" aria-modal="true" aria-labelledby="forgot-modal-title">

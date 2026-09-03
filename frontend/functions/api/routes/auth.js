@@ -174,6 +174,89 @@ authRoutes.post('/login', async (c) => {
     }
 });
 
+// POST /api/auth/google
+authRoutes.post('/google', async (c) => {
+    try {
+        const { idToken } = await c.req.json();
+        
+        if (!idToken) {
+            return c.json({ error: 'Token Google tidak valid.' }, 400);
+        }
+
+        const apiKey = c.env.FIREBASE_API_KEY;
+        if (!apiKey) {
+            return c.json({ error: 'System error: API Key missing' }, 500);
+        }
+
+        let firebaseUser;
+        try {
+            // Verifikasi Firebase ID Token (didapat dari Google Auth) via Firebase REST API
+            const response = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=${apiKey}`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ idToken })
+            });
+
+            const data = await response.json();
+            
+            if (!response.ok || !data.users || data.users.length === 0) {
+                return c.json({ error: 'Token otentikasi tidak valid atau telah kadaluarsa.' }, 401);
+            }
+            
+            firebaseUser = data.users[0];
+            
+            // Simpan akun ke Firestore jika belum ada (opsional)
+            try {
+                const db = getDb(c);
+                const doc = await db.collection('user_accounts').doc(firebaseUser.localId).get();
+                if (!doc.exists) {
+                    await db.collection('user_accounts').doc(firebaseUser.localId).set({
+                        email: firebaseUser.email,
+                        name: firebaseUser.displayName || '',
+                        authProvider: 'google',
+                        createdAt: new Date().toISOString()
+                    });
+                }
+                
+                const ip = c.req.header('cf-connecting-ip') || 'unknown';
+                const userAgent = c.req.header('user-agent') || 'Unknown';
+                await db.collection('login_logs').add({
+                    email: firebaseUser.email,
+                    ip: ip,
+                    userAgent: userAgent,
+                    type: 'login_google',
+                    timestamp: new Date().toISOString()
+                });
+            } catch (dbError) {
+                console.error("Firestore logging error for google auth:", dbError);
+            }
+
+        } catch (fetchError) {
+            return c.json({ error: 'Gagal memverifikasi token ke server.' }, 502);
+        }
+
+        // Generate Hono JWT token lokal
+        const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
+        const payload = {
+            id: firebaseUser.localId,
+            email: firebaseUser.email,
+            name: firebaseUser.displayName || '',
+            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 24 hours
+        };
+        
+        const token = await sign(payload, secret);
+        
+        return c.json({
+            success: true,
+            token,
+            user: { id: firebaseUser.localId, email: firebaseUser.email, name: firebaseUser.displayName || '' }
+        });
+
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // POST /api/auth/register
 authRoutes.post('/register', async (c) => {
     try {
