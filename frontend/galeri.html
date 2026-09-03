@@ -498,9 +498,11 @@
             if (!res.ok) {
                 const t = await res.text().catch(() => '');
                 console.warn('[Gallery] Ping gagal:', res.status, t);
+                alert('DEBUG POST ERROR: ' + res.status + ' - ' + t);
             }
         } catch(e) {
             console.warn('[Gallery] Ping error:', e);
+            alert('DEBUG POST NETWORK ERROR: ' + e.message);
         }
     }
 
@@ -515,14 +517,14 @@
                 const data = await res.json();
                 setCount(data.count >= 1 ? data.count : 1);
             } else {
-                // API error - minimal tampilkan 1 (diri sendiri)
                 const errText = await res.text().catch(() => '');
                 console.warn('Gallery visitors API error:', res.status, errText);
+                alert('DEBUG GET ERROR: ' + res.status + ' - ' + errText); // TAMPILKAN ERROR KE LAYAR
                 setCount(1);
             }
         } catch(e) {
-            // Network error - minimal tampilkan 1
             console.warn('Gallery visitors fetch error:', e);
+            alert('DEBUG NETWORK ERROR: ' + e.message);
             setCount(1);
         }
     }
