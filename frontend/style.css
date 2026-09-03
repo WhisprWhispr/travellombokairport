@@ -1335,6 +1335,13 @@ ul {
   gap: 10px;
 }
 
+/* Responsive Tables (Global) */
+.table-responsive, .table-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
 /* ---- ADMIN TABLE ---- */
 .admin-table {
   width: 100%;
