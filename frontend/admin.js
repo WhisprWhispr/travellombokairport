@@ -457,9 +457,26 @@ loginForm.addEventListener("submit", async (e) => {
     }
 });
 
+// ====== LOG AKTIVITAS SESI (login, refresh, logout) ======
+async function logSessionActivity(type = 'refresh') {
+    const token = authToken;
+    if (!token) return; // Hanya log jika sudah login
+    try {
+        await fetch(`${API_URL}/session-log`, {
+            method: 'POST',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ type })
+        });
+    } catch (e) {
+        console.warn('Session log gagal:', e);
+    }
+}
+
 // Logout Handler
-logoutBtn.addEventListener("click", (e) => {
+logoutBtn.addEventListener("click", async (e) => {
     e.preventDefault();
+    // Catat aktivitas logout SEBELUM token dihapus
+    await logSessionActivity('logout');
     authToken = null;
     localStorage.removeItem('adminToken');
     localStorage.removeItem('adminEmail');
@@ -3074,6 +3091,8 @@ window.fetchLoginLogs = async () => {
                 typeBadge = `<span style="background:#dcfce7;color:#15803d;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-right-to-bracket" style="margin-right:4px;"></i>Login</span>`;
             } else if (type === 'refresh') {
                 typeBadge = `<span style="background:#dbeafe;color:#1d4ed8;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-rotate" style="margin-right:4px;"></i>Refresh</span>`;
+            } else if (type === 'logout') {
+                typeBadge = `<span style="background:#fee2e2;color:#dc2626;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;white-space:nowrap;"><i class="fa-solid fa-right-from-bracket" style="margin-right:4px;"></i>Logout</span>`;
             } else {
                 typeBadge = `<span style="background:#f1f5f9;color:#475569;padding:3px 10px;border-radius:20px;font-size:0.78rem;font-weight:600;">${type}</span>`;
             }
@@ -3093,24 +3112,7 @@ window.fetchLoginLogs = async () => {
     }
 };
 
-// ====== LOG REFRESH HALAMAN ======
-// Kirim log ke server setiap kali admin reload/refresh halaman (bukan pertama kali login)
-const logSessionActivity = async (type = 'refresh') => {
-    const token = authToken;
-    if (!token) return; // Hanya log jika sudah login
-    try {
-        await fetch(`${API_URL}/session-log`, {
-            method: 'POST',
-            headers: getAuthHeaders(),
-            body: JSON.stringify({ type })
-        });
-    } catch (e) {
-        // Gagal log tidak perlu mengganggu UI
-        console.warn('Session log gagal:', e);
-    }
-};
-
-// Deteksi: apakah ini refresh halaman atau pertama kali buka?
+// ====== DETEKSI REFRESH HALAMAN ======
 // sessionStorage tidak persisten antar tab baru/close, tapi persisten saat refresh
 if (authToken) {
     if (sessionStorage.getItem('adminSessionActive')) {
