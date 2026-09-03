@@ -3116,8 +3116,12 @@ window.fetchLoginLogs = async () => {
 // sessionStorage tidak persisten antar tab baru/close, tapi persisten saat refresh
 if (authToken) {
     if (sessionStorage.getItem('adminSessionActive')) {
-        // Ini adalah refresh - kirim log refresh
-        logSessionActivity('refresh');
+        // Admin refresh halaman = masih login aktif + tindakan refresh
+        // Catat DUA aktivitas sekaligus: Login (konfirmasi sesi) + Refresh (tindakan reload)
+        Promise.all([
+            logSessionActivity('login'),
+            logSessionActivity('refresh')
+        ]);
     } else {
         // Pertama kali buka tab baru dengan token sudah ada
         sessionStorage.setItem('adminSessionActive', '1');
