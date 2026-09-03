@@ -10,6 +10,7 @@ import driversRoutes from './functions/api/routes/drivers.js';
 import aiRoutes from './functions/api/routes/ai.js';
 import promosRoutes from './functions/api/routes/promos.js';
 import blogsRoutes from './functions/api/routes/blogs.js';
+import analyticsRoutes from './functions/api/routes/analytics.js';
 
 const app = new Hono().basePath('/api');
 
@@ -33,6 +34,7 @@ app.route('/drivers', driversRoutes);
 app.route('/ai', aiRoutes);
 app.route('/promos', promosRoutes);
 app.route('/blogs', blogsRoutes);
+app.route('/analytics', analyticsRoutes);
 
 app.post('/upload', async (c) => {
     try {
