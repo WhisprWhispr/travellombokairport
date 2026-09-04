@@ -147,7 +147,7 @@ bookingsRoutes.post('/', async (c) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: 'Travel Lombok Airport <onboarding@resend.dev>',
+                        from: 'Travel Lombok Airport <admin@travellombokairport.com>',
                         to: body.customerEmail,
                         subject: `Invoice & E-Ticket: ${body.itemName || 'Layanan Travel'}`,
                         html: emailHtml
