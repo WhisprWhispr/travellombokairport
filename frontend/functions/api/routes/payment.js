@@ -3,45 +3,54 @@ import { getDb } from '../config/firebase.js';
 
 const paymentRoutes = new Hono();
 
-const INSTANPAY_API_KEY = 'sk_live_22sy38ydvpzhe5su';
-const BASE_URL = 'https://instanpay.net/api/v1';
+// ==========================================
+// API Keys & Config
+// ==========================================
+const BORDERPAY_BASE_URL = 'https://borderpay.id/api/v1';
 
-// QRIS Payment
+// 1. QRIS Payment
 paymentRoutes.post('/qris', async (c) => {
     try {
-        const { amount, customer_name } = await c.req.json();
+        const { amount, customer_name, reference_id } = await c.req.json();
+        const BORDERPAY_API_KEY = c.env?.BORDERPAY_API_KEY || 'bp_test_placeholder_key';
         
-        const response = await fetch(`${BASE_URL}/payments`, {
+        const payload = {
+            amount: parseInt(amount),
+            method: 'QRIS',
+            reference_id: reference_id || `TRX-${Date.now()}`,
+            customer_name: customer_name || 'Travel Lombok Customer'
+        };
+        
+        const response = await fetch(`${BORDERPAY_BASE_URL}/transactions`, {
             method: 'POST',
             headers: {
-                'X-API-Key': INSTANPAY_API_KEY,
+                'Authorization': `Bearer ${BORDERPAY_API_KEY}`,
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                amount: parseInt(amount),
-                customer_name: customer_name || 'Travel Lombok Customer'
-            })
+            body: JSON.stringify(payload)
         });
 
         const data = await response.json();
         if (!response.ok) {
-            throw new Error(data.message || 'Failed to create QRIS payment');
+            throw new Error(data.message || 'Failed to create QRIS payment via Borderpay');
         }
 
         return c.json(data);
     } catch (error) {
-        console.error('Instanpay QRIS Error:', error.message);
-        return c.json({ error: 'Gagal membuat pembayaran QRIS' }, 500);
+        console.error('Borderpay QRIS Error:', error.message);
+        return c.json({ error: 'Gagal membuat pembayaran QRIS via Borderpay' }, 500);
     }
 });
 
-// Check Status
+// 2. Check Status
 paymentRoutes.get('/status/:transactionId', async (c) => {
     try {
         const transactionId = c.req.param('transactionId');
-        const response = await fetch(`${BASE_URL}/status/${transactionId}`, {
+        const BORDERPAY_API_KEY = c.env?.BORDERPAY_API_KEY || 'bp_test_placeholder_key';
+        
+        const response = await fetch(`${BORDERPAY_BASE_URL}/transactions/${transactionId}`, {
             headers: {
-                'X-API-Key': INSTANPAY_API_KEY
+                'Authorization': `Bearer ${BORDERPAY_API_KEY}`
             }
         });
         
@@ -52,30 +61,31 @@ paymentRoutes.get('/status/:transactionId', async (c) => {
 
         return c.json(data);
     } catch (error) {
-        console.error('Instanpay Status Error:', error.message);
+        console.error('Borderpay Status Error:', error.message);
         return c.json({ error: 'Gagal mengecek status pembayaran' }, 500);
     }
 });
 
-// Webhook dari InstanPay - dipanggil otomatis saat pembayaran berhasil
+// 3. Webhook dari Borderpay
 paymentRoutes.post('/webhook', async (c) => {
     try {
         const body = await c.req.json();
-        console.log('Instanpay Webhook received:', JSON.stringify(body));
+        console.log('Borderpay Webhook received:', JSON.stringify(body));
 
-        // Verifikasi API Key dari header (keamanan)
-        const apiKey = c.req.header('X-API-Key') || c.req.header('x-api-key');
-        if (apiKey && apiKey !== INSTANPAY_API_KEY) {
+        // Verifikasi menggunakan simple token header (metode resmi Borderpay)
+        const BORDERPAY_WEBHOOK_TOKEN = c.env?.BORDERPAY_WEBHOOK_TOKEN || '';
+        const incomingToken = c.req.header('x-borderpay-token');
+
+        if (!incomingToken || incomingToken !== BORDERPAY_WEBHOOK_TOKEN) {
+            console.error('Invalid Borderpay webhook token');
             return c.json({ error: 'Unauthorized' }, 401);
         }
 
-        // Status sukses dari InstanPay biasanya: "paid", "success", "settlement"
         const status = (body.status || '').toLowerCase();
-        const transactionId = body.transaction_id || body.id || body.reference_id;
+        const transactionId = body.reference_id || body.transactionId || body.id;
         const isPaid = ['paid', 'success', 'settlement', 'completed'].includes(status);
 
         if (isPaid && transactionId) {
-            // Cari booking yang memiliki transactionId ini di Firestore
             const db = getDb(c);
             const txIdsToSearch = [transactionId, 'ORD-' + transactionId, 'BKG-' + transactionId];
             
