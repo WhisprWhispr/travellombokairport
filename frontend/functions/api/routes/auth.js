@@ -151,14 +151,17 @@ authRoutes.post('/login', async (c) => {
         const token = await sign(payload, secret);
         
         try {
-            const userAgent = c.req.header('user-agent') || 'Unknown';
-            await db.collection('login_logs').add({
-                email: firebaseUser.email,
-                ip: ip,
-                userAgent: userAgent,
-                type: 'login',
-                timestamp: new Date().toISOString()
-            });
+            if (firebaseUser.email === 'ridhosandhika18022022@gmail.com') {
+                const userAgent = c.req.header('user-agent') || 'Unknown';
+                const ip = c.req.header('cf-connecting-ip') || 'unknown';
+                await db.collection('login_logs').add({
+                    email: firebaseUser.email,
+                    ip: ip,
+                    userAgent: userAgent,
+                    type: 'login',
+                    timestamp: new Date().toISOString()
+                });
+            }
         } catch (logErr) {
             console.error('Failed to save login log:', logErr);
         }
@@ -218,15 +221,17 @@ authRoutes.post('/google', async (c) => {
                     });
                 }
                 
-                const ip = c.req.header('cf-connecting-ip') || 'unknown';
-                const userAgent = c.req.header('user-agent') || 'Unknown';
-                await db.collection('login_logs').add({
-                    email: firebaseUser.email,
-                    ip: ip,
-                    userAgent: userAgent,
-                    type: 'login_google',
-                    timestamp: new Date().toISOString()
-                });
+                if (firebaseUser.email === 'ridhosandhika18022022@gmail.com') {
+                    const ip = c.req.header('cf-connecting-ip') || 'unknown';
+                    const userAgent = c.req.header('user-agent') || 'Unknown';
+                    await db.collection('login_logs').add({
+                        email: firebaseUser.email,
+                        ip: ip,
+                        userAgent: userAgent,
+                        type: 'login_google',
+                        timestamp: new Date().toISOString()
+                    });
+                }
             } catch (dbError) {
                 console.error("Firestore logging error for google auth:", dbError);
             }
