@@ -11,20 +11,27 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
     const isSkipped = skipPaths.some(p => path.includes(p));
     if (isSkipped) return;
 
-    // Check if admin is logged in (admins bypass maintenance)
-    const adminToken = localStorage.getItem('adminToken');
-    if (adminToken) return;
-
     try {
         const res = await fetch('/api/settings', { cache: 'no-store' });
         if (res.ok) {
             const data = await res.json();
-            if (data.maintenanceMode === true) {
+            
+            // Check if admin is logged in (admins bypass maintenance)
+            const adminToken = localStorage.getItem('adminToken');
+            
+            if (data.maintenanceMode === true && !adminToken) {
                 localStorage.setItem('maintenanceMode', 'true');
                 window.location.replace('/maintenance.html');
                 return;
-            } else {
+            } else if (!adminToken) {
                 localStorage.setItem('maintenanceMode', 'false');
+                const antiFlash = document.getElementById('anti-flash');
+                if (antiFlash) antiFlash.remove();
+                document.body.style.opacity = '1';
+                document.body.style.visibility = 'visible';
+                document.body.style.pointerEvents = 'auto';
+            } else if (adminToken) {
+                // Admin also needs to remove anti-flash if present (usually handled by other scripts but good to have)
                 const antiFlash = document.getElementById('anti-flash');
                 if (antiFlash) antiFlash.remove();
                 document.body.style.opacity = '1';
@@ -94,6 +101,7 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
         // If API fails, don't block the page
     }
 })();
+
 
 
 // ====== ANALYTICS TRACKING ======
