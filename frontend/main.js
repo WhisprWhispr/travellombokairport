@@ -978,9 +978,7 @@ const createPackageCard = (item, index = 0) => {
         <div class="content">
             <h3>${item.title}</h3>
             <ul>
-                <li><i class="fa-solid fa-check"></i> ${item.description || ''}</li>
-            </ul>
-            <div class="price-row">
+                <li><i class="fa-solid fa-check">              <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
                       ${(() => {
                           const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
@@ -989,19 +987,20 @@ const createPackageCard = (item, index = 0) => {
                               const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
                               return `
                                   <div style="display: flex; flex-direction: column; gap: 2px;">
-                                      <span style="font-size: 0.75rem; color: #64748b; margin-bottom: -2px;">Mulai dari</span>
-                                      <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
-                                          <span style="text-decoration:line-through;color:#94a3b8;font-size:0.8rem;">${formatPrice(item.price)}</span>
-                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.55rem;padding:2px 4px;border-radius:4px;vertical-align:middle;">🔥</span>
+                                      <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
+                                          Mulai dari <span style="text-decoration:line-through; margin-left: 2px;">${formatPrice(item.price)}</span>
                                       </div>
-                                      <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                      <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
+                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
+                                      </div>
                                   </div>
                               `;
                           }
                           return `
                                   <div style="display: flex; flex-direction: column;">
-                                      <span style="font-size: 0.75rem; color: #64748b;">Mulai dari</span>
-                                      <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem;">${formatPrice(item.price)}</span>
+                                      <span style="font-size: 0.7rem; color: #64748b;">Mulai dari</span>
+                                      <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem;">${formatPrice(item.price)}</span>
                                   </div>
                           `;
                       })()}
@@ -1159,7 +1158,6 @@ const createFleetCard = (item, index = 0) => {
             ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
             <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
-                      <span style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 2px;">Mulai dari</span>
                       <div style="display: flex; flex-direction: column; gap: 2px;">
                           ${(() => {
                               const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
@@ -1167,21 +1165,20 @@ const createFleetCard = (item, index = 0) => {
                               if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
                                   const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
                                   return `
-                                      <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
-                                          <span style="text-decoration:line-through;color:#94a3b8;font-size:0.8rem;">${formatPrice(item.price)}</span>
-                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.55rem;padding:2px 4px;border-radius:4px;">🔥</span>
+                                      <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
+                                          Mulai dari <span style="text-decoration:line-through; margin-left: 2px;">${formatPrice(item.price)}</span>
                                       </div>
-                                      <div style="display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;">
-                                          <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
-                                          <small style="font-size: 0.7rem; color: #64748b; font-weight: 500; white-space: nowrap;">/ ${item.duration || 'hari'}</small>
+                                      <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
+                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
                                       </div>
+                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</div>
                                   `;
                               }
                               return `
-                                  <div style="display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;">
-                                      <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">${formatPrice(item.price)}</span>
-                                      <small style="font-size: 0.7rem; color: #64748b; font-weight: 500; white-space: nowrap;">/ ${item.duration || 'hari'}</small>
-                                  </div>
+                                  <div style="font-size: 0.7rem; color: #64748b;">Mulai dari</div>
+                                  <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(item.price)}</div>
+                                  <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</div>
                               `;
                           })()}
                       </div>
