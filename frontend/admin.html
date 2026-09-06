@@ -335,6 +335,57 @@
               <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran QRIS. Sistem akan memberitahu mereka bahwa pembayaran QRIS sedang dalam perbaikan.</p>
             </div>
 
+            <!-- EVENT MODE SECTION -->
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #fff7ed, #fef3c7); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-fire" style="color: white; font-size: 1.1rem;"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; color: #92400e; font-size: 1.1rem;">Mode Event / High Season</div>
+                    <div style="font-size: 0.8rem; color: #78350f;">Aktifkan untuk menaikkan harga motor & mobil saat event</div>
+                  </div>
+                </div>
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0;">
+                  <input type="checkbox" id="setting-event-mode" onchange="window.toggleEventModeUI(); window.saveGlobalSettings();" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </div>
+
+              <div id="event-mode-details" style="display: none; margin-top: 15px; border-top: 1px dashed #f59e0b; padding-top: 15px;">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-tag"></i> Nama Event</label>
+                    <input type="text" id="setting-event-name" placeholder="Contoh: Bau Nyale 2025, Lebaran, dll." class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-arrow-up"></i> Kenaikan Harga (Rp)</label>
+                    <input type="text" id="setting-event-price-increase" placeholder="Contoh: 400000" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;"
+                      oninput="let v=this.value.replace(/\D/g,''); this.value=v?parseInt(v).toLocaleString('id-ID'):'';">
+                    <p style="font-size: 0.78rem; color: #78350f; margin-top: 4px;">Masukkan angka saja. Contoh: 400000 = Rp 400.000</p>
+                  </div>
+                </div>
+                <div style="background: #fff8e1; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 5px;">
+                  <p style="margin: 0; font-size: 0.85rem; color: #78350f;"><i class="fa-solid fa-circle-info"></i> <strong>Efek saat Event aktif:</strong></p>
+                  <ul style="margin: 8px 0 0 0; padding-left: 18px; font-size: 0.82rem; color: #92400e; line-height: 1.6;">
+                    <li>Semua harga <strong>motor & mobil</strong> akan naik sebesar nominal di atas</li>
+                    <li>Minimum sewa menjadi <strong>4 hari</strong> untuk motor & mobil</li>
+                    <li>Harga asli tidak berubah di database, hanya ditambah saat ditampilkan</li>
+                    <li>Banner Event akan muncul di halaman utama website</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div id="event-mode-off-info" style="margin-top: 10px;">
+                <p style="font-size: 0.85rem; color: #92400e; margin: 0;"><i class="fa-solid fa-toggle-off"></i> Saat ini <strong>tidak ada event aktif</strong>. Aktifkan toggle untuk mengatur harga event.</p>
+              </div>
+              <div id="event-mode-on-info" style="display: none; margin-top: 10px; background: #ef4444; color: white; padding: 10px 15px; border-radius: 8px;">
+                <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-fire"></i> <strong>EVENT AKTIF!</strong> Harga motor & mobil sedang naik. Minimum sewa 4 hari.</p>
+              </div>
+            </div>
+            <!-- END EVENT MODE SECTION -->
+
             <div class="form-group">
               <label>Status Layanan Dokumentasi Drone</label>
               <select id="setting-drone-status" onchange="window.saveGlobalSettings()">

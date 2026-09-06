@@ -3,7 +3,7 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
 // Changed so that localhost hits Vite proxy on /api exactly like production
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
 
-// ====== MAINTENANCE MODE CHECK ======
+// ====== MAINTENANCE MODE CHECK + EVENT MODE FETCH ======
 // Run ASAP before page renders, skip for admin/maintenance/login pages
 (async () => {
     const path = window.location.pathname;
@@ -31,11 +31,70 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
                 document.body.style.visibility = 'visible';
                 document.body.style.pointerEvents = 'auto';
             }
+
+            // ====== STORE EVENT MODE SETTINGS GLOBALLY ======
+            window.globalEventSettings = {
+                eventMode: data.eventMode === true,
+                eventName: data.eventName || '',
+                eventPriceIncrease: parseInt(data.eventPriceIncrease) || 0
+            };
+
+            // Inject event banner jika event aktif
+            if (data.eventMode === true && data.eventPriceIncrease > 0) {
+                const eventBanner = document.createElement('div');
+                eventBanner.id = 'event-mode-banner';
+                eventBanner.innerHTML = `
+                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 10px 16px; font-size: 0.9rem; font-weight: 600; position: relative; z-index: 999;">
+                        <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
+                        🎉 ${data.eventName ? `EVENT: <strong>${data.eventName}</strong> —` : 'HIGH SEASON!'} 
+                        Harga Motor & Mobil naik <strong>Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')}</strong>/unit &nbsp;|&nbsp; 
+                        <i class="fa-solid fa-calendar-days"></i> Minimum sewa <strong>4 Hari</strong>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; opacity: 0.7; cursor: pointer; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;" title="Tutup">✕</button>
+                    </div>
+                `;
+                // Insert at top of body
+                if (document.body.firstChild) {
+                    document.body.insertBefore(eventBanner, document.body.firstChild);
+                } else {
+                    document.body.appendChild(eventBanner);
+                }
+
+                // Show professional popup for event
+                if (!sessionStorage.getItem('eventPopupShown')) {
+                    sessionStorage.setItem('eventPopupShown', 'true');
+                    setTimeout(() => {
+                        const evtName = data.eventName || 'High Season';
+                        Swal.fire({
+                            title: `Pemberitahuan: ${evtName}`,
+                            html: `
+                                <div style="text-align: left; font-size: 0.95rem; color: #334155; line-height: 1.6;">
+                                    <p>Yth. Pelanggan Setia,</p>
+                                    <p>Sehubungan dengan adanya event <strong>${evtName}</strong>, kami informasikan bahwa terdapat penyesuaian harga sewa untuk armada Motor dan Mobil, serta pemberlakuan <strong>minimum sewa selama 4 hari</strong>.</p>
+                                    <p>Selain itu, terdapat kemungkinan penyesuaian harga untuk <strong>Paket Tour</strong> dan <strong>Paket Honeymoon</strong> selama periode event ini berlangsung.</p>
+                                    <div style="background: #f1f5f9; padding: 12px; border-left: 4px solid #f59e0b; margin-top: 15px; border-radius: 4px;">
+                                        Untuk informasi lebih lanjut terkait ketersediaan dan harga final Paket Tour / Honeymoon, silakan <strong>hubungi Admin kami</strong>.
+                                    </div>
+                                    <p style="margin-top: 15px;">Terima kasih atas pengertian dan kepercayaan Anda bersama kami.</p>
+                                </div>
+                            `,
+                            icon: 'info',
+                            iconColor: '#f59e0b',
+                            confirmButtonText: 'Saya Mengerti',
+                            confirmButtonColor: '#0ea5e9',
+                            width: '500px',
+                            backdrop: `rgba(0,0,0,0.6)`
+                        });
+                    }, 1000); // delay 1 second after load
+                }
+            }
+            // ====== END EVENT MODE ======
+
         }
     } catch (e) {
         // If API fails, don't block the page
     }
 })();
+
 
 // ====== ANALYTICS TRACKING ======
 if (!window.location.pathname.includes("admin") && !window.location.pathname.includes("driver")) {
@@ -450,9 +509,25 @@ window.openTourModal = (id) => {
             }
             return `<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
         })()}
-                    <h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
-                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>
+                    ${(() => {
+            const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+            const isRental = item.category === 'car' || item.category === 'motorcycle';
+            if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
+                const eventPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                return `
+                    <div style="margin-top: 10px;">
+                        <span style="text-decoration: line-through; color: #94a3b8; font-size: 1rem;">${formatPrice(item.price)}</span>
+                        <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">🔥 EVENT</span>
+                    </div>
+                    <h3 style="color: #ef4444; margin-top: 5px; font-size: 2.2rem; font-weight: 900;">${formatPrice(eventPrice)}</h3>
+                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.85rem;">+Rp ${parseInt(evtS.eventPriceIncrease).toLocaleString('id-ID')} (event) · Min. 4 hari</p>
+                `;
+            }
+            return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
+                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>`;
+        })()}
                 </div>
+
             </div>
         </div>
         <div class="tm-body">
@@ -898,7 +973,17 @@ const createPackageCard = (item, index = 0) => {
                 <li><i class="fa-solid fa-check"></i> ${item.description || ''}</li>
             </ul>
             <div class="price-row">
-                <div class="price"><span>Mulai dari</span>${formatPrice(item.price)}</div>
+                <div class="price">
+                    ${(() => {
+                        const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+                        const isRental = item.category === 'car' || item.category === 'motorcycle';
+                        if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
+                            const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                            return `<span>Mulai dari</span><span style="text-decoration:line-through;color:#94a3b8;font-size:0.85em;margin-right:4px;">${formatPrice(item.price)}</span><span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.6rem;padding:1px 6px;border-radius:8px;vertical-align:middle;">🔥</span>${formatPrice(evtPrice)}`;
+                        }
+                        return `<span>Mulai dari</span>${formatPrice(item.price)}`;
+                    })()}
+                </div>
                 ${btnHtml}
             </div>
         </div>
@@ -1054,7 +1139,17 @@ const createFleetCard = (item, index = 0) => {
                 <div class="price">
                     <span>Mulai dari</span>
                     <div style="display: flex; align-items: baseline; gap: 4px;">
-                        ${formatPrice(item.price)} 
+                        ${(() => {
+                            const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+                            const isRental = item.category === 'car' || item.category === 'motorcycle';
+                            if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
+                                const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                                return `<span style="text-decoration:line-through;color:#94a3b8;font-size:0.8em;">${formatPrice(item.price)}</span>
+                                        <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.55rem;padding:1px 5px;border-radius:6px;vertical-align:middle;">🔥</span>
+                                        ${formatPrice(evtPrice)}`;
+                            }
+                            return `${formatPrice(item.price)}`;
+                        })()}
                         <small style="font-size: 0.7rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</small>
                     </div>
                 </div>
@@ -1063,6 +1158,7 @@ const createFleetCard = (item, index = 0) => {
                     <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${item.price}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
                 </div>
             </div>
+
         </div>
     </div>
     `;
@@ -2146,6 +2242,18 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
     else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
 
+    // ====== APPLY EVENT MODE ======
+    const evtSettings = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+    const isEventActive = evtSettings.eventMode && evtSettings.eventPriceIncrease > 0;
+    const isRentalItem = (category === 'motor' || category === 'mobil');
+    let eventAdjustedPrice = price;
+    if (isEventActive && isRentalItem && price > 0) {
+        eventAdjustedPrice = price + evtSettings.eventPriceIncrease;
+    }
+    const EVENT_MIN_DAYS = 4; // Minimum sewa saat event
+    // ====== END EVENT MODE ======
+
+
     let html = `
         <div style="text-align: center; margin-bottom: 20px;">
             <h2 style="color: ${method === 'wa' ? '#22c55e' : 'var(--primary-blue)'};">${method === 'wa' ? '<i class="fa-brands fa-whatsapp"></i> Form Booking via WA' : (isOrder ? "Checkout Pesanan" : "Form Booking")}</h2>
@@ -2155,11 +2263,30 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         <div style="background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; border: 1px solid #e2e8f0;">
             <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">${method === 'wa' ? "Item Booking:" : (isOrder ? "Item yang diorder:" : "Rincian Booking:")}</p>
             <h3 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h3>
-            ${isOrder ? `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${displayPrice}</p>` : ""}
+            ${isOrder ? `
+                ${(isEventActive && isRentalItem) ? `
+                <div style="margin-bottom: 6px;">
+                    <span style="text-decoration: line-through; color: #94a3b8; font-size: 0.9rem;">${formatPrice(price)}</span>
+                    <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px;">EVENT +${formatPrice(evtSettings.eventPriceIncrease)}</span>
+                </div>
+                <p id="co-display-price" data-base-price="${eventAdjustedPrice}" style="font-weight: bold; color: #ef4444; font-size: 1.25rem;">${formatPrice(eventAdjustedPrice)}</p>
+                ` : `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${formatPrice(price)}</p>`}
+            ` : ""}
         </div>
 
+        ${(isEventActive && isRentalItem) ? `
+        <div style="background: linear-gradient(135deg, #fff7ed, #fef3c7); border: 1.5px solid #f59e0b; border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-fire" style="color: #f59e0b; font-size: 1.2rem;"></i>
+            <div>
+                <div style="font-weight: 700; color: #92400e; font-size: 0.85rem;">🎉 ${evtSettings.eventName ? `Event: ${evtSettings.eventName}` : 'High Season!'}</div>
+                <div style="font-size: 0.78rem; color: #78350f;">Harga naik Rp ${parseInt(evtSettings.eventPriceIncrease).toLocaleString('id-ID')} · Minimum sewa 4 hari</div>
+            </div>
+        </div>
+        ` : ''}
 
-        <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${price || 0}, '${method}');">
+
+        <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${eventAdjustedPrice || 0}, '${method}');">
+
             <div class="form-group mb-3">
                 <label>Nama Lengkap</label>
                 <input type="text" id="co-name" class="form-control" required placeholder="Masukkan nama Anda">
@@ -2183,20 +2310,20 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <input type="hidden" id="co-end-date" required>
                 ` : (durationDays === 0 ? `
                 <div class="form-group mb-3" style="flex: 1; display:flex; flex-direction:column;">
-                    <label>Durasi Sewa</label>
+                    <label>Durasi Sewa${(isEventActive && isRentalItem) ? ' <span style="font-size:0.75rem;color:#ef4444;font-weight:700;">⚠ Min. 4 Hari (Event)</span>' : ''}</label>
                     <div style="display:flex; gap:10px;">
                         <select id="co-duration-select" class="form-control" style="flex:1;" required onchange="const c = document.getElementById('co-duration-custom'); if(this.value==='custom') { c.style.display='block'; c.required=true; c.focus(); } else { c.style.display='none'; c.required=false; }">
-                            <option value="1">1 Hari</option>
-                            <option value="2">2 Hari</option>
-                            <option value="3">3 Hari</option>
-                            <option value="4">4 Hari</option>
+                            ${(isEventActive && isRentalItem) ? '' : '<option value="1">1 Hari</option>'}
+                            ${(isEventActive && isRentalItem) ? '' : '<option value="2">2 Hari</option>'}
+                            ${(isEventActive && isRentalItem) ? '' : '<option value="3">3 Hari</option>'}
+                            <option value="4"${(isEventActive && isRentalItem) ? ' selected' : ''}>4 Hari${(isEventActive && isRentalItem) ? ' (Minimum Event)' : ''}</option>
                             <option value="5">5 Hari</option>
                             <option value="6">6 Hari</option>
                             <option value="7">1 Minggu (7 Hari)</option>
                             <option value="14">2 Minggu (14 Hari)</option>
                             <option value="custom">Custom (Ketik Sendiri)</option>
                         </select>
-                        <input type="number" id="co-duration-custom" class="form-control" min="1" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<1 && this.value!==''){this.value=1;}">
+                        <input type="number" id="co-duration-custom" class="form-control" min="${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1}" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1} && this.value!==''){this.value=${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1};">
                     </div>
                 </div>
                 <input type="hidden" id="co-end-date" required>

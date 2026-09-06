@@ -2179,10 +2179,41 @@ window.fetchGlobalSettings = async () => {
             if (qrisMaintenanceToggle) {
                 qrisMaintenanceToggle.checked = data.qrisMaintenanceMode === true;
             }
+
+            // ====== EVENT MODE ======
+            const eventModeToggle = document.getElementById('setting-event-mode');
+            const eventNameInput = document.getElementById('setting-event-name');
+            const eventPriceIncreaseInput = document.getElementById('setting-event-price-increase');
+            if (eventModeToggle) {
+                eventModeToggle.checked = data.eventMode === true;
+                // Update UI visibility
+                window.toggleEventModeUI();
+            }
+            if (eventNameInput && data.eventName) {
+                eventNameInput.value = data.eventName;
+            }
+            if (eventPriceIncreaseInput && data.eventPriceIncrease) {
+                // Format with thousand separator
+                eventPriceIncreaseInput.value = parseInt(data.eventPriceIncrease).toLocaleString('id-ID');
+            }
+            // ====== END EVENT MODE ======
         }
     } catch (e) {
         console.error("Error fetching settings:", e);
     }
+};
+
+// Toggle UI visibility for event mode section
+window.toggleEventModeUI = () => {
+    const toggle = document.getElementById('setting-event-mode');
+    const details = document.getElementById('event-mode-details');
+    const offInfo = document.getElementById('event-mode-off-info');
+    const onInfo = document.getElementById('event-mode-on-info');
+    if (!toggle) return;
+    const isOn = toggle.checked;
+    if (details) details.style.display = isOn ? 'block' : 'none';
+    if (offInfo) offInfo.style.display = isOn ? 'none' : 'block';
+    if (onInfo) onInfo.style.display = isOn ? 'block' : 'none';
 };
 
 window.saveGlobalSettings = async () => {
@@ -2192,6 +2223,15 @@ window.saveGlobalSettings = async () => {
     const maintenanceMode = document.getElementById('setting-maintenance-mode') ? document.getElementById('setting-maintenance-mode').checked : false;
     const aiMaintenanceMode = document.getElementById('setting-ai-maintenance') ? document.getElementById('setting-ai-maintenance').checked : false;
     const qrisMaintenanceMode = document.getElementById('setting-qris-maintenance') ? document.getElementById('setting-qris-maintenance').checked : false;
+
+    // ====== EVENT MODE ======
+    const eventModeEl = document.getElementById('setting-event-mode');
+    const eventMode = eventModeEl ? eventModeEl.checked : false;
+    const eventNameEl = document.getElementById('setting-event-name');
+    const eventName = eventNameEl ? eventNameEl.value.trim() : '';
+    const eventPriceIncreaseEl = document.getElementById('setting-event-price-increase');
+    const eventPriceIncrease = eventPriceIncreaseEl ? parseInt(eventPriceIncreaseEl.value.replace(/\./g, '').replace(/,/g, '')) || 0 : 0;
+    // ====== END EVENT MODE ======
     
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
@@ -2203,11 +2243,18 @@ window.saveGlobalSettings = async () => {
                 dronePrice: dronePrice,
                 maintenanceMode: maintenanceMode,
                 aiMaintenanceMode: aiMaintenanceMode,
-                qrisMaintenanceMode: qrisMaintenanceMode
+                qrisMaintenanceMode: qrisMaintenanceMode,
+                eventMode: eventMode,
+                eventName: eventName,
+                eventPriceIncrease: eventPriceIncrease
             })
         });
         if (res.ok) {
-            Swal.fire({icon: 'success', title: 'Berhasil', text: 'Pengaturan berhasil disimpan.', confirmButtonColor: '#22c55e'});
+            const icon = eventMode ? 'success' : 'success';
+            const eventMsg = eventMode 
+                ? `🔥 Event "${eventName || 'Event'}" AKTIF! Harga motor & mobil naik Rp ${parseInt(eventPriceIncrease).toLocaleString('id-ID')}.` 
+                : 'Pengaturan berhasil disimpan.';
+            Swal.fire({icon: 'success', title: 'Berhasil', text: eventMsg, confirmButtonColor: '#22c55e'});
         } else {
             Swal.fire({icon: 'error', title: 'Gagal', text: 'Gagal menyimpan pengaturan.', confirmButtonColor: '#22c55e'});
         }
