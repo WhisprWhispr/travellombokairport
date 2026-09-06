@@ -989,7 +989,9 @@ const createPackageCard = (item, index = 0) => {
         <div class="content">
             <h3>${item.title}</h3>
             <ul>
-                <li><i class="fa-solid fa-check">              <div class="price-row">
+                <li><i class="fa-solid fa-check"></i> ${item.description || ''}</li>
+            </ul>
+            <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
                       ${(() => {
                           const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
