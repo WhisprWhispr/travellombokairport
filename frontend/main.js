@@ -72,24 +72,35 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
                     setTimeout(() => {
                         const evtName = data.eventName || 'High Season';
                         Swal.fire({
-                            title: `Pemberitahuan: ${evtName}`,
+                            title: `🔥 Info Event: ${evtName}`,
                             html: `
-                                <div style="text-align: left; font-size: 0.95rem; color: #334155; line-height: 1.6;">
-                                    <p>Yth. Pelanggan Setia,</p>
-                                    <p>Sehubungan dengan adanya event <strong>${evtName}</strong>, kami informasikan bahwa terdapat penyesuaian harga sewa untuk armada Motor dan Mobil, serta pemberlakuan <strong>minimum sewa selama 4 hari</strong>.</p>
-                                    <p>Selain itu, terdapat kemungkinan penyesuaian harga untuk <strong>Paket Tour</strong> dan <strong>Paket Honeymoon</strong> selama periode event ini berlangsung.</p>
-                                    <div style="background: #f1f5f9; padding: 12px; border-left: 4px solid #f59e0b; margin-top: 15px; border-radius: 4px;">
-                                        Untuk informasi lebih lanjut terkait ketersediaan dan harga final Paket Tour / Honeymoon, silakan <strong>hubungi Admin kami</strong>.
+                                <div style="text-align: left; color: #334155; margin-top: 10px;">
+                                    <div style="display: flex; align-items: center; gap: 15px; background: #fffbeb; padding: 15px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #fde68a;">
+                                        <div style="background: #f59e0b; color: white; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.3rem;">
+                                            <i class="fa-solid fa-car"></i>
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #b45309;">Sewa Mobil & Motor</h4>
+                                            <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.4;">Terdapat penyesuaian harga khusus event. Minimum sewa <strong>4 Hari</strong>.</p>
+                                        </div>
                                     </div>
-                                    <p style="margin-top: 15px;">Terima kasih atas pengertian dan kepercayaan Anda bersama kami.</p>
+                                    <div style="display: flex; align-items: center; gap: 15px; background: #f0f9ff; padding: 15px; border-radius: 16px; border: 1px solid #bae6fd;">
+                                        <div style="background: #0ea5e9; color: white; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.3rem;">
+                                            <i class="fa-solid fa-umbrella-beach"></i>
+                                        </div>
+                                        <div>
+                                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0369a1;">Paket Wisata</h4>
+                                            <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.4;">Harga paket tour/honeymoon dapat berubah. Hubungi <strong>Admin</strong> untuk info final.</p>
+                                        </div>
+                                    </div>
                                 </div>
                             `,
-                            icon: 'info',
-                            iconColor: '#f59e0b',
-                            confirmButtonText: 'Saya Mengerti',
+                            showConfirmButton: true,
+                            confirmButtonText: '<i class="fa-solid fa-check"></i> Saya Mengerti',
                             confirmButtonColor: '#0ea5e9',
-                            width: '500px',
-                            backdrop: `rgba(0,0,0,0.6)`
+                            width: '480px',
+                            customClass: { popup: 'modern-popup-radius' },
+                            backdrop: `rgba(15,23,42,0.8)`
                         });
                     }, 1000); // delay 1 second after load
                 }
