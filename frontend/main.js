@@ -981,17 +981,31 @@ const createPackageCard = (item, index = 0) => {
                 <li><i class="fa-solid fa-check"></i> ${item.description || ''}</li>
             </ul>
             <div class="price-row">
-                <div class="price">
-                    ${(() => {
-                        const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
-                        const isRental = item.category === 'car' || item.category === 'motorcycle';
-                        if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                            const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
-                            return `<span>Mulai dari</span><span style="text-decoration:line-through;color:#94a3b8;font-size:0.85em;margin-right:4px;">${formatPrice(item.price)}</span><span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.6rem;padding:1px 6px;border-radius:8px;vertical-align:middle;">🔥</span>${formatPrice(evtPrice)}`;
-                        }
-                        return `<span>Mulai dari</span>${formatPrice(item.price)}`;
-                    })()}
-                </div>
+                  <div class="price" style="flex: 1; min-width: 0;">
+                      ${(() => {
+                          const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+                          const isRental = item.category === 'car' || item.category === 'motorcycle';
+                          if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
+                              const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                              return `
+                                  <div style="display: flex; flex-direction: column; gap: 2px;">
+                                      <span style="font-size: 0.75rem; color: #64748b; margin-bottom: -2px;">Mulai dari</span>
+                                      <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                                          <span style="text-decoration:line-through;color:#94a3b8;font-size:0.8rem;">${formatPrice(item.price)}</span>
+                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.55rem;padding:2px 4px;border-radius:4px;vertical-align:middle;">🔥</span>
+                                      </div>
+                                      <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                  </div>
+                              `;
+                          }
+                          return `
+                                  <div style="display: flex; flex-direction: column;">
+                                      <span style="font-size: 0.75rem; color: #64748b;">Mulai dari</span>
+                                      <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem;">${formatPrice(item.price)}</span>
+                                  </div>
+                          `;
+                      })()}
+                  </div>
                 ${btnHtml}
             </div>
         </div>
@@ -1144,23 +1158,34 @@ const createFleetCard = (item, index = 0) => {
             ${featureTags ? `<div class="fleet-tags-row">${featureTags}</div>` : ''}
             ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
             <div class="price-row">
-                <div class="price">
-                    <span>Mulai dari</span>
-                    <div style="display: flex; align-items: baseline; gap: 4px;">
-                        ${(() => {
-                            const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
-                            const isRental = item.category === 'car' || item.category === 'motorcycle';
-                            if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                                const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
-                                return `<span style="text-decoration:line-through;color:#94a3b8;font-size:0.8em;">${formatPrice(item.price)}</span>
-                                        <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.55rem;padding:1px 5px;border-radius:6px;vertical-align:middle;">🔥</span>
-                                        ${formatPrice(evtPrice)}`;
-                            }
-                            return `${formatPrice(item.price)}`;
-                        })()}
-                        <small style="font-size: 0.7rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</small>
-                    </div>
-                </div>
+                  <div class="price" style="flex: 1; min-width: 0;">
+                      <span style="font-size: 0.75rem; color: #64748b; display: block; margin-bottom: 2px;">Mulai dari</span>
+                      <div style="display: flex; flex-direction: column; gap: 2px;">
+                          ${(() => {
+                              const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+                              const isRental = item.category === 'car' || item.category === 'motorcycle';
+                              if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
+                                  const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                                  return `
+                                      <div style="display: flex; align-items: center; gap: 4px; flex-wrap: wrap;">
+                                          <span style="text-decoration:line-through;color:#94a3b8;font-size:0.8rem;">${formatPrice(item.price)}</span>
+                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.55rem;padding:2px 4px;border-radius:4px;">🔥</span>
+                                      </div>
+                                      <div style="display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;">
+                                          <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                          <small style="font-size: 0.7rem; color: #64748b; font-weight: 500; white-space: nowrap;">/ ${item.duration || 'hari'}</small>
+                                      </div>
+                                  `;
+                              }
+                              return `
+                                  <div style="display: flex; align-items: baseline; gap: 4px; flex-wrap: wrap;">
+                                      <span style="color: var(--primary-blue); font-weight: 700; font-size: 1.1rem; white-space: nowrap;">${formatPrice(item.price)}</span>
+                                      <small style="font-size: 0.7rem; color: #64748b; font-weight: 500; white-space: nowrap;">/ ${item.duration || 'hari'}</small>
+                                  </div>
+                              `;
+                          })()}
+                      </div>
+                  </div>
                 <div class="action-buttons">
                     <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
                     <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${item.price}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
