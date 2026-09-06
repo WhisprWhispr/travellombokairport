@@ -51,12 +51,12 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
                 const eventBanner = document.createElement('div');
                 eventBanner.id = 'event-mode-banner';
                 eventBanner.innerHTML = `
-                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 10px 16px; font-size: 0.9rem; font-weight: 600; position: relative; z-index: 999;">
+                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 40px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${data.eventName ? `EVENT: <strong>${data.eventName}</strong> —` : 'HIGH SEASON!'} 
                         Harga Motor & Mobil naik <strong>Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')}</strong>/unit &nbsp;|&nbsp; 
-                        <i class="fa-solid fa-calendar-days"></i> Minimum sewa <strong>4 Hari</strong>
-                        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; opacity: 0.7; cursor: pointer; position: absolute; right: 12px; top: 50%; transform: translateY(-50%); font-size: 1.1rem;" title="Tutup">✕</button>
+                        <i class="fa-solid fa-calendar-days"></i> Min. sewa <strong>4 Hari</strong>
+                        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; opacity: 0.8; cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; padding: 5px;" title="Tutup">✕</button>
                     </div>
                 `;
                 // Insert at top of body
