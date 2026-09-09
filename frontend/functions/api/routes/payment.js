@@ -35,7 +35,44 @@ paymentRoutes.post('/qris', async (c) => {
             throw new Error(data.message || 'Failed to create QRIS payment via Borderpay');
         }
 
-        return c.json(data);
+        // Format amount as "Rp X.XXX"
+        const formattedAmount = new Intl.NumberFormat('id-ID', {
+            style: 'currency', currency: 'IDR', minimumFractionDigits: 0
+        }).format(parseInt(amount));
+
+        // Format expiry date (Borderpay returns expired_at or expiredAt)
+        const expiredRaw = data.expired_at || data.expiredAt || data.expiry;
+        let expiredFormatted = expiredRaw;
+        if (expiredRaw) {
+            try {
+                expiredFormatted = new Date(expiredRaw).toLocaleString('id-ID', {
+                    weekday: 'long', year: 'numeric', month: 'long',
+                    day: 'numeric', hour: '2-digit', minute: '2-digit'
+                });
+            } catch(e) { expiredFormatted = expiredRaw; }
+        }
+
+        // Build QR SVG or use image URL from Borderpay
+        let qrCodeSvg = '';
+        if (data.qr_code_svg || data.qrCodeSvg) {
+            qrCodeSvg = data.qr_code_svg || data.qrCodeSvg;
+        } else if (data.qr_string || data.qrString || data.qr_code || data.qrCode) {
+            const qrVal = data.qr_string || data.qrString || data.qr_code || data.qrCode;
+            qrCodeSvg = `<img src="${qrVal}" alt="QRIS" style="width:220px;height:220px;" onerror="this.outerHTML='<p style=color:red>QR tidak dapat dimuat</p>'">`;
+        } else if (data.qris_url || data.qrisUrl) {
+            qrCodeSvg = `<img src="${data.qris_url || data.qrisUrl}" alt="QRIS" style="width:220px;height:220px;">`;
+        }
+
+        return c.json({
+            success: true,
+            data: {
+                qrCodeSvg,
+                transactionId: data.id || data.transaction_id || data.transactionId || data.reference_id,
+                totalFormatted: formattedAmount,
+                expiredAt: expiredFormatted,
+                raw: data  // simpan raw response untuk debugging
+            }
+        });
     } catch (error) {
         console.error('Borderpay QRIS Error:', error.message);
         return c.json({ error: 'Gagal membuat pembayaran QRIS via Borderpay' }, 500);
