@@ -385,11 +385,17 @@
                 });
                 
             } catch (error) {
-                console.error("Google Login Error:", error);
+                let errorMsg = error.message || 'Terjadi kesalahan saat login dengan Google.';
+                if (error.code === 'auth/popup-closed-by-user' || errorMsg.includes('popup-closed-by-user')) {
+                    errorMsg = 'Proses login dibatalkan. Silakan coba lagi.';
+                } else if (errorMsg.includes('Firebase:')) {
+                    errorMsg = 'Gagal terhubung ke sistem keamanan. Silakan coba beberapa saat lagi.';
+                }
+
                 Swal.fire({
                     icon: 'error',
                     title: 'Login Gagal',
-                    text: error.message || 'Terjadi kesalahan saat login dengan Google.'
+                    text: errorMsg
                 });
                 btnGoogle.disabled = false;
                 btnGoogle.innerHTML = '<img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google"> Lanjutkan dengan Google';
@@ -581,10 +587,15 @@
                 btn.innerHTML = 'Login Sekarang';
             }
 
+            let errorMsg = err.message;
+            if (errorMsg.includes('Firebase:')) {
+                errorMsg = 'Gagal terhubung ke sistem keamanan. Silakan coba beberapa saat lagi.';
+            }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Login Gagal',
-                text: err.message,
+                text: errorMsg,
                 confirmButtonColor: '#1d4ed8'
             });
         }

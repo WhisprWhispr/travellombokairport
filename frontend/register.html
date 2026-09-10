@@ -436,10 +436,15 @@
                 btn.innerHTML = 'Daftar Sekarang';
             }
 
+            let errorMsg = err.message;
+            if (errorMsg.includes('Firebase:')) {
+                errorMsg = 'Gagal terhubung ke sistem keamanan. Silakan coba beberapa saat lagi.';
+            }
+
             Swal.fire({
                 icon: 'error',
                 title: 'Pendaftaran Gagal',
-                text: err.message,
+                text: errorMsg,
                 confirmButtonColor: '#16a34a'
             });
         }
