@@ -45,10 +45,36 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-calendar-days" style="color: var(--primary-green);"></i> ${dateStr}</span>
                         <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-eye" style="color: var(--primary-green);"></i> ${blog.views || 0} kali dibaca</span>
                     </div>
-                    <div class="article-content" style="line-height: 1.9; color: #334155; font-size: 1.05rem; min-height: 200px;">
-                        ${(blog.content || '').split('\n').filter(p => p.trim() !== '').map(p => `<p style="margin-bottom: 1.5em; text-align: justify;">${p.trim()}</p>`).join('')}
+                    <div class="article-content" style="line-height: 1.8; color: #334155; font-size: 1.05rem; min-height: 200px;">
+                        ${(blog.content || '').split('\n').filter(p => p.trim() !== '').map(p => `<p style="margin-bottom: 1.5em; text-align: left;">${p.trim()}</p>`).join('')}
                     </div>
-                    ${tagsHtml ? `<div style="margin-top: 40px; padding-top: 25px; border-top: 2px dashed #f1f5f9; display: flex; gap: 8px; flex-wrap: wrap;">${tagsHtml}</div>` : ''}
+                    
+                    <!-- Share Buttons -->
+                    <div style="margin-top: 40px; padding-top: 25px; border-top: 2px dashed #f1f5f9;">
+                        <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--primary-blue); font-weight: 700;">Bagikan artikel ini ke teman & keluargamu! 🚀</h4>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(blog.title + ' - Baca selengkapnya: ' + window.location.href)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #25D366; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke WhatsApp">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
+                            </a>
+                            <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(blog.title)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0088cc; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke Telegram">
+                                <i class="fa-brands fa-telegram" style="font-size: 1.2rem;"></i>
+                            </a>
+                            <a href="https://www.threads.net/intent/post?text=${encodeURIComponent('Cek artikel menarik ini: ' + blog.title + ' ' + window.location.href)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #000000; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke Threads">
+                                <i class="fa-brands fa-threads" style="font-size: 1.2rem;"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent('Cek artikel menarik ini: ' + blog.title)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #1DA1F2; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke Twitter / X">
+                                <i class="fa-brands fa-twitter" style="font-size: 1.2rem;"></i>
+                            </a>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Tautan disalin! Siap dibagikan ke Instagram/Lainnya.', showConfirmButton:false, timer:2000});" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Salin Link untuk Instagram">
+                                <i class="fa-brands fa-instagram" style="font-size: 1.2rem;"></i>
+                            </button>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Tautan berhasil disalin!', showConfirmButton:false, timer:2000});" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #475569; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Salin Tautan">
+                                <i class="fa-solid fa-link" style="font-size: 1.1rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    ${tagsHtml ? `<div style="margin-top: 25px; display: flex; gap: 8px; flex-wrap: wrap;">${tagsHtml}</div>` : ''}
                 </div>
             </div>
         `;
