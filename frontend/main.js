@@ -1540,8 +1540,8 @@ const init = async () => {
                                     <!-- Sticky action buttons at bottom -->
                                     <div style="padding:14px 20px 16px;background:linear-gradient(180deg,transparent,rgba(15,23,42,0.98) 30%);position:relative;z-index:10;flex-shrink:0;">
                                         <div id="cs-btn-group-compact" style="display:flex;gap:10px;">
-                                            <!-- Lihat Nanti -->
-                                            <button class="cs-btn-secondary" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.1px;">
+                                            <!-- Lihat Nanti (blokir 5 jam) -->
+                                            <button class="cs-btn-secondary" onclick="localStorage.setItem('cs_hide_until', Date.now() + 5*60*60*1000); document.getElementById('coming-soon-modal').style.display='none';" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.1px;">
                                                 Lihat Nanti
                                             </button>
                                             <!-- Lihat Sekarang -->
@@ -1622,7 +1622,13 @@ const init = async () => {
                                 document.getElementById('coming-soon-modal-desc-full').innerText = '';
                             }
 
+                            // Check 5-hour block
+                        const csHideUntil = localStorage.getItem('cs_hide_until');
+                        if (csHideUntil && Date.now() < parseInt(csHideUntil)) {
+                            // Still within block period, don't show
+                        } else {
                             modal.style.display = 'flex';
+                        }
 
                             // Setup countdown timer
                             if (settings.comingSoonDate) {
