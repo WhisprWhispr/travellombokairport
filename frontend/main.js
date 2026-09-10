@@ -3327,8 +3327,6 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ status: 'PAID' })
         }).catch(e => console.error('Failed to update QRIS booking to PAID:', e));
-        window.currentCheckoutData = null;
-        window._pendingQrisTxId = null;
     }
 
     modalBody.innerHTML = `
