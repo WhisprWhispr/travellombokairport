@@ -2583,13 +2583,32 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             </div>
             <div class="form-group mb-4">
                 <label>Metode Pembayaran</label>
-                <select id="co-payment" class="form-control" required onchange="const d = document.getElementById('bank-details'); if(this.value==='manual') d.style.display='block'; else d.style.display='none';">
+                <select id="co-payment" class="form-control" required onchange="
+                    const d = document.getElementById('bank-details');
+                    const va = document.getElementById('va-bank-selector');
+                    if(this.value==='manual') { d.style.display='block'; va.style.display='none'; }
+                    else if(this.value==='va') { d.style.display='none'; va.style.display='block'; }
+                    else { d.style.display='none'; va.style.display='none'; }
+                ">
                     ${window.globalSettings && window.globalSettings.qrisMaintenanceMode 
-                        ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option><option value="manual" selected>Transfer Manual (Verifikasi WA)</option>'
-                        : '<option value="qris">QRIS Otomatis (Verifikasi Instan)</option><option value="manual">Transfer Manual (Verifikasi WA)</option>'}
+                        ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option><option value="va">Virtual Account (Verifikasi Otomatis)</option><option value="manual" selected>Transfer Manual (Verifikasi WA)</option>'
+                        : '<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option><option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option><option value="manual">Transfer Manual (Verifikasi WA)</option>'}
                 </select>
             </div>
-            
+
+            <!-- VA Bank Selector (hanya muncul saat pilih Virtual Account) -->
+            <div id="va-bank-selector" style="display:none; background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bae6fd;">
+                <p style="font-size: 0.85rem; color: #0369a1; margin-bottom: 10px; font-weight: 600;"><i class="fa-solid fa-building-columns"></i> Pilih Bank Virtual Account:</p>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                    ${['BNI','BRI','MANDIRI','PERMATA','BCA'].map(bank => `
+                    <label style="display:flex;align-items:center;gap:8px;background:white;border:2px solid #e0f2fe;border-radius:8px;padding:10px;cursor:pointer;transition:all .2s;" onclick="document.querySelectorAll('#va-bank-selector label').forEach(l=>l.style.borderColor='#e0f2fe'); this.style.borderColor='#0ea5e9';">
+                        <input type="radio" name="va-bank" value="${bank}" style="accent-color:#0ea5e9;">
+                        <span style="font-weight:bold;font-size:0.9rem;color:#0c4a6e;">${bank}</span>
+                    </label>`).join('')}
+                </div>
+                <p style="font-size: 0.78rem; color: #64748b; margin-top: 8px;"><i class="fa-solid fa-clock"></i> Batas waktu pembayaran: <strong>24 jam</strong></p>
+            </div>
+
             <div id="bank-details" style="display: ${window.globalSettings && window.globalSettings.qrisMaintenanceMode ? 'block' : 'none'}; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Silakan transfer ke salah satu rekening berikut:</p>
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
@@ -3048,6 +3067,100 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         const text = getWaText(true, transactionId, promoInfo);
         window.open(`https://wa.me/6289676963255?text=${encodeURIComponent(text)}`, "_blank");
         closeCheckoutModal();
+        return;
+    }
+
+    // ===== Virtual Account Flow =====
+    if (payment === "va") {
+        const selectedBank = document.querySelector('input[name="va-bank"]:checked');
+        if (!selectedBank) {
+            Swal.fire({ icon: 'warning', title: 'Pilih Bank', text: 'Silakan pilih bank Virtual Account terlebih dahulu.', confirmButtonColor: '#0ea5e9' });
+            return;
+        }
+        const bankCode = selectedBank.value;
+
+        const qrisResult = document.getElementById("qris-result");
+        const submitBtn = document.querySelector("#checkout-form button[type='submit']");
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MEMPROSES...'; }
+
+        qrisResult.innerHTML = `<div style="text-align:center;padding:20px;background:#f0f9ff;border-radius:12px;border:1px solid #bae6fd;">
+            <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem;color:#0ea5e9;margin-bottom:10px;"></i>
+            <p style="color:#0369a1;font-size:0.9rem;">Sedang membuat Virtual Account ${bankCode}...</p>
+        </div>`;
+
+        const pendingTxId = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 9000 + 1000);
+        try {
+            await fetch(`${API_URL}/bookings`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...bookingData, status: 'PENDING', transactionId: pendingTxId })
+            });
+        } catch (e) { console.error('Failed to save pending booking:', e); }
+
+        try {
+            const vaRes = await fetch(`${API_URL}/payment/va`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: paymentAmount, bank_code: bankCode, reference_id: pendingTxId })
+            });
+            const vaResult = await vaRes.json();
+
+            if (vaResult.success) {
+                const d = vaResult.data;
+                qrisResult.innerHTML = `
+                    <div style="background:white;padding:20px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,0.05);text-align:center;border:2px dashed #0ea5e9;">
+                        <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${d.vaBank}</h3>
+                        <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
+                        <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
+                            <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
+                            <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${d.vaNumber || '-'}</div>
+                            <button onclick="navigator.clipboard.writeText('${d.vaNumber}');this.innerHTML='<i class=\'fa-solid fa-check\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\'fa-regular fa-copy\'></i> Salin Nomor',2000);" 
+                                style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
+                                <i class="fa-regular fa-copy"></i> Salin Nomor
+                            </button>
+                        </div>
+                        <h4 style="color:#0c4a6e;margin-bottom:5px;">${itemName}</h4>
+                        <p style="font-size:1.4rem;font-weight:bold;color:#16a34a;margin-bottom:10px;">${d.totalFormatted}</p>
+                        <div style="background:#fef9c3;color:#854d0e;padding:8px;border-radius:8px;font-size:0.85rem;display:inline-block;margin-bottom:15px;">
+                            <i class="fa-regular fa-clock"></i> Batas Waktu: ${d.expiredAt}
+                        </div>
+                        <div style="color:#0369a1;font-size:0.9rem;margin-bottom:15px;">
+                            <i class="fa-solid fa-spinner fa-spin"></i> Sistem sedang menunggu pembayaran...
+                        </div>
+                        <button type="button" class="btn btn-blue" style="width:100%;padding:10px;font-weight:bold;border-radius:8px;" onclick="forcePaymentSuccess('${d.transactionId}', this)">SAYA SUDAH BAYAR</button>
+                        <div style="margin-top:12px;padding:10px;background:#fff8f1;border-radius:8px;border:1px solid #ffedd5;font-size:0.8rem;color:#d97706;">
+                            <i class="fa-solid fa-circle-info"></i> Pastikan transfer dilakukan ke nomor VA yang benar dengan jumlah yang tepat.
+                        </div>
+                    </div>`;
+
+                // Poll status VA
+                const vaPollInterval = setInterval(async () => {
+                    try {
+                        const stRes = await fetch(`${API_URL}/payment/status/${d.transactionId}`);
+                        const stData = await stRes.json();
+                        if (stData.success && ['PAID','SUCCESS','SETTLEMENT','COMPLETED'].includes(stData.data.status?.toUpperCase())) {
+                            clearInterval(vaPollInterval);
+                            window.simulateQrisSuccess(false, d.transactionId);
+                        } else if (stData.success && stData.data.status === 'EXPIRED') {
+                            clearInterval(vaPollInterval);
+                            qrisResult.innerHTML = `<div style="text-align:center;padding:20px;background:#fff1f2;border:1px solid #fda4af;border-radius:12px;">
+                                <i class="fa-solid fa-circle-xmark" style="font-size:3rem;color:#ef4444;"></i>
+                                <h3 style="color:#ef4444;">Virtual Account Kedaluwarsa</h3>
+                                <p>Waktu pembayaran telah habis. Silakan buat pesanan ulang.</p>
+                            </div>`;
+                        }
+                    } catch(e) { console.error(e); }
+                }, 5000);
+                window.activePollInterval = vaPollInterval;
+
+            } else {
+                qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background:#fff1f2;border-radius:12px;margin-top:20px;">Gagal membuat Virtual Account. ${vaResult.error || ''} Silakan coba lagi.</div>`;
+                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+            }
+        } catch(e) {
+            qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background:#fff1f2;border-radius:12px;margin-top:20px;">Koneksi error. Silakan coba lagi.</div>`;
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+        }
         return;
     }
 
