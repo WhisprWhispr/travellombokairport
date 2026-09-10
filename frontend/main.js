@@ -1497,8 +1497,8 @@ const init = async () => {
                                         <!-- Title: clamped to 2 lines -->
                                         <h2 id="coming-soon-modal-title" class="cs-title-clamp" style="margin:0 0 8px;color:#f1f5f9;font-size:1.15rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">-</h2>
 
-                                        <!-- Desc: clamped to 3 lines -->
-                                        <p id="coming-soon-modal-desc" class="cs-desc-clamp" style="margin:0 0 18px;color:#94a3b8;font-size:0.82rem;line-height:1.6;">-</p>
+                                        <!-- Desc: full text, no limit -->
+                                        <p id="coming-soon-modal-desc" style="margin:0 0 18px;color:#94a3b8;font-size:0.82rem;line-height:1.6;">-</p>
 
                                         <!-- Divider -->
                                         <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,0.12),transparent);margin-bottom:16px;"></div>
