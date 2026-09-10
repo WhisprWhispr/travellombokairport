@@ -420,15 +420,29 @@
                   </div>
                   <div class="form-group mb-0">
                     <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-heading"></i> Judul Event</label>
-                    <input type="text" id="setting-coming-soon-title" placeholder="Contoh: MotoGP Mandalika 2025" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white;">
+                    <div style="display: flex; gap: 5px; margin-top: 5px;">
+                        <input type="text" id="setting-coming-soon-title" placeholder="Contoh: MotoGP Mandalika 2025" class="form-control" style="border: 1px solid #22c55e; background: white; margin-top: 0; flex: 1;">
+                        <button type="button" title="Salin" onclick="window.copyInputText('setting-coming-soon-title')" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; cursor: pointer; color: #475569; transition: all 0.2s;"><i class="fa-regular fa-copy"></i></button>
+                        <button type="button" title="Tempel" onclick="window.pasteInputText('setting-coming-soon-title')" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; cursor: pointer; color: #475569; transition: all 0.2s;"><i class="fa-solid fa-paste"></i></button>
+                    </div>
                   </div>
                   <div class="form-group mb-0">
                     <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-calendar-check"></i> Tanggal & Waktu Pelaksanaan</label>
-                    <input type="datetime-local" id="setting-coming-soon-date" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white;">
+                    <div style="display: flex; gap: 5px; margin-top: 5px;">
+                        <input type="datetime-local" id="setting-coming-soon-date" class="form-control" style="border: 1px solid #22c55e; background: white; margin-top: 0; flex: 1;">
+                        <button type="button" title="Salin" onclick="window.copyInputText('setting-coming-soon-date')" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; cursor: pointer; color: #475569; transition: all 0.2s;"><i class="fa-regular fa-copy"></i></button>
+                        <button type="button" title="Tempel" onclick="window.pasteInputText('setting-coming-soon-date')" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; cursor: pointer; color: #475569; transition: all 0.2s;"><i class="fa-solid fa-paste"></i></button>
+                    </div>
                   </div>
                   <div class="form-group mb-0">
                     <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-align-left"></i> Deskripsi Singkat</label>
-                    <textarea id="setting-coming-soon-desc" rows="3" placeholder="Contoh: Jangan lewatkan keseruan balap motor terbesar tahun ini. Booking transportasi Anda sekarang sebelum kehabisan!" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white; resize: vertical;"></textarea>
+                    <div style="display: flex; gap: 5px; margin-top: 5px; align-items: flex-start;">
+                        <textarea id="setting-coming-soon-desc" rows="3" placeholder="Contoh: Jangan lewatkan keseruan balap motor terbesar tahun ini. Booking transportasi Anda sekarang sebelum kehabisan!" class="form-control" style="border: 1px solid #22c55e; background: white; resize: vertical; margin-top: 0; flex: 1;"></textarea>
+                        <div style="display: flex; flex-direction: column; gap: 5px;">
+                            <button type="button" title="Salin" onclick="window.copyInputText('setting-coming-soon-desc')" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; height: 35px; cursor: pointer; color: #475569; transition: all 0.2s;"><i class="fa-regular fa-copy"></i></button>
+                            <button type="button" title="Tempel" onclick="window.pasteInputText('setting-coming-soon-desc')" style="background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; height: 35px; cursor: pointer; color: #475569; transition: all 0.2s;"><i class="fa-solid fa-paste"></i></button>
+                        </div>
+                    </div>
                   </div>
                 </div>
                 

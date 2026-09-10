@@ -2260,6 +2260,47 @@ window.toggleComingSoonUI = () => {
     }
 };
 
+window.copyInputText = (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.select();
+    document.execCommand("copy");
+    Swal.fire({
+        toast: true,
+        position: 'top-end',
+        icon: 'success',
+        title: 'Teks disalin!',
+        showConfirmButton: false,
+        timer: 1500
+    });
+};
+
+window.pasteInputText = async (id) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    try {
+        const text = await navigator.clipboard.readText();
+        el.value = text;
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Teks ditempel!',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    } catch (err) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Gagal menempel teks. Izinkan akses clipboard browser.',
+            showConfirmButton: false,
+            timer: 2000
+        });
+    }
+};
+
 // Preview Image for Coming Soon
 window.previewComingSoonImage = (input) => {
     if (input.files && input.files[0]) {
