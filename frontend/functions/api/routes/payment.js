@@ -130,19 +130,29 @@ paymentRoutes.post('/va', async (c) => {
             throw new Error(data.message || data.error || `HTTP ${response.status}`);
         }
 
+        // Cek berbagai kemungkinan field expiry dari Borderpay
+        const expiresRaw = data.expires_at || data.expired_at || data.expiry || data.due_date || data.expiry_time;
+
+        // Jika Borderpay tidak kirim expiry, hitung sendiri +24 jam dari sekarang
+        const expiryDate = expiresRaw ? new Date(expiresRaw) : new Date(Date.now() + 24 * 60 * 60 * 1000);
+        const expiredAt = formatDate(expiryDate.toISOString());
+
+        console.log('Borderpay VA raw response:', JSON.stringify(data));
+
         return c.json({
             success: true,
             data: {
-                vaNumber: data.va_number,
-                vaBank: data.va_bank || bank_code.toUpperCase(),
-                transactionId: data.reference_id,
-                totalFormatted: formatRupiah(data.customer_pays || amount),
+                vaNumber: data.va_number || data.virtual_account || data.account_number,
+                vaBank: data.va_bank || data.bank || data.bank_code || bank_code.toUpperCase(),
+                transactionId: data.reference_id || data.id,
+                totalFormatted: formatRupiah(data.customer_pays || data.amount || amount),
                 amountFormatted: formatRupiah(data.amount || amount),
-                expiredAt: formatDate(data.expires_at),
+                expiredAt,
                 payUrl: data.pay_url,
                 raw: data
             }
         });
+
 
     } catch (error) {
         console.error('Borderpay VA Error:', error.message);
