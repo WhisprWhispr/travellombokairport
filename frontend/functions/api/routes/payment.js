@@ -47,6 +47,10 @@ paymentRoutes.post('/qris', async (c) => {
             return c.json({ error: 'API Key Borderpay belum dikonfigurasi' }, 500);
         }
 
+        if (parseInt(amount) < 1000) {
+            return c.json({ error: 'Minimum pembayaran QRIS adalah Rp 1.000', details: `Amount: ${amount}` }, 422);
+        }
+
         const payload = {
             amount: parseInt(amount),
             method: 'qris',
@@ -64,8 +68,13 @@ paymentRoutes.post('/qris', async (c) => {
 
         const data = await response.json();
         if (!response.ok) {
+            const borderpayErr = data.message || data.error || data.errors || JSON.stringify(data);
             console.error('Borderpay QRIS error:', JSON.stringify(data));
-            throw new Error(data.message || data.error || `HTTP ${response.status}`);
+            return c.json({
+                error: `Borderpay error (HTTP ${response.status})`,
+                details: typeof borderpayErr === 'string' ? borderpayErr : JSON.stringify(borderpayErr),
+                raw: data
+            }, response.status);
         }
 
         return c.json({

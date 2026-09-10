@@ -3289,12 +3289,12 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             window.activePollInterval = pollInterval;
 
         } else {
-            // Tampilkan error asli dari API untuk debugging
-            const errMsg = result.error || result.details || result.message || 'Tidak ada detail error';
+            // Tampilkan error asli dari Borderpay (details) untuk debugging
+            const errMsg = result.details || result.error || result.message || 'Tidak ada detail error';
             console.error('QRIS API Error:', result);
             qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">
                 <b>Gagal memuat kode QRIS.</b><br>
-                <small style="color:#64748b;">${errMsg}</small><br><br>
+                <small style="color:#64748b;">${result.error || ''} ${errMsg !== result.error ? '— ' + errMsg : ''}</small><br><br>
                 Silakan coba lagi.
             </div>`;
             if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
