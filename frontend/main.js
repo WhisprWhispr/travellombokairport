@@ -4480,7 +4480,7 @@ window.handleChatKeyPress = (event) => {
     }
 };
 
-function parseMarkdownToHTML(markdown) {
+function parseMarkdownToHTML(markdown, isTyping = false) {
     let html = markdown;
     // Bold
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
@@ -4489,17 +4489,47 @@ function parseMarkdownToHTML(markdown) {
     // Newlines
     html = html.replace(/\n/g, '<br>');
     
-    // Tambahkan tombol copy pesan
-    const encodedText = encodeURIComponent(markdown).replace(/'/g, "\\'");
-    html += `
-    <div style="text-align: right; margin-top: 8px;">
-        <button onclick="window.copyAiMessage(this, decodeURIComponent('${encodedText}'))" class="copy-ai-msg-btn" title="Salin Pesan" style="background: rgba(255,255,255,0.5); border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; cursor: pointer; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;">
-            <i class="fa-regular fa-copy"></i> Salin
-        </button>
-    </div>`;
+    if (!isTyping) {
+        // Tambahkan tombol copy pesan
+        const encodedText = encodeURIComponent(markdown).replace(/'/g, "\\'");
+        html += `
+        <div style="text-align: right; margin-top: 8px;">
+            <button onclick="window.copyAiMessage(this, decodeURIComponent('${encodedText}'))" class="copy-ai-msg-btn" title="Salin Pesan" style="background: rgba(255,255,255,0.5); border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; cursor: pointer; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;">
+                <i class="fa-regular fa-copy"></i> Salin
+            </button>
+        </div>`;
+    }
 
     return html;
 }
+
+window._simulateTyping = (containerId, markdownText, onComplete) => {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+    
+    let i = 0;
+    let currentText = '';
+    const speed = 10; // ms per char
+
+    function type() {
+        if (i < markdownText.length) {
+            // grab the next chunk to support fast typing
+            const chunk = markdownText.substr(i, 2); 
+            currentText += chunk;
+            i += 2;
+            container.innerHTML = parseMarkdownToHTML(currentText, true) + '<span class="cs-typewriter-cursor">|</span>';
+            const msgs = document.getElementById('chat-messages');
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            setTimeout(type, speed);
+        } else {
+            container.innerHTML = parseMarkdownToHTML(markdownText, false);
+            const msgs = document.getElementById('chat-messages');
+            if (msgs) msgs.scrollTop = msgs.scrollHeight;
+            if (onComplete) onComplete();
+        }
+    }
+    setTimeout(type, 50);
+};
 
 window.copyAiMessage = (btnElem, text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -4646,16 +4676,15 @@ window.sendDeterministicReply = (userText, aiText) => {
         const t = document.getElementById(typingId);
         if (t) t.remove();
         
-        const htmlReply = parseMarkdownToHTML(aiText);
+        const msgId = 'det-msg-' + Date.now();
         messagesContainer.insertAdjacentHTML('beforeend', `
-            <div class="message ai-message">
-                ${htmlReply}
-            </div>
+            <div id="${msgId}" class="message ai-message"></div>
         `);
         
         chatHistory.push({ role: 'model', parts: [{ text: aiText }] });
         localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        window._simulateTyping(msgId, aiText);
     }, 800);
 };
 
@@ -4759,6 +4788,7 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
                         if (line.startsWith('data: ')) {
                             const dataStr = line.replace('data: ', '').trim();
                             if (dataStr === '[DONE]') {
+                                msgContainer.innerHTML = parseMarkdownToHTML(fullReply, false);
                                 chatHistory.push({ role: "user", parts: [{ text: message }] });
                                 chatHistory.push({ role: "model", parts: [{ text: fullReply }] });
                                 localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
@@ -4772,7 +4802,7 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
                                 
                                 if (data.text) {
                                     fullReply += data.text;
-                                    msgContainer.innerHTML = parseMarkdownToHTML(fullReply);
+                                    msgContainer.innerHTML = parseMarkdownToHTML(fullReply, true) + '<span class="cs-typewriter-cursor">|</span>';
                                     messagesContainer.scrollTop = messagesContainer.scrollHeight;
                                 }
                             } catch (e) {
@@ -4787,12 +4817,11 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
                     chatHistory.push({ role: "user", parts: [{ text: message }] });
                     chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
                     localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
-                    const htmlReply = parseMarkdownToHTML(data.reply);
+                    const msgId = 'ai-msg-' + Date.now();
                     messagesContainer.insertAdjacentHTML('beforeend', `
-                        <div class="message ai-message">
-                            ${htmlReply}
-                        </div>
+                        <div id="${msgId}" class="message ai-message"></div>
                     `);
+                    window._simulateTyping(msgId, data.reply);
                     window.checkGuestLimit();
                 } else {
                     throw new Error(data.message);
