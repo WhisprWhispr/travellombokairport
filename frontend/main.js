@@ -1622,15 +1622,7 @@ const init = async () => {
                                 document.getElementById('coming-soon-modal-desc-full').innerText = '';
                             }
 
-                            // Only show modal on 2nd+ visit (skip first time)
-                        const csVisitKey = 'cs_has_visited';
-                        const hasVisited = localStorage.getItem(csVisitKey);
-                        if (!hasVisited) {
-                            localStorage.setItem(csVisitKey, '1');
-                            // Don't show on first visit
-                        } else {
                             modal.style.display = 'flex';
-                        }
 
                             // Setup countdown timer
                             if (settings.comingSoonDate) {
