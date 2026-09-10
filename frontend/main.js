@@ -3191,109 +3191,117 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     } catch (e) { console.error('Failed to save pending booking:', e); }
 
     try {
-        fetch(`${API_URL}/payment/qris`, {
+        const qrisRes = await fetch(`${API_URL}/payment/qris`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ amount: finalPrice, customer_name: name })
-        }).then(res => res.json()).then(result => {
-            if (result.success) {
-                const data = result.data;
-                qrisResult.innerHTML = `
-                    <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; border: 2px dashed var(--primary-green);">
-                        <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
-                        <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Buka aplikasi M-Banking / E-Wallet Anda lalu scan kode di bawah.</p>
-                        
-                        <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                            ${data.qrCodeSvg}
-                        </div>
-                        
-                        <h4 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h4>
-                        <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">${data.totalFormatted}</p>
-                        
-                        <div style="background: #fff1f2; color: #e11d48; padding: 8px; border-radius: 8px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px;">
-                            <i class="fa-regular fa-clock"></i> Batas Waktu: ${data.expiredAt}
-                        </div>
-                        
-                        <div style="color: var(--primary-blue); font-size: 0.9rem; margin-bottom: 15px;">
-                            <i class="fa-solid fa-spinner fa-spin"></i> Sistem sedang menunggu pembayaran...
-                        </div>
-                        <div id="manual-check-msg" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold;"></div>
-                        <button type="button" class="btn btn-blue" style="width: 100%; padding: 10px; font-weight: bold; border-radius: 8px;" onclick="forcePaymentSuccess('${data.transactionId}', this)">SAYA SUDAH BAYAR</button>
-                        
-                        <div style="margin-top: 15px; padding: 12px; background: #fff8f1; border-radius: 8px; border: 1px solid #ffedd5; text-align: left;">
-                            <p style="font-size: 0.82rem; color: #d97706; margin-bottom: 10px; line-height: 1.4;">
-                                <i class="fa-solid fa-circle-info" style="margin-right: 3px;"></i> Jika konfirmasi pembayaran otomatis mengalami keterlambatan setelah Anda membayar, status pesanan dapat dipantau melalui halaman <b>Riwayat Transaksi</b>.
-                            </p>
-                            <a href="https://travellombokairport.com/riwayat" style="display: block; width: 100%; padding: 8px; font-size: 0.85rem; font-weight: bold; text-decoration: none; border-radius: 8px; text-align: center; color: var(--primary-blue); border: 1px solid var(--primary-blue); transition: all 0.2s;" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='var(--primary-blue)'">Buka Riwayat Transaksi</a>
-                        </div>
-                    </div>
-                `;
-
-                window.forcePaymentSuccess = async (txId, btnElement) => {
-                    const originalText = btnElement.innerHTML;
-                    btnElement.disabled = true;
-                    btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...';
-                    const msgDiv = document.getElementById('manual-check-msg');
-                    if (msgDiv) msgDiv.innerHTML = '';
-
-                    try {
-                        const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
-                        const statusData = await statusRes.json();
-                        if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
-                            if (window.activePollInterval) clearInterval(window.activePollInterval);
-                            window.simulateQrisSuccess(false, txId);
-                        } else {
-                            if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.';
-                        }
-                    } catch (e) {
-                        if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.';
-                    } finally {
-                        btnElement.disabled = false;
-                        btnElement.innerHTML = originalText;
-                    }
-                };
-
-                const pollInterval = setInterval(async () => {
-                    // Use AbortController so stale requests don't pile up
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 6000);
-                    try {
-                        const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`, { signal: controller.signal });
-                        clearTimeout(timeoutId);
-                        const statusData = await statusRes.json();
-
-                        if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
-                            clearInterval(pollInterval);
-                            window.activePollInterval = null;
-                            window.simulateQrisSuccess(false, data.transactionId);
-                        } else if (statusData.success && statusData.data.status === 'EXPIRED') {
-                            clearInterval(pollInterval);
-                            window.activePollInterval = null;
-                            qrisResult.innerHTML = `
-                                <div style="text-align: center; padding: 20px; background: #fff1f2; border: 1px solid #fda4af; border-radius: 12px; margin-top: 20px;">
-                                    <i class="fa-solid fa-circle-xmark" style="font-size: 3rem; color: #ef4444; margin-bottom: 15px;"></i>
-                                    <h3 style="color: #ef4444;">Pembayaran Kedaluwarsa</h3>
-                                    <p style="color: var(--text-dark); font-size: 0.9rem;">Waktu pembayaran telah habis. Silakan tutup dan buat pesanan ulang.</p>
-                                </div>
-                            `;
-                        }
-                    } catch (e) {
-                        clearTimeout(timeoutId);
-                        if (e.name !== 'AbortError') console.error(e);
-                    }
-                }, 2000); // Poll every 2 seconds for faster detection
-                window.activePollInterval = pollInterval;
-
-            } else {
-                qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Gagal memuat kode QRIS. Silakan coba lagi.</div>`;
-                if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
-            }
-        }).catch(e => {
-            qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Koneksi error. Silakan coba lagi.</div>`;
-            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+            body: JSON.stringify({
+                amount: paymentAmount,          // gunakan paymentAmount (sudah diperhitungkan DP/promo)
+                reference_id: pendingTxId       // hubungkan dengan booking Firebase
+            })
         });
+        const result = await qrisRes.json();
+
+        if (result.success) {
+            const data = result.data;
+            qrisResult.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; border: 2px dashed var(--primary-green);">
+                    <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
+                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Buka aplikasi M-Banking / E-Wallet Anda lalu scan kode di bawah.</p>
+                    
+                    <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                        ${data.qrCodeSvg}
+                    </div>
+                    
+                    <h4 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h4>
+                    <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">${data.totalFormatted}</p>
+                    
+                    <div style="background: #fff1f2; color: #e11d48; padding: 8px; border-radius: 8px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px;">
+                        <i class="fa-regular fa-clock"></i> Batas Waktu: ${data.expiredAt}
+                    </div>
+                    
+                    <div style="color: var(--primary-blue); font-size: 0.9rem; margin-bottom: 15px;">
+                        <i class="fa-solid fa-spinner fa-spin"></i> Sistem sedang menunggu pembayaran...
+                    </div>
+                    <div id="manual-check-msg" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold;"></div>
+                    <button type="button" class="btn btn-blue" style="width: 100%; padding: 10px; font-weight: bold; border-radius: 8px;" onclick="forcePaymentSuccess('${data.transactionId}', this)">SAYA SUDAH BAYAR</button>
+                    
+                    <div style="margin-top: 15px; padding: 12px; background: #fff8f1; border-radius: 8px; border: 1px solid #ffedd5; text-align: left;">
+                        <p style="font-size: 0.82rem; color: #d97706; margin-bottom: 10px; line-height: 1.4;">
+                            <i class="fa-solid fa-circle-info" style="margin-right: 3px;"></i> Jika konfirmasi pembayaran otomatis mengalami keterlambatan setelah Anda membayar, status pesanan dapat dipantau melalui halaman <b>Riwayat Transaksi</b>.
+                        </p>
+                        <a href="https://travellombokairport.com/riwayat" style="display: block; width: 100%; padding: 8px; font-size: 0.85rem; font-weight: bold; text-decoration: none; border-radius: 8px; text-align: center; color: var(--primary-blue); border: 1px solid var(--primary-blue); transition: all 0.2s;" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='var(--primary-blue)'">Buka Riwayat Transaksi</a>
+                    </div>
+                </div>
+            `;
+
+            window.forcePaymentSuccess = async (txId, btnElement) => {
+                const originalText = btnElement.innerHTML;
+                btnElement.disabled = true;
+                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...';
+                const msgDiv = document.getElementById('manual-check-msg');
+                if (msgDiv) msgDiv.innerHTML = '';
+
+                try {
+                    const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
+                    const statusData = await statusRes.json();
+                    if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
+                        if (window.activePollInterval) clearInterval(window.activePollInterval);
+                        window.simulateQrisSuccess(false, txId);
+                    } else {
+                        if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.';
+                    }
+                } catch (e) {
+                    if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.';
+                } finally {
+                    btnElement.disabled = false;
+                    btnElement.innerHTML = originalText;
+                }
+            };
+
+            const pollInterval = setInterval(async () => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 6000);
+                try {
+                    const statusRes = await fetch(`${API_URL}/payment/status/${data.transactionId}`, { signal: controller.signal });
+                    clearTimeout(timeoutId);
+                    const statusData = await statusRes.json();
+
+                    if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
+                        clearInterval(pollInterval);
+                        window.activePollInterval = null;
+                        window.simulateQrisSuccess(false, data.transactionId);
+                    } else if (statusData.success && statusData.data.status === 'EXPIRED') {
+                        clearInterval(pollInterval);
+                        window.activePollInterval = null;
+                        qrisResult.innerHTML = `
+                            <div style="text-align: center; padding: 20px; background: #fff1f2; border: 1px solid #fda4af; border-radius: 12px; margin-top: 20px;">
+                                <i class="fa-solid fa-circle-xmark" style="font-size: 3rem; color: #ef4444; margin-bottom: 15px;"></i>
+                                <h3 style="color: #ef4444;">Pembayaran Kedaluwarsa</h3>
+                                <p style="color: var(--text-dark); font-size: 0.9rem;">Waktu pembayaran telah habis. Silakan tutup dan buat pesanan ulang.</p>
+                            </div>
+                        `;
+                    }
+                } catch (e) {
+                    clearTimeout(timeoutId);
+                    if (e.name !== 'AbortError') console.error(e);
+                }
+            }, 2000);
+            window.activePollInterval = pollInterval;
+
+        } else {
+            // Tampilkan error asli dari API untuk debugging
+            const errMsg = result.error || result.details || result.message || 'Tidak ada detail error';
+            console.error('QRIS API Error:', result);
+            qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">
+                <b>Gagal memuat kode QRIS.</b><br>
+                <small style="color:#64748b;">${errMsg}</small><br><br>
+                Silakan coba lagi.
+            </div>`;
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
+        }
     } catch (e) {
-        qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Terjadi kesalahan internal.</div>`;
+        console.error('QRIS fetch error:', e);
+        qrisResult.innerHTML = `<div class="text-center text-danger p-4" style="background: #fff1f2; border-radius: 12px; margin-top: 20px;">Koneksi error: ${e.message}. Silakan coba lagi.</div>`;
         if (submitBtn) { submitBtn.disabled = false; submitBtn.innerHTML = 'COBA LAGI'; }
     }
 };
