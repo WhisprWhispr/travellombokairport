@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Maintenance - Travel Lombok Airport</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      background: linear-gradient(-45deg, #0f172a, #1e3a8a, #0ea5e9, #0284c7);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      padding: 20px;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Airplane Animation in background */
+    .airplane-wrap {
+      position: fixed;
+      top: 15%;
+      left: -150px;
+      z-index: 1;
+      animation: fly 15s linear infinite;
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    
+    .airplane-icon {
+      font-size: 3rem;
+      color: rgba(255, 255, 255, 0.4);
+      transform: rotate(15deg);
+    }
+
+    @keyframes fly {
+      0% { transform: translateX(-10vw) translateY(0) scale(1); }
+      50% { transform: translateX(50vw) translateY(-20px) scale(1.1); }
+      100% { transform: translateX(120vw) translateY(-50px) scale(0.9); }
+    }
+
+    /* Glassmorphism Container */
+    .container {
+      position: relative;
+      z-index: 10;
+      text-align: center;
+      padding: 50px 40px;
+      max-width: 650px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 30px;
+      box-shadow: 0 30px 60px rgba(0,0,0,0.2), 
+                  inset 0 1px 0 rgba(255,255,255,0.3);
+      margin: auto;
+    }
+
+    .logo-wrap {
+      width: 100px;
+      height: 100px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 25px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      padding: 10px;
+      animation: float-logo 3s ease-in-out infinite alternate;
+    }
+
+    @keyframes float-logo {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-15px); }
+    }
+
+    .logo-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #ffffff;
+      padding: 8px 20px;
+      border-radius: 100px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .badge .pulse {
+      width: 8px;
+      height: 8px;
+      background: #fbbf24;
+      border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.7);
+      animation: pulsing 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+    }
+
+    @keyframes pulsing {
+      to { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+    }
+
+    h1 {
+      font-size: clamp(2.2rem, 6vw, 3.5rem);
+      font-weight: 800;
+      color: white;
+      line-height: 1.2;
+      margin-bottom: 20px;
+      text-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    }
+    
+    h1 span {
+      color: #fbbf24;
+    }
+
+    p.subtitle {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      line-height: 1.6;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+
+    /* Travel specific cards */
+    .travel-cards {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 40px;
+    }
+    
+    .t-card {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      padding: 20px 15px;
+      transition: all 0.3s ease;
+    }
+
+    .t-card i {
+      font-size: 2rem;
+      margin-bottom: 15px;
+      display: block;
+    }
+
+    .c-1 i { color: #fbbf24; }
+    .c-2 i { color: #34d399; }
+    .c-3 i { color: #60a5fa; }
+
+    .t-card .title {
+      color: white;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+    
+    .t-card .desc {
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 0.75rem;
+    }
+
+    /* Actions */
+    .actions {
+      display: flex;
+      gap: 15px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 28px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      text-decoration: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-wa {
+      background: #25D366;
+      color: white;
+      box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+    }
+
+    .btn-refresh {
+      background: rgba(255,255,255,0.1);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.3);
+      backdrop-filter: blur(10px);
+    }
+
+    @media (max-width: 768px) {
+      .travel-cards { 
+        grid-template-columns: 1fr; 
+        gap: 12px; 
+      }
+      .t-card { 
+        display: flex; 
+        align-items: center; 
+        text-align: left; 
+        gap: 15px; 
+        padding: 15px 20px;
+      }
+      .t-card i { 
+        margin-bottom: 0; 
+        font-size: 1.6rem; 
+      }
+      .t-card .title { 
+        margin-bottom: 2px; 
+        font-size: 1rem;
+      }
+      .t-card-content {
+        flex: 1;
+      }
+      .container { 
+        padding: 40px 25px; 
+      }
+    }
+
+    @media (max-width: 480px) {
+      .container { 
+        padding: 30px 20px; 
+        border-radius: 24px;
+      }
+      h1 { 
+        font-size: 2rem; 
+      }
+      p.subtitle { 
+        font-size: 0.95rem; 
+        margin-bottom: 30px; 
+      }
+      .actions { 
+        flex-direction: column; 
+        width: 100%; 
+      }
+      .btn { 
+        width: 100%; 
+        justify-content: center; 
+      }
+      .logo-wrap {
+        width: 80px;
+        height: 80px;
+        margin-bottom: 20px;
+      }
+    }
+
+    /* For very small screens */
+    @media (max-height: 700px) {
+      body { align-items: flex-start; overflow-y: auto; padding: 20px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="airplane-wrap">
+    <i class="fa-solid fa-plane airplane-icon"></i>
+  </div>
+
+  <div class="container">
+    <!-- Menggunakan logo asli Travel Lombok -->
+    <div class="logo-wrap">
+      <img src="/logo.png" alt="Travel Lombok Airport">
+    </div>
+
+    <div class="badge">
+      <div class="pulse"></div>
+      System Upgrade
+    </div>
+
+    <!-- Teks menggunakan Liburan sesuai request -->
+    <h1>Siap Untuk <span>Liburan</span> Lebih Baik</h1>
+
+    <p class="subtitle">
+      Website Travel Lombok Airport sedang dalam pemeliharaan rutin untuk meningkatkan kualitas layanan dan kecepatan pemesanan tiket Anda.
+    </p>
+
+    <div class="travel-cards">
+      <div class="t-card c-1">
+        <i class="fa-solid fa-bolt"></i>
+        <div class="t-card-content">
+          <div class="title">Lebih Cepat</div>
+          <div class="desc">Optimasi server booking</div>
+        </div>
+      </div>
+      <div class="t-card c-2">
+        <i class="fa-solid fa-shield-halved"></i>
+        <div class="t-card-content">
+          <div class="title">Lebih Aman</div>
+          <div class="desc">Peningkatan keamanan data</div>
+        </div>
+      </div>
+      <div class="t-card c-3">
+        <i class="fa-solid fa-star"></i>
+        <div class="t-card-content">
+          <div class="title">Lebih Mudah</div>
+          <div class="desc">Fitur baru segera hadir</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <a href="#" id="wa-btn" class="btn btn-wa" target="_blank">
+        <i class="fa-brands fa-whatsapp" style="font-size: 1.2rem;"></i> Hubungi Admin
+      </a>
+      <button onclick="window.location.href = '/'" class="btn btn-refresh">
+        <i class="fa-solid fa-rotate-right"></i> Refresh Halaman
+      </button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hour = new Date().getHours();
+      let greeting = "pagi";
+      
+      if (hour >= 10 && hour < 15) {
+        greeting = "siang";
+      } else if (hour >= 15 && hour < 18) {
+        greeting = "sore";
+      } else if (hour >= 18 || hour < 4) {
+        greeting = "malam";
+      }
+
+      const text = `Halo Admin Travel Lombok Airport. Selamat ${greeting}. Saya ingin bertanya seputar layanan travel dan pemesanan. Mohon informasinya, terima kasih.`;
+      const encodedText = encodeURIComponent(text);
+      document.getElementById('wa-btn').href = `https://wa.me/6289676963255?text=${encodedText}`;
+    });
+  </script>
+</body>
+</html>

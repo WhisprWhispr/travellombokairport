@@ -1,0 +1,1153 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Panel - Travel Lombok Airport</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="icon" type="image/png" href="/favicon.png" />
+  <link rel="manifest" href="/manifest-admin.json">
+    <meta name="theme-color" content="#2563eb">
+  <script src="/protect.js"></script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  <script type="module" crossorigin src="/assets/admin-DrGiGrmT.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
+  <link rel="modulepreload" crossorigin href="/assets/pwa-DYmKx9RI.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-DUxNLnKM.css">
+</head>
+  <body class="admin-body bg-light">
+    
+    <!-- Login Overlay -->
+    <div id="login-container" style="display: flex; justify-content: center; align-items: center; height: 100vh; width: 100vw; position: fixed; top: 0; left: 0; background: var(--bg-light); z-index: 1000;">
+      <div class="glass-panel" style="padding: 40px; width: 100%; max-width: 400px; text-align: center;">
+        <h2 style="color: var(--primary-blue); margin-bottom: 20px;">Admin Login</h2>
+        <form id="login-form">
+          <div class="form-group mb-3 text-start">
+            <label>Email</label>
+            <input type="email" id="login-email" class="form-control" required placeholder="admin@example.com">
+          </div>
+          <div class="form-group mb-4 text-start">
+            <label>Password</label>
+            <div style="position: relative;">
+              <input type="password" id="login-password" class="form-control" required placeholder="••••••••" style="padding-right: 40px;">
+              <i class="fa-solid fa-eye-slash" id="toggle-password" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #64748b;" onclick="
+                const p = document.getElementById('login-password');
+                if(p.type === 'password') {
+                  p.type = 'text';
+                  this.classList.remove('fa-eye-slash');
+                  this.classList.add('fa-eye');
+                } else {
+                  p.type = 'password';
+                  this.classList.remove('fa-eye');
+                  this.classList.add('fa-eye-slash');
+                }
+              "></i>
+            </div>
+            <div style="text-align: right; margin-top: 5px;">
+              <a href="#" id="forgot-password-link" style="font-size: 0.85rem; color: var(--primary-blue); text-decoration: none;">Lupa Sandi?</a>
+            </div>
+          </div>
+          <div class="cf-turnstile mb-3 text-start" data-sitekey="0x4AAAAAAEY5_o0-MiC2wPpS"></div>
+          <button type="submit" class="btn btn-primary w-100" id="login-btn">
+            Login
+          </button>
+        </form>
+        <p id="login-error" class="text-danger mt-3" style="display: none; font-size: 0.9rem;"></p>
+      </div>
+    </div>
+
+    <div class="admin-container" id="admin-dashboard" style="display: none;">
+      <!-- Sidebar -->
+      <aside class="admin-sidebar glass-panel">
+        <div class="sidebar-header" style="display: flex; justify-content: space-between; align-items: center;">
+          <h2>Admin Panel</h2>
+          <button class="mobile-admin-toggle" onclick="document.querySelector('.admin-sidebar').classList.remove('active')" style="display: none; background: none; border: none; font-size: 1.5rem; color: var(--text-gray); cursor: pointer;"><i class="fa-solid fa-times"></i></button>
+        </div>
+        <ul class="sidebar-menu">
+          <li><a href="#" class="active" onclick="showTab('items')"><i class="fa-solid fa-list"></i> Manage Items</a></li>
+          <li><a href="#" onclick="showTab('orders')"><i class="fa-solid fa-shopping-cart"></i> Pesanan Web</a></li>
+          <li><a href="#" onclick="showTab('web-bookings')"><i class="fa-solid fa-laptop"></i> Booking Web</a></li>
+          <li><a href="#" onclick="showTab('bookings')"><i class="fa-solid fa-calendar-alt"></i> Jadwal Manual</a></li>
+          <li><a href="#" onclick="showTab('gallery')"><i class="fa-solid fa-camera"></i> Kelola Galeri</a></li>
+          <li><a href="#" onclick="showTab('drivers')"><i class="fa-solid fa-car"></i> Manajemen Supir</a></li>
+          <li><a href="#" onclick="showTab('reviews')"><i class="fa-solid fa-star"></i> Kelola Ulasan Web</a></li>
+          <li><a href="#" onclick="showTab('item-reviews')"><i class="fa-solid fa-star-half-stroke"></i> Kelola Ulasan Item</a></li>
+          <li><a href="#" onclick="showTab('promos')"><i class="fa-solid fa-tags"></i> Kelola Promo</a></li>
+          <li><a href="#" onclick="showTab('blogs')"><i class="fa-solid fa-newspaper"></i> Kelola Blog</a></li>
+          <li><a href="#" onclick="showTab('withdrawals')"><i class="fa-solid fa-money-bill-wave"></i> Penarikan Dana</a></li>
+          <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
+          <li><a href="#" onclick="showTab('analytics')"><i class="fa-solid fa-chart-line"></i> Statistik Pengunjung</a></li>
+          <li><a href="#" onclick="showTab('ai-chats')"><i class="fa-solid fa-comments"></i> Riwayat Chat AI</a></li>
+          <li><a href="#" onclick="showTab('ai-knowledge')"><i class="fa-solid fa-brain"></i> Ajari AI (Knowledge Base)</a></li>
+          <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
+          <li><a href="#" onclick="showTab('users')"><i class="fa-solid fa-users"></i> Pengguna</a></li>
+          <li><a href="#" onclick="showTab('login-logs')"><i class="fa-solid fa-history"></i> Log Aktivitas Login</a></li>
+          <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
+          <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
+          <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
+          <li style="margin-top: 5px;"><a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="admin-main">
+        <header class="admin-header glass-panel">
+          <div style="display: flex; align-items: center; width: 100%; position: relative; justify-content: center;">
+            <button class="mobile-admin-toggle" onclick="document.querySelector('.admin-sidebar').classList.add('active')" style="display: none; position: absolute; left: 0; background: none; border: none; font-size: 1.5rem; color: var(--primary-blue); cursor: pointer;"><i class="fa-solid fa-bars"></i></button>
+            <h1 style="margin: 0;">Dashboard</h1>
+          </div>
+          <div>
+            <button class="btn btn-outline" style="border-color: #10b981; color: #10b981; margin-right: 10px;" onclick="showAdminTutorial()"><i class="fa-solid fa-circle-question"></i> Panduan</button>
+            <button id="guide-item-btn" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6; margin-right: 10px;" onclick="showManageItemTutorial()"><i class="fa-solid fa-info-circle"></i> Panduan Item</button>
+            <button id="add-item-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add New Item</button>
+            <button id="add-booking-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Jadwal Manual</button>
+            <button id="add-gallery-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Foto Galeri</button>
+            <button id="add-driver-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Supir</button>
+            <button id="add-promo-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Promo</button>
+            <button id="add-blog-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Artikel Blog</button>
+          </div>
+        </header>
+
+        <section id="items-section" class="admin-content glass-panel mt-4">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Image</th>
+                  <th>Title</th>
+                  <th>Category</th>
+                  <th>Price</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-items-table">
+                <!-- Data populated by JS -->
+                <tr><td colspan="5" class="text-center">Loading items...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Bookings Section -->
+        <section id="bookings-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Jadwal Manual</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu Pesan</th>
+                  <th>Tanggal</th>
+                  <th>Item / Paket</th>
+                  <th>Pelanggan</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-bookings-table">
+                <tr><td colspan="6" class="text-center">Loading bookings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Orders Section (Web) -->
+                <!-- Promos Section -->
+        <section id="promos-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Kode Promo</th>
+                  <th>Diskon</th>
+                  <th>Batas Waktu</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="promos-tbody">
+                <!-- Data loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+                <!-- Blogs Section -->
+        <section id="blogs-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Gambar</th>
+                  <th>Judul</th>
+                  <th>Slug</th>
+                  <th>Dilihat</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="blogs-tbody">
+                <!-- Data loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="orders-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Pesanan Web (Order)</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu Pesan</th>
+                  <th>Detail</th>
+                  <th>Item / Paket</th>
+                  <th>Pelanggan / Kontak</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-table">
+                <tr><td colspan="6" class="text-center">Loading orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Web Bookings Section -->
+        <section id="web-bookings-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Booking Web (Quick Booking)</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu Pesan</th>
+                  <th>Detail</th>
+                  <th>Item / Layanan</th>
+                  <th>Pelanggan / Kontak</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-web-bookings-table">
+                <tr><td colspan="6" class="text-center">Loading web bookings...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- AI Chat Sessions Section -->
+        <section id="ai-chats-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Riwayat Chat AI</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu</th>
+                  <th>Sesi / User</th>
+                  <th>Tipe User</th>
+                  <th>Jml Pesan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-ai-chats-table">
+                <tr><td colspan="5" class="text-center">Loading chats...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Visitor Analytics Section -->
+        <section id="analytics-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Statistik Pengunjung Detail</h2>
+          
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 20px;">
+              <div class="glass-panel" style="text-align: center; padding: 20px;">
+                  <h3 style="font-size: 1rem; color: #64748b;">Total Pageviews</h3>
+                  <p id="analytics-total-views" style="font-size: 2rem; font-weight: bold; color: var(--primary-blue); margin-top: 10px;">0</p>
+              </div>
+              <div class="glass-panel" style="text-align: center; padding: 20px;">
+                  <h3 style="font-size: 1rem; color: #64748b;">Unique Visitors</h3>
+                  <p id="analytics-unique-visitors" style="font-size: 2rem; font-weight: bold; color: var(--primary-green); margin-top: 10px;">0</p>
+              </div>
+          </div>
+
+          <div class="glass-panel" style="margin-top: 20px; padding: 20px;">
+              <h3 style="margin-bottom: 20px;">Tren 7 Hari Terakhir</h3>
+              <canvas id="analyticsChart" style="width: 100%; max-height: 300px;"></canvas>
+          </div>
+
+          <div class="glass-panel mt-4">
+              <h3 style="margin-bottom: 20px;">Log Kunjungan Terbaru</h3>
+              <div class="table-responsive">
+                  <table class="table" style="font-size: 0.9rem;">
+                      <thead>
+                          <tr>
+                              <th>Waktu</th>
+                              <th>Halaman</th>
+                              <th>Browser/Perangkat</th>
+                              <th>Lebar Layar</th>
+                          </tr>
+                      </thead>
+                      <tbody id="analytics-table-body">
+                          <tr><td colspan="4" class="text-center">Memuat data...</td></tr>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
+        <section id="settings-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Pengaturan Global</h2>
+          <div class="mt-4" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
+              <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
+                Mode Pemeliharaan (Maintenance Mode)
+                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
+                  <input type="checkbox" id="setting-maintenance-mode" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </label>
+              <p style="font-size: 0.85rem; color: #ef4444; margin-top: 5px;"><strong>Perhatian:</strong> Jika aktif, pengunjung website akan melihat halaman "Sedang Pemeliharaan" dan tidak bisa melakukan interaksi apapun. Matikan jika website sudah normal.</p>
+            </div>
+
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
+              <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
+                Perbaikan AI (AI Maintenance)
+                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
+                  <input type="checkbox" id="setting-ai-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </label>
+              <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, fitur AI (Lombok AI) tidak dapat digunakan oleh pengunjung website. Pengunjung akan melihat pesan pemeliharaan AI di dalam chat widget.</p>
+            </div>
+
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
+              <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
+                Pemeliharaan QRIS (Instanpay)
+                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
+                  <input type="checkbox" id="setting-qris-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </label>
+              <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran QRIS. Sistem akan memberitahu mereka bahwa pembayaran QRIS sedang dalam perbaikan.</p>
+            </div>
+
+            <!-- EVENT MODE SECTION -->
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #fff7ed, #fef3c7); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 15px;">
+                <div style="display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0;">
+                  <div style="width: 40px; height: 40px; flex-shrink: 0; background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-fire" style="color: white; font-size: 1.1rem;"></i>
+                  </div>
+                  <div style="min-width: 0;">
+                    <div style="font-weight: 700; color: #92400e; font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px;">Mode Event / High Season</div>
+                    <div style="font-size: 0.8rem; color: #78350f; line-height: 1.4;">Aktifkan untuk menaikkan harga motor & mobil saat event</div>
+                  </div>
+                </div>
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0; margin-top: 4px;">
+                  <input type="checkbox" id="setting-event-mode" onchange="window.toggleEventModeUI(); window.saveGlobalSettings();" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </div>
+
+              <div id="event-mode-details" style="display: none; margin-top: 15px; border-top: 1px dashed #f59e0b; padding-top: 15px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 12px;">
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-tag"></i> Nama Event</label>
+                    <input type="text" id="setting-event-name" placeholder="Contoh: Bau Nyale 2025, Lebaran, dll." class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-arrow-up"></i> Kenaikan Harga (Rp)</label>
+                    <input type="text" id="setting-event-price-increase" placeholder="Contoh: 400000" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;"
+                      oninput="let v=this.value.replace(/\D/g,''); this.value=v?parseInt(v).toLocaleString('id-ID'):'';">
+                    <p style="font-size: 0.78rem; color: #78350f; margin-top: 4px;">Masukkan angka saja. Contoh: 400000 = Rp 400.000</p>
+                  </div>
+                </div>
+                <div style="background: #fff8e1; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 5px;">
+                  <p style="margin: 0; font-size: 0.85rem; color: #78350f;"><i class="fa-solid fa-circle-info"></i> <strong>Efek saat Event aktif:</strong></p>
+                  <ul style="margin: 8px 0 0 0; padding-left: 18px; font-size: 0.82rem; color: #92400e; line-height: 1.6;">
+                    <li>Semua harga <strong>motor & mobil</strong> akan naik sebesar nominal di atas</li>
+                    <li>Minimum sewa menjadi <strong>4 hari</strong> untuk motor & mobil</li>
+                    <li>Harga asli tidak berubah di database, hanya ditambah saat ditampilkan</li>
+                    <li>Banner Event akan muncul di halaman utama website</li>
+                  </ul>
+                </div>
+              </div>
+
+              <div id="event-mode-off-info" style="margin-top: 10px;">
+                <p style="margin: 0; font-size: 0.85rem; color: #92400e; font-weight: 500;">Status Saat Ini: <span id="event-mode-status-text" style="color: #ef4444; font-weight: 700;">Tidak Aktif (Harga Normal)</span></p>
+              </div>
+              <div id="event-mode-on-info" style="display: none; margin-top: 10px; background: #ef4444; color: white; padding: 10px 15px; border-radius: 8px;">
+                <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-fire"></i> <strong>EVENT AKTIF!</strong> Harga motor & mobil sedang naik. Minimum sewa 4 hari.</p>
+              </div>
+            </div>
+
+            <!-- COMING SOON EVENT SECTION -->
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 15px;">
+                <div style="display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0;">
+                  <div style="width: 40px; height: 40px; flex-shrink: 0; background: linear-gradient(135deg, #22c55e, #10b981); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-bullhorn" style="color: white; font-size: 1.1rem;"></i>
+                  </div>
+                  <div style="min-width: 0;">
+                    <div style="font-weight: 700; color: #14532d; font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px;">Popup Event Coming Soon</div>
+                    <div style="font-size: 0.8rem; color: #166534; line-height: 1.4;">Aktifkan untuk menampilkan popup event (dengan countdown timer) kepada pengunjung website</div>
+                  </div>
+                </div>
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0; margin-top: 4px;">
+                  <input type="checkbox" id="setting-coming-soon-mode" onchange="window.toggleComingSoonUI();" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </div>
+
+              <div id="coming-soon-details" style="display: none; margin-top: 15px; border-top: 1px dashed #22c55e; padding-top: 15px;">
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 12px;">
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-image"></i> Gambar Thumbnail Event</label>
+                    <div style="margin-top: 5px; display: flex; align-items: flex-start; gap: 15px; flex-wrap: wrap;">
+                        <div id="coming-soon-img-preview" style="width: 150px; height: 100px; flex-shrink: 0; border-radius: 8px; border: 1px dashed #22c55e; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden;">
+                            <span style="color: #166534; font-size: 0.8rem; text-align: center; padding: 10px;">Belum ada gambar</span>
+                        </div>
+                        <div style="flex: 1; min-width: 200px;">
+                            <input type="file" id="setting-coming-soon-image" accept="image/*" class="form-control" style="border: 1px solid #22c55e; background: white; padding: 6px; width: 100%; box-sizing: border-box;" onchange="window.previewComingSoonImage(this)">
+                            <p style="font-size: 0.78rem; color: #166534; margin-top: 6px; line-height: 1.4;">Pilih gambar landscape (rasio 16:9). Gambar ini akan langsung diupload saat Anda menekan tombol "Simpan Pengaturan".</p>
+                            <input type="hidden" id="setting-coming-soon-image-url">
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-heading"></i> Judul Event</label>
+                    <input type="text" id="setting-coming-soon-title" placeholder="Contoh: MotoGP Mandalika 2025" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-calendar-check"></i> Tanggal & Waktu Pelaksanaan</label>
+                    <input type="datetime-local" id="setting-coming-soon-date" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-align-left"></i> Deskripsi Singkat</label>
+                    <textarea id="setting-coming-soon-desc" rows="3" placeholder="Contoh: Jangan lewatkan keseruan balap motor terbesar tahun ini. Booking transportasi Anda sekarang sebelum kehabisan!" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white; resize: vertical;"></textarea>
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="window.saveGlobalSettings()" style="width: 100%; background: #22c55e; border-radius: 8px; font-weight: bold; padding: 12px; margin-top: 10px;">
+                    <i class="fa-solid fa-save"></i> Simpan Pengaturan Coming Soon
+                </button>
+              </div>
+
+              <div id="coming-soon-off-info" style="margin-top: 10px;">
+                <p style="margin: 0; font-size: 0.85rem; color: #166534; font-weight: 500;">Status Popup Saat Ini: <span id="coming-soon-status-text" style="color: #ef4444; font-weight: 700;">Tidak Aktif</span></p>
+              </div>
+            </div>
+            <!-- END COMING SOON EVENT SECTION -->
+
+            <div class="form-group">
+              <label>Status Layanan Dokumentasi Drone</label>
+              <select id="setting-drone-status" onchange="window.saveGlobalSettings()">
+                <option value="available">Tersedia</option>
+                <option value="unavailable">Belum Tersedia</option>
+              </select>
+              <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Jika diatur ke "Belum Tersedia", halaman Sewa Drone di web utama akan terkunci.</p>
+            </div>
+            
+            <div class="form-group mt-3">
+              <label>Harga Mulai Dari (Drone)</label>
+              <input type="text" id="setting-drone-price" placeholder="500.000" onkeyup="this.value = this.value.replace(/[^0-9]/g, '').replace(/\\B(?=(\\d{3})+(?!\\d))/g, '.');">
+              <p style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">Hanya masukkan angka, akan diformat otomatis. Contoh: 500000</p>
+            </div>
+            <button onclick="window.saveGlobalSettings()" class="btn btn-primary mt-3"><i class="fa-solid fa-save"></i> Simpan Pengaturan</button>
+
+            <div class="form-group mt-4 pt-4" style="border-top: 1px solid #e2e8f0;">
+              <h3 style="color: var(--primary-blue); font-size: 1.1rem; margin-bottom: 10px;">Kelola Portofolio Drone</h3>
+              <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Pintasan untuk menambahkan dan mengelola video portofolio dokumentasi drone.</p>
+              <button onclick="window.openDroneModal()" class="btn btn-green"><i class="fa-solid fa-video"></i> Tambah Video Drone Baru</button>
+              
+              <div class="table-container mt-4">
+                <table class="data-table">
+                  <thead>
+                    <tr>
+                      <th>Thumbnail</th>
+                      <th>Judul Video</th>
+                      <th>Tanggal</th>
+                      <th>Aksi</th>
+                    </tr>
+                  </thead>
+                  <tbody id="drone-list">
+                    <tr><td colspan="4" class="text-center">Loading drone videos...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section id="stats-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Pengaturan Statistik Website</h2>
+          <form id="stats-form" style="margin-top: 20px;">
+            <div class="form-group mb-3">
+              <label>Customer Puas</label>
+              <input type="text" id="stat-customers" class="form-control" placeholder="e.g. 500+">
+            </div>
+            <div class="form-group mb-3">
+              <label>Armada Terawat</label>
+              <input type="text" id="stat-fleet" class="form-control" placeholder="e.g. 20+">
+            </div>
+            <div class="form-group mb-3">
+              <label>Trip Selesai</label>
+              <input type="text" id="stat-trips" class="form-control" placeholder="e.g. 100+">
+            </div>
+            <div class="form-group mb-4">
+              <label>Customer Support</label>
+              <input type="text" id="stat-support" class="form-control" placeholder="e.g. 24/7">
+            </div>
+            <button type="submit" class="btn btn-green w-100">SIMPAN STATISTIK</button>
+          </form>
+        </section>
+        
+        <!-- Gallery Section -->
+        <section id="ai-knowledge-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2>Knowledge Base AI</h2>
+            <button class="btn btn-primary" onclick="showAddRuleModal()"><i class="fa-solid fa-plus"></i> Tambah Aturan</button>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Aturan / Instruksi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="ai-knowledge-table">
+                <!-- Rules will be loaded here -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section id="gallery-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Kelola Galeri Perjalanan</h2>
+          <div class="table-container" style="margin-top: 20px;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Thumbnail</th>
+                  <th>Judul / Keterangan</th>
+                  <th>Tanggal Foto</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="gallery-list">
+                <!-- Gallery populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+        
+        <!-- Withdrawal Section -->
+        <section id="withdrawal-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;">
+            <div>
+              <h2 style="margin: 0;">Penarikan Dana</h2>
+              <p style="margin: 5px 0 0 0; color: var(--text-gray);">Minimal penarikan Rp 100.000 | Biaya Admin Rp 0 | Maksimal proses 3 hari</p>
+            </div>
+            <div style="background: var(--primary-green); color: white; padding: 15px 25px; border-radius: 10px; text-align: center;">
+              <span style="font-size: 0.9rem; opacity: 0.9;">Total Saldo Aktif</span>
+              <h3 id="total-balance-display" style="margin: 5px 0 0 0; font-size: 1.5rem;">Rp 0</h3>
+            </div>
+          </div>
+          
+          <button id="btn-request-withdrawal" class="btn btn-primary mb-4" style="background: #10b981; width: 100%;"><i class="fa-solid fa-hand-holding-dollar"></i> Ajukan Penarikan</button>
+          
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr id="withdrawal-table-header">
+                  <th>ID Penarikan</th>
+                  <th id="th-admin-email" style="display: none;">Email Admin</th>
+                  <th>Tanggal</th>
+                  <th>Bank & Rekening</th>
+                  <th>Jumlah</th>
+                  <th>Status</th>
+                  <th id="th-admin-aksi" style="display: none;">Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="withdrawal-list">
+                <!-- Data populated via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Drivers Section -->
+        <section id="drivers-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Manajemen Supir & Tour Guide</h2>
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Nama Supir</th>
+                  <th>Nomor HP</th>
+                  <th>PIN Login</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-drivers-table">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Reviews Section -->
+        <section id="reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Kelola Ulasan Web Utama</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Nama</th>
+                  <th>Bintang</th>
+                  <th>Ulasan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-reviews-table">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Item Reviews Section -->
+        <section id="item-reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Kelola Ulasan Khusus Item</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Item / Paket</th>
+                  <th>Nama</th>
+                  <th>Bintang</th>
+                  <th>Ulasan</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-item-reviews-table">
+                <!-- Loaded via JS -->
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== USERS SECTION ===== -->
+        <section id="users-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Kelola Pengguna (Akun Terdaftar)</h2>
+          </div>
+          
+          <div style="background: #fff5f5; border-left: 4px solid #ef4444; padding: 15px 20px; border-radius: 6px; margin-bottom: 25px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <h4 style="margin: 0 0 8px 0; color: #b91c1c; font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-shield-halved"></i> Protokol Keamanan & Privasi Data Tertinggi
+            </h4>
+            <p style="margin: 0; color: #7f1d1d; font-size: 0.9rem; line-height: 1.5;">
+              <strong>PERHATIAN PENTING:</strong> Akses ke modul ini diawasi secara ketat. Kata sandi pengguna saat ini ditampilkan dalam format teks (<em>plaintext</em>) secara eksklusif untuk keperluan operasional administratif dan pemulihan akun. Segala bentuk penyalahgunaan, pencatatan ilegal, atau penyebaran data kredensial dari halaman ini merupakan pelanggaran berat terhadap kebijakan privasi dan integritas perusahaan. Pastikan Anda menjaga kerahasiaan layar ini dari pihak yang tidak berkepentingan.
+            </p>
+          </div>
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal Daftar</th>
+                  <th>Nama</th>
+                  <th>Email</th>
+                  <th>Sandi</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <!-- Data loaded via JS -->
+                <tr><td colspan="5" class="text-center">Loading users...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- ===== LOGIN LOGS SECTION ===== -->
+        <section id="login-logs-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+            <h2 style="margin: 0;">Log Aktivitas Login</h2>
+          </div>
+          
+          <div class="table-responsive">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Waktu (WIB)</th>
+                  <th>Email</th>
+                  <th>IP Address</th>
+                  <th>Tipe Aktivitas</th>
+                  <th>Perangkat / Browser</th>
+                </tr>
+              </thead>
+              <tbody id="login-logs-tbody">
+                <!-- Data loaded via JS -->
+                <tr><td colspan="4" class="text-center">Loading logs...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <!-- Modal for Add/Edit -->
+    <div id="item-modal" class="modal-overlay">
+      <div class="modal-content glass-panel">
+        <div class="modal-header" style="max-width: 800px; margin: 0 auto 30px auto;">
+          <h2 id="modal-title">Add New Item</h2>
+          <button id="close-modal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="item-form" class="admin-form" style="max-width: 800px; margin: 0 auto; background: #f8fafc; padding: 40px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          <input type="hidden" id="item-id">
+          
+          <!-- AI Auto-Fill Section -->
+          <div style="background: linear-gradient(135deg, #f0fdfa, #e0f2fe); padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 1px dashed #38bdf8;">
+            <h4 style="color: #0284c7; margin-top: 0; margin-bottom: 10px; display: flex; align-items: center; gap: 8px;">
+              <i class="fa-solid fa-wand-magic-sparkles"></i> AI Auto-Fill (Otomatis Isi Form)
+            </h4>
+            <p style="font-size: 0.85rem; color: #475569; margin-bottom: 15px;">Unggah foto brosur promosi (Sewa/Tour), AI kami akan membacanya dan otomatis mengisi Judul, Harga, Deskripsi, dan Fasilitas (Include).</p>
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <input type="file" id="ai-image-input" accept="image/*" class="form-control" style="flex: 1 1 250px; padding: 8px; font-size: 0.9rem;">
+              <button type="button" id="ai-scan-btn" onclick="window.scanImageWithAI()" class="btn btn-blue" style="flex: 1 1 200px; font-weight: bold; padding: 10px 20px;"><i class="fa-solid fa-robot"></i> Scan dengan AI</button>
+            </div>
+            <div id="ai-loading" style="display: none; margin-top: 15px; color: #0284c7; font-size: 0.9rem; font-weight: bold;">
+              <i class="fa-solid fa-circle-notch fa-spin"></i> AI sedang membaca gambar, mohon tunggu...
+            </div>
+            <div id="ai-error" style="display: none; margin-top: 10px; color: #ef4444; font-size: 0.85rem;"></div>
+          </div>
+
+          <div class="form-group">
+            <label>Category</label>
+            <select id="item-category" required>
+              <option value="tour">Tour</option>
+              <option value="honeymoon">Paket Hanimun</option>
+              <option value="car">Sewa Mobil</option>
+              <option value="train">Sewa Kereta</option>
+              <option value="transfer">Jasa Antar Jemput</option>
+              <option value="package">Paket Liburan (Lainnya)</option>
+              <option value="motorcycle">Sewa Motor</option>
+              <option value="drone">Dokumentasi Drone</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-top: 15px;">
+            <label style="display: flex; align-items: center; gap: 10px; cursor: pointer; background: #f0fdf4; padding: 10px 15px; border-radius: 8px; border: 1px solid #bbf7d0;">
+              <input type="checkbox" id="item-is-parent" style="width: 18px; height: 18px; margin: 0;">
+              <span style="font-weight: 700; color: #166534;">Jadikan sebagai Kategori/Paket Utama (Folder)</span>
+            </label>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Jika dicentang, paket ini akan menjadi "Folder Utama". Saat diklik di web, akan membuka halaman khusus berisi sub-paket.</p>
+          </div>
+
+          <div class="form-group" id="item-parent-id-group" style="margin-top: 15px;">
+            <label>Masukkan ke dalam Paket Utama (Opsional)</label>
+            <select id="item-parent-id">
+              <option value="">-- Tidak ada (Tampil di halaman depan) --</option>
+              <!-- Populated by JS -->
+            </select>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Pilih jika paket ini adalah "Paket A / B / C" dari sebuah Paket Utama.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Title / Nama Paket</label>
+            <input type="text" id="item-title" required placeholder="e.g. Sewa Avanza Lepas Kunci">
+            <div id="title-quick-select" style="display: none; gap: 8px; flex-wrap: wrap; margin-top: 10px;">
+              <span style="font-size: 0.8rem; color: #64748b; width: 100%;">Pilih Tipe Paket (Otomatis ditambahkan):</span>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket A</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket B</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket C</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket D</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket E</button>
+              <button type="button" class="btn-quick-title" style="padding: 4px 10px; font-size: 0.8rem; border-radius: 12px; background: #e2e8f0; border: none; cursor: pointer; font-weight: 600; color: #334155;">Paket F</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Urutan (Sort Order)</label>
+            <input type="number" id="item-order" placeholder="Semakin kecil angkanya, semakin di atas" value="0">
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Contoh: 1 akan tampil lebih dulu daripada 2. Biarkan 0 jika tidak butuh diurutkan.</p>
+          </div>
+
+          <div class="form-group">
+            <label>Description</label>
+            <textarea id="item-description" rows="3" required placeholder="Deskripsi layanan..."></textarea>
+          </div>
+
+          <div class="form-group" id="price-duration-group" style="display: flex; gap: 15px;">
+            <div style="flex: 2;">
+              <label>Harga (Otomatis titik)</label>
+              <input type="text" id="item-price" placeholder="e.g. 250000">
+            </div>
+            <div style="flex: 1;">
+              <label>Durasi / Satuan Waktu</label>
+              <input type="text" id="item-duration" placeholder="e.g. hari, 12 Jam, 3H 2M">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Image URL</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="url" id="item-image" required placeholder="https://example.com/image.jpg" style="flex: 1;">
+              <input type="file" id="item-image-upload" accept="image/*" style="display: none;" onchange="uploadImageToServer(this, 'item-image')">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6; white-space: nowrap;" onclick="document.getElementById('item-image-upload').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Foto
+              </button>
+            </div>
+          </div>
+
+          <!-- Transfer Matrix Section (Khusus Jasa Antar Jemput) -->
+          <div id="transfer-matrix-group" style="display: none;">
+            <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+            <h4 style="color: var(--primary-blue); margin-bottom: 5px;"><i class="fa-solid fa-route"></i> Tabel Harga Airport Transfer</h4>
+            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Kelola harga berdasarkan Area Tujuan dan Jenis Kendaraan. Bisa diisi otomatis melalui AI Scan.</p>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+              <button type="button" class="btn btn-green" onclick="window.addTransferArea()" style="font-size: 0.85rem; padding: 8px 15px;"><i class="fa-solid fa-plus"></i> Tambah Area</button>
+              <button type="button" class="btn btn-blue" onclick="window.addTransferVehicle()" style="font-size: 0.85rem; padding: 8px 15px;"><i class="fa-solid fa-car"></i> Tambah Jenis Kendaraan</button>
+            </div>
+
+            <div id="transfer-matrix-container" style="overflow-x: auto; background: white; border-radius: 12px; border: 1px solid #e2e8f0;">
+              <!-- Table will be rendered by JS -->
+            </div>
+          </div>
+
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Spesifikasi Kendaraan (Khusus Sewa)</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Hanya akan muncul jika kategori adalah Sewa Mobil atau Sewa Motor.</p>
+          
+          <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 1;">
+              <label>Transmisi</label>
+              <select id="item-transmission">
+                <option value="">Pilih Transmisi...</option>
+                <option value="Manual">Manual</option>
+                <option value="Matic">Matic</option>
+                <option value="Matic / Manual">Matic / Manual</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label>Opsi Supir (Mobil)</label>
+              <select id="item-driverOptions">
+                <option value="">Pilih Opsi...</option>
+                <option value="Include Driver">Include Driver</option>
+                <option value="Tidak Include Driver">Tidak Include Driver</option>
+              </select>
+            </div>
+            <div style="flex: 1;">
+              <label>Kapasitas (Seat/Helm)</label>
+              <input type="number" id="item-seats" placeholder="e.g. 7 / 2">
+            </div>
+          </div>
+
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Detail Tour (Khusus Paket Tour)</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Abaikan kolom di bawah ini jika item ini bukan paket tour.</p>
+          
+          <div class="form-group">
+            <label>Tipe Paket</label>
+            <input type="text" id="item-packageType" placeholder="e.g. PAKET - B">
+          </div>
+          
+          <div class="form-group">
+            <label>Itinerary (Format: Judul di baris pertama, lalu list dengan strip -)</label>
+            <textarea id="item-itinerary" rows="5" placeholder="DAY 1: Sasak Tour&#10;- Desa Sade&#10;- Pantai Kuta&#10;&#10;DAY 2: Gili Trawangan&#10;- Gili Trawangan"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Include (Satu item per baris)</label>
+            <textarea id="item-include" rows="4" placeholder="Transportasi Private Full AC&#10;Driver profesional&#10;BBM"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label>Exclude (Satu item per baris)</label>
+            <textarea id="item-exclude" rows="4" placeholder="Tiket pesawat&#10;Hotel/Penginapan&#10;Makan & minum"></textarea>
+          </div>
+
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Dokumentasi Drone (Khusus Drone)</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">URL video YouTube untuk portofolio drone.</p>
+          
+          <div class="form-group">
+            <label>Video URL (YouTube)</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="url" id="item-droneVideo" placeholder="https://www.youtube.com/watch?v=..." style="flex: 1;">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('item-droneVideo').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
+            </div>
+          </div>
+
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #e2e8f0;">
+          <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Syarat & Ketentuan Booking</h4>
+          <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Pilih kategori syarat & ketentuan untuk ditampilkan di web (berlaku untuk sewa, antar jemput, maupun tour).</p>
+
+          <div class="form-group">
+            <label>Kategori Syarat & Ketentuan</label>
+            <select id="item-terms-category">
+              <option value="none">Tidak Ada / Jangan Tampilkan</option>
+              <option value="default">Gunakan Default (Sesuai Kategori Item)</option>
+              <option value="custom">Tulis Custom</option>
+            </select>
+          </div>
+
+          <div class="form-group" id="item-terms-custom-group" style="display: none;">
+            <label>Tulis Syarat & Ketentuan (Custom)</label>
+            <textarea id="item-terms" rows="8" placeholder="Ketik syarat dan ketentuan..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary w-100" id="save-item-btn">Save Item</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for Add Booking -->
+    <div id="booking-modal" class="modal-overlay">
+      <div class="modal-content glass-panel">
+        <div class="modal-header" style="max-width: 800px; margin: 0 auto 30px auto;">
+          <h2 id="booking-modal-title">Tambah Jadwal Booking Manual</h2>
+          <button id="close-booking-modal" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="booking-form" class="admin-form" style="max-width: 800px; margin: 0 auto; background: #f8fafc; padding: 40px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          
+          <div class="form-group">
+            <label>Item / Paket</label>
+            <select id="booking-item-name" class="form-control" required>
+              <option value="">Pilih Item...</option>
+              <!-- Will be populated by JS -->
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Nama Pelanggan (opsional)</label>
+            <input type="text" id="booking-customer" placeholder="e.g. Bpk. Budi">
+          </div>
+
+          <div class="form-group">
+            <label>Nomor WA (opsional)</label>
+            <input type="text" id="booking-phone" placeholder="e.g. 0812345678">
+          </div>
+
+          <div class="form-group" style="display: flex; gap: 15px;">
+            <div style="flex: 1;">
+              <label>Tanggal Mulai</label>
+              <input type="date" id="booking-start" required class="form-control">
+            </div>
+            <div style="flex: 1;">
+              <label>Tanggal Selesai</label>
+              <input type="date" id="booking-end" required class="form-control">
+            </div>
+          </div>
+
+          <div class="form-actions" style="margin-top: 20px;">
+            <button type="submit" class="btn btn-primary w-100">Simpan Jadwal</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal for Add Drone Video -->
+    <div id="drone-modal" class="modal-overlay">
+      <div class="modal-content glass-panel" style="max-width: 600px;">
+        <div class="modal-header" style="margin-bottom: 20px;">
+          <h2 id="drone-modal-title">Tambah Video Drone</h2>
+          <button onclick="document.getElementById('drone-modal').classList.remove('active')" class="close-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <form id="drone-form" class="admin-form" style="background: #f8fafc; padding: 30px; border-radius: 20px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+          <input type="hidden" id="drone-id">
+          
+          <div class="form-group">
+            <label>Judul Video</label>
+            <input type="text" id="drone-title" required placeholder="e.g. Pantai Kuta Lombok">
+          </div>
+
+          <div class="form-group">
+            <label>Tanggal Dokumentasi</label>
+            <input type="date" id="drone-date" required>
+          </div>
+
+          <div class="form-group">
+            <label>Deskripsi Pendek</label>
+            <textarea id="drone-description" rows="2" required placeholder="Dokumentasi udara acara..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>URL Video YouTube</label>
+            <div style="display: flex; gap: 10px;">
+              <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('drone-video-url').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
+            </div>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Masukkan URL YouTube yang valid (contoh: https://youtu.be/...)</p>
+          </div>
+
+          <button type="submit" class="btn btn-green w-100 mt-4"><i class="fa-solid fa-save"></i> SIMPAN VIDEO</button>
+        </form>
+      </div>
+    </div>
+
+
+    <!-- ===== PROMO MODAL ===== -->
+    <div id="promo-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto;">
+      <div style="background:#fff; border-radius:16px; max-width:500px; width:90%; margin:40px auto; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 id="promo-modal-title" style="margin:0; font-size:1.3rem; font-weight:700; color:#1e293b;">Tambah Promo</h3>
+          <button onclick="closePromoModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+        </div>
+        <form id="promo-form">
+          <input type="hidden" id="promo-id">
+          
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Berlaku Untuk Paket (Opsional)</label>
+            <select id="promo-item" class="form-control" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+              <option value="">-- Semua Paket --</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Kode Promo</label>
+            <input type="text" id="promo-code" class="form-control" placeholder="contoh: LOMBOKHEBOH20" required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Tipe Diskon</label>
+            <select id="promo-type" class="form-control" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+              <option value="nominal">Nominal (Rp)</option>
+              <option value="percent">Persentase (%)</option>
+            </select>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Nilai Diskon</label>
+            <input type="number" id="promo-value" class="form-control" placeholder="contoh: 100000" required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Maksimum Diskon (Rp, opsional)</label>
+            <input type="number" id="promo-max" class="form-control" placeholder="Kosongkan jika tidak ada batas" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Berlaku Sampai</label>
+            <input type="date" id="promo-valid" class="form-control" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-4" style="display:flex; align-items:center; gap:10px;">
+            <input type="checkbox" id="promo-active" checked style="width:18px; height:18px; cursor:pointer;">
+            <label for="promo-active" style="font-weight:600; cursor:pointer; margin:0;">Aktifkan Promo</label>
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-blue" style="flex:1; padding:12px; border-radius:8px; font-weight:600;">
+              <i class="fa-solid fa-save"></i> Simpan Promo
+            </button>
+            <button type="button" onclick="closePromoModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== AI KNOWLEDGE BASE MODAL ===== -->
+    <div id="ai-knowledge-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto;">
+      <div style="background:#fff; border-radius:16px; max-width:600px; width:90%; margin:40px auto; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 style="margin:0; font-size:1.3rem; font-weight:700; color:#1e293b;">Ajari AI (Tambah Aturan)</h3>
+          <button onclick="closeKnowledgeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+        </div>
+        <form id="ai-knowledge-form">
+          <div class="form-group mb-4">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Instruksi/Aturan untuk AI</label>
+            <p style="font-size: 0.85rem; color: #64748b; margin-top: 0; margin-bottom: 10px;">Berikan instruksi yang jelas. Contoh: "Jika ada yang bertanya harga promo, pastikan tawarkan diskon 10% untuk kode LOMBOKHEBOH."</p>
+            <textarea id="ai-knowledge-rule" class="form-control" rows="4" placeholder="Ketik aturan di sini..." required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; resize:vertical;"></textarea>
+          </div>
+          
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-primary" style="flex:1; padding:12px; border-radius:8px; font-weight:600;">
+              <i class="fa-solid fa-save"></i> Simpan Aturan
+            </button>
+            <button type="button" onclick="closeKnowledgeModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===== BLOG MODAL ===== -->
+    <div id="blog-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:9999; overflow-y:auto;">
+      <div style="background:#fff; border-radius:16px; max-width:620px; width:90%; margin:40px auto; padding:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <h3 id="blog-modal-title" style="margin:0; font-size:1.3rem; font-weight:700; color:#1e293b;">Tambah Artikel Blog</h3>
+          <button onclick="closeBlogModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#64748b;">&times;</button>
+        </div>
+        <form id="blog-form">
+          <input type="hidden" id="blog-id">
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Judul Artikel</label>
+            <input type="text" id="blog-title" class="form-control" placeholder="Judul artikel yang menarik..." required style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Ringkasan / Summary</label>
+            <textarea id="blog-summary" rows="2" placeholder="Ringkasan singkat artikel..." style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; resize:vertical;"></textarea>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">URL Gambar Cover</label>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="url" id="blog-image" class="form-control" placeholder="https://..." style="flex: 1; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+              <input type="file" id="blog-image-upload" accept="image/*" style="display: none;" onchange="uploadImageToServer(this, 'blog-image')">
+              <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6; white-space: nowrap; padding: 10px 15px;" onclick="document.getElementById('blog-image-upload').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Upload Foto
+              </button>
+            </div>
+          </div>
+
+          <div class="form-group mb-3">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Isi Artikel (HTML/Teks)</label>
+            <textarea id="blog-content" rows="8" required placeholder="Tulis isi artikel di sini..." style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px; resize:vertical; font-family:monospace; font-size:0.9rem;"></textarea>
+          </div>
+
+          <div class="form-group mb-4">
+            <label style="font-weight:600; margin-bottom:6px; display:block;">Tags (pisahkan dengan koma)</label>
+            <input type="text" id="blog-tags" class="form-control" placeholder="wisata, lombok, pantai" style="width:100%; padding:10px; border:1px solid #e2e8f0; border-radius:8px;">
+          </div>
+
+          <div style="display:flex; gap:10px;">
+            <button type="submit" class="btn btn-green" style="flex:1; padding:12px; border-radius:8px; font-weight:600;">
+              <i class="fa-solid fa-save"></i> Simpan Artikel
+            </button>
+            <button type="button" onclick="closeBlogModal()" style="padding:12px 20px; border-radius:8px; border:1px solid #e2e8f0; background:#fff; cursor:pointer; font-weight:600; color:#64748b;">
+              Batal
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+</body>
+</html>
+
+
+
+

@@ -1,0 +1,56 @@
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./main-BQaspKCu.js";import"./pwa-DYmKx9RI.js";/* empty css              */var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);document.addEventListener(`DOMContentLoaded`,async()=>{let t=document.getElementById(`article-container`);if(!t)return;let n=new URLSearchParams(window.location.search).get(`id`);if(!n){t.innerHTML=`<div style="text-align: center; padding: 50px;"><p style="color: #ef4444;">Artikel tidak ditemukan.</p></div>`;return}try{let r=await fetch(`${e}/blogs/${n}`);if(!r.ok)throw Error(`Failed to load article`);let i=await r.json();document.title=`${i.title} - Travel Lombok`;let a=i.createdAt?new Date(i.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`long`,year:`numeric`}):``,o=(i.tags||[]).map(e=>`<span style="background: #e2e8f0; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-right: 5px;">#${e}</span>`).join(``);t.innerHTML=`
+            <style>
+                .article-cover { width: 100%; height: 250px; object-fit: cover; }
+                @media(min-width: 768px) { .article-cover { height: 400px; } }
+            </style>
+            <div style="margin-bottom: 20px;">
+                <a href="/blog.html" style="display: inline-flex; align-items: center; gap: 8px; color: var(--primary-blue); font-weight: 700; text-decoration: none; padding: 8px 16px; background: white; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s ease;" onmouseover="this.style.transform='translateX(-5px)'; this.style.boxShadow='0 6px 15px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.05)';">
+                    <i class="fa-solid fa-arrow-left"></i> Kembali ke Daftar Artikel
+                </a>
+            </div>
+            <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 15px 40px rgba(0,0,0,0.08); border: 1px solid rgba(0,0,0,0.02);">
+                <div style="position: relative; width: 100%;">
+                    <img src="${i.coverImage||`https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200`}" alt="${i.title}" class="article-cover">
+                    <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(0,0,0,0.5), transparent);"></div>
+                </div>
+                <div style="padding: 30px 20px;">
+                    <h1 style="color: var(--primary-blue); font-size: 2rem; margin-bottom: 20px; font-weight: 800; line-height: 1.3;">${i.title}</h1>
+                    <div style="display: flex; gap: 15px; color: #64748b; font-size: 0.85rem; margin-bottom: 30px; padding-bottom: 20px; border-bottom: 2px dashed #f1f5f9; flex-wrap: wrap;">
+                        <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-circle" style="color: var(--primary-green);"></i> Ditulis oleh <strong style="color: var(--text-dark);">${i.author}</strong></span>
+                        <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-calendar-days" style="color: var(--primary-green);"></i> ${a}</span>
+                        <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-eye" style="color: var(--primary-green);"></i> ${i.views||0} kali dibaca</span>
+                    </div>
+                    <div class="article-content" style="line-height: 1.8; color: #334155; font-size: 1.05rem; min-height: 200px;">
+                        ${(i.content||``).split(`
+`).filter(e=>e.trim()!==``).map(e=>`<p style="margin-bottom: 1.5em; text-align: left;">${e.trim()}</p>`).join(``)}
+                    </div>
+                    
+                    <!-- Share Buttons -->
+                    <div style="margin-top: 40px; padding-top: 25px; border-top: 2px dashed #f1f5f9;">
+                        <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--primary-blue); font-weight: 700;">Bagikan artikel ini ke teman & keluargamu! 🚀</h4>
+                        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(i.title+` - Baca selengkapnya: `+window.location.href)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #25D366; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke WhatsApp">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
+                            </a>
+                            <a href="https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(i.title)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #0088cc; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke Telegram">
+                                <i class="fa-brands fa-telegram" style="font-size: 1.2rem;"></i>
+                            </a>
+                            <a href="https://www.threads.net/intent/post?text=${encodeURIComponent(`Cek artikel menarik ini: `+i.title+` `+window.location.href)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #000000; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke Threads">
+                                <i class="fa-brands fa-threads" style="font-size: 1.2rem;"></i>
+                            </a>
+                            <a href="https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(`Cek artikel menarik ini: `+i.title)}" target="_blank" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #1DA1F2; color: white; text-decoration: none; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan ke Twitter / X">
+                                <i class="fa-brands fa-twitter" style="font-size: 1.2rem;"></i>
+                            </a>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Tautan disalin! Siap dibagikan ke Instagram/Lainnya.', showConfirmButton:false, timer:2000});" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Salin Link untuk Instagram">
+                                <i class="fa-brands fa-instagram" style="font-size: 1.2rem;"></i>
+                            </button>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); Swal.fire({toast:true, position:'top-end', icon:'success', title:'Tautan berhasil disalin!', showConfirmButton:false, timer:2000});" style="display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; color: #475569; text-decoration: none; border: none; cursor: pointer; transition: transform 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Salin Tautan">
+                                <i class="fa-solid fa-link" style="font-size: 1.1rem;"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    ${o?`<div style="margin-top: 25px; display: flex; gap: 8px; flex-wrap: wrap;">${o}</div>`:``}
+                </div>
+            </div>
+        `}catch(e){console.error(e),t.innerHTML=`<div style="text-align: center; padding: 50px;"><p style="color: #ef4444;">Gagal memuat artikel.</p><a href="/blog.html" class="btn btn-outline" style="margin-top: 20px;">Kembali</a></div>`}});
