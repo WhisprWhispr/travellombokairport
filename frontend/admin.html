@@ -378,13 +378,70 @@
               </div>
 
               <div id="event-mode-off-info" style="margin-top: 10px;">
-                <p style="font-size: 0.85rem; color: #92400e; margin: 0;"><i class="fa-solid fa-toggle-off"></i> Saat ini <strong>tidak ada event aktif</strong>. Aktifkan toggle untuk mengatur harga event.</p>
+                <p style="margin: 0; font-size: 0.85rem; color: #92400e; font-weight: 500;">Status Saat Ini: <span id="event-mode-status-text" style="color: #ef4444; font-weight: 700;">Tidak Aktif (Harga Normal)</span></p>
               </div>
               <div id="event-mode-on-info" style="display: none; margin-top: 10px; background: #ef4444; color: white; padding: 10px 15px; border-radius: 8px;">
                 <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-fire"></i> <strong>EVENT AKTIF!</strong> Harga motor & mobil sedang naik. Minimum sewa 4 hari.</p>
               </div>
             </div>
-            <!-- END EVENT MODE SECTION -->
+
+            <!-- COMING SOON EVENT SECTION -->
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #22c55e, #10b981); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fa-solid fa-bullhorn" style="color: white; font-size: 1.1rem;"></i>
+                  </div>
+                  <div>
+                    <div style="font-weight: 700; color: #14532d; font-size: 1.1rem;">Popup Event Coming Soon</div>
+                    <div style="font-size: 0.8rem; color: #166534;">Aktifkan untuk menampilkan popup event (dengan countdown timer) kepada pengunjung website</div>
+                  </div>
+                </div>
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0;">
+                  <input type="checkbox" id="setting-coming-soon-mode" onchange="window.toggleComingSoonUI();" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </div>
+
+              <div id="coming-soon-details" style="display: none; margin-top: 15px; border-top: 1px dashed #22c55e; padding-top: 15px;">
+                <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 12px;">
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-image"></i> Gambar Thumbnail Event</label>
+                    <div style="margin-top: 5px; display: flex; align-items: flex-start; gap: 15px;">
+                        <div id="coming-soon-img-preview" style="width: 150px; height: 100px; border-radius: 8px; border: 1px dashed #22c55e; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden;">
+                            <span style="color: #166534; font-size: 0.8rem; text-align: center; padding: 10px;">Belum ada gambar</span>
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="file" id="setting-coming-soon-image" accept="image/*" class="form-control" style="border: 1px solid #22c55e; background: white; padding: 6px;" onchange="window.previewComingSoonImage(this)">
+                            <p style="font-size: 0.78rem; color: #166534; margin-top: 4px;">Pilih gambar landscape (rasio 16:9). Gambar ini akan langsung diupload saat Anda menekan tombol "Simpan Pengaturan".</p>
+                            <input type="hidden" id="setting-coming-soon-image-url">
+                        </div>
+                    </div>
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-heading"></i> Judul Event</label>
+                    <input type="text" id="setting-coming-soon-title" placeholder="Contoh: MotoGP Mandalika 2025" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-calendar-check"></i> Tanggal & Waktu Pelaksanaan</label>
+                    <input type="datetime-local" id="setting-coming-soon-date" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-align-left"></i> Deskripsi Singkat</label>
+                    <textarea id="setting-coming-soon-desc" rows="3" placeholder="Contoh: Jangan lewatkan keseruan balap motor terbesar tahun ini. Booking transportasi Anda sekarang sebelum kehabisan!" class="form-control" style="margin-top: 5px; border: 1px solid #22c55e; background: white; resize: vertical;"></textarea>
+                  </div>
+                </div>
+                
+                <button type="button" class="btn btn-primary" onclick="window.saveGlobalSettings()" style="width: 100%; background: #22c55e; border-radius: 8px; font-weight: bold; padding: 12px; margin-top: 10px;">
+                    <i class="fa-solid fa-save"></i> Simpan Pengaturan Coming Soon
+                </button>
+              </div>
+
+              <div id="coming-soon-off-info" style="margin-top: 10px;">
+                <p style="margin: 0; font-size: 0.85rem; color: #166534; font-weight: 500;">Status Popup Saat Ini: <span id="coming-soon-status-text" style="color: #ef4444; font-weight: 700;">Tidak Aktif</span></p>
+              </div>
+            </div>
+            <!-- END COMING SOON EVENT SECTION -->
 
             <div class="form-group">
               <label>Status Layanan Dokumentasi Drone</label>

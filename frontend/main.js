@@ -1294,6 +1294,18 @@ const createDroneCard = (item, index = 0) => {
     `;
 };
 
+// Close Coming Soon Modal
+window.closeComingSoonModal = () => {
+    const modal = document.getElementById('coming-soon-modal');
+    if (modal) {
+        modal.style.animation = 'reviewFadeOut 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards';
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.style.animation = ''; // Reset for next time if needed
+        }, 200);
+    }
+};
+
 // Initialize Page
 const init = async () => {
     window.isDroneAvailable = true;
@@ -1432,6 +1444,63 @@ const init = async () => {
                 const dronePriceEl = document.getElementById('drone-base-price');
                 if (dronePriceEl) {
                     dronePriceEl.innerText = formatPrice(settings.dronePrice).replace('Rp ', '');
+                }
+            }
+
+            // COMING SOON EVENT
+            if (settings.comingSoonEnabled === true && !window.location.pathname.includes('/admin')) {
+                // Check if already shown in this session
+                if (!sessionStorage.getItem('comingSoonShown')) {
+                    setTimeout(() => {
+                        const modal = document.getElementById('coming-soon-modal');
+                        if (modal) {
+                            if (settings.comingSoonImage) {
+                                document.getElementById('coming-soon-modal-img').src = settings.comingSoonImage;
+                                document.getElementById('coming-soon-modal-img').style.display = 'block';
+                            }
+                            if (settings.comingSoonTitle) {
+                                document.getElementById('coming-soon-modal-title').innerText = settings.comingSoonTitle;
+                            }
+                            if (settings.comingSoonDesc) {
+                                document.getElementById('coming-soon-modal-desc').innerText = settings.comingSoonDesc;
+                            }
+                            
+                            modal.style.display = 'flex';
+                            
+                            // Setup countdown timer
+                            if (settings.comingSoonDate) {
+                                // Initialize immediately
+                                const updateTimer = () => {
+                                    const eventDate = new Date(settings.comingSoonDate).getTime();
+                                    const now = new Date().getTime();
+                                    const distance = eventDate - now;
+                                    
+                                    if (distance < 0) {
+                                        if (window.comingSoonInterval) clearInterval(window.comingSoonInterval);
+                                        document.getElementById('cs-days').innerText = '00';
+                                        document.getElementById('cs-hours').innerText = '00';
+                                        document.getElementById('cs-minutes').innerText = '00';
+                                        document.getElementById('cs-seconds').innerText = '00';
+                                        return;
+                                    }
+                                    
+                                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                                    
+                                    document.getElementById('cs-days').innerText = days < 10 ? '0' + days : days;
+                                    document.getElementById('cs-hours').innerText = hours < 10 ? '0' + hours : hours;
+                                    document.getElementById('cs-minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
+                                    document.getElementById('cs-seconds').innerText = seconds < 10 ? '0' + seconds : seconds;
+                                };
+                                updateTimer();
+                                window.comingSoonInterval = setInterval(updateTimer, 1000);
+                            }
+                            
+                            sessionStorage.setItem('comingSoonShown', 'true');
+                        }
+                    }, 800); // Wait 0.8s before showing for smooth entrance
                 }
             }
         }

@@ -2198,6 +2198,30 @@ window.fetchGlobalSettings = async () => {
                 eventPriceIncreaseInput.value = parseInt(data.eventPriceIncrease).toLocaleString('id-ID');
             }
             // ====== END EVENT MODE ======
+
+            // ====== COMING SOON EVENT ======
+            const comingSoonToggle = document.getElementById('setting-coming-soon-mode');
+            if (comingSoonToggle) {
+                comingSoonToggle.checked = data.comingSoonEnabled === true;
+                window.toggleComingSoonUI();
+            }
+            if (document.getElementById('setting-coming-soon-title') && data.comingSoonTitle) {
+                document.getElementById('setting-coming-soon-title').value = data.comingSoonTitle;
+            }
+            if (document.getElementById('setting-coming-soon-date') && data.comingSoonDate) {
+                document.getElementById('setting-coming-soon-date').value = data.comingSoonDate;
+            }
+            if (document.getElementById('setting-coming-soon-desc') && data.comingSoonDesc) {
+                document.getElementById('setting-coming-soon-desc').value = data.comingSoonDesc;
+            }
+            if (document.getElementById('setting-coming-soon-image-url') && data.comingSoonImage) {
+                document.getElementById('setting-coming-soon-image-url').value = data.comingSoonImage;
+                const preview = document.getElementById('coming-soon-img-preview');
+                if (preview) {
+                    preview.innerHTML = `<img src="${data.comingSoonImage}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+            }
+            // ====== END COMING SOON EVENT ======
         }
     } catch (e) {
         console.error("Error fetching settings:", e);
@@ -2217,6 +2241,39 @@ window.toggleEventModeUI = () => {
     if (onInfo) onInfo.style.display = isOn ? 'block' : 'none';
 };
 
+// Toggle UI for Coming Soon Event
+window.toggleComingSoonUI = () => {
+    const toggle = document.getElementById('setting-coming-soon-mode');
+    const details = document.getElementById('coming-soon-details');
+    const statusText = document.getElementById('coming-soon-status-text');
+    if (!toggle) return;
+    const isOn = toggle.checked;
+    if (details) details.style.display = isOn ? 'block' : 'none';
+    if (statusText) {
+        if (isOn) {
+            statusText.innerText = "Aktif (Popup akan muncul di website)";
+            statusText.style.color = "#10b981";
+        } else {
+            statusText.innerText = "Tidak Aktif";
+            statusText.style.color = "#ef4444";
+        }
+    }
+};
+
+// Preview Image for Coming Soon
+window.previewComingSoonImage = (input) => {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('coming-soon-img-preview');
+            if (preview) {
+                preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
 window.saveGlobalSettings = async () => {
     const droneStatus = document.getElementById('setting-drone-status').value;
     const dronePriceRaw = document.getElementById('setting-drone-price').value || "";
@@ -2234,8 +2291,40 @@ window.saveGlobalSettings = async () => {
     const eventPriceIncrease = eventPriceIncreaseEl ? parseInt(eventPriceIncreaseEl.value.replace(/\./g, '').replace(/,/g, '')) || 0 : 0;
     // ====== END EVENT MODE ======
     
+    // ====== COMING SOON EVENT ======
+    const comingSoonModeEl = document.getElementById('setting-coming-soon-mode');
+    const comingSoonEnabled = comingSoonModeEl ? comingSoonModeEl.checked : false;
+    const comingSoonTitle = document.getElementById('setting-coming-soon-title') ? document.getElementById('setting-coming-soon-title').value.trim() : '';
+    const comingSoonDate = document.getElementById('setting-coming-soon-date') ? document.getElementById('setting-coming-soon-date').value : '';
+    const comingSoonDesc = document.getElementById('setting-coming-soon-desc') ? document.getElementById('setting-coming-soon-desc').value.trim() : '';
+    let comingSoonImage = document.getElementById('setting-coming-soon-image-url') ? document.getElementById('setting-coming-soon-image-url').value : '';
+    
+    const comingSoonImageInput = document.getElementById('setting-coming-soon-image');
+    
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
+        
+        // Upload image if a new one is selected
+        if (comingSoonImageInput && comingSoonImageInput.files.length > 0) {
+            Swal.update({title: 'Mengunggah gambar...'});
+            const formData = new FormData();
+            formData.append('file', comingSoonImageInput.files[0]);
+            
+            const uploadRes = await fetch(`${API_URL}/upload`, {
+                method: 'POST',
+                headers: getAuthHeaders(true), // Content-Type will be set by browser for FormData
+                body: formData
+            });
+            
+            if (uploadRes.ok) {
+                const uploadData = await uploadRes.json();
+                comingSoonImage = uploadData.secure_url;
+            } else {
+                throw new Error('Gagal mengunggah gambar event.');
+            }
+        }
+
+        Swal.update({title: 'Menyimpan pengaturan...'});
         const res = await fetch(`${API_URL}/settings`, {
             method: 'PUT',
             headers: getAuthHeaders(),
@@ -2247,7 +2336,13 @@ window.saveGlobalSettings = async () => {
                 qrisMaintenanceMode: qrisMaintenanceMode,
                 eventMode: eventMode,
                 eventName: eventName,
-                eventPriceIncrease: eventPriceIncrease
+                eventPriceIncrease: eventPriceIncrease,
+                comingSoonEnabled: comingSoonEnabled,
+                comingSoonTitle: comingSoonTitle,
+                comingSoonDate: comingSoonDate,
+                comingSoonDesc: comingSoonDesc,
+                comingSoonImage: comingSoonImage
+
             })
         });
         if (res.ok) {
