@@ -2303,11 +2303,14 @@ window.pasteInputText = async (id) => {
 
 window.addGlobalCopyPasteButtons = () => {
     const processInput = (input) => {
-        // Skip hidden, checkbox, radio, color, file, submit, button, reset, image, search
-        const skipTypes = ['hidden', 'checkbox', 'radio', 'color', 'file', 'submit', 'button', 'reset', 'image', 'search'];
+        // Skip hidden, checkbox, radio, color, file, submit, button, reset, image, search, password
+        const skipTypes = ['hidden', 'checkbox', 'radio', 'color', 'file', 'submit', 'button', 'reset', 'image', 'search', 'password'];
         if (input.tagName === 'INPUT' && skipTypes.includes(input.type)) return;
         if (input.id && (input.id.includes('search') || input.id === 'setting-drone-price')) return;
         
+        // Skip inputs inside login screen or SweetAlert modals
+        if (input.closest && (input.closest('.swal2-container') || input.closest('#login-container'))) return;
+
         // Skip if already added
         if (input.dataset.hasCopyPaste) return;
         input.dataset.hasCopyPaste = 'true';
