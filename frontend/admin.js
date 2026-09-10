@@ -2467,7 +2467,7 @@ window.saveGlobalSettings = async () => {
             
             if (uploadRes.ok) {
                 const uploadData = await uploadRes.json();
-                comingSoonImage = uploadData.secure_url;
+                comingSoonImage = uploadData.url;
             } else {
                 throw new Error('Gagal mengunggah gambar event.');
             }
