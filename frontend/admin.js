@@ -1748,10 +1748,9 @@ window.fetchWithdrawals = async () => {
             });
         }
         
-        // Dana langsung masuk ke akun Borderpay, bukan rekening manual
-        // Saldo di panel ini selalu 0
-        currentBalance = 0;
-        document.getElementById("total-balance-display").innerText = `Rp 0`;
+        // Kalkulasi saldo (Revenue - Penarikan)
+        currentBalance = totalRevenue - totalWithdrawn;
+        document.getElementById("total-balance-display").innerText = `Rp ${currentBalance.toLocaleString('id-ID')}`;
         
     } catch (e) {
         console.error("Error fetching withdrawals:", e);
