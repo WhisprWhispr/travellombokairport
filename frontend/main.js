@@ -1469,6 +1469,8 @@ const init = async () => {
                                 .cs-title-clamp { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
                                 .cs-desc-preview { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
                                 #cs-detail-panel { animation: csExpandIn 0.4s ease-out both; overflow:hidden; }
+                                .cs-typewriter-cursor { font-weight: bold; color: #a78bfa; animation: csBlink 1s step-end infinite; }
+                                @keyframes csBlink { 50% { opacity: 0; } }
                             </style>
                             <div id="coming-soon-modal" style="z-index:10001;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:flex-end;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
                                 <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px 24px 20px 20px;width:100%;max-width:430px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
@@ -1570,11 +1572,36 @@ const init = async () => {
                                 const compact = document.getElementById('cs-btn-group-compact');
                                 const expanded = document.getElementById('cs-btn-group-expanded');
                                 const scroller = document.getElementById('cs-scrollable');
+                                const fullDesc = document.getElementById('coming-soon-modal-desc-full');
+
                                 if (panel) { panel.style.display = 'block'; }
                                 if (compact) compact.style.display = 'none';
                                 if (expanded) expanded.style.display = 'block';
-                                // Scroll down to show full desc
-                                setTimeout(() => { if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' }); }, 100);
+
+                                // Typewriter effect
+                                if (fullDesc && window._csFullText && !window._csTyped) {
+                                    window._csTyped = true;
+                                    fullDesc.innerHTML = '<span class="cs-typewriter-cursor">|</span>';
+                                    let i = 0;
+                                    const text = window._csFullText;
+                                    const speed = 15; // ms per character
+
+                                    function typeWriter() {
+                                        if (i < text.length) {
+                                            fullDesc.innerHTML = text.substring(0, i + 1) + '<span class="cs-typewriter-cursor">|</span>';
+                                            i++;
+                                            setTimeout(typeWriter, speed);
+                                            // Keep scrolling down as text expands
+                                            if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'auto' });
+                                        } else {
+                                            fullDesc.innerHTML = text; // Remove cursor when done
+                                            if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
+                                        }
+                                    }
+                                    setTimeout(typeWriter, 100);
+                                } else {
+                                    setTimeout(() => { if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' }); }, 100);
+                                }
                             };
                         }
 
@@ -1589,7 +1616,10 @@ const init = async () => {
                             if (settings.comingSoonDesc) {
                                 // Show preview (clamped) and full text separately
                                 document.getElementById('coming-soon-modal-desc-preview').innerText = settings.comingSoonDesc;
-                                document.getElementById('coming-soon-modal-desc-full').innerText = settings.comingSoonDesc;
+                                // Save full text for typewriter effect, clear container initially
+                                window._csFullText = settings.comingSoonDesc;
+                                window._csTyped = false;
+                                document.getElementById('coming-soon-modal-desc-full').innerText = '';
                             }
 
                             modal.style.display = 'flex';
