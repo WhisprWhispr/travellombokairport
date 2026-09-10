@@ -2378,18 +2378,19 @@ window.addGlobalCopyPasteButtons = () => {
     };
 
     // Process existing inputs
-    document.querySelectorAll('.form-control').forEach(processInput);
+    const targetSelector = '.form-control, input[type="text"], input[type="number"], input[type="email"], input[type="url"], input[type="date"], input[type="datetime-local"], textarea';
+    document.querySelectorAll(targetSelector).forEach(processInput);
 
     // Watch for new inputs (e.g. modals opening, dynamic tables)
     const observer = new MutationObserver((mutations) => {
         mutations.forEach(mutation => {
             mutation.addedNodes.forEach(node => {
                 if (node.nodeType === 1) {
-                    if (node.classList && node.classList.contains('form-control')) {
+                    if (node.matches && node.matches(targetSelector)) {
                         processInput(node);
                     }
                     if (node.querySelectorAll) {
-                        node.querySelectorAll('.form-control').forEach(processInput);
+                        node.querySelectorAll(targetSelector).forEach(processInput);
                     }
                 }
             });
