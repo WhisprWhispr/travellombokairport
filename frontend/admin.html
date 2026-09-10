@@ -337,24 +337,24 @@
 
             <!-- EVENT MODE SECTION -->
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #fff7ed, #fef3c7); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 15px;">
+                <div style="display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0;">
+                  <div style="width: 40px; height: 40px; flex-shrink: 0; background: linear-gradient(135deg, #f59e0b, #ef4444); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                     <i class="fa-solid fa-fire" style="color: white; font-size: 1.1rem;"></i>
                   </div>
-                  <div>
-                    <div style="font-weight: 700; color: #92400e; font-size: 1.1rem;">Mode Event / High Season</div>
-                    <div style="font-size: 0.8rem; color: #78350f;">Aktifkan untuk menaikkan harga motor & mobil saat event</div>
+                  <div style="min-width: 0;">
+                    <div style="font-weight: 700; color: #92400e; font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px;">Mode Event / High Season</div>
+                    <div style="font-size: 0.8rem; color: #78350f; line-height: 1.4;">Aktifkan untuk menaikkan harga motor & mobil saat event</div>
                   </div>
                 </div>
-                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0;">
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0; margin-top: 4px;">
                   <input type="checkbox" id="setting-event-mode" onchange="window.toggleEventModeUI(); window.saveGlobalSettings();" style="opacity: 0; width: 0; height: 0;">
                   <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
                 </label>
               </div>
 
               <div id="event-mode-details" style="display: none; margin-top: 15px; border-top: 1px dashed #f59e0b; padding-top: 15px;">
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 12px;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 12px;">
                   <div class="form-group mb-0">
                     <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-tag"></i> Nama Event</label>
                     <input type="text" id="setting-event-name" placeholder="Contoh: Bau Nyale 2025, Lebaran, dll." class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
@@ -387,17 +387,17 @@
 
             <!-- COMING SOON EVENT SECTION -->
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-radius: 12px; padding: 20px; border: 2px solid #22c55e;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px;">
-                <div style="display: flex; align-items: center; gap: 10px;">
-                  <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #22c55e, #10b981); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+              <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 15px;">
+                <div style="display: flex; align-items: flex-start; gap: 10px; flex: 1; min-width: 0;">
+                  <div style="width: 40px; height: 40px; flex-shrink: 0; background: linear-gradient(135deg, #22c55e, #10b981); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                     <i class="fa-solid fa-bullhorn" style="color: white; font-size: 1.1rem;"></i>
                   </div>
-                  <div>
-                    <div style="font-weight: 700; color: #14532d; font-size: 1.1rem;">Popup Event Coming Soon</div>
-                    <div style="font-size: 0.8rem; color: #166534;">Aktifkan untuk menampilkan popup event (dengan countdown timer) kepada pengunjung website</div>
+                  <div style="min-width: 0;">
+                    <div style="font-weight: 700; color: #14532d; font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px;">Popup Event Coming Soon</div>
+                    <div style="font-size: 0.8rem; color: #166534; line-height: 1.4;">Aktifkan untuk menampilkan popup event (dengan countdown timer) kepada pengunjung website</div>
                   </div>
                 </div>
-                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0;">
+                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0; margin-top: 4px;">
                   <input type="checkbox" id="setting-coming-soon-mode" onchange="window.toggleComingSoonUI();" style="opacity: 0; width: 0; height: 0;">
                   <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
                 </label>
@@ -407,13 +407,13 @@
                 <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 12px;">
                   <div class="form-group mb-0">
                     <label style="font-weight: 600; color: #14532d; font-size: 0.9rem;"><i class="fa-solid fa-image"></i> Gambar Thumbnail Event</label>
-                    <div style="margin-top: 5px; display: flex; align-items: flex-start; gap: 15px;">
-                        <div id="coming-soon-img-preview" style="width: 150px; height: 100px; border-radius: 8px; border: 1px dashed #22c55e; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden;">
+                    <div style="margin-top: 5px; display: flex; align-items: flex-start; gap: 15px; flex-wrap: wrap;">
+                        <div id="coming-soon-img-preview" style="width: 150px; height: 100px; flex-shrink: 0; border-radius: 8px; border: 1px dashed #22c55e; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden;">
                             <span style="color: #166534; font-size: 0.8rem; text-align: center; padding: 10px;">Belum ada gambar</span>
                         </div>
-                        <div style="flex: 1;">
-                            <input type="file" id="setting-coming-soon-image" accept="image/*" class="form-control" style="border: 1px solid #22c55e; background: white; padding: 6px;" onchange="window.previewComingSoonImage(this)">
-                            <p style="font-size: 0.78rem; color: #166534; margin-top: 4px;">Pilih gambar landscape (rasio 16:9). Gambar ini akan langsung diupload saat Anda menekan tombol "Simpan Pengaturan".</p>
+                        <div style="flex: 1; min-width: 200px;">
+                            <input type="file" id="setting-coming-soon-image" accept="image/*" class="form-control" style="border: 1px solid #22c55e; background: white; padding: 6px; width: 100%; box-sizing: border-box;" onchange="window.previewComingSoonImage(this)">
+                            <p style="font-size: 0.78rem; color: #166534; margin-top: 6px; line-height: 1.4;">Pilih gambar landscape (rasio 16:9). Gambar ini akan langsung diupload saat Anda menekan tombol "Simpan Pengaturan".</p>
                             <input type="hidden" id="setting-coming-soon-image-url">
                         </div>
                     </div>
