@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 40px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -511,91 +511,89 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                     </div>
                 `;return}if(t.droneAvailable===`unavailable`){window.isDroneAvailable=!1;let e=document.getElementById(`drone-main-book-btn`);e&&(e.removeAttribute(`href`),e.style.background=`#cbd5e1`,e.style.cursor=`not-allowed`,e.style.borderColor=`#cbd5e1`,e.innerHTML=`<i class="fa-solid fa-lock"></i> LAYANAN BELUM TERSEDIA`)}if(t.dronePrice){let e=document.getElementById(`drone-base-price`);e&&(e.innerText=r(t.dronePrice).replace(`Rp `,``))}t.comingSoonEnabled===!0&&!window.location.pathname.includes(`/admin`)&&setTimeout(()=>{let e=document.getElementById(`coming-soon-modal`);if(e||=(document.body.insertAdjacentHTML(`beforeend`,`
                             <style>
-                                @keyframes csModalIn { 0% { opacity:0; transform:scale(0.85) translateY(30px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
+                                @keyframes csModalIn { 0% { opacity:0; transform:scale(0.88) translateY(24px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
                                 @keyframes csOverlayIn { 0% { opacity:0; } 100% { opacity:1; } }
-                                @keyframes csPulseGlow { 0%,100% { box-shadow: 0 0 20px rgba(59,130,246,0.3), 0 0 60px rgba(59,130,246,0.1); } 50% { box-shadow: 0 0 30px rgba(59,130,246,0.5), 0 0 80px rgba(59,130,246,0.2); } }
-                                @keyframes csShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
-                                @keyframes csFloat { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-6px); } }
-                                @keyframes csBorderRotate { 0% { --cs-angle: 0deg; } 100% { --cs-angle: 360deg; } }
-                                @keyframes csCountPop { 0% { transform: scale(1); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
-                                @keyframes csSparkle { 0%,100% { opacity:0; transform:scale(0) rotate(0deg); } 50% { opacity:1; transform:scale(1) rotate(180deg); } }
-                                #coming-soon-modal { animation: csOverlayIn 0.4s ease-out forwards; }
-                                #coming-soon-modal .cs-card { animation: csModalIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
-                                #coming-soon-modal .cs-timer-box { animation: csFloat 3s ease-in-out infinite; }
-                                #coming-soon-modal .cs-timer-box:nth-child(2) { animation-delay: 0.15s; }
-                                #coming-soon-modal .cs-timer-box:nth-child(3) { animation-delay: 0.3s; }
-                                #coming-soon-modal .cs-timer-box:nth-child(4) { animation-delay: 0.45s; }
-                                #coming-soon-modal .cs-close-btn:hover { background: rgba(255,255,255,0.25) !important; transform: rotate(90deg) scale(1.1); }
-                                #coming-soon-modal .cs-cta-btn:hover { transform: translateY(-2px) scale(1.02) !important; box-shadow: 0 12px 35px rgba(59,130,246,0.4) !important; }
-                                #coming-soon-modal .cs-cta-btn:active { transform: translateY(0) scale(0.98) !important; }
+                                @keyframes csPulseGlow { 0%,100% { box-shadow: 0 0 0 1px rgba(99,102,241,0.3), 0 0 24px rgba(99,102,241,0.15); } 50% { box-shadow: 0 0 0 1px rgba(99,102,241,0.5), 0 0 32px rgba(99,102,241,0.25); } }
+                                @keyframes csShimmer { 0% { transform:translateX(-100%); } 100% { transform:translateX(100%); } }
+                                @keyframes csCountPop { 0%,100% { transform:scale(1); } 50% { transform:scale(1.1); } }
+                                #coming-soon-modal { animation: csOverlayIn 0.35s ease-out both; }
+                                #coming-soon-modal .cs-card { animation: csModalIn 0.45s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
+                                #coming-soon-modal .cs-close-btn:hover { background: rgba(255,255,255,0.18) !important; transform: rotate(90deg) scale(1.08); }
+                                #coming-soon-modal .cs-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(79,70,229,0.4) !important; }
+                                #coming-soon-modal .cs-cta-btn:active { transform: scale(0.97); }
+                                .cs-title-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+                                .cs-desc-clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
                             </style>
-                            <div id="coming-soon-modal" style="z-index: 10001; position: fixed; inset: 0; background: rgba(2,6,23,0.88); display: none; justify-content: center; align-items: center; backdrop-filter: blur(12px) saturate(180%); padding: 16px; -webkit-backdrop-filter: blur(12px) saturate(180%);">
-                                <div class="cs-card" style="background: linear-gradient(145deg, rgba(15,23,42,0.97), rgba(30,41,59,0.95)); border-radius: 28px; width: 100%; max-width: 440px; max-height: 92vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(148,163,184,0.12), inset 0 1px 0 rgba(255,255,255,0.05); border: 1px solid rgba(148,163,184,0.1);">
-                                    
-                                    <!-- Sparkle particles -->
-                                    <div style="position:absolute; top:18px; left:22px; width:6px; height:6px; background:#60a5fa; border-radius:50%; animation: csSparkle 2.5s ease-in-out infinite; opacity:0;"></div>
-                                    <div style="position:absolute; top:55px; right:55px; width:4px; height:4px; background:#a78bfa; border-radius:50%; animation: csSparkle 3s ease-in-out 0.8s infinite; opacity:0;"></div>
-                                    <div style="position:absolute; bottom:80px; left:35px; width:5px; height:5px; background:#34d399; border-radius:50%; animation: csSparkle 2.8s ease-in-out 1.5s infinite; opacity:0;"></div>
-                                    <div style="position:absolute; bottom:140px; right:30px; width:4px; height:4px; background:#fbbf24; border-radius:50%; animation: csSparkle 3.2s ease-in-out 0.3s infinite; opacity:0;"></div>
+                            <div id="coming-soon-modal" style="z-index:10001; position:fixed; inset:0; background:rgba(2,6,23,0.9); display:none; justify-content:center; align-items:center; backdrop-filter:blur(14px); padding:16px; -webkit-backdrop-filter:blur(14px);">
+                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#1a1f35); border-radius:24px; width:100%; max-width:400px; position:relative; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);">
+
+                                    <!-- Subtle glow accents -->
+                                    <div style="position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:radial-gradient(circle,rgba(99,102,241,0.18),transparent 70%);pointer-events:none;"></div>
+                                    <div style="position:absolute;bottom:-30px;left:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(16,185,129,0.1),transparent 70%);pointer-events:none;"></div>
 
                                     <!-- Close button -->
-                                    <button class="cs-close-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); width: 38px; height: 38px; border-radius: 50%; color: rgba(255,255,255,0.7); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 10; backdrop-filter: blur(10px);">
+                                    <button class="cs-close-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position:absolute;top:12px;right:12px;z-index:20;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12);width:34px;height:34px;border-radius:50%;color:rgba(255,255,255,0.75);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;backdrop-filter:blur(8px);">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
 
-                                    <!-- Image section -->
-                                    <div style="width: 100%; height: 200px; border-radius: 28px 28px 0 0; overflow: hidden; position: relative; background: linear-gradient(135deg, #0f172a, #1e293b);">
-                                        <img id="coming-soon-modal-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none; filter: brightness(0.85);">
-                                        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(15,23,42,0.95) 100%);"></div>
-                                        <!-- Badge on image -->
-                                        <div style="position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 3;">
-                                            <div style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(99,102,241,0.9)); color: white; padding: 6px 16px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 4px 20px rgba(59,130,246,0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);">
-                                                <i class="fa-solid fa-sparkles" style="font-size: 0.65rem;"></i>
-                                                COMING SOON
-                                            </div>
+                                    <!-- Image -->
+                                    <div style="width:100%;height:175px;border-radius:24px 24px 0 0;overflow:hidden;position:relative;background:linear-gradient(135deg,#0f172a,#1e293b);">
+                                        <img id="coming-soon-modal-img" src="" style="width:100%;height:100%;object-fit:cover;display:none;filter:brightness(0.82);">
+                                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(15,23,42,0.92) 100%);"></div>
+                                        <!-- Pill badge on image -->
+                                        <div style="position:absolute;bottom:14px;left:20px;z-index:3;">
+                                            <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:4px 12px;border-radius:50px;font-size:0.65rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;box-shadow:0 4px 14px rgba(79,70,229,0.4);border:1px solid rgba(255,255,255,0.15);">
+                                                <i class="fa-solid fa-star" style="font-size:0.55rem;"></i> COMING SOON
+                                            </span>
                                         </div>
                                     </div>
 
                                     <!-- Content -->
-                                    <div style="padding: 24px 28px 28px; text-align: center; position: relative;">
-                                        <h2 id="coming-soon-modal-title" style="margin: 0 0 10px 0; color: #f1f5f9; font-size: 1.5rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em;">-</h2>
-                                        <p id="coming-soon-modal-desc" style="margin: 0 0 24px 0; color: #94a3b8; font-size: 0.88rem; line-height: 1.65; max-height: 80px; overflow-y: auto;">-</p>
+                                    <div style="padding:20px 22px 22px;position:relative;z-index:1;">
 
-                                        <!-- Countdown Timer -->
-                                        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 24px;">
-                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden;">
-                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(59,130,246,0.05), transparent); pointer-events:none;"></div>
-                                                <div id="cs-days" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
-                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Hari</div>
+                                        <!-- Title: clamped to 2 lines -->
+                                        <h2 id="coming-soon-modal-title" class="cs-title-clamp" style="margin:0 0 8px;color:#f1f5f9;font-size:1.15rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">-</h2>
+
+                                        <!-- Desc: clamped to 3 lines -->
+                                        <p id="coming-soon-modal-desc" class="cs-desc-clamp" style="margin:0 0 18px;color:#94a3b8;font-size:0.82rem;line-height:1.6;">-</p>
+
+                                        <!-- Divider -->
+                                        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,0.12),transparent);margin-bottom:16px;"></div>
+
+                                        <!-- Countdown timer -->
+                                        <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:4px;margin-bottom:18px;">
+                                            <!-- Days -->
+                                            <div style="background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 6px;text-align:center;">
+                                                <div id="cs-days" style="font-size:1.5rem;font-weight:800;color:#818cf8;line-height:1;">00</div>
+                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Hari</div>
                                             </div>
-                                            <div style="display:flex; align-items:center; color: rgba(148,163,184,0.4); font-size:1.2rem; font-weight:700; margin-top:-8px;">:</div>
-                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden;">
-                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(99,102,241,0.05), transparent); pointer-events:none;"></div>
-                                                <div id="cs-hours" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
-                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Jam</div>
+                                            <div style="color:rgba(148,163,184,0.35);font-size:1rem;font-weight:700;text-align:center;">:</div>
+                                            <!-- Hours -->
+                                            <div style="background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 6px;text-align:center;">
+                                                <div id="cs-hours" style="font-size:1.5rem;font-weight:800;color:#818cf8;line-height:1;">00</div>
+                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Jam</div>
                                             </div>
-                                            <div style="display:flex; align-items:center; color: rgba(148,163,184,0.4); font-size:1.2rem; font-weight:700; margin-top:-8px;">:</div>
-                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden;">
-                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(139,92,246,0.05), transparent); pointer-events:none;"></div>
-                                                <div id="cs-minutes" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #818cf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
-                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Menit</div>
+                                            <div style="color:rgba(148,163,184,0.35);font-size:1rem;font-weight:700;text-align:center;">:</div>
+                                            <!-- Minutes -->
+                                            <div style="background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 6px;text-align:center;">
+                                                <div id="cs-minutes" style="font-size:1.5rem;font-weight:800;color:#a78bfa;line-height:1;">00</div>
+                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Menit</div>
                                             </div>
-                                            <div style="display:flex; align-items:center; color: rgba(148,163,184,0.4); font-size:1.2rem; font-weight:700; margin-top:-8px;">:</div>
-                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden; animation: csPulseGlow 3s ease-in-out infinite;">
-                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(244,63,94,0.05), transparent); pointer-events:none;"></div>
-                                                <div id="cs-seconds" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
-                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Detik</div>
+                                            <div style="color:rgba(148,163,184,0.35);font-size:1rem;font-weight:700;text-align:center;">:</div>
+                                            <!-- Seconds -->
+                                            <div style="background:rgba(79,70,229,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:14px;padding:12px 6px;text-align:center;animation:csPulseGlow 2s ease-in-out infinite;">
+                                                <div id="cs-seconds" style="font-size:1.5rem;font-weight:800;color:#f472b6;line-height:1;">00</div>
+                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Detik</div>
                                             </div>
                                         </div>
 
                                         <!-- CTA Button -->
-                                        <button class="cs-cta-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="background: linear-gradient(135deg, #3b82f6, #6366f1); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-size: 0.95rem; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 8px 25px rgba(59,130,246,0.3); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); letter-spacing: 0.3px; position: relative; overflow: hidden;">
-                                            <span style="position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:8px;">
-                                                <i class="fa-solid fa-arrow-right"></i>
-                                                Lanjut Jelajahi
-                                            </span>
-                                            <div style="position:absolute; inset:0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); background-size: 200% auto; animation: csShimmer 3s linear infinite;"></div>
+                                        <button class="cs-cta-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position:relative;overflow:hidden;width:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:13px 24px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(79,70,229,0.3);transition:all 0.3s ease;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                            <i class="fa-solid fa-rocket"></i>
+                                            Lihat Sekarang
+                                            <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);animation:csShimmer 2.5s ease-in-out infinite;"></div>
                                         </button>
+
                                     </div>
                                 </div>
                             </div>
