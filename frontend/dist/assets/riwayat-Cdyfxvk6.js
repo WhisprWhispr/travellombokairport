@@ -556,14 +556,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                                         <!-- Main compact content -->
                                         <div style="padding:18px 20px 0;position:relative;z-index:1;">
                                             <h2 id="coming-soon-modal-title" class="cs-title-clamp" style="margin:0 0 7px;color:#f1f5f9;font-size:1.1rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">-</h2>
-                                            <!-- AI badge row -->
-                                            <div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:14px;">
-                                                <span style="flex-shrink:0;margin-top:1px;display:inline-flex;align-items:center;gap:4px;background:linear-gradient(135deg,rgba(99,102,241,0.2),rgba(168,85,247,0.2));border:1px solid rgba(139,92,246,0.35);color:#c4b5fd;padding:3px 9px;border-radius:50px;font-size:0.6rem;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;white-space:nowrap;">
-                                                    <svg width="8" height="8" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg>
-                                                    AI
-                                                </span>
-                                                <p id="coming-soon-modal-desc-preview" class="cs-desc-preview" style="margin:0;color:#94a3b8;font-size:0.8rem;line-height:1.6;">-</p>
-                                            </div>
+                                            <p id="coming-soon-modal-desc-preview" class="cs-desc-preview" style="margin:0 0 14px;color:#94a3b8;font-size:0.8rem;line-height:1.6;">-</p>
 
                                             <!-- Countdown timer -->
                                             <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:3px;margin-bottom:16px;">
@@ -592,14 +585,6 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                                         <!-- Expanded detail panel (hidden by default) -->
                                         <div id="cs-detail-panel" style="display:none;padding:0 20px;z-index:1;position:relative;">
                                             <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,0.1),transparent);margin-bottom:14px;"></div>
-                                            <!-- AI Header -->
-                                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-                                                <div style="display:inline-flex;align-items:center;gap:6px;background:linear-gradient(135deg,rgba(79,70,229,0.15),rgba(124,58,237,0.15));border:1px solid rgba(139,92,246,0.3);border-radius:10px;padding:6px 12px;">
-                                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6L12 2z" fill="#a78bfa"/></svg>
-                                                    <span style="font-size:0.7rem;font-weight:700;color:#c4b5fd;letter-spacing:0.5px;">Deskripsi oleh AI</span>
-                                                    <span style="width:6px;height:6px;background:#a78bfa;border-radius:50%;animation:csPulseGlow 1.5s ease-in-out infinite;display:inline-block;"></span>
-                                                </div>
-                                            </div>
                                             <p id="coming-soon-modal-desc-full" style="margin:0 0 14px;color:#cbd5e1;font-size:0.84rem;line-height:1.75;white-space:pre-wrap;">-</p>
                                         </div>
 
