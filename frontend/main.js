@@ -1449,15 +1449,10 @@ const init = async () => {
 
             // COMING SOON EVENT
             if (settings.comingSoonEnabled === true && !window.location.pathname.includes('/admin')) {
-                // Check if already shown in this session (unless testing)
-                const urlParams = new URLSearchParams(window.location.search);
-                const isTesting = urlParams.has('test_popup');
-                
-                if (!sessionStorage.getItem('comingSoonShown') || isTesting) {
-                    setTimeout(() => {
-                        let modal = document.getElementById('coming-soon-modal');
-                        if (!modal) {
-                            const modalHTML = `
+                setTimeout(() => {
+                    let modal = document.getElementById('coming-soon-modal');
+                    if (!modal) {
+                        const modalHTML = `
                             <div id="coming-soon-modal" class="modal-overlay" style="z-index: 10001; position: fixed; inset: 0; background: rgba(15,23,42,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 20px;">
                                 <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.4);">
                                     <button onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 10;">
@@ -1546,11 +1541,8 @@ const init = async () => {
                                 updateTimer();
                                 window.comingSoonInterval = setInterval(updateTimer, 1000);
                             }
-                            
-                            sessionStorage.setItem('comingSoonShown', 'true');
                         }
                     }, 800); // Wait 0.8s before showing for smooth entrance
-                }
             }
         }
     } catch (e) {
