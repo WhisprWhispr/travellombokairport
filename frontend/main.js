@@ -1449,8 +1449,11 @@ const init = async () => {
 
             // COMING SOON EVENT
             if (settings.comingSoonEnabled === true && !window.location.pathname.includes('/admin')) {
-                // Check if already shown in this session
-                if (!sessionStorage.getItem('comingSoonShown')) {
+                // Check if already shown in this session (unless testing)
+                const urlParams = new URLSearchParams(window.location.search);
+                const isTesting = urlParams.has('test_popup');
+                
+                if (!sessionStorage.getItem('comingSoonShown') || isTesting) {
                     setTimeout(() => {
                         const modal = document.getElementById('coming-soon-modal');
                         if (modal) {
