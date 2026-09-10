@@ -2301,6 +2301,107 @@ window.pasteInputText = async (id) => {
     }
 };
 
+window.addGlobalCopyPasteButtons = () => {
+    const processInput = (input) => {
+        // Skip hidden, checkbox, radio, color, file, submit, button, reset, image, search
+        const skipTypes = ['hidden', 'checkbox', 'radio', 'color', 'file', 'submit', 'button', 'reset', 'image', 'search'];
+        if (input.tagName === 'INPUT' && skipTypes.includes(input.type)) return;
+        if (input.id && (input.id.includes('search') || input.id === 'setting-drone-price')) return;
+        
+        // Skip if already added
+        if (input.dataset.hasCopyPaste) return;
+        input.dataset.hasCopyPaste = 'true';
+
+        // Ensure input has an ID
+        if (!input.id) {
+            input.id = 'input-' + Math.random().toString(36).substr(2, 9);
+        }
+
+        const btnContainer = document.createElement('div');
+        btnContainer.style.display = 'flex';
+        btnContainer.style.gap = '5px';
+        
+        if (input.tagName === 'TEXTAREA') {
+            btnContainer.style.flexDirection = 'column';
+        }
+
+        const copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.title = 'Salin';
+        copyBtn.innerHTML = '<i class="fa-regular fa-copy"></i>';
+        copyBtn.style.cssText = 'background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; cursor: pointer; color: #475569; transition: all 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center;';
+        if (input.tagName === 'TEXTAREA') copyBtn.style.height = '35px';
+        
+        const pasteBtn = document.createElement('button');
+        pasteBtn.type = 'button';
+        pasteBtn.title = 'Tempel';
+        pasteBtn.innerHTML = '<i class="fa-solid fa-paste"></i>';
+        pasteBtn.style.cssText = 'background: #e2e8f0; border: 1px solid #cbd5e1; border-radius: 6px; width: 40px; cursor: pointer; color: #475569; transition: all 0.2s; flex-shrink: 0; display: flex; align-items: center; justify-content: center;';
+        if (input.tagName === 'TEXTAREA') pasteBtn.style.height = '35px';
+
+        copyBtn.onclick = (e) => { e.preventDefault(); window.copyInputText(input.id); };
+        pasteBtn.onclick = (e) => { e.preventDefault(); window.pasteInputText(input.id); };
+
+        btnContainer.appendChild(copyBtn);
+        btnContainer.appendChild(pasteBtn);
+
+        const parent = input.parentElement;
+        const compStyle = window.getComputedStyle(parent);
+        
+        if (compStyle.display === 'flex' && parent.children.length > 1) {
+            // If already in a flex container with other buttons (like image upload), append
+            input.after(btnContainer);
+            if (!input.style.flex) input.style.flex = '1';
+        } else {
+            // Wrap in new flex container
+            const wrapper = document.createElement('div');
+            wrapper.className = 'input-with-copy-paste';
+            wrapper.style.display = 'flex';
+            wrapper.style.gap = '5px';
+            wrapper.style.width = '100%';
+            
+            if (input.style.marginTop) {
+                wrapper.style.marginTop = input.style.marginTop;
+                input.style.marginTop = '0';
+            }
+            if (input.tagName === 'TEXTAREA') {
+                wrapper.style.alignItems = 'flex-start';
+            } else {
+                wrapper.style.alignItems = 'stretch';
+            }
+
+            parent.insertBefore(wrapper, input);
+            wrapper.appendChild(input);
+            wrapper.appendChild(btnContainer);
+            input.style.flex = '1';
+        }
+    };
+
+    // Process existing inputs
+    document.querySelectorAll('.form-control').forEach(processInput);
+
+    // Watch for new inputs (e.g. modals opening, dynamic tables)
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach(mutation => {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === 1) {
+                    if (node.classList && node.classList.contains('form-control')) {
+                        processInput(node);
+                    }
+                    if (node.querySelectorAll) {
+                        node.querySelectorAll('.form-control').forEach(processInput);
+                    }
+                }
+            });
+        });
+    });
+    
+    observer.observe(document.body, { childList: true, subtree: true });
+};
+
+// Start watching for inputs
+setTimeout(window.addGlobalCopyPasteButtons, 1000);
+
 // Preview Image for Coming Soon
 window.previewComingSoonImage = (input) => {
     if (input.files && input.files[0]) {
