@@ -1453,41 +1453,91 @@ const init = async () => {
                     let modal = document.getElementById('coming-soon-modal');
                     if (!modal) {
                         const modalHTML = `
-                            <div id="coming-soon-modal" class="modal-overlay" style="z-index: 10001; position: fixed; inset: 0; background: rgba(15,23,42,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 20px;">
-                                <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.4);">
-                                    <button onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 10;">
-                                        <i class="fa-solid fa-times"></i>
+                            <style>
+                                @keyframes csModalIn { 0% { opacity:0; transform:scale(0.85) translateY(30px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
+                                @keyframes csOverlayIn { 0% { opacity:0; } 100% { opacity:1; } }
+                                @keyframes csPulseGlow { 0%,100% { box-shadow: 0 0 20px rgba(59,130,246,0.3), 0 0 60px rgba(59,130,246,0.1); } 50% { box-shadow: 0 0 30px rgba(59,130,246,0.5), 0 0 80px rgba(59,130,246,0.2); } }
+                                @keyframes csShimmer { 0% { background-position: -200% center; } 100% { background-position: 200% center; } }
+                                @keyframes csFloat { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-6px); } }
+                                @keyframes csBorderRotate { 0% { --cs-angle: 0deg; } 100% { --cs-angle: 360deg; } }
+                                @keyframes csCountPop { 0% { transform: scale(1); } 50% { transform: scale(1.12); } 100% { transform: scale(1); } }
+                                @keyframes csSparkle { 0%,100% { opacity:0; transform:scale(0) rotate(0deg); } 50% { opacity:1; transform:scale(1) rotate(180deg); } }
+                                #coming-soon-modal { animation: csOverlayIn 0.4s ease-out forwards; }
+                                #coming-soon-modal .cs-card { animation: csModalIn 0.5s cubic-bezier(0.34,1.56,0.64,1) 0.1s both; }
+                                #coming-soon-modal .cs-timer-box { animation: csFloat 3s ease-in-out infinite; }
+                                #coming-soon-modal .cs-timer-box:nth-child(2) { animation-delay: 0.15s; }
+                                #coming-soon-modal .cs-timer-box:nth-child(3) { animation-delay: 0.3s; }
+                                #coming-soon-modal .cs-timer-box:nth-child(4) { animation-delay: 0.45s; }
+                                #coming-soon-modal .cs-close-btn:hover { background: rgba(255,255,255,0.25) !important; transform: rotate(90deg) scale(1.1); }
+                                #coming-soon-modal .cs-cta-btn:hover { transform: translateY(-2px) scale(1.02) !important; box-shadow: 0 12px 35px rgba(59,130,246,0.4) !important; }
+                                #coming-soon-modal .cs-cta-btn:active { transform: translateY(0) scale(0.98) !important; }
+                            </style>
+                            <div id="coming-soon-modal" style="z-index: 10001; position: fixed; inset: 0; background: rgba(2,6,23,0.88); display: none; justify-content: center; align-items: center; backdrop-filter: blur(12px) saturate(180%); padding: 16px; -webkit-backdrop-filter: blur(12px) saturate(180%);">
+                                <div class="cs-card" style="background: linear-gradient(145deg, rgba(15,23,42,0.97), rgba(30,41,59,0.95)); border-radius: 28px; width: 100%; max-width: 440px; max-height: 92vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(148,163,184,0.12), inset 0 1px 0 rgba(255,255,255,0.05); border: 1px solid rgba(148,163,184,0.1);">
+                                    
+                                    <!-- Sparkle particles -->
+                                    <div style="position:absolute; top:18px; left:22px; width:6px; height:6px; background:#60a5fa; border-radius:50%; animation: csSparkle 2.5s ease-in-out infinite; opacity:0;"></div>
+                                    <div style="position:absolute; top:55px; right:55px; width:4px; height:4px; background:#a78bfa; border-radius:50%; animation: csSparkle 3s ease-in-out 0.8s infinite; opacity:0;"></div>
+                                    <div style="position:absolute; bottom:80px; left:35px; width:5px; height:5px; background:#34d399; border-radius:50%; animation: csSparkle 2.8s ease-in-out 1.5s infinite; opacity:0;"></div>
+                                    <div style="position:absolute; bottom:140px; right:30px; width:4px; height:4px; background:#fbbf24; border-radius:50%; animation: csSparkle 3.2s ease-in-out 0.3s infinite; opacity:0;"></div>
+
+                                    <!-- Close button -->
+                                    <button class="cs-close-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position: absolute; top: 14px; right: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); width: 38px; height: 38px; border-radius: 50%; color: rgba(255,255,255,0.7); font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); z-index: 10; backdrop-filter: blur(10px);">
+                                        <i class="fa-solid fa-xmark"></i>
                                     </button>
-                                    <div style="width: 100%; height: 220px; border-radius: 24px 24px 0 0; overflow: hidden; position: relative; background: #e2e8f0;">
-                                        <img id="coming-soon-modal-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
-                                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
+
+                                    <!-- Image section -->
+                                    <div style="width: 100%; height: 200px; border-radius: 28px 28px 0 0; overflow: hidden; position: relative; background: linear-gradient(135deg, #0f172a, #1e293b);">
+                                        <img id="coming-soon-modal-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none; filter: brightness(0.85);">
+                                        <div style="position: absolute; inset: 0; background: linear-gradient(180deg, transparent 30%, rgba(15,23,42,0.95) 100%);"></div>
+                                        <!-- Badge on image -->
+                                        <div style="position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 3;">
+                                            <div style="display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, rgba(59,130,246,0.9), rgba(99,102,241,0.9)); color: white; padding: 6px 16px; border-radius: 50px; font-size: 0.7rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; box-shadow: 0 4px 20px rgba(59,130,246,0.4); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15);">
+                                                <i class="fa-solid fa-sparkles" style="font-size: 0.65rem;"></i>
+                                                COMING SOON
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div style="padding: 10px 30px 30px; text-align: center; position: relative; z-index: 2;">
-                                        <div style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(16,185,129,0.3);">
-                                            Coming Soon
+
+                                    <!-- Content -->
+                                    <div style="padding: 24px 28px 28px; text-align: center; position: relative;">
+                                        <h2 id="coming-soon-modal-title" style="margin: 0 0 10px 0; color: #f1f5f9; font-size: 1.5rem; font-weight: 800; line-height: 1.3; letter-spacing: -0.02em;">-</h2>
+                                        <p id="coming-soon-modal-desc" style="margin: 0 0 24px 0; color: #94a3b8; font-size: 0.88rem; line-height: 1.65; max-height: 80px; overflow-y: auto;">-</p>
+
+                                        <!-- Countdown Timer -->
+                                        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 24px;">
+                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden;">
+                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(59,130,246,0.05), transparent); pointer-events:none;"></div>
+                                                <div id="cs-days" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
+                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Hari</div>
+                                            </div>
+                                            <div style="display:flex; align-items:center; color: rgba(148,163,184,0.4); font-size:1.2rem; font-weight:700; margin-top:-8px;">:</div>
+                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden;">
+                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(99,102,241,0.05), transparent); pointer-events:none;"></div>
+                                                <div id="cs-hours" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #60a5fa, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
+                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Jam</div>
+                                            </div>
+                                            <div style="display:flex; align-items:center; color: rgba(148,163,184,0.4); font-size:1.2rem; font-weight:700; margin-top:-8px;">:</div>
+                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden;">
+                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(139,92,246,0.05), transparent); pointer-events:none;"></div>
+                                                <div id="cs-minutes" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #818cf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
+                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Menit</div>
+                                            </div>
+                                            <div style="display:flex; align-items:center; color: rgba(148,163,184,0.4); font-size:1.2rem; font-weight:700; margin-top:-8px;">:</div>
+                                            <div class="cs-timer-box" style="background: linear-gradient(145deg, rgba(30,41,59,0.8), rgba(51,65,85,0.5)); border-radius: 16px; padding: 14px 8px; width: 68px; border: 1px solid rgba(148,163,184,0.1); position: relative; overflow: hidden; animation: csPulseGlow 3s ease-in-out infinite;">
+                                                <div style="position:absolute; inset:0; background: linear-gradient(135deg, rgba(244,63,94,0.05), transparent); pointer-events:none;"></div>
+                                                <div id="cs-seconds" style="font-size: 1.65rem; font-weight: 800; background: linear-gradient(135deg, #a78bfa, #f472b6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; line-height: 1; position:relative;">00</div>
+                                                <div style="font-size: 0.6rem; color: #64748b; text-transform: uppercase; margin-top: 6px; font-weight: 700; letter-spacing: 1px;">Detik</div>
+                                            </div>
                                         </div>
-                                        <h2 id="coming-soon-modal-title" style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.8rem; font-weight: 800; line-height: 1.2;">-</h2>
-                                        <p id="coming-soon-modal-desc" style="margin: 0 0 25px 0; color: #475569; font-size: 0.95rem; line-height: 1.6;">-</p>
-                                        <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
-                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-                                                <div id="cs-days" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
-                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Hari</div>
-                                            </div>
-                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-                                                <div id="cs-hours" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
-                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Jam</div>
-                                            </div>
-                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-                                                <div id="cs-minutes" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
-                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Menit</div>
-                                            </div>
-                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
-                                                <div id="cs-seconds" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
-                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Detik</div>
-                                            </div>
-                                        </div>
-                                        <button onclick="document.getElementById('coming-soon-modal').style.display='none'" style="background: linear-gradient(135deg, #1d4ed8, #0284c7); color: white; border: none; padding: 14px 30px; border-radius: 30px; font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 10px 20px rgba(29,78,216,0.25); transition: transform 0.2s;">
-                                            Tutup & Lanjut
+
+                                        <!-- CTA Button -->
+                                        <button class="cs-cta-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="background: linear-gradient(135deg, #3b82f6, #6366f1); color: white; border: none; padding: 14px 28px; border-radius: 50px; font-size: 0.95rem; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 8px 25px rgba(59,130,246,0.3); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); letter-spacing: 0.3px; position: relative; overflow: hidden;">
+                                            <span style="position:relative; z-index:1; display:flex; align-items:center; justify-content:center; gap:8px;">
+                                                <i class="fa-solid fa-arrow-right"></i>
+                                                Lanjut Jelajahi
+                                            </span>
+                                            <div style="position:absolute; inset:0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent); background-size: 200% auto; animation: csShimmer 3s linear infinite;"></div>
                                         </button>
                                     </div>
                                 </div>
@@ -1513,7 +1563,6 @@ const init = async () => {
                             
                             // Setup countdown timer
                             if (settings.comingSoonDate) {
-                                // Initialize immediately
                                 const updateTimer = () => {
                                     const eventDate = new Date(settings.comingSoonDate).getTime();
                                     const now = new Date().getTime();
@@ -1533,6 +1582,10 @@ const init = async () => {
                                     const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
                                     const seconds = Math.floor((distance % (1000 * 60)) / 1000);
                                     
+                                    // Animate seconds change
+                                    const secEl = document.getElementById('cs-seconds');
+                                    if (secEl) { secEl.style.animation = 'none'; secEl.offsetHeight; secEl.style.animation = 'csCountPop 0.3s ease-out'; }
+                                    
                                     document.getElementById('cs-days').innerText = days < 10 ? '0' + days : days;
                                     document.getElementById('cs-hours').innerText = hours < 10 ? '0' + hours : hours;
                                     document.getElementById('cs-minutes').innerText = minutes < 10 ? '0' + minutes : minutes;
@@ -1542,7 +1595,7 @@ const init = async () => {
                                 window.comingSoonInterval = setInterval(updateTimer, 1000);
                             }
                         }
-                    }, 800); // Wait 0.8s before showing for smooth entrance
+                    }, 800);
             }
         }
     } catch (e) {
