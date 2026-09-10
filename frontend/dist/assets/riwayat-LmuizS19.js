@@ -509,95 +509,115 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                             </div>
                         </div>
                     </div>
-                `;return}if(t.droneAvailable===`unavailable`){window.isDroneAvailable=!1;let e=document.getElementById(`drone-main-book-btn`);e&&(e.removeAttribute(`href`),e.style.background=`#cbd5e1`,e.style.cursor=`not-allowed`,e.style.borderColor=`#cbd5e1`,e.innerHTML=`<i class="fa-solid fa-lock"></i> LAYANAN BELUM TERSEDIA`)}if(t.dronePrice){let e=document.getElementById(`drone-base-price`);e&&(e.innerText=r(t.dronePrice).replace(`Rp `,``))}t.comingSoonEnabled===!0&&!window.location.pathname.includes(`/admin`)&&setTimeout(()=>{let e=document.getElementById(`coming-soon-modal`);if(e||=(document.body.insertAdjacentHTML(`beforeend`,`
+                `;return}if(t.droneAvailable===`unavailable`){window.isDroneAvailable=!1;let e=document.getElementById(`drone-main-book-btn`);e&&(e.removeAttribute(`href`),e.style.background=`#cbd5e1`,e.style.cursor=`not-allowed`,e.style.borderColor=`#cbd5e1`,e.innerHTML=`<i class="fa-solid fa-lock"></i> LAYANAN BELUM TERSEDIA`)}if(t.dronePrice){let e=document.getElementById(`drone-base-price`);e&&(e.innerText=r(t.dronePrice).replace(`Rp `,``))}t.comingSoonEnabled===!0&&!window.location.pathname.includes(`/admin`)&&setTimeout(()=>{let e=document.getElementById(`coming-soon-modal`);if(e||(document.body.insertAdjacentHTML(`beforeend`,`
                             <style>
-                                @keyframes csModalIn { 0% { opacity:0; transform:scale(0.88) translateY(24px); } 100% { opacity:1; transform:scale(1) translateY(0); } }
-                                @keyframes csOverlayIn { 0% { opacity:0; } 100% { opacity:1; } }
-                                @keyframes csPulseGlow { 0%,100% { box-shadow: 0 0 0 1px rgba(99,102,241,0.3), 0 0 24px rgba(99,102,241,0.15); } 50% { box-shadow: 0 0 0 1px rgba(99,102,241,0.5), 0 0 32px rgba(99,102,241,0.25); } }
-                                @keyframes csShimmer { 0% { transform:translateX(-100%); } 100% { transform:translateX(100%); } }
-                                @keyframes csCountPop { 0%,100% { transform:scale(1); } 50% { transform:scale(1.1); } }
-                                #coming-soon-modal { animation: csOverlayIn 0.35s ease-out both; }
-                                #coming-soon-modal .cs-card { animation: csModalIn 0.45s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
-                                #coming-soon-modal .cs-close-btn:hover { background: rgba(255,255,255,0.18) !important; transform: rotate(90deg) scale(1.08); }
-                                #coming-soon-modal .cs-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 14px 30px rgba(79,70,229,0.4) !important; }
-                                #coming-soon-modal .cs-cta-btn:active { transform: scale(0.97); }
-                                .cs-title-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-                                .cs-desc-clamp { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+                                @keyframes csModalIn { 0%{opacity:0;transform:scale(0.88) translateY(28px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+                                @keyframes csOverlayIn { 0%{opacity:0} 100%{opacity:1} }
+                                @keyframes csPulseGlow { 0%,100%{box-shadow:0 0 0 1px rgba(99,102,241,0.3),0 0 20px rgba(99,102,241,0.1)} 50%{box-shadow:0 0 0 1px rgba(99,102,241,0.5),0 0 28px rgba(99,102,241,0.22)} }
+                                @keyframes csShimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+                                @keyframes csCountPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
+                                @keyframes csExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
+                                #coming-soon-modal { animation: csOverlayIn 0.3s ease-out both; }
+                                #coming-soon-modal .cs-card { animation: csModalIn 0.4s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
+                                #coming-soon-modal .cs-close-btn:hover { background:rgba(255,255,255,0.18)!important; transform:rotate(90deg) scale(1.08); }
+                                #coming-soon-modal .cs-btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(79,70,229,0.45)!important; }
+                                #coming-soon-modal .cs-btn-primary:active { transform:scale(0.97); }
+                                #coming-soon-modal .cs-btn-secondary:hover { background:rgba(255,255,255,0.1)!important; }
+                                .cs-title-clamp { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+                                .cs-desc-preview { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+                                #cs-detail-panel { animation: csExpandIn 0.4s ease-out both; overflow:hidden; }
                             </style>
-                            <div id="coming-soon-modal" style="z-index:10001; position:fixed; inset:0; background:rgba(2,6,23,0.9); display:none; justify-content:center; align-items:center; backdrop-filter:blur(14px); padding:16px; -webkit-backdrop-filter:blur(14px);">
-                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#1a1f35); border-radius:24px; width:100%; max-width:400px; position:relative; overflow:hidden; box-shadow:0 30px 70px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.07);">
+                            <div id="coming-soon-modal" style="z-index:10001;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:flex-end;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
+                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px 24px 20px 20px;width:100%;max-width:430px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
 
-                                    <!-- Subtle glow accents -->
-                                    <div style="position:absolute;top:-50px;right:-50px;width:160px;height:160px;background:radial-gradient(circle,rgba(99,102,241,0.18),transparent 70%);pointer-events:none;"></div>
-                                    <div style="position:absolute;bottom:-30px;left:-30px;width:140px;height:140px;background:radial-gradient(circle,rgba(16,185,129,0.1),transparent 70%);pointer-events:none;"></div>
+                                    <!-- Glow accents -->
+                                    <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(99,102,241,0.16),transparent 70%);pointer-events:none;z-index:0;"></div>
+                                    <div style="position:absolute;bottom:-20px;left:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(16,185,129,0.09),transparent 70%);pointer-events:none;z-index:0;"></div>
 
-                                    <!-- Close button -->
-                                    <button class="cs-close-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position:absolute;top:12px;right:12px;z-index:20;background:rgba(0,0,0,0.4);border:1px solid rgba(255,255,255,0.12);width:34px;height:34px;border-radius:50%;color:rgba(255,255,255,0.75);font-size:0.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;backdrop-filter:blur(8px);">
+                                    <!-- Close X -->
+                                    <button class="cs-close-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position:absolute;top:11px;right:11px;z-index:20;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.1);width:32px;height:32px;border-radius:50%;color:rgba(255,255,255,0.7);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
 
-                                    <!-- Image -->
-                                    <div style="width:100%;height:175px;border-radius:24px 24px 0 0;overflow:hidden;position:relative;background:linear-gradient(135deg,#0f172a,#1e293b);">
-                                        <img id="coming-soon-modal-img" src="" style="width:100%;height:100%;object-fit:cover;display:none;filter:brightness(0.82);">
-                                        <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.1) 0%,rgba(15,23,42,0.92) 100%);"></div>
-                                        <!-- Pill badge on image -->
-                                        <div style="position:absolute;bottom:14px;left:20px;z-index:3;">
-                                            <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:4px 12px;border-radius:50px;font-size:0.65rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;box-shadow:0 4px 14px rgba(79,70,229,0.4);border:1px solid rgba(255,255,255,0.15);">
-                                                <i class="fa-solid fa-star" style="font-size:0.55rem;"></i> COMING SOON
-                                            </span>
-                                        </div>
-                                    </div>
+                                    <!-- Scrollable content -->
+                                    <div id="cs-scrollable" style="overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
 
-                                    <!-- Content -->
-                                    <div style="padding:20px 22px 22px;position:relative;z-index:1;">
-
-                                        <!-- Title: clamped to 2 lines -->
-                                        <h2 id="coming-soon-modal-title" class="cs-title-clamp" style="margin:0 0 8px;color:#f1f5f9;font-size:1.15rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">-</h2>
-
-                                        <!-- Desc: full text, no limit -->
-                                        <p id="coming-soon-modal-desc" style="margin:0 0 18px;color:#94a3b8;font-size:0.82rem;line-height:1.6;">-</p>
-
-                                        <!-- Divider -->
-                                        <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,0.12),transparent);margin-bottom:16px;"></div>
-
-                                        <!-- Countdown timer -->
-                                        <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:4px;margin-bottom:18px;">
-                                            <!-- Days -->
-                                            <div style="background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 6px;text-align:center;">
-                                                <div id="cs-days" style="font-size:1.5rem;font-weight:800;color:#818cf8;line-height:1;">00</div>
-                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Hari</div>
-                                            </div>
-                                            <div style="color:rgba(148,163,184,0.35);font-size:1rem;font-weight:700;text-align:center;">:</div>
-                                            <!-- Hours -->
-                                            <div style="background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 6px;text-align:center;">
-                                                <div id="cs-hours" style="font-size:1.5rem;font-weight:800;color:#818cf8;line-height:1;">00</div>
-                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Jam</div>
-                                            </div>
-                                            <div style="color:rgba(148,163,184,0.35);font-size:1rem;font-weight:700;text-align:center;">:</div>
-                                            <!-- Minutes -->
-                                            <div style="background:rgba(30,41,59,0.7);border:1px solid rgba(255,255,255,0.07);border-radius:14px;padding:12px 6px;text-align:center;">
-                                                <div id="cs-minutes" style="font-size:1.5rem;font-weight:800;color:#a78bfa;line-height:1;">00</div>
-                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Menit</div>
-                                            </div>
-                                            <div style="color:rgba(148,163,184,0.35);font-size:1rem;font-weight:700;text-align:center;">:</div>
-                                            <!-- Seconds -->
-                                            <div style="background:rgba(79,70,229,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:14px;padding:12px 6px;text-align:center;animation:csPulseGlow 2s ease-in-out infinite;">
-                                                <div id="cs-seconds" style="font-size:1.5rem;font-weight:800;color:#f472b6;line-height:1;">00</div>
-                                                <div style="font-size:0.58rem;color:#475569;text-transform:uppercase;margin-top:5px;font-weight:700;letter-spacing:0.8px;">Detik</div>
+                                        <!-- Image -->
+                                        <div style="width:100%;height:165px;flex-shrink:0;overflow:hidden;position:relative;background:linear-gradient(135deg,#0f172a,#1e293b);">
+                                            <img id="coming-soon-modal-img" src="" style="width:100%;height:100%;object-fit:cover;display:none;filter:brightness(0.8);">
+                                            <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(15,23,42,0.88) 100%);"></div>
+                                            <div style="position:absolute;bottom:13px;left:18px;z-index:3;">
+                                                <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;padding:4px 11px;border-radius:50px;font-size:0.63rem;font-weight:700;letter-spacing:1.8px;text-transform:uppercase;box-shadow:0 4px 12px rgba(79,70,229,0.45);border:1px solid rgba(255,255,255,0.12);">
+                                                    <i class="fa-solid fa-star" style="font-size:0.5rem;"></i> COMING SOON
+                                                </span>
                                             </div>
                                         </div>
 
-                                        <!-- CTA Button -->
-                                        <button class="cs-cta-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position:relative;overflow:hidden;width:100%;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:13px 24px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 8px 20px rgba(79,70,229,0.3);transition:all 0.3s ease;letter-spacing:0.2px;display:flex;align-items:center;justify-content:center;gap:8px;">
-                                            <i class="fa-solid fa-rocket"></i>
-                                            Lihat Sekarang
-                                            <div style="position:absolute;top:0;left:-100%;width:60%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);animation:csShimmer 2.5s ease-in-out infinite;"></div>
-                                        </button>
+                                        <!-- Main compact content -->
+                                        <div style="padding:18px 20px 0;position:relative;z-index:1;">
+                                            <h2 id="coming-soon-modal-title" class="cs-title-clamp" style="margin:0 0 7px;color:#f1f5f9;font-size:1.1rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">-</h2>
+                                            <p id="coming-soon-modal-desc-preview" class="cs-desc-preview" style="margin:0 0 14px;color:#94a3b8;font-size:0.8rem;line-height:1.6;">-</p>
 
+                                            <!-- Countdown timer -->
+                                            <div style="display:grid;grid-template-columns:1fr auto 1fr auto 1fr auto 1fr;align-items:center;gap:3px;margin-bottom:16px;">
+                                                <div style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:10px 4px;text-align:center;">
+                                                    <div id="cs-days" style="font-size:1.4rem;font-weight:800;color:#818cf8;line-height:1;">00</div>
+                                                    <div style="font-size:0.55rem;color:#475569;text-transform:uppercase;margin-top:4px;font-weight:700;letter-spacing:0.8px;">Hari</div>
+                                                </div>
+                                                <div style="color:rgba(148,163,184,0.3);font-size:0.9rem;font-weight:700;text-align:center;padding-bottom:12px;">:</div>
+                                                <div style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:10px 4px;text-align:center;">
+                                                    <div id="cs-hours" style="font-size:1.4rem;font-weight:800;color:#818cf8;line-height:1;">00</div>
+                                                    <div style="font-size:0.55rem;color:#475569;text-transform:uppercase;margin-top:4px;font-weight:700;letter-spacing:0.8px;">Jam</div>
+                                                </div>
+                                                <div style="color:rgba(148,163,184,0.3);font-size:0.9rem;font-weight:700;text-align:center;padding-bottom:12px;">:</div>
+                                                <div style="background:rgba(30,41,59,0.8);border:1px solid rgba(255,255,255,0.07);border-radius:12px;padding:10px 4px;text-align:center;">
+                                                    <div id="cs-minutes" style="font-size:1.4rem;font-weight:800;color:#a78bfa;line-height:1;">00</div>
+                                                    <div style="font-size:0.55rem;color:#475569;text-transform:uppercase;margin-top:4px;font-weight:700;letter-spacing:0.8px;">Menit</div>
+                                                </div>
+                                                <div style="color:rgba(148,163,184,0.3);font-size:0.9rem;font-weight:700;text-align:center;padding-bottom:12px;">:</div>
+                                                <div style="background:rgba(79,70,229,0.15);border:1px solid rgba(99,102,241,0.3);border-radius:12px;padding:10px 4px;text-align:center;animation:csPulseGlow 2s ease-in-out infinite;">
+                                                    <div id="cs-seconds" style="font-size:1.4rem;font-weight:800;color:#f472b6;line-height:1;">00</div>
+                                                    <div style="font-size:0.55rem;color:#475569;text-transform:uppercase;margin-top:4px;font-weight:700;letter-spacing:0.8px;">Detik</div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Expanded detail panel (hidden by default) -->
+                                        <div id="cs-detail-panel" style="display:none;padding:0 20px;z-index:1;position:relative;">
+                                            <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(148,163,184,0.1),transparent);margin-bottom:14px;"></div>
+                                            <p id="coming-soon-modal-desc-full" style="margin:0 0 14px;color:#94a3b8;font-size:0.82rem;line-height:1.7;white-space:pre-wrap;">-</p>
+                                        </div>
+
+                                        <!-- Bottom padding -->
+                                        <div style="height:4px;"></div>
                                     </div>
+
+                                    <!-- Sticky action buttons at bottom -->
+                                    <div style="padding:14px 20px 16px;background:linear-gradient(180deg,transparent,rgba(15,23,42,0.98) 30%);position:relative;z-index:10;flex-shrink:0;">
+                                        <div id="cs-btn-group-compact" style="display:flex;gap:10px;">
+                                            <!-- Lihat Nanti -->
+                                            <button class="cs-btn-secondary" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.1px;">
+                                                Lihat Nanti
+                                            </button>
+                                            <!-- Lihat Sekarang -->
+                                            <button class="cs-btn-primary" id="cs-see-now-btn" onclick="window._csExpandDetail()" style="flex:2;position:relative;overflow:hidden;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:12px 8px;border-radius:50px;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(79,70,229,0.32);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:7px;">
+                                                <i class="fa-solid fa-rocket" style="font-size:0.8rem;"></i>
+                                                Lihat Sekarang
+                                                <div style="position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent);animation:csShimmer 2.5s ease-in-out infinite;"></div>
+                                            </button>
+                                        </div>
+                                        <!-- After expand: single close button -->
+                                        <div id="cs-btn-group-expanded" style="display:none;">
+                                            <button class="cs-btn-primary" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:13px 8px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(79,70,229,0.32);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                                <i class="fa-solid fa-check"></i>
+                                                Oke, Siap!
+                                            </button>
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
-                            `),document.getElementById(`coming-soon-modal`)),e&&(t.comingSoonImage&&(document.getElementById(`coming-soon-modal-img`).src=t.comingSoonImage,document.getElementById(`coming-soon-modal-img`).style.display=`block`),t.comingSoonTitle&&(document.getElementById(`coming-soon-modal-title`).innerText=t.comingSoonTitle),t.comingSoonDesc&&(document.getElementById(`coming-soon-modal-desc`).innerText=t.comingSoonDesc),e.style.display=`flex`,t.comingSoonDate)){let e=()=>{let e=new Date(t.comingSoonDate).getTime()-new Date().getTime();if(e<0){window.comingSoonInterval&&clearInterval(window.comingSoonInterval),document.getElementById(`cs-days`).innerText=`00`,document.getElementById(`cs-hours`).innerText=`00`,document.getElementById(`cs-minutes`).innerText=`00`,document.getElementById(`cs-seconds`).innerText=`00`;return}let n=Math.floor(e/864e5),r=Math.floor(e%864e5/36e5),i=Math.floor(e%36e5/6e4),a=Math.floor(e%6e4/1e3),o=document.getElementById(`cs-seconds`);o&&(o.style.animation=`none`,o.offsetHeight,o.style.animation=`csCountPop 0.3s ease-out`),document.getElementById(`cs-days`).innerText=n<10?`0`+n:n,document.getElementById(`cs-hours`).innerText=r<10?`0`+r:r,document.getElementById(`cs-minutes`).innerText=i<10?`0`+i:i,document.getElementById(`cs-seconds`).innerText=a<10?`0`+a:a};e(),window.comingSoonInterval=setInterval(e,1e3)}},800)}}catch(e){console.error(`Failed to fetch settings`,e)}document.getElementById(`services-container`),document.getElementById(`fleet-container`),t=await i(),window.globalItems=t;try{let t=await fetch(`${e}/bookings?public=true`);t.ok?window.globalBookings=await t.json():window.globalBookings=[]}catch(e){console.error(`Failed to fetch bookings`,e),window.globalBookings=[]}try{if(!window.allReviewsData){let t=await fetch(`${e}/reviews`);t.ok&&(window.allReviewsData=await t.json())}window.allReviewsData&&t.forEach(e=>{let t=window.allReviewsData.filter(t=>t.itemId===e.id&&t.status===`approved`);t.length>0&&(e.rating=(t.reduce((e,t)=>e+t.rating,0)/t.length).toFixed(1).replace(`.0`,``),e.reviewCount=t.length)})}catch(e){console.error(`Failed to fetch reviews for items`,e)}new Set(t.filter(e=>e.parentId).map(e=>e.id));let n=t.filter(e=>!e.parentId),a=n.filter(e=>{let t=e.category.toLowerCase();return t.includes(`paket`)||t===`package`||t===`tour`||t===`honeymoon`}),o=n.filter(e=>{let t=e.category.toLowerCase();return(t.includes(`rental`)||t.includes(`armada`)||t.includes(`sewa`)||t===`car`)&&t!==`motorcycle`}),s=n.filter(e=>e.category.toLowerCase()===`motorcycle`),p=n.filter(e=>e.category.toLowerCase()===`drone`),m=n.filter(e=>e.category.toLowerCase()===`transfer`),h=n.filter(e=>!a.includes(e)&&!o.includes(e)&&!s.includes(e)&&!p.includes(e)&&!m.includes(e)),g=(e,t,n,r=null)=>{let i=document.getElementById(e);if(!i)return;if(t.length===0){i.innerHTML=`<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada data yang ditambahkan.</p>`;return}let a=r;a===null&&(a=(window.innerWidth>=1200?e.includes(`cars`)||e.includes(`motor`)?4:3:2)*2);let o=``;if(t.forEach((e,t)=>{let r=t>=a,i=n(e,t);r&&(i=i.replace(/(<div\s+)/,`$1data-hidden="true" style="display: none;" `)),o+=i}),i.innerHTML=o,t.length>a){let n=`
+                            `),e=document.getElementById(`coming-soon-modal`),window._csExpandDetail=()=>{let e=document.getElementById(`cs-detail-panel`),t=document.getElementById(`cs-btn-group-compact`),n=document.getElementById(`cs-btn-group-expanded`),r=document.getElementById(`cs-scrollable`);e&&(e.style.display=`block`),t&&(t.style.display=`none`),n&&(n.style.display=`block`),setTimeout(()=>{r&&r.scrollTo({top:r.scrollHeight,behavior:`smooth`})},100)}),e&&(t.comingSoonImage&&(document.getElementById(`coming-soon-modal-img`).src=t.comingSoonImage,document.getElementById(`coming-soon-modal-img`).style.display=`block`),t.comingSoonTitle&&(document.getElementById(`coming-soon-modal-title`).innerText=t.comingSoonTitle),t.comingSoonDesc&&(document.getElementById(`coming-soon-modal-desc-preview`).innerText=t.comingSoonDesc,document.getElementById(`coming-soon-modal-desc-full`).innerText=t.comingSoonDesc),e.style.display=`flex`,t.comingSoonDate)){let e=()=>{let e=new Date(t.comingSoonDate).getTime()-new Date().getTime();if(e<0){window.comingSoonInterval&&clearInterval(window.comingSoonInterval),[`cs-days`,`cs-hours`,`cs-minutes`,`cs-seconds`].forEach(e=>{let t=document.getElementById(e);t&&(t.innerText=`00`)});return}let n=Math.floor(e/864e5),r=Math.floor(e%864e5/36e5),i=Math.floor(e%36e5/6e4),a=Math.floor(e%6e4/1e3),o=document.getElementById(`cs-seconds`);o&&(o.style.animation=`none`,o.offsetHeight,o.style.animation=`csCountPop 0.3s ease-out`);let s=e=>e<10?`0`+e:e;document.getElementById(`cs-days`).innerText=s(n),document.getElementById(`cs-hours`).innerText=s(r),document.getElementById(`cs-minutes`).innerText=s(i),document.getElementById(`cs-seconds`).innerText=s(a)};e(),window.comingSoonInterval=setInterval(e,1e3)}},800)}}catch(e){console.error(`Failed to fetch settings`,e)}document.getElementById(`services-container`),document.getElementById(`fleet-container`),t=await i(),window.globalItems=t;try{let t=await fetch(`${e}/bookings?public=true`);t.ok?window.globalBookings=await t.json():window.globalBookings=[]}catch(e){console.error(`Failed to fetch bookings`,e),window.globalBookings=[]}try{if(!window.allReviewsData){let t=await fetch(`${e}/reviews`);t.ok&&(window.allReviewsData=await t.json())}window.allReviewsData&&t.forEach(e=>{let t=window.allReviewsData.filter(t=>t.itemId===e.id&&t.status===`approved`);t.length>0&&(e.rating=(t.reduce((e,t)=>e+t.rating,0)/t.length).toFixed(1).replace(`.0`,``),e.reviewCount=t.length)})}catch(e){console.error(`Failed to fetch reviews for items`,e)}new Set(t.filter(e=>e.parentId).map(e=>e.id));let n=t.filter(e=>!e.parentId),a=n.filter(e=>{let t=e.category.toLowerCase();return t.includes(`paket`)||t===`package`||t===`tour`||t===`honeymoon`}),o=n.filter(e=>{let t=e.category.toLowerCase();return(t.includes(`rental`)||t.includes(`armada`)||t.includes(`sewa`)||t===`car`)&&t!==`motorcycle`}),s=n.filter(e=>e.category.toLowerCase()===`motorcycle`),p=n.filter(e=>e.category.toLowerCase()===`drone`),m=n.filter(e=>e.category.toLowerCase()===`transfer`),h=n.filter(e=>!a.includes(e)&&!o.includes(e)&&!s.includes(e)&&!p.includes(e)&&!m.includes(e)),g=(e,t,n,r=null)=>{let i=document.getElementById(e);if(!i)return;if(t.length===0){i.innerHTML=`<p class="text-center w-100" style="grid-column: 1/-1;">Belum ada data yang ditambahkan.</p>`;return}let a=r;a===null&&(a=(window.innerWidth>=1200?e.includes(`cars`)||e.includes(`motor`)?4:3:2)*2);let o=``;if(t.forEach((e,t)=>{let r=t>=a,i=n(e,t);r&&(i=i.replace(/(<div\s+)/,`$1data-hidden="true" style="display: none;" `)),o+=i}),i.innerHTML=o,t.length>a){let n=`
             <div class="text-center w-100 mt-4 show-all-wrapper" style="grid-column: 1/-1;">
                 <button onclick="toggleShowAll('${e}', this, ${t.length})" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: 2px solid var(--primary-blue); font-weight: 700; padding: 10px 25px; border-radius: 30px; transition: all 0.3s;">
                     Lihat Semuanya (${t.length}) <i class="fa-solid fa-chevron-down" style="margin-left: 5px;"></i>
