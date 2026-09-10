@@ -2312,7 +2312,10 @@ window.saveGlobalSettings = async () => {
             
             const uploadRes = await fetch(`${API_URL}/upload`, {
                 method: 'POST',
-                headers: getAuthHeaders(true), // Content-Type will be set by browser for FormData
+                headers: {
+                    'Authorization': `Bearer ${authToken}`
+                    // Do not set Content-Type, browser will set it to multipart/form-data with the correct boundary
+                },
                 body: formData
             });
             
