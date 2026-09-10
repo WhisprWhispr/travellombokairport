@@ -517,8 +517,8 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                                 @keyframes csShimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
                                 @keyframes csCountPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
                                 @keyframes csExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
-                                #coming-soon-modal { animation: csOverlayIn 0.3s ease-out both; transform: translateZ(0); will-change: transform, opacity; }
-                                #coming-soon-modal .cs-card { animation: csModalIn 0.4s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; will-change: transform, opacity; }
+                                #coming-soon-modal { animation: csOverlayIn 0.3s ease-out both; }
+                                #coming-soon-modal .cs-card { animation: csModalIn 0.4s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
                                 #coming-soon-modal .cs-close-btn:hover { background:rgba(255,255,255,0.18)!important; transform:rotate(90deg) scale(1.08); }
                                 #coming-soon-modal .cs-btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(79,70,229,0.45)!important; }
                                 #coming-soon-modal .cs-btn-primary:active { transform:scale(0.97); }
@@ -529,8 +529,8 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                                 .cs-typewriter-cursor { font-weight: bold; color: #a78bfa; animation: csBlink 1s step-end infinite; }
                                 @keyframes csBlink { 50% { opacity: 0; } }
                             </style>
-                            <div id="coming-soon-modal" style="z-index:10001;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:center;padding:20px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
-                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px;width:100%;max-width:430px;position:relative;box-shadow:0 10px 50px rgba(0,0,0,0.6),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:90vh;display:flex;flex-direction:column;">
+                            <div id="coming-soon-modal" style="z-index:10001;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:flex-end;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
+                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px 24px 20px 20px;width:100%;max-width:430px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
 
                                     <!-- Glow accents -->
                                     <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(99,102,241,0.16),transparent 70%);pointer-events:none;z-index:0;"></div>
