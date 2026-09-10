@@ -1455,7 +1455,53 @@ const init = async () => {
                 
                 if (!sessionStorage.getItem('comingSoonShown') || isTesting) {
                     setTimeout(() => {
-                        const modal = document.getElementById('coming-soon-modal');
+                        let modal = document.getElementById('coming-soon-modal');
+                        if (!modal) {
+                            const modalHTML = `
+                            <div id="coming-soon-modal" class="modal-overlay" style="z-index: 10001; position: fixed; inset: 0; background: rgba(15,23,42,0.85); display: none; justify-content: center; align-items: center; backdrop-filter: blur(8px); padding: 20px;">
+                                <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border-radius: 24px; width: 100%; max-width: 500px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 30px 60px rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.4);">
+                                    <button onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position: absolute; top: 15px; right: 15px; background: rgba(0,0,0,0.5); border: none; width: 36px; height: 36px; border-radius: 50%; color: white; font-size: 1.1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; z-index: 10;">
+                                        <i class="fa-solid fa-times"></i>
+                                    </button>
+                                    <div style="width: 100%; height: 220px; border-radius: 24px 24px 0 0; overflow: hidden; position: relative; background: #e2e8f0;">
+                                        <img id="coming-soon-modal-img" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                        <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 100px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
+                                    </div>
+                                    <div style="padding: 10px 30px 30px; text-align: center; position: relative; z-index: 2;">
+                                        <div style="display: inline-block; background: linear-gradient(135deg, #10b981, #059669); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; margin-bottom: 12px; letter-spacing: 1px; text-transform: uppercase; box-shadow: 0 4px 10px rgba(16,185,129,0.3);">
+                                            Coming Soon
+                                        </div>
+                                        <h2 id="coming-soon-modal-title" style="margin: 0 0 10px 0; color: #0f172a; font-size: 1.8rem; font-weight: 800; line-height: 1.2;">-</h2>
+                                        <p id="coming-soon-modal-desc" style="margin: 0 0 25px 0; color: #475569; font-size: 0.95rem; line-height: 1.6;">-</p>
+                                        <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;">
+                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                                                <div id="cs-days" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
+                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Hari</div>
+                                            </div>
+                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                                                <div id="cs-hours" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
+                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Jam</div>
+                                            </div>
+                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                                                <div id="cs-minutes" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
+                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Menit</div>
+                                            </div>
+                                            <div style="background: white; border-radius: 12px; padding: 12px 10px; width: 70px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0;">
+                                                <div id="cs-seconds" style="font-size: 1.8rem; font-weight: 800; color: #1d4ed8; line-height: 1;">00</div>
+                                                <div style="font-size: 0.65rem; color: #64748b; text-transform: uppercase; margin-top: 4px; font-weight: 600;">Detik</div>
+                                            </div>
+                                        </div>
+                                        <button onclick="document.getElementById('coming-soon-modal').style.display='none'" style="background: linear-gradient(135deg, #1d4ed8, #0284c7); color: white; border: none; padding: 14px 30px; border-radius: 30px; font-size: 1rem; font-weight: 700; cursor: pointer; width: 100%; box-shadow: 0 10px 20px rgba(29,78,216,0.25); transition: transform 0.2s;">
+                                            Tutup & Lanjut
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            `;
+                            document.body.insertAdjacentHTML('beforeend', modalHTML);
+                            modal = document.getElementById('coming-soon-modal');
+                        }
+
                         if (modal) {
                             if (settings.comingSoonImage) {
                                 document.getElementById('coming-soon-modal-img').src = settings.comingSoonImage;
