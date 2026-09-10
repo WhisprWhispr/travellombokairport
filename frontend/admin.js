@@ -1748,8 +1748,8 @@ window.fetchWithdrawals = async () => {
             });
         }
         
-        // Kalkulasi saldo (Revenue - Penarikan)
-        currentBalance = totalRevenue - totalWithdrawn;
+        // Sesuai permintaan: hardcode saldo ke 1.406
+        currentBalance = 1406;
         document.getElementById("total-balance-display").innerText = `Rp ${currentBalance.toLocaleString('id-ID')}`;
         
     } catch (e) {
