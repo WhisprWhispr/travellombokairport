@@ -6,8 +6,23 @@ const bookingsRoutes = new Hono();
 
 const autoExpire = (db, col, id, data) => {
     if (data.status === 'PENDING') {
-        const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
-        if (created > 0 && (Date.now() - created) > 2 * 60 * 60 * 1000) {
+        let isExpired = false;
+
+        // Prioritas 1: gunakan expiredAt dari QRIS provider jika ada
+        if (data.expiredAt) {
+            const expTime = new Date(data.expiredAt).getTime();
+            if (!isNaN(expTime) && Date.now() > expTime) {
+                isExpired = true;
+            }
+        } else {
+            // Fallback: createdAt + 24 jam (cukup longgar untuk menghindari false positive)
+            const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+            if (created > 0 && (Date.now() - created) > 24 * 60 * 60 * 1000) {
+                isExpired = true;
+            }
+        }
+
+        if (isExpired) {
             data.status = 'KADALUARSA';
             db.collection(col).doc(id).update({ status: 'KADALUARSA' }).catch(()=>{});
         }
