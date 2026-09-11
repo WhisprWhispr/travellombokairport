@@ -4274,106 +4274,129 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                 didOpen: () => { Swal.showLoading(); }
             });
             try {
-                const res = await fetch(`${API_URL}/payment/status/${transactionId}`);
-                const result = await res.json();
-                if (result.success && result.data && result.data.raw) {
-                    const raw = result.data.raw;
-                    const method = result.data.method || raw.method;
-                    const amountFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(raw.amount);
-                    let expiredAt = '-';
-                    if (raw.expires_at) {
-                        expiredAt = new Date(raw.expires_at).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                let raw = {};
+                let method = '';
+                let amountFormatted = '-';
+                let expiredAt = '-';
+                
+                // Coba ambil dari server Borderpay dulu
+                try {
+                    const res = await fetch(`${API_URL}/payment/status/${transactionId}`);
+                    const result = await res.json();
+                    if (result.success && result.data && result.data.raw) {
+                        raw = result.data.raw;
+                        method = (result.data.method || raw.method || '').toLowerCase();
+                        const parsedPrice = parseInt(raw.amount || '0');
+                        if (parsedPrice > 0) {
+                            amountFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(parsedPrice);
+                        }
+                        if (raw.expires_at) {
+                            expiredAt = new Date(raw.expires_at).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                        }
                     }
+                } catch (e) {
+                    console.error('Gagal fetch dari borderpay API:', e);
+                }
 
-                    if (method === 'qris' && (raw.qr_string || window._lastBookingData.rawQrisString)) {
-                        const qrString = raw.qr_string || window._lastBookingData.rawQrisString;
-                        const encoded = encodeURIComponent(qrString);
-                        const qrCodeSvg = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}" alt="QRIS" style="width:220px;height:220px;border-radius:8px;" />`;
-                        Swal.fire({
-                            showCloseButton: true,
-                            showConfirmButton: false,
-                            width: '500px',
-                            html: `
-                                <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
-                                    <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
-                                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Lanjutkan pembayaran Anda.</p>
-                                    <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                                        ${qrCodeSvg}
-                                    </div>
-                                    <h4 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h4>
-                                    <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">${amountFormatted}</p>
-                                    <div style="background: #fff1f2; color: #e11d48; padding: 8px; border-radius: 8px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px;">
-                                        <i class="fa-regular fa-clock"></i> Batas Waktu: ${expiredAt}
-                                    </div>
-                                    <div style="color: var(--primary-blue); font-size: 0.9rem; margin-bottom: 15px;">
-                                        <i class="fa-solid fa-spinner fa-spin"></i> Sistem menunggu pembayaran...
-                                    </div>
-                                </div>
-                            `
-                        });
-                        
-                        // Start polling
-                        if (window.activePollInterval) clearInterval(window.activePollInterval);
-                        window.activePollInterval = setInterval(async () => {
-                            try {
-                                const stRes = await fetch(`${API_URL}/payment/status/${transactionId}`);
-                                const stData = await stRes.json();
-                                if (stData.success && ['PAID','SUCCESS','SETTLEMENT','COMPLETED'].includes(stData.data.status?.toUpperCase())) {
-                                    clearInterval(window.activePollInterval);
-                                    window.simulateQrisSuccess(false, transactionId);
-                                }
-                            } catch(e) {}
-                        }, 5000);
-
-                    } else if (method === 'va' && (raw.va_number || window._lastBookingData.vaNumber)) {
-                        const vaBank = raw.bank_code || window._lastBookingData.vaBank || '';
-                        const vaNumber = raw.va_number || window._lastBookingData.vaNumber;
-                        Swal.fire({
-                            showCloseButton: true,
-                            showConfirmButton: false,
-                            width: '500px',
-                            html: `
-                                <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
-                                    <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${vaBank}</h3>
-                                    <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
-                                    <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
-                                        <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
-                                        <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${vaNumber}</div>
-                                        <button onclick="navigator.clipboard.writeText('${vaNumber}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
-                                            style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
-                                            <i class="fa-regular fa-copy"></i> Salin Nomor
-                                        </button>
-                                    </div>
-                                    <h4 style="color:#0c4a6e;margin-bottom:5px;">${itemName}</h4>
-                                    <p style="font-size:1.4rem;font-weight:bold;color:#16a34a;margin-bottom:10px;">${amountFormatted}</p>
-                                    <div style="background:#fef9c3;color:#854d0e;padding:8px;border-radius:8px;font-size:0.85rem;display:inline-block;margin-bottom:15px;">
-                                        <i class="fa-regular fa-clock"></i> Batas Waktu: ${expiredAt}
-                                    </div>
-                                </div>
-                            `
-                        });
-                        
-                        // Start polling
-                        if (window.activePollInterval) clearInterval(window.activePollInterval);
-                        window.activePollInterval = setInterval(async () => {
-                            try {
-                                const stRes = await fetch(`${API_URL}/payment/status/${transactionId}`);
-                                const stData = await stRes.json();
-                                if (stData.success && ['PAID','SUCCESS','SETTLEMENT','COMPLETED'].includes(stData.data.status?.toUpperCase())) {
-                                    clearInterval(window.activePollInterval);
-                                    window.simulateQrisSuccess(false, transactionId);
-                                }
-                            } catch(e) {}
-                        }, 5000);
-                    } else {
-                        Swal.fire({ icon: 'error', title: 'Oops', text: 'Data pembayaran tidak ditemukan atau metode tidak didukung.' });
+                // Fallback: Jika method kosong (karena error network atau Borderpay bermasalah),
+                // kita ambil langsung dari database kita yang tersimpan di window._lastBookingData
+                if (!method && window._lastBookingData) {
+                    method = (window._lastBookingData.paymentMethod || '').toLowerCase();
+                    const parsedPrice = parseInt((window._lastBookingData.itemPrice || '').toString().replace(/\\D/g, ''));
+                    if (!isNaN(parsedPrice) && parsedPrice > 0) {
+                        amountFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(parsedPrice);
                     }
+                    if (window._lastBookingData.expiredAt) {
+                        expiredAt = window._lastBookingData.expiredAt;
+                    }
+                }
+
+                if (method === 'qris' && (raw.qr_string || window._lastBookingData?.rawQrisString)) {
+                    const qrString = raw.qr_string || window._lastBookingData.rawQrisString;
+                    const encoded = encodeURIComponent(qrString);
+                    const qrCodeSvg = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}" alt="QRIS" style="width:220px;height:220px;border-radius:8px;" />`;
+                    Swal.fire({
+                        showCloseButton: true,
+                        showConfirmButton: false,
+                        width: '500px',
+                        html: `
+                            <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
+                                <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
+                                <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Lanjutkan pembayaran Anda.</p>
+                                <div style="display: flex; justify-content: center; margin-bottom: 15px;">
+                                    ${qrCodeSvg}
+                                </div>
+                                <h4 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h4>
+                                <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">${amountFormatted}</p>
+                                <div style="background: #fff1f2; color: #e11d48; padding: 8px; border-radius: 8px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px;">
+                                    <i class="fa-regular fa-clock"></i> Batas Waktu: ${expiredAt}
+                                </div>
+                                <div style="color: var(--primary-blue); font-size: 0.9rem; margin-bottom: 15px;">
+                                    <i class="fa-solid fa-spinner fa-spin"></i> Sistem menunggu pembayaran...
+                                </div>
+                            </div>
+                        `
+                    });
+                    
+                    // Start polling
+                    if (window.activePollInterval) clearInterval(window.activePollInterval);
+                    window.activePollInterval = setInterval(async () => {
+                        try {
+                            const stRes = await fetch(`${API_URL}/payment/status/${transactionId}`);
+                            const stData = await stRes.json();
+                            if (stData.success && ['PAID','SUCCESS','SETTLEMENT','COMPLETED'].includes(stData.data.status?.toUpperCase())) {
+                                clearInterval(window.activePollInterval);
+                                window.simulateQrisSuccess(false, transactionId);
+                            }
+                        } catch(e) {}
+                    }, 5000);
+
+                } else if (method === 'va' && (raw.va_number || window._lastBookingData?.vaNumber)) {
+                    const vaBank = raw.bank_code || window._lastBookingData.vaBank || '';
+                    const vaNumber = raw.va_number || window._lastBookingData.vaNumber;
+                    Swal.fire({
+                        showCloseButton: true,
+                        showConfirmButton: false,
+                        width: '500px',
+                        html: `
+                            <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
+                                <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${vaBank}</h3>
+                                <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
+                                <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
+                                    <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
+                                    <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${vaNumber}</div>
+                                    <button onclick="navigator.clipboard.writeText('${vaNumber}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
+                                        style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
+                                        <i class="fa-regular fa-copy"></i> Salin Nomor
+                                    </button>
+                                </div>
+                                <h4 style="color:#0c4a6e;margin-bottom:5px;">${itemName}</h4>
+                                <p style="font-size:1.4rem;font-weight:bold;color:#16a34a;margin-bottom:10px;">${amountFormatted}</p>
+                                <div style="background:#fef9c3;color:#854d0e;padding:8px;border-radius:8px;font-size:0.85rem;display:inline-block;margin-bottom:15px;">
+                                    <i class="fa-regular fa-clock"></i> Batas Waktu: ${expiredAt}
+                                </div>
+                            </div>
+                        `
+                    });
+                    
+                    // Start polling
+                    if (window.activePollInterval) clearInterval(window.activePollInterval);
+                    window.activePollInterval = setInterval(async () => {
+                        try {
+                            const stRes = await fetch(`${API_URL}/payment/status/${transactionId}`);
+                            const stData = await stRes.json();
+                            if (stData.success && ['PAID','SUCCESS','SETTLEMENT','COMPLETED'].includes(stData.data.status?.toUpperCase())) {
+                                clearInterval(window.activePollInterval);
+                                window.simulateQrisSuccess(false, transactionId);
+                            }
+                        } catch(e) {}
+                    }, 5000);
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Oops', text: 'Gagal memuat status pembayaran dari server.' });
+                    Swal.fire({ icon: 'error', title: 'Oops', text: 'Data pembayaran tidak ditemukan atau metode tidak didukung.' });
                 }
             } catch (err) {
                 console.error(err);
-                Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan jaringan.' });
+                Swal.fire({ icon: 'error', title: 'Error', text: 'Terjadi kesalahan jaringan atau memuat data.' });
             }
         };
 
