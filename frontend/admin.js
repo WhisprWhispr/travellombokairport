@@ -316,11 +316,11 @@ const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR
    • WNA: Paspor & SIM yang berlaku.
 
 2. Booking
-   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 50.000.
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 53.000.
    • Pelunasan dilakukan sebelum kendaraan digunakan.
 
 3. Deposit / Uang Jaminan
-   • Deposit: Rp 500.000
+   • Deposit: Rp 503.000
    • Deposit dibayarkan sebelum kendaraan diserahkan.
    • Deposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.
    • Jika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.
@@ -340,7 +340,7 @@ const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR
    • Keterlambatan dapat dikenakan biaya tambahan.
    • Kendaraan dikembalikan dalam kondisi seperti saat diterima.
 
-💰 DEPOSIT: Rp 500.000
+💰 DEPOSIT: Rp 503.000
 
 Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
 
@@ -357,7 +357,7 @@ const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI
    • Pelunasan dilakukan sebelum kendaraan digunakan.
 
 3. Deposit / Uang Jaminan
-   • Deposit: Rp 1.000.000
+   • Deposit: Rp 1.003.000
    • Deposit dibayarkan sebelum kendaraan diserahkan.
    • Deposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.
    • Jika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.
@@ -377,7 +377,7 @@ const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI
    • Keterlambatan dapat dikenakan biaya tambahan.
    • Kendaraan dikembalikan dalam kondisi seperti saat diterima.
 
-💰 DEPOSIT: Rp 1.000.000
+💰 DEPOSIT: Rp 1.003.000
 
 Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
 

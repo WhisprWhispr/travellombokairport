@@ -2767,28 +2767,45 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     }
 
     let dpAmount = 500200;
-    if (category === 'motor') dpAmount = 100200;
-    else if (category === 'mobil') dpAmount = 200200;
-    else if (category === 'tour') dpAmount = 500200;
+    let depositAmount = 0;
+    if (category === 'motor') {
+        dpAmount = 53000;
+        depositAmount = 503000;
+    } else if (category === 'mobil') {
+        dpAmount = 200000;
+        depositAmount = 1003000;
+    } else if (category === 'tour') {
+        dpAmount = 500200;
+    }
 
     if (isOrder && method !== 'wa') {
         html += `
+            ${depositAmount > 0 ? `
+            <div style="background: #e0f2fe; border: 1.5px solid #38bdf8; border-radius: 10px; padding: 12px; margin-bottom: 16px; text-align: left;">
+                <div style="font-weight: 700; color: #0369a1; font-size: 0.9rem; margin-bottom: 4px;">ℹ️ Catatan Penting: Tentang Uang Deposit</div>
+                <div style="font-size: 0.8rem; color: #0c4a6e;">
+                    Total pembayaran Anda saat ini sudah otomatis ditambahkan uang deposit sebesar <strong>${formatPrice(depositAmount)}</strong>. Uang deposit ini adalah jaminan yang akan <strong>dikembalikan 100%</strong> setelah masa sewa berakhir jika kendaraan dalam kondisi baik.
+                </div>
+            </div>
+            ` : ''}
             ${price > dpAmount ? `
-            <div class="form-group mb-4">
+            <div class="form-group mb-4" style="text-align: left;">
                 <label style="font-weight:700;color:var(--text-dark);">Tipe Pembayaran</label>
                 <div style="display:flex;gap:10px;margin-top:8px;" id="payment-type-container">
                     <label id="pt-dp-label" onclick="window.setPaymentType('dp')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#fffbeb;border:2px solid #f59e0b;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
                         <input type="radio" name="payment-type-radio" id="pt-dp" value="dp" checked style="accent-color:#f59e0b;width:16px;height:16px;margin-top:2px;">
                         <div>
-                            <div style="font-weight:700;color:#d97706;font-size:0.88rem;">DP (Uang Muka)</div>
-                            <div style="font-size:0.75rem;color:#92400e;">Bayar ${formatPrice(dpAmount)} sekarang, sisa lunas sebelum keberangkatan.</div>
+                            <div style="font-weight:700;color:#d97706;font-size:0.88rem;">Bayar DP</div>
+                            <div style="font-size:0.75rem;color:#92400e;margin-top:2px;">Bayar DP ${formatPrice(dpAmount)} ${depositAmount > 0 ? `+ Deposit ${formatPrice(depositAmount)}` : ''} sekarang.</div>
+                            <div style="font-size:0.75rem;font-weight:700;color:#d97706;margin-top:4px;">Total ditransfer: ${formatPrice(dpAmount + depositAmount)}</div>
                         </div>
                     </label>
                     <label id="pt-full-label" onclick="window.setPaymentType('full')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#f0fdf4;border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
                         <input type="radio" name="payment-type-radio" id="pt-full" value="full" style="accent-color:#22c55e;width:16px;height:16px;margin-top:2px;">
                         <div>
-                            <div style="font-weight:700;color:#15803d;font-size:0.88rem;">Bayar Penuh</div>
-                            <div style="font-size:0.75rem;color:#166534;">Bayar total harga sekarang, langsung dikonfirmasi.</div>
+                            <div style="font-weight:700;color:#15803d;font-size:0.88rem;">Bayar Lunas</div>
+                            <div style="font-size:0.75rem;color:#166534;margin-top:2px;">Lunas Biaya Sewa ${depositAmount > 0 ? `+ Deposit ${formatPrice(depositAmount)}` : ''}</div>
+                            <div style="font-size:0.75rem;font-weight:700;color:#15803d;margin-top:4px;">Transfer sewa penuh + deposit</div>
                         </div>
                     </label>
                 </div>
@@ -3185,9 +3202,9 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         let introText = isManual ? "Saya telah melakukan Booking via Website dengan rincian:" : "Saya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:";
 
         if (category === 'motor') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 100.200) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 53.000) dan Deposit (Rp 503.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'mobil') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.200) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) dan Deposit (Rp 1.003.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
@@ -3227,9 +3244,16 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     const discountedTotal = finalPrice; // Total setelah diskon
 
     let dpAmount = 500200;
-    if (category === 'motor') dpAmount = 100200;
-    else if (category === 'mobil') dpAmount = 200200;
-    else if (category === 'tour') dpAmount = 500200;
+    let depositAmount = 0;
+    if (category === 'motor') {
+        dpAmount = 53000;
+        depositAmount = 503000;
+    } else if (category === 'mobil') {
+        dpAmount = 200000;
+        depositAmount = 1003000;
+    } else if (category === 'tour') {
+        dpAmount = 500200;
+    }
 
     // Cek apakah user memilih DP
     const isDp = baseTotal > dpAmount && document.getElementById('pt-dp')?.checked === true;
@@ -3237,8 +3261,13 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     
     if (isDp) {
         paymentAmount = dpAmount;
-        if (paymentAmount > discountedTotal) paymentAmount = discountedTotal;
+        // Don't cap at discountedTotal for rentals because we will add deposit later
+        if (category !== 'motor' && category !== 'mobil' && paymentAmount > discountedTotal) {
+            paymentAmount = discountedTotal;
+        }
     }
+
+    paymentAmount += depositAmount; // Selalu tambahkan deposit ke pembayaran saat ini
 
     const bookingData = {
         itemName,
