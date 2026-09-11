@@ -4392,7 +4392,7 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                         } catch(e) {}
                     }, 5000);
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Oops', text: 'Data pembayaran tidak ditemukan atau metode tidak didukung.' });
+                    Swal.fire({ icon: 'error', title: 'Oops', text: 'Data pembayaran untuk transaksi lama ini tidak tersimpan. Silakan buat pesanan baru.' });
                 }
             } catch (err) {
                 console.error(err);
