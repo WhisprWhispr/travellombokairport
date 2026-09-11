@@ -218,6 +218,11 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
                 status: d.status || 'PENDING',
                 itemPrice: d.itemPrice || d.price || 0,
                 createdAt: d.createdAt || null,
+                paymentMethod: d.paymentMethod || null,
+                rawQrisString: d.rawQrisString || null,
+                vaBank: d.vaBank || null,
+                vaNumber: d.vaNumber || null,
+                expiredAt: d.expiredAt || null,
             });
         });
 
@@ -239,6 +244,11 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
                 status: d.status || 'PENDING',
                 itemPrice: d.totalPrice || d.price || 0,
                 createdAt: d.createdAt || null,
+                paymentMethod: d.paymentMethod || null,
+                rawQrisString: d.rawQrisString || null,
+                vaBank: d.vaBank || null,
+                vaNumber: d.vaNumber || null,
+                expiredAt: d.expiredAt || null,
             });
         });
 
