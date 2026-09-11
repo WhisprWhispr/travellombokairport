@@ -1872,8 +1872,16 @@ window.generateEtiketPDF = (data) => {
 
     const nameLower = (data.itemName || '').toLowerCase();
     let depositAmount = 0;
-    if (nameLower.includes("motor")) depositAmount = 503000;
-    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
+    const matchedItemPdf = window.globalItems ? window.globalItems.find(i => i.title === (data.itemName || '')) : null;
+    let isMobilPdf = nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner");
+    let isMotorPdf = nameLower.includes("motor");
+    if (matchedItemPdf && matchedItemPdf.category) {
+        if (matchedItemPdf.category === 'car') isMobilPdf = true;
+        if (matchedItemPdf.category === 'motorcycle') isMotorPdf = true;
+    }
+    
+    if (isMotorPdf) depositAmount = 503000;
+    else if (isMobilPdf) depositAmount = 1003000;
     
     // Deposit tidak berlaku jika include driver/supir
     let isWithDriver = nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
@@ -2528,12 +2536,20 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     const matchDays = itemName.match(/(\d+)\s*H/i);
     const durationDays = matchDays ? parseInt(matchDays[1]) : 0;
 
-    const nameLower = itemName.toLowerCase();
     let category = "other";
-    if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
-    else if (nameLower.includes("motor")) category = "motor";
-    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
-    else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+    if (matchedItem && matchedItem.category) {
+        if (matchedItem.category === 'car') category = 'mobil';
+        else if (matchedItem.category === 'motorcycle') category = 'motor';
+        else if (matchedItem.category === 'package') category = 'tour';
+        else if (matchedItem.category === 'airport') category = 'airport';
+    }
+    const nameLower = itemName.toLowerCase();
+    if (category === "other") {
+        if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
+        else if (nameLower.includes("motor")) category = "motor";
+        else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner")) category = "mobil";
+        else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+    }
 
     // ====== APPLY EVENT MODE ======
     const evtSettings = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
@@ -3154,12 +3170,21 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     const payment = document.getElementById("co-payment").value;
     const modalBody = document.getElementById("checkout-modal-body");
 
-    const nameLower = itemName.toLowerCase();
     let category = "other";
-    if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
-    else if (nameLower.includes("motor")) category = "motor";
-    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) category = "mobil";
-    else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+    const matchedItemForCat = window.globalItems ? window.globalItems.find(i => i.title === itemName) : null;
+    if (matchedItemForCat && matchedItemForCat.category) {
+        if (matchedItemForCat.category === 'car') category = 'mobil';
+        else if (matchedItemForCat.category === 'motorcycle') category = 'motor';
+        else if (matchedItemForCat.category === 'package') category = 'tour';
+        else if (matchedItemForCat.category === 'airport') category = 'airport';
+    }
+    const nameLower = itemName.toLowerCase();
+    if (category === "other") {
+        if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
+        else if (nameLower.includes("motor")) category = "motor";
+        else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner")) category = "mobil";
+        else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+    }
 
     const pickupLoc = document.getElementById("co-pickup-loc")?.value || "";
     const dropoffLoc = document.getElementById("co-dropoff-loc")?.value || "";
@@ -3686,8 +3711,16 @@ window.downloadPdfInvoice = (id) => {
 
     const nameLower = (itemName || '').toLowerCase();
     let depositAmount = 0;
-    if (nameLower.includes("motor")) depositAmount = 503000;
-    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
+    const matchedItemInv2 = window.globalItems ? window.globalItems.find(i => i.title === (itemName || '')) : null;
+    let isMobilInv = nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner");
+    let isMotorInv = nameLower.includes("motor");
+    if (matchedItemInv2 && matchedItemInv2.category) {
+        if (matchedItemInv2.category === 'car') isMobilInv = true;
+        if (matchedItemInv2.category === 'motorcycle') isMotorInv = true;
+    }
+
+    if (isMotorInv) depositAmount = 503000;
+    else if (isMobilInv) depositAmount = 1003000;
     
     // Deposit tidak berlaku jika include driver/supir
     let isWithDriverInv = nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
