@@ -354,6 +354,11 @@ bookingsRoutes.put('/by-txid/:transactionId/payment-info', async (c) => {
         }
         
         if (snapshot.empty) {
+            snapshot = await db.collection('orderan').where('transactionId', '==', transactionId).get();
+            collectionName = 'orderan';
+        }
+        
+        if (snapshot.empty) {
             return c.json({ success: false, error: 'Booking/Order not found' }, 404);
         }
         
