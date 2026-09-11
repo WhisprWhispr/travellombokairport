@@ -353,7 +353,7 @@ const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI
    • WNA: Paspor & SIM yang berlaku.
 
 2. Booking
-   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 200.000.
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 203.000.
    • Pelunasan dilakukan sebelum kendaraan digunakan.
 
 3. Deposit / Uang Jaminan

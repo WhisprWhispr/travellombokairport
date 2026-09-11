@@ -2813,7 +2813,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         dpAmount = 53000;
         depositAmount = 503000;
     } else if (category === 'mobil') {
-        dpAmount = 200000;
+        dpAmount = 203000;
         depositAmount = 1003000;
     } else if (category === 'tour') {
         dpAmount = 500200;
@@ -3264,7 +3264,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         if (category === 'motor') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 53.000) dan Deposit (Rp 503.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'mobil') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) dan Deposit (Rp 1.003.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 203.000) dan Deposit (Rp 1.003.000) diterima.\n👇 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
