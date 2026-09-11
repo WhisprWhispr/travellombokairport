@@ -9,19 +9,19 @@ const autoExpire = (db, col, id, data) => {
         let isExpired = false;
 
         if (data.expiredAt) {
-            // Gunakan waktu kadaluarsa QRIS asli dari payment provider
+            // Gunakan waktu kadaluarsa QRIS asli dari payment provider (paling akurat)
             const expTime = new Date(data.expiredAt).getTime();
             if (!isNaN(expTime) && Date.now() > expTime) {
                 isExpired = true;
             }
-        } else if (data.paymentMethod === 'qris' || data.paymentMethod === 'va') {
-            // QRIS/VA tanpa expiredAt tersimpan → pakai standar 1 jam
+        } else {
+            // Fallback: Borderpay pakai window 90 menit untuk QRIS
+            // Jika tidak ada expiredAt tersimpan, tandai expired setelah 90 menit
             const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
-            if (created > 0 && (Date.now() - created) > 60 * 60 * 1000) {
+            if (created > 0 && (Date.now() - created) > 90 * 60 * 1000) {
                 isExpired = true;
             }
         }
-        // Booking manual / booking_only → tidak di-expire otomatis
 
         if (isExpired) {
             data.status = 'KADALUARSA';
