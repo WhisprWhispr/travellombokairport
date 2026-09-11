@@ -4326,13 +4326,14 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     const encoded = encodeURIComponent(qrString);
                     const qrCodeSvg = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}" alt="QRIS" style="width:220px;height:220px;border-radius:8px;" />`;
                     Swal.fire({
-                        showCloseButton: true,
+                        showCloseButton: false,
                         showConfirmButton: false,
                         width: '500px',
                         padding: '0',
                         html: `
                             <div style="background: #f8fafc; border-radius: 20px; overflow: hidden; font-family: 'Inter', sans-serif; text-align: center;">
-                                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center;">
+                                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center; position: relative;">
+                                    <button onclick="Swal.close()" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';"><i class="fa-solid fa-chevron-left" style="margin-right:2px;"></i></button>
                                     <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px;">Scan QRIS</h3>
                                     <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">Lanjutkan pembayaran Anda.</p>
                                 </div>
@@ -4370,13 +4371,14 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     const vaBank = raw.bank_code || window._lastBookingData.vaBank || '';
                     const vaNumber = raw.va_number || window._lastBookingData.vaNumber;
                     Swal.fire({
-                        showCloseButton: true,
+                        showCloseButton: false,
                         showConfirmButton: false,
                         width: '500px',
                         padding: '0',
                         html: `
                             <div style="background: #f8fafc; border-radius: 20px; overflow: hidden; font-family: 'Inter', sans-serif; text-align: center;">
-                                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center;">
+                                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center; position: relative;">
+                                    <button onclick="Swal.close()" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';"><i class="fa-solid fa-chevron-left" style="margin-right:2px;"></i></button>
                                     <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px;">Virtual Account ${vaBank}</h3>
                                     <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">Transfer tepat sesuai jumlah ke nomor di bawah.</p>
                                 </div>
@@ -4475,7 +4477,7 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             if (item.details?.flightNumber) detailsHtml += showRow('No. Penerbangan', item.details.flightNumber);
 
             Swal.fire({
-                showCloseButton: true,
+                showCloseButton: false,
                 showConfirmButton: false,
                 width: '520px',
                 padding: '0',
@@ -4483,6 +4485,7 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             <div style="text-align: left; font-family: 'Inter', sans-serif; background: #f8fafc; border-radius: 20px; overflow: hidden;">
                 <!-- Header Card (Premium Gradient) -->
                 <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 40px 20px 50px; text-align: center; position: relative;">
+                    <button onclick="Swal.close()" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';"><i class="fa-solid fa-chevron-left" style="margin-right:2px;"></i></button>
                     <div style="width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--primary-blue); font-size: 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
                         <i class="fa-solid fa-receipt"></i>
                     </div>
