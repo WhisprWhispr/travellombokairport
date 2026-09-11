@@ -345,13 +345,20 @@ bookingsRoutes.put('/by-txid/:transactionId/payment-info', async (c) => {
         const transactionId = c.req.param('transactionId');
         const body = await c.req.json();
         
-        const snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        let snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        let collectionName = 'bookings';
+        
         if (snapshot.empty) {
-            return c.json({ message: 'Booking not found' }, 404);
+            snapshot = await db.collection('orders').where('transactionId', '==', transactionId).get();
+            collectionName = 'orders';
+        }
+        
+        if (snapshot.empty) {
+            return c.json({ success: false, error: 'Booking/Order not found' }, 404);
         }
         
         const docId = snapshot.docs[0].id;
-        // Hanya update field yang berhubungan dengan payment untuk mencegah perubahan data utama
+        
         const updateData = {};
         if (body.paymentMethod) updateData.paymentMethod = body.paymentMethod;
         if (body.qrCodeSvg) updateData.qrCodeSvg = body.qrCodeSvg;
@@ -361,11 +368,12 @@ bookingsRoutes.put('/by-txid/:transactionId/payment-info', async (c) => {
         if (body.vaBank) updateData.vaBank = body.vaBank;
         if (body.vaNumber) updateData.vaNumber = body.vaNumber;
 
-        await db.collection('bookings').doc(docId).update(updateData);
+        await db.collection(collectionName).doc(docId).update(updateData);
         
-        return c.json({ message: 'Booking payment info updated successfully', transactionId });
+        return c.json({ success: true, message: 'Payment info updated successfully', transactionId });
     } catch (error) {
-        return c.json({ error: error.message }, 500);
+        console.error('Error updating payment info:', error);
+        return c.json({ success: false, error: error.message }, 500);
     }
 });
 
