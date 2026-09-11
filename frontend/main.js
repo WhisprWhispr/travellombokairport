@@ -4323,32 +4323,41 @@ window.showRiwayatTransaksi = async (isPage = false) => {
 
                 if (method === 'qris' && (raw.qr_string || window._lastBookingData?.rawQrisString)) {
                     // --- Cek apakah QRIS sudah expired sebelum ditampilkan ---
-                    const storedExpiredAt = window._lastBookingData?.expiredAt;
-                    if (storedExpiredAt) {
-                        const expTime = new Date(storedExpiredAt).getTime();
-                        if (!isNaN(expTime) && Date.now() > expTime) {
-                            // QRIS sudah expired - tandai KADALUARSA & tampilkan pesan
-                            try {
-                                await fetch(`${API_URL}/bookings/by-txid/${transactionId}/status`, {
-                                    method: 'PUT',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ status: 'KADALUARSA' })
-                                });
-                            } catch(e) {}
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Pembayaran Kedaluwarsa',
-                                html: `<p style="color:#475569;">Batas waktu pembayaran sudah <b>terlewat pada ${storedExpiredAt}</b>.</p><p style="color:#64748b;font-size:0.9rem;margin-top:10px;">Silakan buat pesanan baru untuk melanjutkan.</p>`,
-                                confirmButtonText: 'Buat Pesanan Baru',
-                                confirmButtonColor: 'var(--primary-blue)',
-                                showCancelButton: true,
-                                cancelButtonText: 'Tutup'
-                            }).then(res => {
-                                if (res.isConfirmed) window.location.href = '/#layanan';
-                                else setTimeout(() => window.loadTransactionHistory?.(), 500);
+                    // Prioritas 1: gunakan raw.expires_at dari Borderpay live (format ISO, akurat)
+                    // Prioritas 2: hitung dari createdAt + 1 jam jika tidak ada data live
+                    let qrisExpired = false;
+
+                    if (raw.expires_at) {
+                        // Format ISO dari Borderpay - bisa langsung di-parse
+                        qrisExpired = Date.now() > new Date(raw.expires_at).getTime();
+                    } else if (window._lastBookingData?.createdAt) {
+                        // Fallback: createdAt + 1 jam (standar QRIS)
+                        const created = new Date(window._lastBookingData.createdAt).getTime();
+                        qrisExpired = !isNaN(created) && (Date.now() - created) > 60 * 60 * 1000;
+                    }
+
+                    if (qrisExpired) {
+                        // QRIS sudah expired - tandai KADALUARSA & tampilkan pesan
+                        try {
+                            await fetch(`${API_URL}/bookings/by-txid/${transactionId}/status`, {
+                                method: 'PUT',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ status: 'KADALUARSA' })
                             });
-                            return;
-                        }
+                        } catch(e) {}
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Pembayaran Kedaluwarsa',
+                            html: `<p style="color:#475569;">Batas waktu pembayaran QRIS sudah <b>terlewat</b>. Kode ini tidak dapat digunakan lagi.</p><p style="color:#64748b;font-size:0.9rem;margin-top:10px;">Silakan buat pesanan baru untuk melanjutkan.</p>`,
+                            confirmButtonText: 'Buat Pesanan Baru',
+                            confirmButtonColor: 'var(--primary-blue)',
+                            showCancelButton: true,
+                            cancelButtonText: 'Tutup'
+                        }).then(res => {
+                            if (res.isConfirmed) window.location.href = '/#layanan';
+                            else setTimeout(() => window.loadTransactionHistory?.(), 500);
+                        });
+                        return;
                     }
 
                     const qrString = raw.qr_string || window._lastBookingData.rawQrisString;
