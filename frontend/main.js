@@ -4603,6 +4603,19 @@ window.showRiwayatTransaksi = async (isPage = false) => {
         };
 
         data.forEach(item => {
+            // ── Cek expiry di sisi client ──────────────────────────────────
+            if (item.status === 'PENDING') {
+                const created = item.createdAt ? new Date(item.createdAt).getTime() : 0;
+                const elapsed = Date.now() - created;
+                const method = (item.paymentMethod || '').toLowerCase();
+                if (method === 'va') {
+                    if (created > 0 && elapsed > 24 * 60 * 60 * 1000) item.status = 'KADALUARSA';
+                } else {
+                    // QRIS atau tidak diketahui → 1 jam
+                    if (created > 0 && elapsed > 60 * 60 * 1000) item.status = 'KADALUARSA';
+                }
+            }
+            // ───────────────────────────────────────────────────────────────
             const isPaid = item.status === 'PAID';
             const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
             const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
