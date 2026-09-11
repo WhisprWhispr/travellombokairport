@@ -1875,6 +1875,11 @@ window.generateEtiketPDF = (data) => {
     if (nameLower.includes("motor")) depositAmount = 503000;
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
     
+    // Deposit tidak berlaku jika include driver/supir
+    if (nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir")) {
+        depositAmount = 0;
+    }
+    
     let depositNote = '';
     if (depositAmount > 0) {
         depositNote = `
@@ -2793,6 +2798,12 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         dpAmount = 500200;
     }
 
+    // Deposit tidak berlaku jika include driver/supir
+    const nameLowerForDeposit = (itemName || '').toLowerCase();
+    if (nameLowerForDeposit.includes("driver") || nameLowerForDeposit.includes("supir") || nameLowerForDeposit.includes("dengan supir")) {
+        depositAmount = 0;
+    }
+
     if (isOrder && method !== 'wa') {
         html += `
             ${depositAmount > 0 ? `
@@ -3270,6 +3281,12 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         dpAmount = 500200;
     }
 
+    // Deposit tidak berlaku jika include driver/supir
+    const nameLowerForDepositProcess = (itemName || '').toLowerCase();
+    if (nameLowerForDepositProcess.includes("driver") || nameLowerForDepositProcess.includes("supir") || nameLowerForDepositProcess.includes("dengan supir")) {
+        depositAmount = 0;
+    }
+
     // Cek apakah user memilih DP
     const isDp = baseTotal > dpAmount && document.getElementById('pt-dp')?.checked === true;
     let paymentAmount = discountedTotal;
@@ -3657,6 +3674,11 @@ window.downloadPdfInvoice = (id) => {
     let depositAmount = 0;
     if (nameLower.includes("motor")) depositAmount = 503000;
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
+    
+    // Deposit tidak berlaku jika include driver/supir
+    if (nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir")) {
+        depositAmount = 0;
+    }
     
     let depositNote = '';
     if (depositAmount > 0) {
