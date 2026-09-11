@@ -3560,32 +3560,42 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             } catch(e) { console.error('Gagal simpan payment-info QRIS', e); }
 
             qrisResult.innerHTML = `
-                <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; border: 2px dashed var(--primary-green);">
-                    <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
-                    <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Buka aplikasi M-Banking / E-Wallet Anda lalu scan kode di bawah.</p>
-                    
-                    <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                        ${data.qrCodeSvg}
+                <div style="background: #f8fafc; border-radius: 20px; overflow: hidden; font-family: 'Inter', sans-serif; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.02);">
+                    <!-- Header -->
+                    <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center;">
+                        <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px;">Scan QRIS</h3>
+                        <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">Buka aplikasi M-Banking / E-Wallet Anda</p>
                     </div>
                     
-                    <h4 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h4>
-                    <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">${data.totalFormatted}</p>
-                    
-                    <div style="background: #fff1f2; color: #e11d48; padding: 8px; border-radius: 8px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px;">
-                        <i class="fa-regular fa-clock"></i> Batas Waktu: ${data.expiredAt}
-                    </div>
-                    
-                    <div style="color: var(--primary-blue); font-size: 0.9rem; margin-bottom: 15px;">
-                        <i class="fa-solid fa-spinner fa-spin"></i> Sistem sedang menunggu pembayaran...
-                    </div>
-                    <div id="manual-check-msg" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold;"></div>
-                    <button type="button" class="btn btn-blue" style="width: 100%; padding: 10px; font-weight: bold; border-radius: 8px;" onclick="forcePaymentSuccess('${data.transactionId}', this)">SAYA SUDAH BAYAR</button>
-                    
-                    <div style="margin-top: 15px; padding: 12px; background: #fff8f1; border-radius: 8px; border: 1px solid #ffedd5; text-align: left;">
-                        <p style="font-size: 0.82rem; color: #d97706; margin-bottom: 10px; line-height: 1.4;">
-                            <i class="fa-solid fa-circle-info" style="margin-right: 3px;"></i> Jika konfirmasi pembayaran otomatis mengalami keterlambatan setelah Anda membayar, status pesanan dapat dipantau melalui halaman <b>Riwayat Transaksi</b>.
-                        </p>
-                        <a href="https://travellombokairport.com/riwayat" style="display: block; width: 100%; padding: 8px; font-size: 0.85rem; font-weight: bold; text-decoration: none; border-radius: 8px; text-align: center; color: var(--primary-blue); border: 1px solid var(--primary-blue); transition: all 0.2s;" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white'" onmouseout="this.style.background='transparent'; this.style.color='var(--primary-blue)'">Buka Riwayat Transaksi</a>
+                    <!-- Content -->
+                    <div style="padding: 30px 25px 25px; text-align: center;">
+                        <div style="background: white; padding: 15px; border-radius: 16px; display: inline-block; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 20px;">
+                            ${data.qrCodeSvg}
+                        </div>
+                        
+                        <h4 style="color: #64748b; font-size: 1rem; font-weight: 600; margin: 0 0 5px;">${itemName}</h4>
+                        <p style="font-size: 2.2rem; font-weight: 900; color: var(--primary-green); margin: 0 0 15px; letter-spacing: -0.5px;">${data.totalFormatted}</p>
+                        
+                        <div style="background: #fff1f2; color: #e11d48; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.15);">
+                            <i class="fa-regular fa-clock" style="margin-right: 5px;"></i> Batas Waktu: ${data.expiredAt}
+                        </div>
+                        
+                        <div style="background: rgba(59, 130, 246, 0.05); color: var(--primary-blue); padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px;">
+                            <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Sistem sedang menunggu pembayaran...
+                        </div>
+                        
+                        <div id="manual-check-msg" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold;"></div>
+                        
+                        <button type="button" style="background:linear-gradient(135deg, var(--primary-blue), #1e3a8a); color:white; border:none; padding:14px; font-weight:bold; border-radius:12px; width:100%; cursor:pointer; font-size:1rem; box-shadow:0 6px 15px rgba(12,74,110,0.25); transition:all 0.3s;" onmouseover="this.style.transform='translateY(-2px)';" onmouseout="this.style.transform='translateY(0)';" onclick="forcePaymentSuccess('${data.transactionId}', this)">
+                            SAYA SUDAH BAYAR
+                        </button>
+                        
+                        <div style="margin-top: 20px; padding: 15px; background: white; border-radius: 12px; border: 1px solid #e2e8f0; text-align: left;">
+                            <p style="font-size: 0.85rem; color: #475569; margin-bottom: 12px; line-height: 1.5;">
+                                <i class="fa-solid fa-circle-info" style="color:var(--primary-blue); margin-right: 5px;"></i> Jika konfirmasi otomatis lambat, pantau pesanan Anda melalui <b>Riwayat Transaksi</b>.
+                            </p>
+                            <a href="https://travellombokairport.com/riwayat" style="display: block; width: 100%; padding: 10px; font-size: 0.9rem; font-weight: bold; text-decoration: none; border-radius: 10px; text-align: center; color: var(--primary-blue); background: #f1f5f9; transition: all 0.2s;" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white'" onmouseout="this.style.background='#f1f5f9'; this.style.color='var(--primary-blue)'">Buka Riwayat Transaksi</a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -4319,20 +4329,25 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                         showCloseButton: true,
                         showConfirmButton: false,
                         width: '500px',
+                        padding: '0',
                         html: `
-                            <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
-                                <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
-                                <p style="color: #64748b; font-size: 0.85rem; margin-bottom: 15px;">Lanjutkan pembayaran Anda.</p>
-                                <div style="display: flex; justify-content: center; margin-bottom: 15px;">
-                                    ${qrCodeSvg}
+                            <div style="background: #f8fafc; border-radius: 20px; overflow: hidden; font-family: 'Inter', sans-serif; text-align: center;">
+                                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center;">
+                                    <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px;">Scan QRIS</h3>
+                                    <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">Lanjutkan pembayaran Anda.</p>
                                 </div>
-                                <h4 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h4>
-                                <p style="font-size: 1.5rem; font-weight: bold; color: var(--primary-green); margin-bottom: 10px;">${amountFormatted}</p>
-                                <div style="background: #fff1f2; color: #e11d48; padding: 8px; border-radius: 8px; font-size: 0.85rem; display: inline-block; margin-bottom: 15px;">
-                                    <i class="fa-regular fa-clock"></i> Batas Waktu: ${expiredAt}
-                                </div>
-                                <div style="color: var(--primary-blue); font-size: 0.9rem; margin-bottom: 15px;">
-                                    <i class="fa-solid fa-spinner fa-spin"></i> Sistem menunggu pembayaran...
+                                <div style="padding: 30px 25px 25px;">
+                                    <div style="background: white; padding: 15px; border-radius: 16px; display: inline-block; box-shadow: 0 10px 25px rgba(0,0,0,0.08); margin-bottom: 20px;">
+                                        ${qrCodeSvg}
+                                    </div>
+                                    <h4 style="color: #64748b; font-size: 1rem; font-weight: 600; margin: 0 0 5px;">${itemName}</h4>
+                                    <p style="font-size: 2.2rem; font-weight: 900; color: var(--primary-green); margin: 0 0 15px; letter-spacing: -0.5px;">${amountFormatted}</p>
+                                    <div style="background: #fff1f2; color: #e11d48; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.15);">
+                                        <i class="fa-regular fa-clock" style="margin-right: 5px;"></i> Batas Waktu: ${expiredAt}
+                                    </div>
+                                    <div style="background: rgba(59, 130, 246, 0.05); color: var(--primary-blue); padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: 600;">
+                                        <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i> Sistem menunggu pembayaran...
+                                    </div>
                                 </div>
                             </div>
                         `
@@ -4358,22 +4373,27 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                         showCloseButton: true,
                         showConfirmButton: false,
                         width: '500px',
+                        padding: '0',
                         html: `
-                            <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
-                                <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${vaBank}</h3>
-                                <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
-                                <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
-                                    <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
-                                    <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${vaNumber}</div>
-                                    <button onclick="navigator.clipboard.writeText('${vaNumber}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
-                                        style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
-                                        <i class="fa-regular fa-copy"></i> Salin Nomor
-                                    </button>
+                            <div style="background: #f8fafc; border-radius: 20px; overflow: hidden; font-family: 'Inter', sans-serif; text-align: center;">
+                                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 30px 20px; text-align: center;">
+                                    <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px;">Virtual Account ${vaBank}</h3>
+                                    <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">Transfer tepat sesuai jumlah ke nomor di bawah.</p>
                                 </div>
-                                <h4 style="color:#0c4a6e;margin-bottom:5px;">${itemName}</h4>
-                                <p style="font-size:1.4rem;font-weight:bold;color:#16a34a;margin-bottom:10px;">${amountFormatted}</p>
-                                <div style="background:#fef9c3;color:#854d0e;padding:8px;border-radius:8px;font-size:0.85rem;display:inline-block;margin-bottom:15px;">
-                                    <i class="fa-regular fa-clock"></i> Batas Waktu: ${expiredAt}
+                                <div style="padding: 30px 25px 25px;">
+                                    <div style="background: white; border: 2px dashed var(--primary-blue); border-radius: 16px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.03);">
+                                        <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px; font-weight: 600;">Nomor Virtual Account</div>
+                                        <div style="font-size: 2rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 2px; margin-bottom: 15px;">${vaNumber}</div>
+                                        <button onclick="navigator.clipboard.writeText('${vaNumber}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
+                                            style="padding:10px 24px; background:linear-gradient(135deg, var(--primary-blue), #1e3a8a); color:white; border:none; border-radius:12px; cursor:pointer; font-size:0.95rem; font-weight:bold; box-shadow:0 4px 10px rgba(12,74,110,0.25); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
+                                            <i class="fa-regular fa-copy"></i> Salin Nomor
+                                        </button>
+                                    </div>
+                                    <h4 style="color: #64748b; font-size: 1rem; font-weight: 600; margin: 0 0 5px;">${itemName}</h4>
+                                    <p style="font-size: 2.2rem; font-weight: 900; color: var(--primary-green); margin: 0 0 15px; letter-spacing: -0.5px;">${amountFormatted}</p>
+                                    <div style="background: #fff1f2; color: #e11d48; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.15);">
+                                        <i class="fa-regular fa-clock" style="margin-right: 5px;"></i> Batas Waktu: ${expiredAt}
+                                    </div>
                                 </div>
                             </div>
                         `
