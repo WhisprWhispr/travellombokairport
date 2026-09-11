@@ -4415,8 +4415,8 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             // Tombol Cetak PDF selalu ada (baik PAID maupun PENDING)
             let pdfBtn = `
         <button onclick="Swal.close(); setTimeout(()=>{ window.generateEtiketPDF(window._lastBookingData); }, 300)" 
-            style="background:linear-gradient(135deg, #0ea5e9, #2563eb); border:none; color:white; font-size:0.95rem; padding:14px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; width:100%; margin-top:10px; box-shadow:0 8px 20px rgba(14,165,233,0.3); transition:all 0.3s;"
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(14,165,233,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(14,165,233,0.3)';">
+            style="background:linear-gradient(135deg, var(--primary-blue), #1e3a8a); border:none; color:white; font-size:1rem; padding:16px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; width:100%; margin-top:12px; box-shadow:0 8px 20px rgba(12,74,110,0.3); transition:all 0.3s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(12,74,110,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(12,74,110,0.3)';">
             <i class="fa-solid fa-file-pdf" style="font-size:1.2rem;"></i> Download E-Tiket (PDF)
         </button>
     `;
@@ -4425,8 +4425,8 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             if (item.status === 'PENDING') {
                 payBtn = `
         <button onclick="window.resumePayment('${item.transactionId}', '${item.itemName}')" 
-            style="background:linear-gradient(135deg, #f59e0b, #d97706); border:none; color:white; font-size:0.95rem; padding:14px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; font-weight:700; width:100%; margin-top:25px; box-shadow:0 8px 20px rgba(245,158,11,0.3); transition:all 0.3s;"
-            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(245,158,11,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(245,158,11,0.3)';">
+            style="background:linear-gradient(135deg, var(--primary-green), #15803d); border:none; color:white; font-size:1rem; padding:16px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; width:100%; margin-bottom:5px; box-shadow:0 8px 20px rgba(22,163,74,0.3); transition:all 0.3s;"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(22,163,74,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(22,163,74,0.3)';">
             <i class="fa-solid fa-qrcode" style="font-size:1.2rem;"></i> Lanjutkan Pembayaran
         </button>
                 `;
@@ -4435,11 +4435,10 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             let detailsHtml = '';
             const showRow = (label, val) => {
                 if (!val || val === '-') return '';
-                // Ubah layout jadi kolom agar rapi dan responsif, tidak tabrakan di layar HP
                 return `
-            <div style="padding: 12px 0; border-bottom: 1px dashed #e2e8f0; display: flex; flex-direction: column; gap: 4px;">
-                <span style="color:#64748b; font-size:0.8rem; font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">${label}</span>
-                <span style="color:#1e293b; font-weight:700; font-size:0.95rem; word-break: break-word; line-height: 1.4;">${val}</span>
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0;">
+                <span style="color:#64748b; font-size:0.85rem; font-weight:600; min-width: 120px;">${label}</span>
+                <span style="color:#1e293b; font-weight:700; font-size:0.95rem; text-align: right; word-break: break-word;">${val}</span>
             </div>
         `;
             };
@@ -4459,53 +4458,67 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                 showCloseButton: true,
                 showConfirmButton: false,
                 width: '520px',
+                padding: '0',
                 html: `
-            <div style="text-align: left;">
-                <div style="text-align:center; margin-bottom:25px; margin-top:10px;">
-                        <div style="width:65px; height:65px; background:rgba(59, 130, 246, 0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px; color:#3b82f6; font-size:2rem; box-shadow: 0 0 0 10px rgba(59, 130, 246, 0.05);">
-                            <i class="fa-solid fa-receipt"></i>
-                        </div>
-                        <h3 style="color:#1e293b; font-size:1.4rem; font-weight:800; margin-bottom:6px;">Detail Transaksi</h3>
-                        <p style="color:#94a3b8; font-size:0.85rem; margin-bottom:16px;">${tgl}</p>
-                        <span style="display:inline-block; font-size:0.8rem; font-weight:700; color:${statusColor}; background:${statusBg}; padding:6px 16px; border-radius:20px; letter-spacing:0.5px;">
+            <div style="text-align: left; font-family: 'Inter', sans-serif; background: #f8fafc; border-radius: 20px; overflow: hidden;">
+                <!-- Header Card (Premium Gradient) -->
+                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 40px 20px 50px; text-align: center; position: relative;">
+                    <div style="width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--primary-blue); font-size: 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                        <i class="fa-solid fa-receipt"></i>
+                    </div>
+                    <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Detail Transaksi</h3>
+                    <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">${tgl}</p>
+                    
+                    <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);">
+                        <span style="display:inline-block; font-size:0.9rem; font-weight:800; color: white; background: ${isPaid ? 'var(--primary-green)' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444')}; padding:8px 24px; border-radius:30px; letter-spacing:1px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); border: 3px solid white;">
                             ${item.status}
                         </span>
                     </div>
-                    
-                    <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:18px; padding:20px; margin-bottom:25px;">
-                        <div style="text-align:center; margin-bottom:18px;">
-                            <p style="color:#64748b; font-size:0.85rem; margin-bottom:5px;">Total Pembayaran</p>
-                            <h2 style="color:var(--primary-blue); font-size:2rem; font-weight:800; margin:0; letter-spacing:-0.5px;">${price}</h2>
+                </div>
+                
+                <!-- Main Content Body -->
+                <div style="padding: 45px 25px 25px;">
+                    <!-- Total Pembayaran -->
+                    <div style="background: white; border-radius: 18px; padding: 25px; margin-bottom: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
+                        <p style="color: #64748b; font-size: 0.95rem; font-weight: 600; margin: 0 0 5px; text-transform: uppercase; letter-spacing: 0.5px;">Total Pembayaran</p>
+                        <h2 style="color: var(--primary-green); font-size: 2.4rem; font-weight: 900; margin: 0; letter-spacing: -0.5px;">${price}</h2>
+                    </div>
+
+                    <!-- ID & Layanan Card -->
+                    <div style="background: white; border-radius: 18px; padding: 22px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
+                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
+                            <div style="display:flex; align-items:center; gap:10px;">
+                                <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:1.05rem; letter-spacing:0.5px;">${item.transactionId}</span>
+                                <button onclick="window.copyTxId(this, '${item.transactionId}', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.9rem;"></i></button>
+                            </div>
                         </div>
-                        <div style="background:white; border-radius:14px; padding:16px; box-shadow:0 2px 10px rgba(0,0,0,0.03);">
-                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                                <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-hashtag" style="opacity:0.5; margin-right:5px;"></i> ID Transaksi</span>
-                                <div style="display:flex; align-items:center; gap:8px;">
-                                    <span style="font-family:monospace; font-weight:700; color:#1e293b; font-size:0.95rem; background:#f1f5f9; padding:4px 8px; border-radius:6px; letter-spacing:0.5px;">${item.transactionId}</span>
-                                    <button onclick="window.copyTxId(this, '${item.transactionId}', event)" style="background:var(--primary-blue); color:white; border:none; border-radius:6px; width:26px; height:26px; display:flex; align-items:center; justify-content:center; cursor:pointer;" title="Salin ID"><i class="fa-regular fa-copy" style="font-size:0.8rem;"></i></button>
-                                </div>
-                            </div>
-                            <div style="display:flex; flex-direction:column; gap:6px;">
-                                <span style="color:#64748b; font-size:0.85rem;"><i class="fa-solid fa-layer-group" style="opacity:0.5; margin-right:5px;"></i> Layanan</span>
-                                <span style="font-weight:700; color:#1e293b; font-size:0.9rem; line-height: 1.4; padding-left: 20px;">${item.itemName}</span>
-                            </div>
+                        <div style="display:flex; flex-direction:column; gap:8px;">
+                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-layer-group" style="opacity:0.6; margin-right:8px;"></i> Layanan</span>
+                            <span style="font-weight:800; color:#1e293b; font-size:1.15rem; line-height: 1.4; padding-left: 26px;">${item.itemName}</span>
                         </div>
                     </div>
 
-                    <div style="background:white; border:1px solid #e2e8f0; border-radius:18px; padding:20px;">
-                        <h4 style="color:#1e293b; font-size:1rem; margin-bottom:5px; display:flex; align-items:center; gap:10px;">
-                            <i class="fa-solid fa-list-check" style="color:var(--primary-blue);"></i> Informasi Pemesanan
+                    <!-- Informasi Pemesanan -->
+                    <div style="background: white; border-radius: 18px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); margin-bottom: 25px;">
+                        <h4 style="color:#1e293b; font-size:1.1rem; margin-top:0; margin-bottom:20px; display:flex; align-items:center; gap:10px; font-weight: 800; border-bottom: 2px solid #f8fafc; padding-bottom: 15px;">
+                            <i class="fa-solid fa-list-check" style="color:var(--primary-blue);"></i> Rincian Pesanan
                         </h4>
-                        <div style="margin-top:15px;">
+                        <div style="display: flex; flex-direction: column;">
                             ${detailsHtml}
                         </div>
                     </div>
 
-                    ${payBtn}
-                    ${pdfBtn}
+                    <!-- Action Buttons -->
+                    <div style="margin-top: 20px;">
+                        ${payBtn}
+                        ${pdfBtn}
+                    </div>
+                </div>
             </div>
         `
             });
+
         };
 
         data.forEach(item => {
