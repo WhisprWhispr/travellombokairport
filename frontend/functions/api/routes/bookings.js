@@ -338,6 +338,37 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
     }
 });
 
+// PUT update booking payment info by transactionId
+bookingsRoutes.put('/by-txid/:transactionId/payment-info', async (c) => {
+    try {
+        const db = getDb(c);
+        const transactionId = c.req.param('transactionId');
+        const body = await c.req.json();
+        
+        const snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
+        if (snapshot.empty) {
+            return c.json({ message: 'Booking not found' }, 404);
+        }
+        
+        const docId = snapshot.docs[0].id;
+        // Hanya update field yang berhubungan dengan payment untuk mencegah perubahan data utama
+        const updateData = {};
+        if (body.paymentMethod) updateData.paymentMethod = body.paymentMethod;
+        if (body.qrCodeSvg) updateData.qrCodeSvg = body.qrCodeSvg;
+        if (body.paymentUrl) updateData.paymentUrl = body.paymentUrl;
+        if (body.expiredAt) updateData.expiredAt = body.expiredAt;
+        if (body.rawQrisString) updateData.rawQrisString = body.rawQrisString;
+        if (body.vaBank) updateData.vaBank = body.vaBank;
+        if (body.vaNumber) updateData.vaNumber = body.vaNumber;
+
+        await db.collection('bookings').doc(docId).update(updateData);
+        
+        return c.json({ message: 'Booking payment info updated successfully', transactionId });
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // PUT update booking status
 bookingsRoutes.put('/:id/status', verifyToken, async (c) => {
     try {

@@ -3432,6 +3432,21 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 
             if (vaResult.success) {
                 const d = vaResult.data;
+
+                // SIMPAN INFO PAYMENT KE FIREBASE
+                try {
+                    await fetch(`${API_URL}/bookings/by-txid/${pendingTxId}/payment-info`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            paymentMethod: 'va',
+                            vaBank: d.vaBank,
+                            vaNumber: d.vaNumber,
+                            expiredAt: d.expiredAt
+                        })
+                    });
+                } catch(e) { console.error('Gagal simpan payment-info VA', e); }
+
                 qrisResult.innerHTML = `
                     <div style="background:white;padding:20px;border-radius:15px;box-shadow:0 10px 25px rgba(0,0,0,0.05);text-align:center;border:2px dashed #0ea5e9;">
                         <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${d.vaBank}</h3>
@@ -3528,6 +3543,22 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 
         if (result.success) {
             const data = result.data;
+
+            // SIMPAN INFO PAYMENT KE FIREBASE
+            try {
+                await fetch(`${API_URL}/bookings/by-txid/${pendingTxId}/payment-info`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        paymentMethod: 'qris',
+                        qrCodeSvg: data.qrCodeSvg,
+                        paymentUrl: data.payUrl,
+                        expiredAt: data.expiredAt,
+                        rawQrisString: data.raw?.qr_string
+                    })
+                });
+            } catch(e) { console.error('Gagal simpan payment-info QRIS', e); }
+
             qrisResult.innerHTML = `
                 <div style="background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); text-align: center; border: 2px dashed var(--primary-green);">
                     <h3 style="color: var(--primary-blue); margin-bottom: 5px;">Scan QRIS</h3>
@@ -4254,8 +4285,9 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                         expiredAt = new Date(raw.expires_at).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
                     }
 
-                    if (method === 'qris' && raw.qr_string) {
-                        const encoded = encodeURIComponent(raw.qr_string);
+                    if (method === 'qris' && (raw.qr_string || window._lastBookingData.rawQrisString)) {
+                        const qrString = raw.qr_string || window._lastBookingData.rawQrisString;
+                        const encoded = encodeURIComponent(qrString);
                         const qrCodeSvg = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}" alt="QRIS" style="width:220px;height:220px;border-radius:8px;" />`;
                         Swal.fire({
                             showCloseButton: true,
@@ -4293,19 +4325,21 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                             } catch(e) {}
                         }, 5000);
 
-                    } else if (method === 'va' && raw.va_number) {
+                    } else if (method === 'va' && (raw.va_number || window._lastBookingData.vaNumber)) {
+                        const vaBank = raw.bank_code || window._lastBookingData.vaBank || '';
+                        const vaNumber = raw.va_number || window._lastBookingData.vaNumber;
                         Swal.fire({
                             showCloseButton: true,
                             showConfirmButton: false,
                             width: '500px',
                             html: `
                                 <div style="background: white; padding: 20px; border-radius: 15px; text-align: center;">
-                                    <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${raw.bank_code || ''}</h3>
+                                    <h3 style="color:#0c4a6e;margin-bottom:5px;">Virtual Account ${vaBank}</h3>
                                     <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
                                     <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
                                         <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
-                                        <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${raw.va_number}</div>
-                                        <button onclick="navigator.clipboard.writeText('${raw.va_number}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
+                                        <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${vaNumber}</div>
+                                        <button onclick="navigator.clipboard.writeText('${vaNumber}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
                                             style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
                                             <i class="fa-regular fa-copy"></i> Salin Nomor
                                         </button>
