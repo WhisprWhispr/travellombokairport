@@ -1870,6 +1870,20 @@ window.generateEtiketPDF = (data) => {
     const issuedAt = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const logoUrl = window.location.origin + '/logo.png';
 
+    const nameLower = (data.itemName || '').toLowerCase();
+    let depositAmount = 0;
+    if (nameLower.includes("motor")) depositAmount = 503000;
+    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
+    
+    let depositNote = '';
+    if (depositAmount > 0) {
+        depositNote = `
+            <div style="background:#e0f2fe;border-left:4px solid #38bdf8;padding:8px 16px;margin-bottom:12px;border-radius:4px;">
+                <div style="font-size:10px;font-weight:700;color:#0369a1;margin-bottom:2px;">&#8505; Catatan Deposit</div>
+                <div style="font-size:10px;color:#0c4a6e;line-height:1.4;">Total pembayaran <b>sudah termasuk uang deposit</b> sebesar <strong>Rp ${depositAmount.toLocaleString('id-ID')}</strong>. Deposit akan dikembalikan 100% setelah masa sewa berakhir jika kondisi unit baik.</div>
+            </div>`;
+    }
+
     // ── Build content (NO full HTML wrapper – injected into live DOM) ──
     const page = document.createElement('div');
     page.style.cssText = `
@@ -1927,10 +1941,11 @@ window.generateEtiketPDF = (data) => {
                 <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
                 <div style="flex:1;">
                     <div style="font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">&#9888; Pembayaran DP &mdash; Belum Lunas</div>
-                    <div style="font-size:11px;color:#9a3412;">DP terbayar: <strong>Rp 500.200</strong> &nbsp;&bull;&nbsp; Sisa: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - 500200).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
-                    <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sebelum tanggal keberangkatan.</div>
+                    <div style="font-size:11px;color:#9a3412;">Terbayar: <strong>Rp ${Number(data.itemPrice || 0).toLocaleString('id-ID')}</strong> &nbsp;&bull;&nbsp; Sisa Sewa: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - (Number(data.itemPrice || 0) - depositAmount)).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
+                    <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sewa sebelum tanggal keberangkatan.</div>
                 </div>
             </div>` : ''}
+            ${depositNote}
 
             <!-- Informasi Pemesan -->
             <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">Informasi Pemesan</div>
@@ -3638,6 +3653,20 @@ window.downloadPdfInvoice = (id) => {
     const issueDate = fmtDate(createdAt || new Date());
     const total = 'Rp ' + parseInt(itemPrice || 0).toLocaleString('id-ID');
 
+    const nameLower = (itemName || '').toLowerCase();
+    let depositAmount = 0;
+    if (nameLower.includes("motor")) depositAmount = 503000;
+    else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
+    
+    let depositNote = '';
+    if (depositAmount > 0) {
+        depositNote = `
+            <div style="background:#e0f2fe;border-left:4px solid #38bdf8;padding:12px 16px;margin-top:20px;border-radius:4px;">
+                <div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:2px;">&#8505; Catatan Deposit</div>
+                <div style="font-size:12px;color:#0c4a6e;line-height:1.4;">Total pembayaran di atas <b>sudah termasuk uang deposit</b> sebesar <strong>Rp ${depositAmount.toLocaleString('id-ID')}</strong>. Deposit akan dikembalikan 100% setelah masa sewa berakhir jika kendaraan dalam kondisi baik.</div>
+            </div>`;
+    }
+
     wrapper.innerHTML = `
         <div id="pdf-content" style="width: 800px; padding: 50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; background: white; box-sizing: border-box;">
             
@@ -3698,6 +3727,8 @@ window.downloadPdfInvoice = (id) => {
                     </tr>
                 </tbody>
             </table>
+            
+            ${depositNote}
             
             <!-- Footer -->
             <div style="margin-top: 50px; text-align: center; color: #64748b;">
