@@ -1876,7 +1876,12 @@ window.generateEtiketPDF = (data) => {
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
     
     // Deposit tidak berlaku jika include driver/supir
-    if (nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir")) {
+    let isWithDriver = nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
+    const matchedItem = window.globalItems ? window.globalItems.find(i => i.title === (data.itemName || '')) : null;
+    if (matchedItem && matchedItem.driverOptions && matchedItem.driverOptions !== 'Tidak Include Driver') {
+        isWithDriver = true;
+    }
+    if (isWithDriver) {
         depositAmount = 0;
     }
     
@@ -2800,7 +2805,11 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
 
     // Deposit tidak berlaku jika include driver/supir
     const nameLowerForDeposit = (itemName || '').toLowerCase();
-    if (nameLowerForDeposit.includes("driver") || nameLowerForDeposit.includes("supir") || nameLowerForDeposit.includes("dengan supir")) {
+    let isWithDriver = nameLowerForDeposit.includes("driver") || nameLowerForDeposit.includes("supir") || nameLowerForDeposit.includes("dengan supir");
+    if (matchedItem && matchedItem.driverOptions && matchedItem.driverOptions !== 'Tidak Include Driver') {
+        isWithDriver = true;
+    }
+    if (isWithDriver) {
         depositAmount = 0;
     }
 
@@ -3283,7 +3292,12 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 
     // Deposit tidak berlaku jika include driver/supir
     const nameLowerForDepositProcess = (itemName || '').toLowerCase();
-    if (nameLowerForDepositProcess.includes("driver") || nameLowerForDepositProcess.includes("supir") || nameLowerForDepositProcess.includes("dengan supir")) {
+    let isWithDriverProc = nameLowerForDepositProcess.includes("driver") || nameLowerForDepositProcess.includes("supir") || nameLowerForDepositProcess.includes("dengan supir");
+    const matchedItemProc = window.globalItems ? window.globalItems.find(i => i.title === itemName) : null;
+    if (matchedItemProc && matchedItemProc.driverOptions && matchedItemProc.driverOptions !== 'Tidak Include Driver') {
+        isWithDriverProc = true;
+    }
+    if (isWithDriverProc) {
         depositAmount = 0;
     }
 
@@ -3676,7 +3690,12 @@ window.downloadPdfInvoice = (id) => {
     else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander")) depositAmount = 1003000;
     
     // Deposit tidak berlaku jika include driver/supir
-    if (nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir")) {
+    let isWithDriverInv = nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
+    const matchedItemInv = window.globalItems ? window.globalItems.find(i => i.title === (itemName || '')) : null;
+    if (matchedItemInv && matchedItemInv.driverOptions && matchedItemInv.driverOptions !== 'Tidak Include Driver') {
+        isWithDriverInv = true;
+    }
+    if (isWithDriverInv) {
         depositAmount = 0;
     }
     
