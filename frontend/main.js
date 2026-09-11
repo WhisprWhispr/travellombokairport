@@ -4090,7 +4090,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // ── Restore checkout modal if user accidentally refreshed the page ──
     const savedCheckout = sessionStorage.getItem('checkoutState');
-    if (savedCheckout) {
+    if (savedCheckout && (window.location.pathname === '/' || window.location.pathname === '/index.html')) {
         try {
             const state = JSON.parse(savedCheckout);
             if (state.itemName !== undefined && state.price !== undefined) {
