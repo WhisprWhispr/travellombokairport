@@ -4414,7 +4414,27 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                         } catch(e) {}
                     }, 5000);
                 } else {
-                    Swal.fire({ icon: 'error', title: 'Oops', text: 'Data pembayaran untuk transaksi lama ini tidak tersimpan. Silakan buat pesanan baru.' });
+                    // Tidak ada data pembayaran - ini transaksi lama yang payment info-nya tidak tersimpan
+                    // Otomatis tandai sebagai KADALUARSA agar tidak muncul terus sebagai PENDING
+                    try {
+                        await fetch(`${API_URL}/bookings/by-txid/${transactionId}/status`, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ status: 'KADALUARSA' })
+                        });
+                    } catch(e) {}
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Pembayaran Kedaluwarsa',
+                        html: `<p style="color:#475569;">Kode pembayaran untuk pesanan ini sudah <b>tidak berlaku lagi</b> karena terlalu lama tidak diselesaikan.</p><p style="color:#64748b;font-size:0.9rem;margin-top:10px;">Silakan buat pesanan baru untuk melanjutkan.</p>`,
+                        confirmButtonText: 'Buat Pesanan Baru',
+                        confirmButtonColor: 'var(--primary-blue)',
+                        showCancelButton: true,
+                        cancelButtonText: 'Tutup'
+                    }).then(res => {
+                        if (res.isConfirmed) window.location.href = '/#layanan';
+                        else setTimeout(() => window.loadTransactionHistory?.(), 500);
+                    });
                 }
             } catch (err) {
                 console.error(err);
