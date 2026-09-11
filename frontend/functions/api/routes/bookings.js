@@ -5,15 +5,32 @@ import { getDb } from '../config/firebase.js';
 const bookingsRoutes = new Hono();
 
 const autoExpire = (db, col, id, data) => {
-    if (data.status === 'PENDING' && data.expiredAt) {
-        const expTime = new Date(data.expiredAt).getTime();
-        if (!isNaN(expTime) && Date.now() > expTime) {
+    if (data.status === 'PENDING') {
+        let isExpired = false;
+
+        if (data.expiredAt) {
+            // Gunakan waktu kadaluarsa QRIS asli dari payment provider
+            const expTime = new Date(data.expiredAt).getTime();
+            if (!isNaN(expTime) && Date.now() > expTime) {
+                isExpired = true;
+            }
+        } else if (data.paymentMethod === 'qris' || data.paymentMethod === 'va') {
+            // QRIS/VA tanpa expiredAt tersimpan → pakai standar 1 jam
+            const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+            if (created > 0 && (Date.now() - created) > 60 * 60 * 1000) {
+                isExpired = true;
+            }
+        }
+        // Booking manual / booking_only → tidak di-expire otomatis
+
+        if (isExpired) {
             data.status = 'KADALUARSA';
             db.collection(col).doc(id).update({ status: 'KADALUARSA' }).catch(()=>{});
         }
     }
     return data;
 };
+
 
 // Middleware for auth
 const verifyToken = async (c, next) => {
