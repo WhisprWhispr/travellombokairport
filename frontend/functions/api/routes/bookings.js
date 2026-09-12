@@ -173,12 +173,11 @@ bookingsRoutes.post('/', async (c) => {
                     body: JSON.stringify({
                         from: 'Travel Lombok Airport <admin@travellombokairport.com>',
                         to: body.customerEmail,
-                        bcc: ['lombokindah892@gmail.com', 'ridhosandhika78@gmail.com'],
                         subject: `Invoice & E-Ticket: ${body.itemName || 'Layanan Travel'}`,
                         html: emailHtml
                     })
                 });
-                console.log(`Email invoice sent successfully to ${body.customerEmail} and BCC to admins`);
+                console.log(`Email invoice sent successfully to ${body.customerEmail}`);
             } catch (emailErr) {
                 console.error("Gagal mengirim email via Resend:", emailErr);
             }
