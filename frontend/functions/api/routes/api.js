@@ -358,7 +358,7 @@ apiRoutes.get('/reviews', async (c) => {
 apiRoutes.post('/reviews', async (c) => {
     try {
         const db = getDb(c);
-        const { name, rating, comment, itemId } = await c.req.json();
+        const { name, rating, comment, itemId, photoUrl } = await c.req.json();
         if (!name || !rating || !comment) {
             return c.json({ error: 'Name, rating, and comment are required' }, 400);
         }
@@ -367,6 +367,7 @@ apiRoutes.post('/reviews', async (c) => {
             rating: Number(rating),
             comment,
             itemId: itemId || null,
+            photoUrl: photoUrl || null,
             createdAt: new Date().toISOString(),
             status: 'approved'
         };

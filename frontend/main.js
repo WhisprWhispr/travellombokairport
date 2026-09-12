@@ -794,10 +794,13 @@ window.submitInlineReview = async (itemId) => {
     btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
 
     try {
+        const authUser = JSON.parse(localStorage.getItem('auth_user') || 'null');
+        const photoUrl = authUser && authUser.photoUrl ? authUser.photoUrl : null;
+
         const res = await fetch(`${API_URL}/reviews`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, rating, comment, itemId })
+            body: JSON.stringify({ name, rating, comment, itemId, photoUrl })
         });
 
         if (!res.ok) throw new Error('Failed to submit');
@@ -3974,6 +3977,12 @@ window.renderReviewsList = () => {
         }
 
         let initial = r.name ? r.name.charAt(0).toUpperCase() : 'U';
+        let avatarHtml = '';
+        if (r.photoUrl) {
+            avatarHtml = `<img src="${r.photoUrl}" alt="${r.name}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">`;
+        } else {
+            avatarHtml = initial;
+        }
         html += `
         <div class="review-card" data-aos="fade-up">
             <div class="review-content">
@@ -3981,7 +3990,7 @@ window.renderReviewsList = () => {
                 <p class="review-text">"${r.comment}"</p>
             </div>
             <div class="review-author">
-                <div class="review-author-avatar">${initial}</div>
+                <div class="review-author-avatar" style="${r.photoUrl ? 'padding: 0; overflow: hidden;' : ''}">${avatarHtml}</div>
                 <div style="flex: 1;">
                     <div style="font-weight: 800; color: var(--primary-blue); font-size: 1.05rem; letter-spacing: -0.3px;">${r.name}</div>
                     <div style="font-size: 0.8rem; color: #94a3b8; margin-top: 2px;">${dateStr}</div>
@@ -4034,11 +4043,15 @@ window.submitReview = async (e) => {
     const ratingObj = document.querySelector('input[name="rating"]:checked');
     const rating = ratingObj ? ratingObj.value : 5; // default 5
 
+    // Ambil foto profil dari user yang login
+    const authUser = JSON.parse(localStorage.getItem('auth_user') || 'null');
+    const photoUrl = authUser && authUser.photoUrl ? authUser.photoUrl : null;
+
     try {
         const res = await fetch(`${API_URL}/reviews`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, rating, comment })
+            body: JSON.stringify({ name, rating, comment, photoUrl })
         });
 
         if (!res.ok) throw new Error('Failed to submit review');
