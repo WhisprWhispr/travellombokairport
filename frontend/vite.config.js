@@ -31,7 +31,8 @@ export default defineConfig({
         wishlist: resolve(__dirname, 'wishlist.html'),
         maintenance: resolve(__dirname, 'maintenance.html'),
         jadwalSholat: resolve(__dirname, 'jadwal-sholat.html'),
-        resetSandi: resolve(__dirname, 'reset-sandi.html')
+        resetSandi: resolve(__dirname, 'reset-sandi.html'),
+        profile: resolve(__dirname, 'profile.html')
       }
     }
   }
