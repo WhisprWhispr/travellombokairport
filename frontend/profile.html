@@ -74,11 +74,15 @@
     .back-link:hover {
       color: #0f172a;
     }
-    .avatar-container {
+    .avatar-wrapper {
       position: relative;
       width: 120px;
       height: 120px;
       margin: 40px auto 20px;
+    }
+    .avatar-container {
+      width: 100%;
+      height: 100%;
       border-radius: 50%;
       background: #e2e8f0;
       display: flex;
@@ -86,16 +90,36 @@
       align-items: center;
       box-shadow: 0 10px 25px rgba(0,0,0,0.1);
       border: 4px solid white;
+      overflow: hidden;
     }
     .avatar-container img {
       width: 100%;
       height: 100%;
       border-radius: 50%;
       object-fit: cover;
+      object-position: center;
+      display: block;
     }
     .avatar-container i.fa-user {
       font-size: 3.5rem;
       color: #94a3b8;
+    }
+    #profile-avatar-display {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #profile-avatar-display img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 0; /* Dikendalikan oleh parent */
+      display: block;
     }
     .edit-avatar-btn {
       position: absolute;
@@ -283,8 +307,10 @@
   <div class="profile-card">
     <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
     
-    <div class="avatar-container">
-      <div id="profile-avatar-display"><i class="fa-solid fa-user"></i></div>
+    <div class="avatar-wrapper">
+      <div class="avatar-container">
+        <div id="profile-avatar-display"><i class="fa-solid fa-user"></i></div>
+      </div>
       <div class="edit-avatar-btn" onclick="openAvatarModal()">
         <i class="fa-solid fa-camera"></i>
       </div>
