@@ -290,7 +290,7 @@
           </div>
 
           <!-- Right: CTA -->
-          <div style="flex: 0 1 auto; text-align: center; display:flex; flex-direction:column; align-items:center; gap:10px;">
+          <div id="google-verification-cta" style="flex: 0 1 auto; text-align: center; display:flex; flex-direction:column; align-items:center; gap:10px;">
             <button onclick="window.openAuthModal('login')" style="display:inline-flex; align-items:center; gap:10px; background: linear-gradient(135deg, #059669, #0284c7); color:white; border:none; padding:14px 24px; border-radius:50px; font-size:0.92rem; font-weight:700; cursor:pointer; box-shadow: 0 8px 24px rgba(5,150,105,0.35); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); white-space:nowrap; letter-spacing:0.2px;"
               onmouseover="this.style.transform='translateY(-2px) scale(1.03)'; this.style.boxShadow='0 12px 30px rgba(2,132,199,0.45)';"
               onmouseout="this.style.transform='translateY(0) scale(1)'; this.style.boxShadow='0 8px 24px rgba(5,150,105,0.35)';">
@@ -306,10 +306,10 @@
   </section>
 
   <script>
-    // Hide the Google verification banner if the user is already logged in
+    // Hide ONLY the login button (CTA) if the user is already logged in, but keep the premium banner visible
     if (localStorage.getItem('auth_token')) {
-        const banner = document.getElementById('google-verification-banner');
-        if (banner) banner.style.display = 'none';
+        const cta = document.getElementById('google-verification-cta');
+        if (cta) cta.style.display = 'none';
     }
   </script>
 
