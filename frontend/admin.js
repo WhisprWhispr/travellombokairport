@@ -61,7 +61,7 @@ const renderTransferMatrix = () => {
         container.innerHTML = '<p style="padding: 20px; color: #94a3b8; text-align: center; font-size: 0.9rem;">Belum ada data area. Klik "Tambah Area" atau gunakan AI Scan untuk mengisi otomatis.</p>';
         return;
     }
-    let html = `<table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+    let html = `<table style="width: 100%; min-width: 800px; border-collapse: collapse; font-size: 0.85rem;">
         <thead>
             <tr style="background: var(--primary-blue); color: white;">
                 <th style="padding: 10px 12px; text-align: left; white-space: nowrap; position: sticky; left: 0; background: var(--primary-blue); z-index: 1;">Area Tujuan</th>
@@ -72,10 +72,10 @@ const renderTransferMatrix = () => {
         <tbody>`;
     transferMatrixData.areas.forEach((area, ai) => {
         html += `<tr style="border-bottom: 1px solid #e2e8f0;">
-            <td style="padding: 8px 12px; font-weight: 700; color: var(--text-dark); white-space: nowrap; position: sticky; left: 0; background: white; z-index: 1;"><input type="text" value="${area.area}" onchange="window.updateTransferAreaName(${ai}, this.value)" style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 8px; font-weight: 700; width: 100%; min-width: 160px;"></td>
+            <td style="padding: 8px 12px; font-weight: 700; color: var(--text-dark); white-space: nowrap; position: sticky; left: 0; background: white; z-index: 1;"><input type="text" value="${area.area}" onchange="window.updateTransferAreaName(${ai}, this.value)" style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; font-weight: 700; width: 100%; min-width: 200px; font-size: 0.95rem;"></td>
             ${transferMatrixData.vehicles.map((v, vi) => {
                 const price = area.prices[v] || '';
-                return `<td style="padding: 8px 6px; text-align: center;"><input type="text" value="${price ? parseInt(price).toLocaleString('id-ID') : ''}" onchange="window.updateTransferPrice(${ai}, '${v.replace(/'/g, "\\'")}', this.value)" placeholder="0" style="border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 4px; width: 100%; min-width: 90px; text-align: center; font-size: 0.85rem;"></td>`;
+                return `<td style="padding: 8px 6px; text-align: center;"><input type="text" value="${price ? parseInt(price).toLocaleString('id-ID') : ''}" onchange="window.updateTransferPrice(${ai}, '${v.replace(/'/g, "\\'")}', this.value)" placeholder="0" style="border: 1px solid #cbd5e1; border-radius: 8px; padding: 10px 12px; width: 100%; min-width: 130px; text-align: center; font-size: 0.95rem;"></td>`;
             }).join('')}
             <td style="padding: 8px 6px; text-align: center;"><button type="button" onclick="window.removeTransferArea(${ai})" class="btn" style="background: #fee2e2; color: #ef4444; padding: 6px 10px; font-size: 0.8rem; border: none;"><i class='fa-solid fa-trash'></i></button></td>
         </tr>`;
