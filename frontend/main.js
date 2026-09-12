@@ -2023,11 +2023,18 @@ window.generateEtiketPDF = (data) => {
                                 letter-spacing:0.8px;margin-bottom:5px;">Tanggal Pelaksanaan</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.startDate || data.details?.date)}</div>
                 </div>
-                ${(data.endDate || data.details?.time) ? `
+                ${data.endDate ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">${data.endDate ? 'Tanggal Selesai' : 'Waktu Keberangkatan'}</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.endDate ? fmtDate(data.endDate) : data.details?.time}</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">Tanggal Selesai</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.endDate)}</div>
+                </div>
+                ` : ''}
+                ${data.details?.time ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Jam Penjemputan</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.time}</div>
                 </div>
                 ` : ''}
                 ${data.details?.pax ? `
@@ -3284,7 +3291,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 503.000\nSisa Pembayaran: ${finalPrice > 503000 ? formatPrice(finalPrice - 503000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\nJam Penjemputan: ${pickupTime}\nNomor Penerbangan: ${flightNum}\nJumlah Penumpang: ${pax}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 503.000\nSisa Pembayaran: ${finalPrice > 503000 ? formatPrice(finalPrice - 503000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
         } else {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon instruksi selanjutnya. Terima kasih.`;
         }
