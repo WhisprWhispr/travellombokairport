@@ -340,7 +340,8 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             isDp: data.isDp || false,
             fullPrice: data.fullPrice || data.price || data.totalPrice || 0,
             createdAt: data.createdAt || null,
-            type: isORD ? 'order' : 'booking'
+            type: isORD ? 'order' : 'booking',
+            details: data.details || null
         });
     } catch (error) {
         return c.json({ error: error.message }, 500);
