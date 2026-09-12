@@ -1205,6 +1205,7 @@ const fetchAdminBookings = async () => {
                     if (b.status === 'PENDING') statusColor = '#f59e0b';
                     if (b.status === 'PROCESSING') statusColor = '#3b82f6';
                     if (b.status === 'COMPLETED') statusColor = '#10b981';
+                    if (b.status === 'KADALUARSA') statusColor = '#ef4444';
                     
                     const trxId = b.transactionId || b.id.substring(0, 8);
                     const orderDateStr = b.createdAt ? new Date(b.createdAt).toLocaleString('id-ID') : '-';
