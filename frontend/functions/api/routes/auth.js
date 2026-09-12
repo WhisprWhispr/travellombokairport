@@ -629,4 +629,74 @@ authRoutes.post('/check-verified', async (c) => {
     }
 });
 
+// POST /api/auth/upload-avatar
+authRoutes.post('/upload-avatar', async (c) => {
+    try {
+        const { imageBase64, imageUrl, idToken } = await c.req.json();
+        
+        if ((!imageBase64 && !imageUrl) || !idToken) {
+            return c.json({ error: 'Image dan token wajib diisi.' }, 400);
+        }
+
+        let finalImageUrl = imageUrl;
+
+        // 1. Upload to Cloudinary jika ada base64
+        if (imageBase64) {
+            const cloudName = 'mvhjuh83';
+            const apiKey = '636819913243949';
+            const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
+            
+            const timestamp = Math.round((new Date).getTime() / 1000);
+            const strToSign = `timestamp=${timestamp}${apiSecret}`;
+            
+            // Web Crypto SHA-1 untuk Cloudflare Workers
+            const encoder = new TextEncoder();
+            const data = encoder.encode(strToSign);
+            const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    file: imageBase64,
+                    api_key: apiKey,
+                    timestamp: timestamp,
+                    signature: signature
+                })
+            });
+
+            if (!cloudinaryRes.ok) {
+                const errData = await cloudinaryRes.json();
+                return c.json({ error: 'Gagal upload ke Cloudinary', details: errData }, 500);
+            }
+
+            const cloudData = await cloudinaryRes.json();
+            finalImageUrl = cloudData.secure_url;
+        }
+
+        // 2. Update Firebase Auth Profile
+        const firebaseApiKey = c.env.FIREBASE_API_KEY;
+        const fbRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${firebaseApiKey}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                idToken: idToken,
+                photoUrl: finalImageUrl,
+                returnSecureToken: true
+            })
+        });
+
+        if (!fbRes.ok) {
+            const errData = await fbRes.json();
+            return c.json({ error: 'Gagal update profil Firebase', details: errData }, 500);
+        }
+
+        return c.json({ success: true, url: finalImageUrl });
+    } catch (e) {
+        return c.json({ error: e.message || 'Gagal mengunggah foto profil' }, 500);
+    }
+});
+
 export default authRoutes;
