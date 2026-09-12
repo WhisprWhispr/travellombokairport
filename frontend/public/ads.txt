@@ -1,4 +1,5 @@
 # File ads.txt untuk Google AdSense dan Authorized Digital Sellers
 # Silakan ganti "pub-0000000000000000" dengan Publisher ID Google AdSense Anda yang asli.
 # Format: <Ad Network Domain>, <Publisher ID>, <Account Type>, <Certification ID>
-google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0
+google.com, pub-5434492393431534, DIRECT, f08c47fec0942fa0
+
