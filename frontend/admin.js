@@ -1182,8 +1182,9 @@ const fetchAdminBookings = async () => {
     const webBookingsTableBody = document.getElementById("admin-web-bookings-table");
     
     try {
-        const response = await fetch(`${API_URL}/bookings`, {
-            headers: getAuthHeaders()
+        const response = await fetch(`${API_URL}/bookings?_t=${new Date().getTime()}`, {
+            headers: getAuthHeaders(),
+            cache: 'no-store'
         });
         const allBookings = await response.json();
         
@@ -1299,9 +1300,12 @@ Salam hangat,
         
     } catch (error) {
         console.error("Error fetching bookings:", error);
-        bookingsTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat jadwal.</td></tr>`;
-        ordersTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat pesanan.</td></tr>`;
-        webBookingsTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat booking.</td></tr>`;
+        const bookingsTableBody = document.getElementById("admin-bookings-table");
+        const ordersTableBody = document.getElementById("admin-orders-table");
+        const webBookingsTableBody = document.getElementById("admin-web-bookings-table");
+        if (bookingsTableBody) bookingsTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat jadwal.</td></tr>`;
+        if (ordersTableBody) ordersTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat pesanan.</td></tr>`;
+        if (webBookingsTableBody) webBookingsTableBody.innerHTML = `<tr><td colspan="5" class="text-center text-danger">Gagal memuat booking.</td></tr>`;
     }
 };
 
