@@ -13,40 +13,36 @@
     body {
       background: #f0f4ff;
       min-height: 100vh;
-      display: grid;
-      place-items: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
       font-family: 'Outfit', sans-serif;
       margin: 0;
-      padding: 60px 20px;
+      padding: 20px;
       box-sizing: border-box;
       position: relative;
-      overflow-x: hidden;
-      overflow-y: auto;
     }
-    body::before, body::after {
-      content: '';
+    .bg-blobs {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .blob-1, .blob-2 {
       position: absolute;
-      width: 400px;
-      height: 400px;
+      width: 350px;
+      height: 350px;
       border-radius: 50%;
       filter: blur(80px);
-      z-index: -1;
       animation: float 10s infinite alternate ease-in-out;
     }
-    body::before {
-      background: rgba(5, 150, 105, 0.25);
-      top: -100px;
-      left: -100px;
-    }
-    body::after {
-      background: rgba(2, 132, 199, 0.25);
-      bottom: -100px;
-      right: -100px;
-      animation-delay: -5s;
-    }
+    .blob-1 { background: rgba(5, 150, 105, 0.25); top: -100px; left: -50px; }
+    .blob-2 { background: rgba(2, 132, 199, 0.25); bottom: -100px; right: -50px; animation-delay: -5s; }
     @keyframes float {
       0% { transform: translate(0, 0) scale(1); }
-      100% { transform: translate(50px, 50px) scale(1.1); }
+      100% { transform: translate(30px, 30px) scale(1.05); }
     }
     .auth-card {
       background: rgba(255, 255, 255, 0.85);
@@ -58,6 +54,7 @@
       padding: 30px 25px;
       box-shadow: 0 25px 50px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.6) inset;
       margin: auto;
+      z-index: 1;
     }
     .auth-logo {
       display: flex;
@@ -157,12 +154,13 @@
       text-decoration: underline;
     }
     .back-btn {
-      position: fixed;
+      position: absolute;
       top: 20px;
       left: 20px;
       z-index: 50;
       background: rgba(255, 255, 255, 0.9);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       color: #0f172a;
       border: 1px solid rgba(255,255,255,0.6);
       box-shadow: 0 4px 15px rgba(0,0,0,0.05);
@@ -325,6 +323,10 @@
   <link rel="stylesheet" crossorigin href="/assets/main-BSGSbSZN.css">
 </head>
 <body>
+  <div class="bg-blobs">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
 
   <a href="/" class="back-btn"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
 
