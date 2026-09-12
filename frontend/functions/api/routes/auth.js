@@ -678,6 +678,10 @@ authRoutes.post('/upload-avatar', async (c) => {
 
         // 2. Update Firebase Auth Profile
         const firebaseApiKey = c.env.FIREBASE_API_KEY;
+        if (!firebaseApiKey) {
+            return c.json({ error: 'Sistem belum siap. FIREBASE_API_KEY tidak ditemukan di Cloudflare Secrets.' }, 500);
+        }
+
         const fbRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${firebaseApiKey}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -690,7 +694,8 @@ authRoutes.post('/upload-avatar', async (c) => {
 
         if (!fbRes.ok) {
             const errData = await fbRes.json();
-            return c.json({ error: 'Gagal update profil Firebase', details: errData }, 500);
+            const errMsg = errData.error && errData.error.message ? errData.error.message : JSON.stringify(errData);
+            return c.json({ error: `Gagal update profil Firebase: ${errMsg}`, details: errData }, 500);
         }
 
         return c.json({ success: true, url: finalImageUrl });
