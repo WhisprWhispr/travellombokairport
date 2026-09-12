@@ -142,11 +142,8 @@ paymentRoutes.post('/va', async (c) => {
             throw new Error(data.message || data.error || `HTTP ${response.status}`);
         }
 
-        // Cek berbagai kemungkinan field expiry dari Borderpay
-        const expiresRaw = data.expires_at || data.expired_at || data.expiry || data.due_date || data.expiry_time;
-
-        // Jika Borderpay tidak kirim expiry, hitung sendiri +24 jam dari sekarang
-        const expiryDate = expiresRaw ? new Date(expiresRaw) : new Date(Date.now() + 24 * 60 * 60 * 1000);
+        // Paksa 24 jam untuk Virtual Account
+        const expiryDate = new Date(Date.now() + 24 * 60 * 60 * 1000);
         const expiredAt = formatDate(expiryDate.toISOString());
 
         console.log('Borderpay VA raw response:', JSON.stringify(data));
