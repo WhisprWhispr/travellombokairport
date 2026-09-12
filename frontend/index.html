@@ -237,7 +237,7 @@
   </header>
 
   <!-- Penjelasan Fitur Aplikasi (Wajib untuk Verifikasi Google) -->
-  <section class="section" style="background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #f0fdf4 100%); padding: 40px 0;">
+  <section id="google-verification-banner" class="section" style="background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #f0fdf4 100%); padding: 40px 0;">
     <div class="container">
       <div style="position: relative; background: linear-gradient(135deg, #0f172a 0%, #064e3b 50%, #0c4a6e 100%); border-radius: 24px; padding: 36px 32px; box-shadow: 0 20px 60px rgba(15,23,42,0.3), 0 0 0 1px rgba(148,163,184,0.1); overflow: hidden;">
         
@@ -301,6 +301,14 @@
       </div>
     </div>
   </section>
+
+  <script>
+    // Hide the Google verification banner if the user is already logged in
+    if (localStorage.getItem('auth_token')) {
+        const banner = document.getElementById('google-verification-banner');
+        if (banner) banner.style.display = 'none';
+    }
+  </script>
 
 
   <!-- Layanan Kami -->
