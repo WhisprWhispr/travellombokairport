@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profil Saya - Travel Lombok Airport</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    body {
+      background: #f0f4ff;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Outfit', sans-serif;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .bg-blobs {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: -1;
+      pointer-events: none;
+    }
+    .blob-1, .blob-2 {
+      position: absolute;
+      width: 350px;
+      height: 350px;
+      border-radius: 50%;
+      filter: blur(80px);
+      animation: float 10s infinite alternate ease-in-out;
+    }
+    .blob-1 { background: rgba(5, 150, 105, 0.25); top: -100px; left: -50px; }
+    .blob-2 { background: rgba(2, 132, 199, 0.25); bottom: -100px; right: -50px; animation-delay: -5s; }
+    @keyframes float {
+      0% { transform: translate(0, 0) scale(1); }
+      100% { transform: translate(30px, 30px) scale(1.05); }
+    }
+    .profile-card {
+      background: rgba(255, 255, 255, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      width: 100%;
+      max-width: 480px;
+      border-radius: 24px;
+      padding: 30px 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.1), 0 0 0 1px rgba(255,255,255,0.6) inset;
+      margin: auto;
+      z-index: 1;
+      position: relative;
+      text-align: center;
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: #64748b;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 20px;
+      transition: color 0.2s;
+      position: absolute;
+      top: 25px;
+      left: 25px;
+    }
+    .back-link:hover {
+      color: #0f172a;
+    }
+    .avatar-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 40px auto 20px;
+      border-radius: 50%;
+      background: #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      border: 4px solid white;
+    }
+    .avatar-container img {
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .avatar-container i.fa-user {
+      font-size: 3.5rem;
+      color: #94a3b8;
+    }
+    .edit-avatar-btn {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      width: 36px;
+      height: 36px;
+      background: #059669;
+      color: white;
+      border: 2px solid white;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 10px rgba(5, 150, 105, 0.4);
+    }
+    .edit-avatar-btn:hover {
+      background: #047857;
+      transform: scale(1.1);
+    }
+    .user-name {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin: 0 0 5px;
+    }
+    .user-email {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin: 0 0 30px;
+    }
+
+    /* Modal Avatar */
+    .avatar-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .avatar-modal {
+      background: white;
+      width: 100%;
+      max-width: 450px;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
+      transform: translateY(20px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .avatar-modal.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .modal-header h3 {
+      margin: 0;
+      font-size: 1.2rem;
+      color: #0f172a;
+    }
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: #94a3b8;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .close-modal:hover { color: #ef4444; }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      background: #f1f5f9;
+      padding: 5px;
+      border-radius: 12px;
+    }
+    .tab-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      font-weight: 600;
+      color: #64748b;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: white;
+      color: #059669;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+
+    /* Grid Avatar */
+    .avatar-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+    .avatar-option {
+      border: 2px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .avatar-option img {
+      width: 100%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 10px;
+    }
+    .avatar-option:hover {
+      border-color: #0284c7;
+      background: #f0f9ff;
+    }
+    .avatar-option p {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    /* Upload Area */
+    .upload-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 16px;
+      padding: 40px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f8fafc;
+    }
+    .upload-area:hover {
+      border-color: #059669;
+      background: #ecfdf5;
+    }
+    .upload-area i {
+      font-size: 2.5rem;
+      color: #94a3b8;
+      margin-bottom: 10px;
+    }
+    .upload-area:hover i {
+      color: #059669;
+    }
+    .upload-area p {
+      margin: 0;
+      color: #64748b;
+      font-weight: 500;
+    }
+    #file-input {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="bg-blobs">
+    <div class="blob-1"></div>
+    <div class="blob-2"></div>
+  </div>
+
+  <div class="profile-card">
+    <a href="/" class="back-link"><i class="fa-solid fa-arrow-left"></i> Kembali</a>
+    
+    <div class="avatar-container">
+      <div id="profile-avatar-display"><i class="fa-solid fa-user"></i></div>
+      <div class="edit-avatar-btn" onclick="openAvatarModal()">
+        <i class="fa-solid fa-camera"></i>
+      </div>
+    </div>
+    
+    <h2 class="user-name" id="profile-name">Memuat...</h2>
+    <p class="user-email" id="profile-email">memuat...</p>
+
+    <button onclick="window.logoutUser()" class="btn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 100%; border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;">
+      <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
+    </button>
+  </div>
+
+  <!-- Modal Pilih Avatar -->
+  <div class="avatar-modal-overlay" id="avatar-modal">
+    <div class="avatar-modal" id="avatar-modal-content">
+      <div class="modal-header">
+        <h3>Ubah Foto Profil</h3>
+        <button class="close-modal" onclick="closeAvatarModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('upload')">Upload Foto</button>
+        <button class="tab-btn" onclick="switchTab('islami')">Kartun Islami</button>
+        <button class="tab-btn" onclick="switchTab('umum')">Kartun Umum</button>
+      </div>
+
+      <!-- Tab Upload -->
+      <div class="tab-content active" id="tab-upload">
+        <div class="upload-area" onclick="document.getElementById('file-input').click()">
+          <i class="fa-solid fa-cloud-arrow-up"></i>
+          <p>Klik untuk memilih foto dari galeri</p>
+        </div>
+        <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" onchange="handleFileUpload(event)">
+      </div>
+
+      <!-- Tab Kartun Islami -->
+      <div class="tab-content" id="tab-islami">
+        <div class="avatar-grid">
+          <div class="avatar-option" onclick="selectPredefinedAvatar('/avatars/islamic_male.jpg')">
+            <img src="/avatars/islamic_male.jpg" alt="Pria Islami">
+            <p>Pria Islami</p>
+          </div>
+          <div class="avatar-option" onclick="selectPredefinedAvatar('/avatars/islamic_female.jpg')">
+            <img src="/avatars/islamic_female.jpg" alt="Wanita Islami">
+            <p>Wanita Islami</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Kartun Umum -->
+      <div class="tab-content" id="tab-umum">
+        <div class="avatar-grid">
+          <div class="avatar-option" onclick="selectPredefinedAvatar('/avatars/general_male.jpg')">
+            <img src="/avatars/general_male.jpg" alt="Pria Traveler">
+            <p>Pria Traveler</p>
+          </div>
+          <div class="avatar-option" onclick="selectPredefinedAvatar('https://ui-avatars.com/api/?name=Wanita+Traveler&background=random')">
+            <img src="https://ui-avatars.com/api/?name=Wanita+Traveler&background=random&color=fff&rounded=true" alt="Wanita Traveler">
+            <p>Wanita Traveler</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/config.js"></script>
+  <script src="/main.js"></script>
+  <script>
+    // Load User Data
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
+      if (!user) {
+        window.location.href = '/login.html';
+        return;
+      }
+      
+      document.getElementById('profile-name').textContent = user.name || user.email.split('@')[0];
+      document.getElementById('profile-email').textContent = user.email;
+      
+      if (user.photoUrl) {
+        document.getElementById('profile-avatar-display').innerHTML = `<img src="${user.photoUrl}" alt="Avatar">`;
+      }
+    });
+
+    // Modal Logic
+    const modal = document.getElementById('avatar-modal');
+    const modalContent = document.getElementById('avatar-modal-content');
+
+    function openAvatarModal() {
+      modal.style.display = 'flex';
+      setTimeout(() => modalContent.classList.add('show'), 10);
+    }
+
+    function closeAvatarModal() {
+      modalContent.classList.remove('show');
+      setTimeout(() => modal.style.display = 'none', 300);
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // Avatar Selection Logic
+    async function selectPredefinedAvatar(url) {
+      // Use absolute URL if it's a relative path
+      const fullUrl = url.startsWith('/') ? window.location.origin + url : url;
+      await updateAvatar({ imageUrl: fullUrl });
+    }
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      if (file.size > 5 * 1024 * 1024) {
+        Swal.fire('Terlalu Besar', 'Maksimal ukuran foto adalah 5MB.', 'error');
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = async () => {
+        const base64String = reader.result;
+        await updateAvatar({ imageBase64: base64String });
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function updateAvatar(payload) {
+      const token = localStorage.getItem('auth_token');
+      if (!token) {
+        Swal.fire('Error', 'Sesi Anda telah habis. Silakan login kembali.', 'error');
+        return;
+      }
+
+      payload.idToken = token;
+
+      Swal.fire({
+        title: 'Menyimpan Foto...',
+        text: 'Mohon tunggu sebentar',
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+
+      try {
+        const response = await fetch(`${API_URL}/api/auth/upload-avatar`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          // Update local storage
+          const user = JSON.parse(localStorage.getItem('auth_user'));
+          user.photoUrl = data.url;
+          localStorage.setItem('auth_user', JSON.stringify(user));
+
+          // Update UI
+          document.getElementById('profile-avatar-display').innerHTML = `<img src="${data.url}" alt="Avatar">`;
+          
+          closeAvatarModal();
+          Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: 'Foto profil Anda telah diperbarui.',
+            timer: 2000,
+            showConfirmButton: false
+          });
+        } else {
+          throw new Error(data.error || 'Terjadi kesalahan');
+        }
+      } catch (error) {
+        console.error(error);
+        Swal.fire('Gagal', error.message, 'error');
+      }
+    }
+  </script>
+</body>
+</html>

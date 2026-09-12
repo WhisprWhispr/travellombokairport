@@ -3,6 +3,7 @@ const router = express.Router();
 const { db } = require('../config/firebase');
 const axios = require('axios'); // Tambahkan axios untuk request REST API
 const rateLimit = require('express-rate-limit');
+const crypto = require('crypto');
 
 // Rate limiter: maksimal 5 kali percobaan dalam 15 menit
 const authLimiter = rateLimit({
@@ -126,6 +127,51 @@ router.post('/reset-password', async (req, res) => {
     } catch (error) {
         console.error('Reset password error:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+// POST /api/auth/upload-avatar
+router.post('/upload-avatar', async (req, res) => {
+    try {
+        const { imageBase64, imageUrl, idToken } = req.body;
+        if ((!imageBase64 && !imageUrl) || !idToken) {
+            return res.status(400).json({ error: 'Image dan token wajib diisi.' });
+        }
+
+        let finalImageUrl = imageUrl;
+
+        // 1. Upload to Cloudinary jika ada base64
+        if (imageBase64) {
+            const cloudName = 'mvhjuh83';
+            const apiKey = '636819913243949';
+            const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
+            
+            const timestamp = Math.round((new Date).getTime() / 1000);
+            const strToSign = `timestamp=${timestamp}${apiSecret}`;
+            const signature = crypto.createHash('sha1').update(strToSign).digest('hex');
+
+            const cloudinaryRes = await axios.post(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                file: imageBase64,
+                api_key: apiKey,
+                timestamp: timestamp,
+                signature: signature
+            });
+
+            finalImageUrl = cloudinaryRes.data.secure_url;
+        }
+
+        // 2. Update Firebase Auth Profile
+        const firebaseApiKey = process.env.FIREBASE_API_KEY;
+        await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${firebaseApiKey}`, {
+            idToken: idToken,
+            photoUrl: finalImageUrl,
+            returnSecureToken: true
+        });
+
+        res.json({ success: true, url: finalImageUrl });
+    } catch (error) {
+        console.error('Upload avatar error:', error);
+        res.status(500).json({ error: error.message || 'Gagal mengunggah foto profil' });
     }
 });
 

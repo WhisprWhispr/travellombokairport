@@ -4181,12 +4181,23 @@ window.checkAuthUI = () => {
     const authContainer = document.getElementById('footer-auth-container');
     const userContainer = document.getElementById('footer-user-container');
     const userNameDisplay = document.getElementById('footer-user-name');
+    const userAvatarDisplay = document.getElementById('footer-user-avatar'); // Make sure to add id="footer-user-avatar" to the avatar wrapper in index.html if not present
 
     if (authContainer && userContainer) {
         if (token && user) {
             authContainer.style.display = 'none';
             userContainer.style.display = 'flex';
-            if (userNameDisplay) userNameDisplay.innerText = user.name || 'Pengguna';
+            if (userNameDisplay) userNameDisplay.innerText = user.name || user.email.split('@')[0] || 'Pengguna';
+            
+            // Check for avatar placeholder in index.html
+            const avatarContainer = userContainer.querySelector('div[style*="width: 40px"]');
+            if (avatarContainer) {
+                if (user.photoUrl) {
+                    avatarContainer.innerHTML = `<img src="${user.photoUrl}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;" alt="Avatar">`;
+                } else {
+                    avatarContainer.innerHTML = `<i class="fa-solid fa-user"></i>`;
+                }
+            }
         } else {
             authContainer.style.display = 'flex';
             userContainer.style.display = 'none';
