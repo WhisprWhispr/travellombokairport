@@ -732,7 +732,7 @@ authRoutes.post('/upload-avatar', async (c) => {
         const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
         let decoded;
         try {
-            decoded = await verify(idToken, secret);
+            decoded = await verify(idToken, secret, 'HS256');
         } catch (e) {
             console.error("JWT Verify Error:", e);
             return c.json({ error: `Sesi tidak valid: ${e.message || e}` }, 401);
