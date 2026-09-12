@@ -238,7 +238,14 @@ async function fetchTrips(driverId) {
             
             const waNumber = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
             const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
-            const msg = `Halo Kak ${b.customerName},\n\nPerkenalkan saya *${localStorage.getItem('driverName') || 'Supir'}* dari *Travel Lombok Airport*.\n\nSaya menghubungi terkait pesanan Kakak untuk layanan:\n🚗 *${b.itemName}*\n📅 *${new Date(b.startDate).toLocaleDateString('id-ID')}*\n\nApakah ada detail tambahan mengenai lokasi penjemputan atau jam yang spesifik?\n\nTerima kasih dan saya tunggu konfirmasinya ya Kak! 🙏`;
+            const pickupText = b.details?.pickup ? `\n📍 *Lokasi Jemput:*\n${b.details.pickup}\n` : '';
+            const dropoffText = b.details?.dropoff ? `\n📍 *Tujuan / Drop-off:*\n${b.details.dropoff}\n` : '';
+            const timeText = b.details?.time ? `\n⏰ *Jam Penjemputan:*\n${b.details.time}\n` : '';
+            const flightText = b.details?.flightNumber ? `\n✈️ *No. Penerbangan:*\n${b.details.flightNumber}\n` : '';
+            const paxText = b.details?.pax ? `\n👥 *Jumlah Peserta:*\n${b.details.pax} Orang\n` : '';
+            const vehicleText = b.details?.vehicle ? `\n🚗 *Pilihan Kendaraan:*\n${b.details.vehicle}\n` : '';
+            const notesText = b.details?.notes ? `\n📝 *Catatan Khusus:*\n${b.details.notes}\n` : '';
+            const msg = `Halo Kak ${b.customerName},\n\nPerkenalkan saya *${localStorage.getItem('driverName') || 'Supir'}* dari *Travel Lombok Airport*.\n\nSaya menghubungi terkait pesanan Kakak untuk layanan:\n🚗 *${b.itemName}*\n📅 *${new Date(b.startDate).toLocaleDateString('id-ID')}*\n${timeText}${pickupText}${dropoffText}${flightText}${paxText}${vehicleText}${notesText}\nApakah ada detail tambahan mengenai lokasi penjemputan atau jam yang spesifik?\n\nTerima kasih dan saya tunggu konfirmasinya ya Kak! 🙏`;
             const waLink = `https://wa.me/${cleanWa}?text=${encodeURIComponent(msg)}`;
             
             const card = document.createElement("div");

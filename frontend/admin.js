@@ -1209,6 +1209,14 @@ const fetchAdminBookings = async () => {
                     const waNumber = b.phone ? b.phone.replace(/[^0-9]/g, '') : '';
                     const cleanWa = waNumber.startsWith('0') ? '62' + waNumber.substring(1) : waNumber;
                     const startDateStr = new Date(b.startDate).toLocaleDateString('id-ID');
+                    const pickupText = b.details?.pickup ? `\n📍 *Lokasi Jemput:*\n${b.details.pickup}\n` : '';
+                    const dropoffText = b.details?.dropoff ? `\n📍 *Tujuan / Drop-off:*\n${b.details.dropoff}\n` : '';
+                    const timeText = b.details?.time ? `\n⏰ *Jam Penjemputan:*\n${b.details.time}\n` : '';
+                    const flightText = b.details?.flightNumber ? `\n✈️ *No. Penerbangan:*\n${b.details.flightNumber}\n` : '';
+                    const paxText = b.details?.pax ? `\n👥 *Jumlah Peserta:*\n${b.details.pax} Orang\n` : '';
+                    const vehicleText = b.details?.vehicle ? `\n🚗 *Pilihan Kendaraan:*\n${b.details.vehicle}\n` : '';
+                    const notesText = b.details?.notes ? `\n📝 *Catatan Khusus:*\n${b.details.notes}\n` : '';
+
                     const waMsg = encodeURIComponent(
 `Assalamu'alaikum Wr. Wb. / Selamat ${new Date().getHours() < 11 ? 'Pagi' : new Date().getHours() < 15 ? 'Siang' : new Date().getHours() < 19 ? 'Sore' : 'Malam'}, Bapak/Ibu *${b.customerName}* 🙏
 
@@ -1224,7 +1232,7 @@ ${b.itemName}
 
 📅 *Tanggal Mulai:*
 ${startDateStr}
-
+${timeText}${pickupText}${dropoffText}${flightText}${paxText}${vehicleText}${notesText}
 〰〰〰〰〰〰〰〰〰〰〰〰〰〰
 
 Apabila Bapak/Ibu memiliki pertanyaan, ingin mengkonfirmasi jadwal, atau ada hal lain yang perlu disampaikan, jangan ragu untuk membalas pesan ini.
