@@ -788,7 +788,7 @@
             <textarea id="item-description" rows="3" required placeholder="Deskripsi layanan..."></textarea>
           </div>
 
-          <div class="form-group" id="price-duration-group" style="display: flex; gap: 15px;">
+          <div class="form-group form-row-responsive" id="price-duration-group">
             <div style="flex: 2;">
               <label>Harga (Otomatis titik)</label>
               <input type="text" id="item-price" placeholder="e.g. 250000">
@@ -801,7 +801,7 @@
 
           <div class="form-group">
             <label>Image URL</label>
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="form-row-responsive align-center">
               <input type="url" id="item-image" required placeholder="https://example.com/image.jpg" style="flex: 1;">
               <input type="file" id="item-image-upload" accept="image/*" style="display: none;" onchange="uploadImageToServer(this, 'item-image')">
               <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6; white-space: nowrap;" onclick="document.getElementById('item-image-upload').click()">
@@ -830,7 +830,7 @@
           <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Spesifikasi Kendaraan (Khusus Sewa)</h4>
           <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Hanya akan muncul jika kategori adalah Sewa Mobil atau Sewa Motor.</p>
           
-          <div class="form-group" style="display: flex; gap: 15px;">
+          <div class="form-group form-row-responsive">
             <div style="flex: 1;">
               <label>Transmisi</label>
               <select id="item-transmission">
@@ -942,7 +942,7 @@
             <input type="text" id="booking-phone" placeholder="e.g. 0812345678">
           </div>
 
-          <div class="form-group" style="display: flex; gap: 15px;">
+          <div class="form-group form-row-responsive">
             <div style="flex: 1;">
               <label>Tanggal Mulai</label>
               <input type="date" id="booking-start" required class="form-control">
@@ -987,7 +987,7 @@
 
           <div class="form-group">
             <label>URL Video YouTube</label>
-            <div style="display: flex; gap: 10px;">
+            <div class="form-row-responsive align-center">
               <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
               <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('drone-video-url').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
             </div>
