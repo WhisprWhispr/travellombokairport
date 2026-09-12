@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { sign } from 'hono/jwt';
+import { sign, verify } from 'hono/jwt';
 import { getDb } from '../config/firebase.js';
 
 const authRoutes = new Hono();
@@ -166,10 +166,28 @@ authRoutes.post('/login', async (c) => {
             console.error('Failed to save login log:', logErr);
         }
         
+        // Ambil data tambahan dari Firestore
+        let userPhotoUrl = '';
+        try {
+            const db = getDb(c);
+            const userDoc = await db.collection('user_accounts').doc(firebaseUser.localId).get();
+            if (userDoc.exists && userDoc.data().photoUrl) {
+                userPhotoUrl = userDoc.data().photoUrl;
+            }
+        } catch (e) {
+            console.error('Failed to get photoUrl on login', e);
+        }
+
         return c.json({
             success: true,
             token,
-            admin: { id: firebaseUser.localId, email: firebaseUser.email }
+            user: { 
+                id: firebaseUser.localId, 
+                email: firebaseUser.email, 
+                name: firebaseUser.displayName || '',
+                photoUrl: userPhotoUrl
+            },
+            admin: firebaseUser.email === 'ridhosandhika18022022@gmail.com' ? { id: firebaseUser.localId, email: firebaseUser.email } : undefined
         });
 
     } catch (error) {
@@ -251,10 +269,27 @@ authRoutes.post('/google', async (c) => {
         
         const token = await sign(payload, secret);
         
+        // Ambil data tambahan dari Firestore
+        let userPhotoUrl = firebaseUser.photoUrl || '';
+        try {
+            const db = getDb(c);
+            const userDoc = await db.collection('user_accounts').doc(firebaseUser.localId).get();
+            if (userDoc.exists && userDoc.data().photoUrl) {
+                userPhotoUrl = userDoc.data().photoUrl;
+            }
+        } catch (e) {
+            console.error('Failed to get photoUrl on google login', e);
+        }
+
         return c.json({
             success: true,
             token,
-            user: { id: firebaseUser.localId, email: firebaseUser.email, name: firebaseUser.displayName || '' }
+            user: { 
+                id: firebaseUser.localId, 
+                email: firebaseUser.email, 
+                name: firebaseUser.displayName || '',
+                photoUrl: userPhotoUrl
+            }
         });
 
     } catch (error) {
@@ -618,10 +653,27 @@ authRoutes.post('/check-verified', async (c) => {
             exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24
         }, secret);
 
+        // Ambil data tambahan dari Firestore
+        let userPhotoUrl = user.photoUrl || '';
+        try {
+            const db = getDb(c);
+            const userDoc = await db.collection('user_accounts').doc(user.localId).get();
+            if (userDoc.exists && userDoc.data().photoUrl) {
+                userPhotoUrl = userDoc.data().photoUrl;
+            }
+        } catch (e) {
+            console.error('Failed to get photoUrl on check-verified', e);
+        }
+
         return c.json({
             verified: true,
             token: jwtToken,
-            user: { id: user.localId, email: user.email, name: user.displayName || '' }
+            user: { 
+                id: user.localId, 
+                email: user.email, 
+                name: user.displayName || '',
+                photoUrl: userPhotoUrl
+            }
         });
 
     } catch (e) {
@@ -676,26 +728,35 @@ authRoutes.post('/upload-avatar', async (c) => {
             finalImageUrl = cloudData.secure_url;
         }
 
-        // 2. Update Firebase Auth Profile
-        const firebaseApiKey = c.env.FIREBASE_API_KEY;
-        if (!firebaseApiKey) {
-            return c.json({ error: 'Sistem belum siap. FIREBASE_API_KEY tidak ditemukan di Cloudflare Secrets.' }, 500);
+        // 2. Verifikasi Token Lokal (Hono JWT)
+        const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
+        let decoded;
+        try {
+            decoded = await verify(idToken, secret);
+        } catch (e) {
+            return c.json({ error: 'Sesi Anda tidak valid atau telah kadaluarsa. Silakan login ulang.' }, 401);
         }
 
-        const fbRes = await fetch(`https://identitytoolkit.googleapis.com/v1/accounts:update?key=${firebaseApiKey}`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                idToken: idToken,
-                photoUrl: finalImageUrl,
-                returnSecureToken: true
-            })
-        });
-
-        if (!fbRes.ok) {
-            const errData = await fbRes.json();
-            const errMsg = errData.error && errData.error.message ? errData.error.message : JSON.stringify(errData);
-            return c.json({ error: `Gagal update profil Firebase: ${errMsg}`, details: errData }, 500);
+        // 3. Update Profil di Firestore
+        try {
+            const db = getDb(c);
+            const userDoc = await db.collection('user_accounts').doc(decoded.id).get();
+            
+            if (userDoc.exists) {
+                await db.collection('user_accounts').doc(decoded.id).update({ 
+                    photoUrl: finalImageUrl 
+                });
+            } else {
+                await db.collection('user_accounts').doc(decoded.id).set({
+                    email: decoded.email || '',
+                    name: decoded.name || '',
+                    photoUrl: finalImageUrl,
+                    createdAt: new Date().toISOString()
+                });
+            }
+        } catch (dbError) {
+            console.error('Firestore Error:', dbError);
+            return c.json({ error: 'Berhasil upload foto, tetapi gagal menyimpan ke database profil.' }, 500);
         }
 
         return c.json({ success: true, url: finalImageUrl });
