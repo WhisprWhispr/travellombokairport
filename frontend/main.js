@@ -3737,16 +3737,20 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
             <h2 style="color: var(--text-dark); margin-bottom: 10px;">${isBookingOnly ? "Booking Berhasil!" : "Pembayaran Berhasil!"}</h2>
             <p style="color: #64748b; margin-bottom: 20px;">Terima kasih, pesanan Anda telah kami terima.</p>
             
-            <div style="background: #f8fafc; padding: 15px; border-radius: 8px; border: 1px dashed #cbd5e1; margin-bottom: 25px; position: relative;">
-                <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">Nomor Refrensi Anda:</p>
-                <h3 style="color: var(--primary-blue); font-family: monospace; font-size: 1.5rem; letter-spacing: 2px;">${id}</h3>
-                <button onclick="navigator.clipboard.writeText('${id}'); const icon = this.querySelector('i'); icon.className='fa-solid fa-check'; Swal.fire({icon: 'success', title: 'ID Disalin', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); setTimeout(()=>icon.className='fa-solid fa-copy', 2000)" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: white; border: 1px solid #cbd5e1; border-radius: 6px; padding: 8px 12px; cursor: pointer; color: var(--primary-blue);" title="Salin / Copy"><i class="fa-solid fa-copy"></i></button>
+            <div style="background: linear-gradient(135deg, #f8fafc, #f1f5f9); padding: 20px; border-radius: 12px; border: 1px dashed #cbd5e1; margin-bottom: 25px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                <p style="font-size: 0.85rem; font-weight: 600; color: #64748b; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px;">Nomor Referensi Anda</p>
+                <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; background: white; padding: 12px 16px; border-radius: 10px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
+                    <span style="color: var(--primary-blue); font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: 800; word-break: break-all; text-align: left; flex: 1; letter-spacing: 0.5px;">${id}</span>
+                    <button onclick="navigator.clipboard.writeText('${id}'); const icon = this.querySelector('i'); icon.className='fa-solid fa-check text-green'; Swal.fire({icon: 'success', title: 'Tersalin', toast: true, position: 'top', showConfirmButton: false, timer: 2000}); setTimeout(()=>icon.className='fa-solid fa-copy', 2000)" style="flex-shrink: 0; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; cursor: pointer; color: var(--primary-blue); transition: all 0.2s; display: flex; align-items: center; justify-content: center; width: 42px; height: 42px;" title="Salin / Copy" onmouseover="this.style.background='#dbeafe'" onmouseout="this.style.background='#eff6ff'">
+                        <i class="fa-solid fa-copy" style="font-size: 1.15rem;"></i>
+                    </button>
+                </div>
             </div>
             
-            <div style="display: flex; gap: 10px; margin-bottom: 15px;">
-                <button onclick="downloadPdfInvoice('${id}')" class="btn btn-primary" style="flex: 1; background: #10b981;"><i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket</button>
+            <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px;">
+                <button onclick="downloadPdfInvoice('${id}')" class="btn btn-green" style="width: 100%; padding: 14px; border-radius: 10px; font-size: 1rem; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);"><i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket / Invoice</button>
+                <button onclick="closeCheckoutModal()" class="btn btn-outline" style="width: 100%; padding: 14px; border-radius: 10px; font-size: 1rem; border-color: #cbd5e1; color: #475569;">TUTUP</button>
             </div>
-            <button onclick="closeCheckoutModal()" class="btn btn-outline" style="width: 100%;">TUTUP</button>
             
         </div>
     `;
