@@ -734,7 +734,8 @@ authRoutes.post('/upload-avatar', async (c) => {
         try {
             decoded = await verify(idToken, secret);
         } catch (e) {
-            return c.json({ error: 'Sesi Anda tidak valid atau telah kadaluarsa. Silakan login ulang.' }, 401);
+            console.error("JWT Verify Error:", e);
+            return c.json({ error: `Sesi tidak valid: ${e.message || e}` }, 401);
         }
 
         // 3. Update Profil di Firestore
