@@ -644,7 +644,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                     LIHAT LAINNYA <i class="fa-solid fa-chevron-right" style="font-size:0.5rem;"></i>
                 </span>
             </div>
-        </div>`).join(``)),g(`packages-container`,b,u,6),g(`cars-container`,o,d,4),g(`motorcycles-container`,s,d,4),g(`drone-container`,p,f)};window.generateEtiketPDF=e=>{if(!e){alert(`Data tiket tidak ditemukan, cek status dulu.`);return}let t=e.isDp===!0||e.isDp===`true`,n=e.status===`PAID`,r=n?`#16a34a`:e.status===`PENDING`?`#d97706`:`#dc2626`,i=n?`#dcfce7`:e.status===`PENDING`?`#fef3c7`:`#fee2e2`,a=e.status||`UNKNOWN`,o=n?`&#10003;`:e.status===`PENDING`?`&#9203;`:`&#10007;`;t&&(r=`#ea580c`,i=`#fff7ed`,a=`DP - BELUM LUNAS`,o=`&#9651;`);let s=e=>{if(!e)return`-`;try{return new Date(e).toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`})}catch{return e}},c=e.transactionId&&e.transactionId.startsWith(`ORD-`),l=e.transactionId&&e.transactionId.startsWith(`BKG-`),u=c?`Paket Tour / QRIS`:l?`Rental & Transfer`:`Reservasi`,d=new Date().toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`,hour:`2-digit`,minute:`2-digit`}),f=window.location.origin+`/logo.png`,p=(e.itemName||``).toLowerCase(),m=0,h=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null,g=p.includes(`mobil`)||p.includes(`avanza`)||p.includes(`innova`)||p.includes(`hiace`)||p.includes(`brio`)||p.includes(`xpander`)||p.includes(`alphard`)||p.includes(`fortuner`),_=p.includes(`motor`);h&&h.category&&(h.category===`car`&&(g=!0),h.category===`motorcycle`&&(_=!0)),_?m=503e3:g&&(m=1003e3);let v=p.includes(`driver`)||p.includes(`supir`)||p.includes(`dengan supir`),y=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null;y&&y.driverOptions&&y.driverOptions!==`Tidak Include Driver`&&(v=!0),v&&(m=0);let b=``;m>0&&(b=`
+        </div>`).join(``)),g(`packages-container`,b,u,6),g(`cars-container`,o,d,4),g(`motorcycles-container`,s,d,4),g(`drone-container`,p,f)};window.generateEtiketPDF=e=>{if(!e){alert(`Data tiket tidak ditemukan, cek status dulu.`);return}let t=e.isDp===!0||e.isDp===`true`,n=e.status===`PAID`,r=n?`#16a34a`:e.status===`PENDING`?`#d97706`:`#dc2626`,i=n?`#dcfce7`:e.status===`PENDING`?`#fef3c7`:`#fee2e2`,a=e.status||`UNKNOWN`,o=n?`&#10003;`:e.status===`PENDING`?`&#9203;`:`&#10007;`;t&&(r=`#ea580c`,i=`#fff7ed`,a=`DP - BELUM LUNAS`,o=`&#9651;`);let s=e=>{if(!e)return`-`;try{return new Date(e).toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`})}catch{return e}},c=e.transactionId&&e.transactionId.startsWith(`ORD-`),l=e.transactionId&&e.transactionId.startsWith(`BKG-`),u=(e.itemName||``).toLowerCase(),d=`Reservasi`;l||u.includes(`transfer`)||u.includes(`rental`)||u.includes(`sewa`)||u.includes(`mobil`)||u.includes(`motor`)?d=`Rental & Transfer`:c&&(d=`Paket Tour / QRIS`);let f=new Date().toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`,hour:`2-digit`,minute:`2-digit`}),p=window.location.origin+`/logo.png`,m=0,h=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null,g=u.includes(`mobil`)||u.includes(`avanza`)||u.includes(`innova`)||u.includes(`hiace`)||u.includes(`brio`)||u.includes(`xpander`)||u.includes(`alphard`)||u.includes(`fortuner`),_=u.includes(`motor`);h&&h.category&&(h.category===`car`&&(g=!0),h.category===`motorcycle`&&(_=!0)),_?m=503e3:g&&(m=1003e3);let v=u.includes(`driver`)||u.includes(`supir`)||u.includes(`dengan supir`),y=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null;y&&y.driverOptions&&y.driverOptions!==`Tidak Include Driver`&&(v=!0),v&&(m=0);let b=``;m>0&&(b=`
             <div style="background:#e0f2fe;border-left:4px solid #38bdf8;padding:8px 16px;margin-bottom:12px;border-radius:4px;">
                 <div style="font-size:10px;font-weight:700;color:#0369a1;margin-bottom:2px;">&#8505; Catatan Deposit</div>
                 <div style="font-size:10px;color:#0c4a6e;line-height:1.4;">Total pembayaran <b>sudah termasuk uang deposit</b> sebesar <strong>Rp ${m.toLocaleString(`id-ID`)}</strong>. Deposit akan dikembalikan 100% setelah masa sewa berakhir jika kondisi unit baik.</div>
@@ -655,7 +655,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
     `,x.innerHTML=`
 <div style="background:linear-gradient(135deg,#1d4ed8 0%,#0369a1 60%,#0891b2 100%);padding:18px 30px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin:0;width:100%;box-sizing:border-box;">
             <div style="display:flex;align-items:center;gap:16px;">
-                <img src="${f}" crossorigin="anonymous"
+                <img src="${p}" crossorigin="anonymous"
                      style="width:60px;height:60px;border-radius:12px;background:#fff;
                             padding:6px;object-fit:contain;flex-shrink:0;">
                 <div>
@@ -672,7 +672,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
         <div style="background:${i};border-left:5px solid ${r};padding:8px 30px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%;box-sizing:border-box;">
             <div style="width:10px;height:10px;border-radius:50%;background:${r};flex-shrink:0;"></div>
             <div style="font-size:12px;font-weight:700;color:${r};">STATUS: ${a}</div>
-            <div style="font-size:10px;color:#475569;margin-left:auto;">Diterbitkan: ${d}</div>
+            <div style="font-size:10px;color:#475569;margin-left:auto;">Diterbitkan: ${f}</div>
         </div>
 
         <div style="padding:14px 30px;flex:1;width:100%;box-sizing:border-box;">
@@ -742,7 +742,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Jenis Layanan</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${u}</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${d}</div>
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
@@ -842,7 +842,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                         Dokumen ini diterbitkan secara digital oleh sistem<br>
                         Travel Lombok Airport dan sah tanpa tanda tangan fisik.
                     </div>
-                    <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${d}</div>
+                    <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${f}</div>
                     <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:20px;padding:3px 10px;">
                         <span style="font-size:9px;color:#fff;font-weight:700;letter-spacing:0.5px;">&#127760; Dipesan melalui website www.travellombokairport.com</span>
                     </div>

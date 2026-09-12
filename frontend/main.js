@@ -1874,11 +1874,19 @@ window.generateEtiketPDF = (data) => {
     };
     const isORD = data.transactionId && data.transactionId.startsWith('ORD-');
     const isBKG = data.transactionId && data.transactionId.startsWith('BKG-');
-    const typeLbl = isORD ? 'Paket Tour / QRIS' : (isBKG ? 'Rental & Transfer' : 'Reservasi');
+    
+    const nameLower = (data.itemName || '').toLowerCase();
+    
+    let typeLbl = 'Reservasi';
+    if (isBKG || nameLower.includes('transfer') || nameLower.includes('rental') || nameLower.includes('sewa') || nameLower.includes('mobil') || nameLower.includes('motor')) {
+        typeLbl = 'Rental & Transfer';
+    } else if (isORD) {
+        typeLbl = 'Paket Tour / QRIS';
+    }
+    
     const issuedAt = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const logoUrl = window.location.origin + '/logo.png';
 
-    const nameLower = (data.itemName || '').toLowerCase();
     let depositAmount = 0;
     const matchedItemPdf = window.globalItems ? window.globalItems.find(i => i.title === (data.itemName || '')) : null;
     let isMobilPdf = nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner");
