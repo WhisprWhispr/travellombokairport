@@ -8,15 +8,24 @@ const autoExpire = (db, col, id, data) => {
     if (data.status === 'PENDING') {
         let isExpired = false;
 
-        if (data.expiredAt) {
-            // Gunakan waktu kadaluarsa QRIS asli dari payment provider (paling akurat)
-            const expTime = new Date(data.expiredAt).getTime();
-            if (!isNaN(expTime) && Date.now() > expTime) {
-                isExpired = true;
+        const expString = data.expiredAtISO || data.expiredAt;
+        if (expString) {
+            // Gunakan waktu kadaluarsa asli dari payment provider (atau yang sudah dipaksa 1 jam)
+            const expTime = new Date(expString).getTime();
+            if (!isNaN(expTime)) {
+                if (Date.now() > expTime) isExpired = true;
+            } else {
+                // Fallback jika expiredAt berupa string bahasa Indonesia (NaN)
+                const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
+                if (created > 0) {
+                    const method = (data.paymentMethod || '').toLowerCase();
+                    const elapsed = Date.now() - created;
+                    if (method === 'va' && elapsed > 24 * 60 * 60 * 1000) isExpired = true;
+                    if (method !== 'va' && elapsed > 60 * 60 * 1000) isExpired = true;
+                }
             }
         } else {
-            // Fallback berdasarkan metode pembayaran:
-            // QRIS = 1 jam, Virtual Account = 24 jam
+            // Fallback jika expiredAt tidak ada sama sekali
             const created = data.createdAt ? new Date(data.createdAt).getTime() : 0;
             if (created > 0) {
                 const method = (data.paymentMethod || '').toLowerCase();
@@ -24,7 +33,6 @@ const autoExpire = (db, col, id, data) => {
                 if (method === 'va') {
                     if (elapsed > 24 * 60 * 60 * 1000) isExpired = true;
                 } else {
-                    // QRIS atau tidak diketahui → 1 jam
                     if (elapsed > 60 * 60 * 1000) isExpired = true;
                 }
             }

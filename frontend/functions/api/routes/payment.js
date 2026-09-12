@@ -77,13 +77,16 @@ paymentRoutes.post('/qris', async (c) => {
             }, response.status);
         }
 
+        const expiryDate = new Date(Date.now() + 60 * 60 * 1000); // Paksa 1 jam untuk QRIS
+        
         return c.json({
             success: true,
             data: {
                 qrCodeSvg: buildQrHtml(data.qr_string),
                 transactionId: data.reference_id,
                 totalFormatted: formatRupiah(amount),
-                expiredAt: formatDate(data.expires_at),
+                expiredAt: formatDate(expiryDate.toISOString()),
+                expiredAtISO: expiryDate.toISOString(),
                 payUrl: data.pay_url,
                 raw: data
             }
@@ -157,6 +160,7 @@ paymentRoutes.post('/va', async (c) => {
                 totalFormatted: formatRupiah(data.customer_pays || data.amount || amount),
                 amountFormatted: formatRupiah(data.amount || amount),
                 expiredAt,
+                expiredAtISO: expiryDate.toISOString(),
                 payUrl: data.pay_url,
                 raw: data
             }

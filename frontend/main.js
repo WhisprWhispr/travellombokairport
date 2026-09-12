@@ -3478,7 +3478,8 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                             paymentMethod: 'va',
                             vaBank: d.vaBank,
                             vaNumber: d.vaNumber,
-                            expiredAt: d.expiredAt
+                            expiredAt: d.expiredAt,
+                            expiredAtISO: d.expiredAtISO
                         })
                     });
                 } catch(e) { console.error('Gagal simpan payment-info VA', e); }
@@ -3590,6 +3591,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                         qrCodeSvg: data.qrCodeSvg,
                         paymentUrl: data.payUrl,
                         expiredAt: data.expiredAt,
+                        expiredAtISO: data.expiredAtISO,
                         rawQrisString: data.raw?.qr_string
                     })
                 });
