@@ -1190,10 +1190,12 @@ const fetchAdminBookings = async () => {
         // Filter
         const manualBookings = allBookings.filter(b => b.transactionId && b.transactionId.startsWith('MANUAL'));
         const webOrders = allBookings.filter(b => b.transactionId && b.transactionId.startsWith('ORD-'));
+        window.adminWebOrders = webOrders;
         const webBookings = allBookings.filter(b => !b.transactionId || b.transactionId.startsWith('BKG-'));
         
         // Helper renderer
         const renderRows = (bookingsArray, emptyMsg, tableElem) => {
+            window.adminRenderRows = window.adminRenderRows || renderRows;
             if (bookingsArray.length === 0) {
                 tableElem.innerHTML = `<tr><td colspan="6" class="text-center">${emptyMsg}</td></tr>`;
             } else {
@@ -3422,3 +3424,27 @@ if (authToken) {
         sessionStorage.setItem('adminSessionActive', '1');
     }
 }
+
+
+window.filterAdminOrders = (status, btnElem) => {
+    if (!window.adminWebOrders || !window.adminRenderRows) return;
+    // Update active button styles
+    const buttons = document.querySelectorAll('.order-filter-btn');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = btn.style.borderColor;
+    });
+    btnElem.classList.add('active');
+    btnElem.style.background = btnElem.style.borderColor;
+    btnElem.style.color = 'white';
+
+    let filtered = window.adminWebOrders;
+    if (status !== 'all') {
+        filtered = window.adminWebOrders.filter(b => b.status === status);
+    }
+
+    const tableElem = document.getElementById('admin-orders-table');
+    window.adminRenderRows(filtered, 'Tidak ada pesanan dengan status ' + status, tableElem);
+};
+
