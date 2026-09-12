@@ -21,11 +21,11 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
    • WNA: Paspor & SIM yang berlaku.
 
 2. Booking
-   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 50.000.
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 53.000.
    • Pelunasan dilakukan sebelum kendaraan digunakan.
 
 3. Deposit / Uang Jaminan
-   • Deposit: Rp 500.000
+   • Deposit: Rp 503.000
    • Deposit dibayarkan sebelum kendaraan diserahkan.
    • Deposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.
    • Jika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.
@@ -45,7 +45,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
    • Keterlambatan dapat dikenakan biaya tambahan.
    • Kendaraan dikembalikan dalam kondisi seperti saat diterima.
 
-💰 DEPOSIT: Rp 500.000
+💰 DEPOSIT: Rp 503.000
 
 Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
 
@@ -56,11 +56,11 @@ TRAVEL LOMBOK AIRPORT 🚙`,L=`🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI
    • WNA: Paspor & SIM yang berlaku.
 
 2. Booking
-   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 200.000.
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 203.000.
    • Pelunasan dilakukan sebelum kendaraan digunakan.
 
 3. Deposit / Uang Jaminan
-   • Deposit: Rp 1.000.000
+   • Deposit: Rp 1.003.000
    • Deposit dibayarkan sebelum kendaraan diserahkan.
    • Deposit dikembalikan setelah kendaraan dikembalikan dan kondisi unit dinyatakan baik.
    • Jika terdapat kerusakan, kehilangan, atau denda akibat penyewa, biaya dapat dipotong dari deposit.
@@ -80,7 +80,7 @@ TRAVEL LOMBOK AIRPORT 🚙`,L=`🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI
    • Keterlambatan dapat dikenakan biaya tambahan.
    • Kendaraan dikembalikan dalam kondisi seperti saat diterima.
 
-💰 DEPOSIT: Rp 1.000.000
+💰 DEPOSIT: Rp 1.003.000
 
 Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
 
@@ -351,7 +351,7 @@ Salam hangat,
                         <td>${n}</td>
                         ${e?`<td>${r}</td>`:``}
                     </tr>
-                `}),Y=1406,document.getElementById(`total-balance-display`).innerText=`Rp ${Y.toLocaleString(`id-ID`)}`}catch(e){console.error(`Error fetching withdrawals:`,e),document.getElementById(`withdrawal-list`).innerHTML=`<tr><td colspan="7" class="text-center text-danger">Gagal memuat data penarikan.</td></tr>`}},window.updateWithdrawalStatus=async(e,n)=>{try{if((await Swal.fire({title:n===`COMPLETED`?`Setujui Penarikan?`:`Tolak Penarikan?`,text:n===`COMPLETED`?`Pastikan Anda telah mentransfer dana ke rekening yang dituju.`:`Penarikan ini akan dibatalkan.`,icon:`warning`,showCancelButton:!0,confirmButtonColor:n===`COMPLETED`?`#10b981`:`#ef4444`,cancelButtonColor:`#64748b`,confirmButtonText:`Ya, Lanjutkan`,cancelButtonText:`Batal`})).isConfirmed){Swal.fire({title:`Memproses...`,allowOutsideClick:!1,didOpen:()=>{Swal.showLoading()}});let r=await fetch(`${t}/withdrawals/${e}/status`,{method:`PUT`,headers:B(),body:JSON.stringify({status:n})}),i=await r.json();if(r.ok)Swal.fire(`Berhasil!`,i.message,`success`),fetchWithdrawals();else throw Error(i.error||`Gagal mengubah status`)}}catch(e){Swal.fire(`Error`,e.message,`error`)}},document.getElementById(`btn-request-withdrawal`).addEventListener(`click`,()=>{if(Y<1e5)return Swal.fire({icon:`warning`,title:`Saldo Tidak Cukup`,text:`Minimal penarikan adalah Rp 100.000`,confirmButtonColor:`#22c55e`});Swal.fire({title:`Ajukan Penarikan Dana`,html:`
+                `}),Y=r-a,document.getElementById(`total-balance-display`).innerText=`Rp ${Y.toLocaleString(`id-ID`)}`}catch(e){console.error(`Error fetching withdrawals:`,e),document.getElementById(`withdrawal-list`).innerHTML=`<tr><td colspan="7" class="text-center text-danger">Gagal memuat data penarikan.</td></tr>`}},window.updateWithdrawalStatus=async(e,n)=>{try{if((await Swal.fire({title:n===`COMPLETED`?`Setujui Penarikan?`:`Tolak Penarikan?`,text:n===`COMPLETED`?`Pastikan Anda telah mentransfer dana ke rekening yang dituju.`:`Penarikan ini akan dibatalkan.`,icon:`warning`,showCancelButton:!0,confirmButtonColor:n===`COMPLETED`?`#10b981`:`#ef4444`,cancelButtonColor:`#64748b`,confirmButtonText:`Ya, Lanjutkan`,cancelButtonText:`Batal`})).isConfirmed){Swal.fire({title:`Memproses...`,allowOutsideClick:!1,didOpen:()=>{Swal.showLoading()}});let r=await fetch(`${t}/withdrawals/${e}/status`,{method:`PUT`,headers:B(),body:JSON.stringify({status:n})}),i=await r.json();if(r.ok)Swal.fire(`Berhasil!`,i.message,`success`),fetchWithdrawals();else throw Error(i.error||`Gagal mengubah status`)}}catch(e){Swal.fire(`Error`,e.message,`error`)}},document.getElementById(`btn-request-withdrawal`).addEventListener(`click`,()=>{if(Y<1e5)return Swal.fire({icon:`warning`,title:`Saldo Tidak Cukup`,text:`Minimal penarikan adalah Rp 100.000`,confirmButtonColor:`#22c55e`});Swal.fire({title:`Ajukan Penarikan Dana`,html:`
             <p style="font-size: 0.9rem; color: #64748b; margin-bottom: 15px;">Saldo maksimal yang bisa ditarik: <strong>Rp ${Y.toLocaleString(`id-ID`)}</strong></p>
             <input id="swal-w-bank" class="swal2-input" placeholder="Nama Bank (misal: BCA, Mandiri)">
             <input id="swal-w-acc" class="swal2-input" placeholder="Nomor Rekening">
