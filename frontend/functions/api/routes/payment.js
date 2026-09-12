@@ -254,8 +254,72 @@ paymentRoutes.post('/webhook', async (c) => {
                 .where('transactionId', 'in', txIdsToSearch)
                 .limit(1).get();
             if (!bookingSnap.empty) {
+                const oldData = bookingSnap.docs[0].data();
                 await bookingSnap.docs[0].ref.update(updatePayload);
                 console.log(`✅ Booking Lunas: ${transactionId}`);
+                
+                // --- Kirim Email ---
+                if (oldData.status !== 'confirmed' && oldData.status !== 'PAID' && oldData.customerEmail) {
+                    const resendApiKey = c.env.RESEND_API_KEY;
+                    if (resendApiKey) {
+                        const emailHtml = `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                            <div style="background: linear-gradient(135deg, #16a34a, #2563eb); padding: 25px; text-align: center; color: white;">
+                                <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
+                                <p style="margin: 5px 0 0; opacity: 0.9;">E-Ticket & Invoice Perjalanan (LUNAS)</p>
+                            </div>
+                            <div style="padding: 30px;">
+                                <p>Halo <strong>${oldData.customerName || 'Pelanggan'}</strong>,</p>
+                                <p>Terima kasih! Pembayaran Anda telah kami terima. Berikut adalah rincian pesanan Anda:</p>
+                                
+                                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #64748b; width: 40%;">ID Booking</td>
+                                            <td style="padding: 8px 0; font-weight: bold;">${transactionId}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #64748b;">Layanan</td>
+                                            <td style="padding: 8px 0; font-weight: bold;">${oldData.itemName || '-'}</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 8px 0; color: #64748b;">Tanggal</td>
+                                            <td style="padding: 8px 0; font-weight: bold;">${oldData.startDate || '-'} ${oldData.endDate ? 's.d ' + oldData.endDate : ''}</td>
+                                        </tr>
+                                        <tr style="border-top: 1px solid #e2e8f0;">
+                                            <td style="padding: 12px 0 0; color: #64748b;">Status Pembayaran</td>
+                                            <td style="padding: 12px 0 0; font-weight: bold; color: #16a34a;">Pembayaran Berhasil (LUNAS)</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                
+                                <p style="font-size: 14px; color: #64748b;">Tim kami akan segera menghubungi Anda melalui WhatsApp untuk kordinasi lebih lanjut terkait penjemputan/pengantaran. Jika Anda memiliki pertanyaan atau butuh bantuan, silakan hubungi kami via WhatsApp di +62 896-7696-3255.</p>
+                                <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Hormat kami,<br><strong>Tim Travel Lombok Airport</strong></p>
+                            </div>
+                        </div>
+                        `;
+
+                        try {
+                            await fetch('https://api.resend.com/emails', {
+                                method: 'POST',
+                                headers: {
+                                    'Authorization': `Bearer ${resendApiKey}`,
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify({
+                                    from: 'Travel Lombok Airport <admin@travellombokairport.com>',
+                                    to: oldData.customerEmail,
+                                    bcc: ['lombokindah892@gmail.com', 'ridhosandhika78@gmail.com'],
+                                    subject: `[LUNAS] E-Ticket: ${oldData.itemName || 'Layanan Travel'}`,
+                                    html: emailHtml
+                                })
+                            });
+                            console.log(`Email LUNAS (Webhook) sent to ${oldData.customerEmail} and BCC admins`);
+                        } catch (err) {
+                            console.error("Webhook LUNAS Email error:", err);
+                        }
+                    }
+                }
             }
 
             // Update orderan
