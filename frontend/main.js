@@ -1891,9 +1891,19 @@ window.generateEtiketPDF = (data) => {
     const matchedItemPdf = window.globalItems ? window.globalItems.find(i => i.title === (data.itemName || '')) : null;
     let isMobilPdf = nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner");
     let isMotorPdf = nameLower.includes("motor");
+    
+    if (nameLower.includes("airport") || nameLower.includes("transfer") || nameLower.includes("tour") || nameLower.includes("paket")) {
+        isMobilPdf = false;
+        isMotorPdf = false;
+    }
+
     if (matchedItemPdf && matchedItemPdf.category) {
         if (matchedItemPdf.category === 'car') isMobilPdf = true;
-        if (matchedItemPdf.category === 'motorcycle') isMotorPdf = true;
+        else if (matchedItemPdf.category === 'motorcycle') isMotorPdf = true;
+        else {
+            isMobilPdf = false;
+            isMotorPdf = false;
+        }
     }
     
     if (isMotorPdf) depositAmount = 503000;
