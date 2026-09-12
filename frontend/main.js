@@ -1985,8 +1985,8 @@ window.generateEtiketPDF = (data) => {
                 <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
                 <div style="flex:1;">
                     <div style="font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">&#9888; Pembayaran DP &mdash; Belum Lunas</div>
-                    <div style="font-size:11px;color:#9a3412;">Terbayar: <strong>Rp ${Number(data.itemPrice || 0).toLocaleString('id-ID')}</strong> &nbsp;&bull;&nbsp; Sisa Sewa: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - (Number(data.itemPrice || 0) - depositAmount)).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
-                    <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sewa sebelum tanggal keberangkatan.</div>
+                    <div style="font-size:11px;color:#9a3412;">Terbayar: <strong>Rp ${Number(data.itemPrice || 0).toLocaleString('id-ID')}</strong> &nbsp;&bull;&nbsp; Sisa Tagihan: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - (Number(data.itemPrice || 0) - depositAmount)).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
+                    <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sebelum waktu pelaksanaan / keberangkatan.</div>
                 </div>
             </div>` : ''}
             ${depositNote}
