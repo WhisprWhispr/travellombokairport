@@ -1719,7 +1719,7 @@ window.fetchWithdrawals = async () => {
             list.innerHTML = `<tr><td colspan="${colspan}" class="text-center">Belum ada riwayat penarikan.</td></tr>`;
         } else {
             withdrawals.forEach(w => {
-                if (w.status !== 'REJECTED') totalWithdrawn += (w.amount || 0);
+                if (w.status !== 'REJECTED') totalWithdrawn += (w.amount || 0) + (w.fee || 0);
                 
                 let statusBadge = '';
                 if (w.status === 'PENDING') statusBadge = '<span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Pending</span>';
@@ -1740,7 +1740,7 @@ window.fetchWithdrawals = async () => {
                         ${isMainAdmin ? `<td><small style="color: #475569;">${w.adminEmail || '-'}</small></td>` : ''}
                         <td>${new Date(w.createdAt?._seconds ? w.createdAt._seconds * 1000 : (w.createdAt || Date.now())).toLocaleDateString('id-ID')}</td>
                         <td><strong>${w.bankName}</strong><br><small>${w.accountNumber}</small></td>
-                        <td>Rp ${w.amount.toLocaleString('id-ID')}</td>
+                        <td>Rp ${(w.amount || 0).toLocaleString('id-ID')}${w.fee ? `<br><small style="color:#64748b;">+ Rp ${w.fee.toLocaleString('id-ID')} (Biaya)</small>` : ''}</td>
                         <td>${statusBadge}</td>
                         ${isMainAdmin ? `<td>${actions}</td>` : ''}
                     </tr>
@@ -1824,11 +1824,11 @@ document.getElementById("btn-request-withdrawal").addEventListener("click", () =
                 Swal.showValidationMessage('Minimal penarikan Rp 100.000!');
                 return false;
             }
-            if (amount > currentBalance) {
-                Swal.showValidationMessage('Saldo tidak mencukupi!');
+            if (amount + 3000 > currentBalance) {
+                Swal.showValidationMessage('Saldo tidak mencukupi (termasuk biaya admin Rp 3.000)!');
                 return false;
             }
-            return { bankName, accountNumber, accountName, amount };
+            return { bankName, accountNumber, accountName, amount, fee: 3000 };
         }
     }).then(async (result) => {
         if (result.isConfirmed) {
