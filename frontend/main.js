@@ -3499,7 +3499,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                         <h4 style="color:#0c4a6e;margin-bottom:5px;">${itemName}</h4>
                         <p style="font-size:1.4rem;font-weight:bold;color:#16a34a;margin-bottom:10px;">${d.totalFormatted}</p>
                         <div style="background:#fef9c3;color:#854d0e;padding:8px;border-radius:8px;font-size:0.85rem;display:inline-block;margin-bottom:15px;">
-                            <i class="fa-regular fa-clock"></i> Batas Waktu: ${d.expiredAt}
+                            <i class="fa-regular fa-clock"></i> Batas Waktu: ${d.expiredAtISO ? new Date(d.expiredAtISO).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : d.expiredAt}
                         </div>
                         <div style="color:#0369a1;font-size:0.9rem;margin-bottom:15px;">
                             <i class="fa-solid fa-spinner fa-spin"></i> Sistem sedang menunggu pembayaran...
@@ -3615,7 +3615,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                         <p style="font-size: 2.2rem; font-weight: 900; color: var(--primary-green); margin: 0 0 15px; letter-spacing: -0.5px;">${data.totalFormatted}</p>
                         
                         <div style="background: #fff1f2; color: #e11d48; padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; display: inline-block; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(225, 29, 72, 0.15);">
-                            <i class="fa-regular fa-clock" style="margin-right: 5px;"></i> Batas Waktu: ${data.expiredAt}
+                            <i class="fa-regular fa-clock" style="margin-right: 5px;"></i> Batas Waktu: ${data.expiredAtISO ? new Date(data.expiredAtISO).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : data.expiredAt}
                         </div>
                         
                         <div style="background: rgba(59, 130, 246, 0.05); color: var(--primary-blue); padding: 12px; border-radius: 12px; font-size: 0.95rem; font-weight: 600; margin-bottom: 20px;">
@@ -4358,7 +4358,9 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     if (!isNaN(parsedPrice) && parsedPrice > 0) {
                         amountFormatted = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', minimumFractionDigits: 0 }).format(parsedPrice);
                     }
-                    if (window._lastBookingData.expiredAt) {
+                    if (window._lastBookingData.expiredAtISO) {
+                        expiredAt = new Date(window._lastBookingData.expiredAtISO).toLocaleString('id-ID', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    } else if (window._lastBookingData.expiredAt) {
                         expiredAt = window._lastBookingData.expiredAt;
                     }
                 }

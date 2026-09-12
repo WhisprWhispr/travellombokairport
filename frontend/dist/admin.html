@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-10GgWuIq.js"></script>
+  <script type="module" crossorigin src="/assets/admin-BFIzZZKG.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-DYmKx9RI.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-DUxNLnKM.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-BSGSbSZN.css">
 </head>
   <body class="admin-body bg-light">
     
@@ -198,6 +198,12 @@
 
         <section id="orders-section" class="admin-content glass-panel mt-4" style="display: none;">
           <h2>Pesanan Web (Order)</h2>
+          <div style="display: flex; gap: 10px; margin-top: 15px; margin-bottom: 5px; flex-wrap: wrap;" id="order-filters-container">
+              <button type="button" class="btn order-filter-btn active" data-filter="all" onclick="filterAdminOrders('all', this)" style="border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; border: 1px solid var(--primary-blue); background: var(--primary-blue); color: white; transition: all 0.2s;">Semua</button>
+              <button type="button" class="btn order-filter-btn" data-filter="PENDING" onclick="filterAdminOrders('PENDING', this)" style="border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; border: 1px solid #f59e0b; color: #f59e0b; background: transparent; transition: all 0.2s;">PENDING</button>
+              <button type="button" class="btn order-filter-btn" data-filter="PAID" onclick="filterAdminOrders('PAID', this)" style="border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; border: 1px solid #10b981; color: #10b981; background: transparent; transition: all 0.2s;">PAID</button>
+              <button type="button" class="btn order-filter-btn" data-filter="KADALUARSA" onclick="filterAdminOrders('KADALUARSA', this)" style="border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; border: 1px solid #ef4444; color: #ef4444; background: transparent; transition: all 0.2s;">KADALUARSA</button>
+          </div>
           <div class="table-responsive mt-4">
             <table class="admin-table">
               <thead>
@@ -791,7 +797,7 @@
             <textarea id="item-description" rows="3" required placeholder="Deskripsi layanan..."></textarea>
           </div>
 
-          <div class="form-group" id="price-duration-group" style="display: flex; gap: 15px;">
+          <div class="form-group form-row-responsive" id="price-duration-group">
             <div style="flex: 2;">
               <label>Harga (Otomatis titik)</label>
               <input type="text" id="item-price" placeholder="e.g. 250000">
@@ -804,7 +810,7 @@
 
           <div class="form-group">
             <label>Image URL</label>
-            <div style="display: flex; gap: 10px; align-items: center;">
+            <div class="form-row-responsive align-center">
               <input type="url" id="item-image" required placeholder="https://example.com/image.jpg" style="flex: 1;">
               <input type="file" id="item-image-upload" accept="image/*" style="display: none;" onchange="uploadImageToServer(this, 'item-image')">
               <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6; white-space: nowrap;" onclick="document.getElementById('item-image-upload').click()">
@@ -833,7 +839,7 @@
           <h4 style="color: var(--primary-blue); margin-bottom: 5px;">Spesifikasi Kendaraan (Khusus Sewa)</h4>
           <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Hanya akan muncul jika kategori adalah Sewa Mobil atau Sewa Motor.</p>
           
-          <div class="form-group" style="display: flex; gap: 15px;">
+          <div class="form-group form-row-responsive">
             <div style="flex: 1;">
               <label>Transmisi</label>
               <select id="item-transmission">
@@ -945,7 +951,7 @@
             <input type="text" id="booking-phone" placeholder="e.g. 0812345678">
           </div>
 
-          <div class="form-group" style="display: flex; gap: 15px;">
+          <div class="form-group form-row-responsive">
             <div style="flex: 1;">
               <label>Tanggal Mulai</label>
               <input type="date" id="booking-start" required class="form-control">
@@ -990,7 +996,7 @@
 
           <div class="form-group">
             <label>URL Video YouTube</label>
-            <div style="display: flex; gap: 10px;">
+            <div class="form-row-responsive align-center">
               <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
               <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('drone-video-url').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
             </div>

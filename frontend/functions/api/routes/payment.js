@@ -16,14 +16,14 @@ function buildQrHtml(qrString) {
 }
 
 // Helper: format tanggal ke lokal Indonesia
-function formatDate(isoString, timezone = 'Asia/Makassar') {
+function formatDate(isoString, timezone = 'Asia/Jakarta') {
     if (!isoString) return '-';
     try {
         return new Date(isoString).toLocaleString('id-ID', {
             weekday: 'long', year: 'numeric', month: 'long',
             day: 'numeric', hour: '2-digit', minute: '2-digit',
             timeZone: timezone
-        });
+        }) + ' WIB';
     } catch(e) { return isoString; }
 }
 
