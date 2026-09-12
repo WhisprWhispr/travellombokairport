@@ -1324,12 +1324,15 @@ window.deleteBooking = async (id) => {
                     method: "DELETE",
                     headers: getAuthHeaders()
                 });
-                if (!res.ok) throw new Error("Delete failed");
+                if (!res.ok) {
+                    const errText = await res.text();
+                    throw new Error(errText || `Delete failed with status ${res.status}`);
+                }
                 fetchAdminBookings();
                 Swal.fire({icon: 'success', title: 'Terhapus!', text: 'Jadwal berhasil dihapus.', confirmButtonColor: '#22c55e'});
             } catch (error) {
                 console.error("Error deleting booking:", error);
-                Swal.fire({icon: 'error', title: 'Gagal', text: "Error deleting booking", confirmButtonColor: '#22c55e'});
+                Swal.fire({icon: 'error', title: 'Gagal', text: error.message || 'Error deleting booking', confirmButtonColor: '#22c55e'});
             }
         }
     });
