@@ -443,7 +443,13 @@
           body: JSON.stringify(payload)
         });
 
-        const data = await response.json();
+        const textResponse = await response.text();
+        let data;
+        try {
+          data = JSON.parse(textResponse);
+        } catch (e) {
+          throw new Error('Server backend belum diperbarui. Silakan lakukan pull/restart pada server backend Anda.');
+        }
 
         if (response.ok && data.success) {
           // Update local storage
