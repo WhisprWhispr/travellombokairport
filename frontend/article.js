@@ -49,6 +49,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                         ${(blog.content || '').split('\n').filter(p => p.trim() !== '').map(p => `<p style="margin-bottom: 1.5em; text-align: left;">${p.trim()}</p>`).join('')}
                     </div>
                     
+                    <!-- Advertisement / Iklan -->
+                    <div style="margin: 40px 0 10px; text-align: center; padding: 20px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 16px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                        <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1.5px; display: block; margin-bottom: 10px;"><i class="fa-solid fa-ad"></i> Advertisement / Iklan</span>
+                        <div class="ad-placeholder" style="min-height: 100px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-weight: 600; font-size: 0.95rem; background: #f1f5f9; border-radius: 10px;">
+                            <!-- Masukkan Script Kode Iklan (Google AdSense, dll) Di Sini -->
+                            [ Ruang Iklan Banner Horizontal ]
+                        </div>
+                    </div>
+                    
                     <!-- Share Buttons -->
                     <div style="margin-top: 40px; padding-top: 25px; border-top: 2px dashed #f1f5f9;">
                         <h4 style="margin: 0 0 15px 0; font-size: 1rem; color: var(--primary-blue); font-weight: 700;">Bagikan artikel ini ke teman & keluargamu! 🚀</h4>

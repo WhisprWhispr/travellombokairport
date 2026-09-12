@@ -18,7 +18,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         const renderBlogs = () => {
             const currentBlogs = blogs.slice(0, displayCount);
-            container.innerHTML = currentBlogs.map(b => {
+            container.innerHTML = `
+                <div style="grid-column: 1/-1; margin-bottom: 30px; text-align: center; padding: 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                    <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;"><i class="fa-solid fa-ad"></i> Advertisement / Iklan</span>
+                    <div class="ad-placeholder" style="min-height: 90px; display: flex; align-items: center; justify-content: center; color: #94a3b8; font-weight: 600; font-size: 0.9rem; background: #f1f5f9; border-radius: 8px;">
+                        <!-- Masukkan Script Kode Iklan (Google AdSense, dll) Di Sini -->
+                        [ Ruang Iklan Banner Horizontal ]
+                    </div>
+                </div>
+            ` + currentBlogs.map(b => {
                 const dateStr = b.createdAt ? new Date(b.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
                 const imgUrl = (b.coverImage && b.coverImage.trim() !== '') ? b.coverImage : 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600';
                 
