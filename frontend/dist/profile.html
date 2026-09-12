@@ -293,7 +293,7 @@
     <h2 class="user-name" id="profile-name">Memuat...</h2>
     <p class="user-email" id="profile-email">memuat...</p>
 
-    <button onclick="window.logoutUser()" class="btn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 100%; border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;">
+    <button onclick="logoutUser()" class="btn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 100%; border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;">
       <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
     </button>
   </div>
@@ -354,6 +354,32 @@
   <script src="/config.js"></script>
   <script src="/main.js"></script>
   <script>
+    // Standalone logout - tidak bergantung window.logoutUser dari main.js
+    function logoutUser() {
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          title: 'Konfirmasi',
+          text: 'Apakah Anda yakin ingin keluar?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Ya, Logout',
+          cancelButtonText: 'Batal',
+          confirmButtonColor: '#ef4444'
+        }).then(result => {
+          if (result.isConfirmed) {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            window.location.href = '/';
+          }
+        });
+      } else {
+        if (confirm('Apakah Anda yakin ingin keluar?')) {
+          localStorage.removeItem('auth_token');
+          localStorage.removeItem('auth_user');
+          window.location.href = '/';
+        }
+      }
+    }
     // Load User Data
     document.addEventListener('DOMContentLoaded', () => {
       const user = JSON.parse(localStorage.getItem('auth_user') || 'null');
