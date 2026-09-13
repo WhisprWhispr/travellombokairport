@@ -1859,7 +1859,7 @@ document.getElementById("btn-request-withdrawal").addEventListener("click", () =
                 });
                 const data = await res.json();
                 if (res.ok) {
-                    Swal.fire({icon: 'success', title: 'Berhasil Diajukan', text: 'Penarikan dana Anda akan diproses maksimal dalam 3 hari kerja.', confirmButtonColor: '#22c55e'});
+                    Swal.fire({icon: 'success', title: 'Berhasil Diajukan', text: 'Penarikan dana Anda akan diproses maksimal dalam 7 hari kerja.', confirmButtonColor: '#22c55e'});
                     fetchWithdrawals();
                 } else {
                     throw new Error(data.error || 'Gagal mengajukan penarikan');
