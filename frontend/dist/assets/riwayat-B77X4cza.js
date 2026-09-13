@@ -691,8 +691,8 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                                 justify-content:center;font-size:22px;color:${n};font-weight:700;">
                         ${a}
                     </div>
-                    <div style="font-size:10px;font-weight:700;color:${n};
-                                text-transform:uppercase;letter-spacing:1px;">${i}</div>
+                    <div style="font-size:10px;font-weight:800;color:#ffffff;
+                                text-transform:uppercase;letter-spacing:1px;margin-top:2px;text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${i}</div>
                 </div>
             </div>
 

@@ -1991,8 +1991,8 @@ window.generateEtiketPDF = (data) => {
                                 justify-content:center;font-size:22px;color:${sc};font-weight:700;">
                         ${stIcon}
                     </div>
-                    <div style="font-size:10px;font-weight:700;color:${sc};
-                                text-transform:uppercase;letter-spacing:1px;">${stText}</div>
+                    <div style="font-size:10px;font-weight:800;color:#ffffff;
+                                text-transform:uppercase;letter-spacing:1px;margin-top:2px;text-shadow: 0 1px 2px rgba(0,0,0,0.2);">${stText}</div>
                 </div>
             </div>
 
