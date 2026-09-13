@@ -738,8 +738,8 @@
         
         let paymentInfo = '';
         if (data.status === 'PENDING') {
-          const waText = \`Halo Admin, saya ingin menyelesaikan pembayaran untuk pesanan saya dengan ID: \${txId} (\${data.itemName})\`;
-          paymentInfo = \`<div style="margin-top:15px;"><a href="https://wa.me/6289676963255?text=\${encodeURIComponent(waText)}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; background:#10b981; color:white; padding:12px; border-radius:10px; font-weight:700; text-decoration:none;"><i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i> Selesaikan Pembayaran</a></div>\`;
+          const waText = `Halo Admin, saya ingin menyelesaikan pembayaran untuk pesanan saya dengan ID: ${txId} (${data.itemName})`;
+          paymentInfo = `<div style="margin-top:15px;"><a href="https://wa.me/6289676963255?text=${encodeURIComponent(waText)}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; background:#10b981; color:white; padding:12px; border-radius:10px; font-weight:700; text-decoration:none;"><i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i> Selesaikan Pembayaran</a></div>`;
         }
         
         body.innerHTML = `
