@@ -671,6 +671,113 @@
       }
     }
 
+    // ==========================================
+    // FUNGSI RIWAYAT - MANDIRI (tidak butuh main.js)
+    // ==========================================
+    async function loadRiwayatData() {
+      const container = document.getElementById('riwayat-page-container');
+      const token = localStorage.getItem('auth_token');
+      
+      if (!token) {
+        container.innerHTML = `<div style="text-align:center; padding:60px 20px; background:white; border-radius:16px;">
+          <i class="fa-solid fa-lock" style="font-size:3rem; color:#94a3b8; display:block; margin-bottom:15px;"></i>
+          <h3>Sesi Habis</h3><p>Silakan login ulang.</p>
+          <a href="/login.html" style="display:inline-block; background:#3b82f6; color:white; padding:10px 25px; border-radius:10px; text-decoration:none; font-weight:700;">Login</a>
+        </div>`;
+        return;
+      }
+
+      container.innerHTML = `<div style="text-align:center; padding:40px; color:#64748b;">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:2rem; display:block; margin-bottom:10px; color:#3b82f6;"></i>
+        Memuat riwayat...
+      </div>`;
+
+      try {
+        const res = await fetch(`${API_URL}/bookings/my-history`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 403) {
+            localStorage.removeItem('auth_token');
+            localStorage.removeItem('auth_user');
+            window.location.href = '/login.html';
+            return;
+          }
+          throw new Error(data.error || 'Gagal memuat riwayat');
+        }
+
+        if (!data || data.length === 0) {
+          container.innerHTML = `<div style="text-align:center; padding:60px 20px; background:white; border-radius:16px; border:1px solid #e2e8f0;">
+            <i class="fa-solid fa-box-open" style="font-size:4rem; color:#cbd5e1; display:block; margin-bottom:15px;"></i>
+            <h3 style="color:#1e293b;">Belum Ada Transaksi</h3>
+            <p style="color:#64748b;">Anda belum pernah melakukan pemesanan.</p>
+            <a href="/#packages" style="display:inline-block; background:#059669; color:white; padding:12px 25px; border-radius:10px; text-decoration:none; font-weight:700; margin-top:10px;">Pesan Sekarang</a>
+          </div>`;
+          return;
+        }
+
+        let html = `<div style="background:white; padding:20px; border-radius:16px; box-shadow:0 4px 15px rgba(0,0,0,0.05);">
+          <h3 style="color:#0f172a; margin:0 0 5px; font-size:1.1rem;"><i class="fa-solid fa-list-check" style="color:#3b82f6; margin-right:8px;"></i>Daftar Transaksi</h3>
+          <p style="color:#64748b; font-size:0.85rem; margin:0 0 20px;">${data.length} transaksi</p>
+          <div style="display:flex; flex-direction:column; gap:15px;">`;
+
+        data.forEach(item => {
+          // Cek expired di client side
+          if (item.status === 'PENDING') {
+            const created = item.createdAt ? new Date(item.createdAt).getTime() : 0;
+            const elapsed = Date.now() - created;
+            const method = (item.paymentMethod || '').toLowerCase();
+            if (method === 'va' && created > 0 && elapsed > 24 * 60 * 60 * 1000) item.status = 'KADALUARSA';
+            else if (method !== 'va' && created > 0 && elapsed > 60 * 60 * 1000) item.status = 'KADALUARSA';
+          }
+
+          const isPaid = item.status === 'PAID';
+          const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
+          const statusBg = isPaid ? 'rgba(16,185,129,0.1)' : (item.status === 'PENDING' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)');
+          const icon = item.type === 'order' ? 'fa-box' : 'fa-car';
+          const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
+          const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
+          const tgl = item.createdAt ? new Date(item.createdAt).toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric' }) : '-';
+
+          html += `<div style="background:#f8fafc; border-radius:12px; padding:15px; border:1px solid #e2e8f0; cursor:pointer; transition: all 0.2s;" 
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(0,0,0,0.06)'" 
+              onmouseout="this.style.transform=''; this.style.boxShadow=''">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; padding-bottom:10px; border-bottom:1px dashed #e2e8f0;">
+              <span style="font-size:0.72rem; color:#64748b; font-family:monospace;"><i class="fa-solid fa-hashtag" style="opacity:0.5;"></i> ${item.transactionId}</span>
+              <span style="font-size:0.75rem; font-weight:700; color:${statusColor}; background:${statusBg}; padding:3px 10px; border-radius:20px;">${item.status}</span>
+            </div>
+            <div style="display:flex; gap:12px; align-items:center;">
+              <div style="width:42px; height:42px; border-radius:10px; background:white; border:1px solid #e2e8f0; color:#3b82f6; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <i class="fa-solid ${icon}"></i>
+              </div>
+              <div style="flex:1;">
+                <h4 style="margin:0 0 4px; font-size:0.95rem; color:#0f172a;">${item.itemName}</h4>
+                <div style="font-size:0.78rem; color:#94a3b8;"><i class="fa-regular fa-calendar"></i> ${tgl}</div>
+              </div>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px dashed #f1f5f9;">
+              <strong style="color:#3b82f6; font-size:1rem;">${price}</strong>
+              <a href="/riwayat.html" style="font-size:0.82rem; color:#0ea5e9; font-weight:600; background:#f0f9ff; padding:5px 12px; border-radius:20px; text-decoration:none;">
+                Lihat Detail <i class="fa-solid fa-arrow-right" style="font-size:0.8em;"></i>
+              </a>
+            </div>
+          </div>`;
+        });
+
+        html += '</div></div>';
+        container.innerHTML = html;
+
+      } catch (e) {
+        container.innerHTML = `<div style="text-align:center; padding:40px; background:white; border-radius:16px; border:1px solid #fee2e2;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size:2.5rem; color:#ef4444; display:block; margin-bottom:10px;"></i>
+          <p style="color:#ef4444; font-weight:600;">${e.message}</p>
+          <button onclick="loadRiwayatData()" style="background:#3b82f6; color:white; border:none; padding:10px 25px; border-radius:10px; cursor:pointer; font-weight:700;">Coba Lagi</button>
+        </div>`;
+      }
+    }
+
     // Inline/Native View Logic
     function loadInlineView(urlOrView, btnElement, title) {
       // Remove active class from all menu items
@@ -687,11 +794,7 @@
       if (urlOrView === '/riwayat.html') {
         const view = document.getElementById('native-view-riwayat');
         view.classList.add('active');
-        if (window.showRiwayatTransaksi) {
-          window.showRiwayatTransaksi(true);
-        } else {
-          document.getElementById('riwayat-page-container').innerHTML = '<div style="text-align:center; padding:40px; color:#ef4444;">Sistem belum siap. Coba refresh.</div>';
-        }
+        loadRiwayatData();
       } 
       else if (urlOrView === '/wishlist.html') {
         const view = document.getElementById('native-view-wishlist');
