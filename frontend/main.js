@@ -4214,7 +4214,7 @@ window.checkAuthUI = () => {
             // Cek untuk notifikasi pending
             const footerNotifBadge = document.getElementById('footer-notif-badge');
             if (footerNotifBadge) {
-                fetch(`${API_URL}/api/bookings/my-history`, {
+                fetch(`${API_URL}/bookings/my-history`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
                 .then(r => r.ok ? r.json() : null)
