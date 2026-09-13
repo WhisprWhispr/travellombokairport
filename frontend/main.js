@@ -2232,6 +2232,38 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                     </h5>
                     <p style="color: #334155; font-size: 0.8rem; margin: 0; line-height: 1.5;">Pesanan Anda telah kami terima dan <b>sedang dalam tahap verifikasi serta penjadwalan</b> oleh tim profesional kami. Proses ini membutuhkan waktu yang singkat. Kami akan menghubungi Anda melalui WhatsApp jika diperlukan koordinasi lebih lanjut.</p>
                 </div>`;
+            } else if (data.status === 'PENDING') {
+                processInfo = `
+                <div style="margin-top: 15px; padding: 15px; background: #fffbeb; border: 1px solid #fef3c7; border-left: 4px solid #f59e0b; border-radius: 10px; text-align: left; box-shadow: 0 4px 6px rgba(245, 158, 11, 0.05);">
+                    <h5 style="color: #b45309; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-clock"></i> Menunggu Pembayaran
+                    </h5>
+                    <p style="color: #78350f; font-size: 0.8rem; margin: 0; line-height: 1.5;">Pesanan Anda telah tercatat, namun <b>pembayaran belum kami terima</b>. Silakan segera selesaikan pembayaran agar pesanan dapat kami proses lebih lanjut.</p>
+                </div>`;
+            } else if (data.status === 'PAID') {
+                processInfo = `
+                <div style="margin-top: 15px; padding: 15px; background: #ecfdf5; border: 1px solid #d1fae5; border-left: 4px solid #10b981; border-radius: 10px; text-align: left; box-shadow: 0 4px 6px rgba(16, 185, 129, 0.05);">
+                    <h5 style="color: #047857; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-check-double"></i> Pembayaran Berhasil
+                    </h5>
+                    <p style="color: #064e3b; font-size: 0.8rem; margin: 0; line-height: 1.5;">Terima kasih! Pembayaran Anda <b>telah berhasil kami verifikasi</b>. Tim kami akan segera menjadwalkan layanan Anda. Anda sudah dapat mengunduh e-Tiket sebagai bukti pemesanan yang sah.</p>
+                </div>`;
+            } else if (data.status === 'COMPLETED') {
+                processInfo = `
+                <div style="margin-top: 15px; padding: 15px; background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid #64748b; border-radius: 10px; text-align: left; box-shadow: 0 4px 6px rgba(100, 116, 139, 0.05);">
+                    <h5 style="color: #334155; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-flag-checkered"></i> Pesanan Selesai
+                    </h5>
+                    <p style="color: #1e293b; font-size: 0.8rem; margin: 0; line-height: 1.5;">Layanan untuk pesanan ini <b>telah selesai dilaksanakan</b>. Terima kasih telah mempercayakan perjalanan Anda bersama Travel Lombok Airport. Kami tunggu kedatangan Anda di perjalanan berikutnya!</p>
+                </div>`;
+            } else if (data.status === 'KADALUARSA') {
+                processInfo = `
+                <div style="margin-top: 15px; padding: 15px; background: #fef2f2; border: 1px solid #fee2e2; border-left: 4px solid #ef4444; border-radius: 10px; text-align: left; box-shadow: 0 4px 6px rgba(239, 68, 68, 0.05);">
+                    <h5 style="color: #b91c1c; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-triangle-exclamation"></i> Pesanan Kadaluarsa
+                    </h5>
+                    <p style="color: #7f1d1d; font-size: 0.8rem; margin: 0; line-height: 1.5;">Mohon maaf, pesanan ini <b>telah dibatalkan atau melewati batas waktu pembayaran</b>. Jika Anda masih membutuhkan layanan ini, silakan membuat pesanan baru melalui website kami.</p>
+                </div>`;
             }
 
             const htmlContent = `
