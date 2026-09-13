@@ -116,28 +116,11 @@
     .notif-icon.pending { background: #fed7aa; color: #c2410c; }
     .notif-icon.paid { background: #bbf7d0; color: #15803d; }
     .notif-icon.expired { background: #fecaca; color: #b91c1c; }
-      backdrop-filter: blur(4px);
-      z-index: 100;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-    .avatar-modal {
-      background: white;
-      width: 100%;
-      max-width: 450px;
-      border-radius: 20px;
-      padding: 25px;
-      box-shadow: 0 25px 50px rgba(0,0,0,0.2);
-      transform: translateY(20px);
-      opacity: 0;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    .avatar-modal.show {
-      transform: translateY(0);
-      opacity: 1;
-    }
+    /* Modals */
+    .avatar-modal-overlay { position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px; }
+    .avatar-modal-overlay.open { display: flex; }
+    .avatar-modal { background: white; width: 100%; max-width: 450px; border-radius: 20px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: translateY(20px); opacity: 0; transition: all 0.3s ease; }
+    .avatar-modal.show { transform: translateY(0); opacity: 1; }
     .modal-header {
       display: flex;
       justify-content: space-between;
@@ -412,7 +395,7 @@
           <i class="fa-solid fa-cloud-arrow-up"></i>
           <p>Klik untuk memilih foto dari galeri</p>
         </div>
-        <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" onchange="handleFileUpload(event)">
+        <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" onchange="handleFileUpload(event)" style="display:none;">
       </div>
 
       <!-- Tab Kartun Islami -->
