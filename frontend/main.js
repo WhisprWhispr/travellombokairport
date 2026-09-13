@@ -4213,7 +4213,8 @@ window.checkAuthUI = () => {
             }
             // Cek untuk notifikasi pending
             const footerNotifBadge = document.getElementById('footer-notif-badge');
-            if (footerNotifBadge) {
+            const footerProfileBadge = document.getElementById('footer-profile-badge');
+            if (footerNotifBadge || footerProfileBadge) {
                 fetch(`${API_URL}/bookings/my-history`, {
                     headers: { 'Authorization': `Bearer ${token}` }
                 })
@@ -4228,10 +4229,17 @@ window.checkAuthUI = () => {
                         }).length;
                         
                         if (pendingCount > 0) {
-                            footerNotifBadge.innerText = pendingCount;
-                            footerNotifBadge.style.display = 'flex';
+                            if (footerNotifBadge) {
+                                footerNotifBadge.innerText = pendingCount;
+                                footerNotifBadge.style.display = 'flex';
+                            }
+                            if (footerProfileBadge) {
+                                footerProfileBadge.innerText = pendingCount;
+                                footerProfileBadge.style.display = 'flex';
+                            }
                         } else {
-                            footerNotifBadge.style.display = 'none';
+                            if (footerNotifBadge) footerNotifBadge.style.display = 'none';
+                            if (footerProfileBadge) footerProfileBadge.style.display = 'none';
                         }
                     }
                 })
