@@ -844,10 +844,23 @@
         const view = document.getElementById('native-view-wishlist');
         view.classList.add('active');
         
-        // Define missing logic for renderWishlist if it doesn't run automatically
-        if (window.globalItems && window.getWishlist) {
-            const wishlist = window.getWishlist();
-            const savedItems = window.globalItems.filter(item => wishlist.includes(item.id));
+        async function renderWishlistData() {
+            let items = window.globalItems;
+            if (!items || items.length === 0) {
+                try {
+                    const res = await fetch('/api/items');
+                    if (res.ok) items = await res.json();
+                    else items = [];
+                } catch(e) {
+                    items = [];
+                }
+            }
+            
+            let wishlist = [];
+            if (window.getWishlist) wishlist = window.getWishlist();
+            else wishlist = JSON.parse(localStorage.getItem('wishlist')) || [];
+            
+            const savedItems = items.filter(item => wishlist.includes(item.id));
             const grid = document.getElementById("wishlist-grid");
             const emptyState = document.getElementById("wishlist-empty");
             
@@ -859,7 +872,7 @@
                 grid.style.display = 'grid';
                 grid.innerHTML = savedItems.map(item => `
                     <div class="package-card" style="cursor:pointer;" onclick="window.location.href='/#${item.id}'">
-                        <button onclick="event.stopPropagation(); window.toggleWishlist('${item.id}'); loadInlineView('/wishlist.html', null, 'Wishlist Anda');" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:#ef4444; border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;"><i class="fa-solid fa-heart"></i></button>
+                        <button onclick="event.stopPropagation(); let w = JSON.parse(localStorage.getItem('wishlist'))||[]; if(w.includes('${item.id}')) w = w.filter(id=>id!=='${item.id}'); localStorage.setItem('wishlist', JSON.stringify(w)); loadInlineView('/wishlist.html', null, 'Wishlist Anda');" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:#ef4444; border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;"><i class="fa-solid fa-heart"></i></button>
                         <img src="${item.image}" class="package-image" alt="${item.title}">
                         <div class="package-content">
                             <h3 class="package-title">${item.title}</h3>
@@ -870,10 +883,8 @@
                     </div>
                 `).join('');
             }
-        } else {
-           // Wait a bit for main.js to load items
-           setTimeout(() => loadInlineView(urlOrView, btnElement, title), 500);
         }
+        renderWishlistData();
       } 
       else if (urlOrView === '/jadwal-sholat.html') {
         const view = document.getElementById('native-view-jadwal');
