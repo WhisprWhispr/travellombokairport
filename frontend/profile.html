@@ -359,7 +359,8 @@
 
     <div class="menu-list">
       <button onclick="closeInlineView()" class="menu-item active" id="menu-beranda">
-        <i class="fa-solid fa-bell"></i> Notifikasi Transaksi
+        <i class="fa-solid fa-bell"></i> <span style="flex:1;">Notifikasi Transaksi</span>
+        <span id="sidebar-notif-badge" style="background:#ef4444; color:white; border-radius:50%; width:20px; height:20px; font-size:0.7rem; font-weight:700; display:none; align-items:center; justify-content:center;">0</span>
       </button>
       <button onclick="loadInlineView('/riwayat.html', this, 'Riwayat Booking')" class="menu-item">
         <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Booking
@@ -599,6 +600,12 @@
         if (totalAlert > 0) {
           notifBadge.style.display = 'inline-block';
           notifBadge.textContent = totalAlert;
+          
+          const sidebarBadge = document.getElementById('sidebar-notif-badge');
+          if (sidebarBadge) {
+             sidebarBadge.style.display = 'flex';
+             sidebarBadge.textContent = totalAlert;
+          }
         }
 
         const items = [];
