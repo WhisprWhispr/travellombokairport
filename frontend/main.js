@@ -1875,8 +1875,11 @@ window.generateEtiketPDF = (data) => {
         stIcon = '&#9881;'; // Gear
     }
 
+    // Flag apakah harus memunculkan peringatan DP (kalau sudah lunas/selesai, jangan dimunculkan)
+    const showDpWarning = isDpPayment && data.status !== 'PAID' && data.status !== 'COMPLETED';
+
     // Override untuk DP: tampilkan status khusus DP
-    if (isDpPayment) {
+    if (showDpWarning) {
         sc = '#ea580c';
         scBg = '#fff7ed';
         stText = 'DP - BELUM LUNAS';
@@ -1996,7 +1999,7 @@ window.generateEtiketPDF = (data) => {
                 </div>
             </div>
 
-            ${isDpPayment ? `
+            ${showDpWarning ? `
             <div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #ea580c;border-radius:10px;padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
                 <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
                 <div style="flex:1;">
