@@ -151,7 +151,150 @@
     .user-email {
       color: #64748b;
       font-size: 0.95rem;
-      margin: 0 0 30px;
+      margin: 0 0 20px;
+    }
+
+    /* Notif Badge */
+    .notif-section {
+      margin-bottom: 20px;
+    }
+    .notif-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .notif-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .notif-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      animation: pulse-badge 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      50% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+    }
+    .notif-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .notif-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #fff7ed;
+      border: 1px solid #fed7aa;
+      border-radius: 12px;
+      padding: 12px 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+      text-align: left;
+    }
+    .notif-item:hover {
+      background: #ffedd5;
+      transform: translateX(3px);
+    }
+    .notif-item.paid {
+      background: #f0fdf4;
+      border-color: #bbf7d0;
+    }
+    .notif-item.paid:hover { background: #dcfce7; }
+    .notif-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1rem;
+    }
+    .notif-icon.pending { background: #fed7aa; color: #c2410c; }
+    .notif-icon.paid { background: #bbf7d0; color: #15803d; }
+    .notif-icon.expired { background: #fecaca; color: #b91c1c; }
+    .notif-text {
+      flex: 1;
+      min-width: 0;
+    }
+    .notif-text strong {
+      display: block;
+      font-size: 0.88rem;
+      color: #0f172a;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .notif-text span {
+      font-size: 0.78rem;
+      color: #64748b;
+    }
+    .notif-arrow {
+      color: #94a3b8;
+      font-size: 0.8rem;
+    }
+    .notif-empty {
+      text-align: center;
+      padding: 16px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px dashed #e2e8f0;
+    }
+    .notif-loading {
+      text-align: center;
+      padding: 16px;
+      color: #94a3b8;
+      font-size: 0.85rem;
+    }
+
+    /* Quick Actions */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .quick-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 8px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      text-decoration: none;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+    .quick-btn:hover {
+      background: #f0f9ff;
+      border-color: #0284c7;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(2, 132, 199, 0.15);
+    }
+    .quick-btn i {
+      font-size: 1.3rem;
+    }
+    .quick-btn span {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #475569;
+      text-align: center;
+      line-height: 1.2;
     }
 
     /* Modal Avatar */
@@ -319,6 +462,33 @@
     <h2 class="user-name" id="profile-name">Memuat...</h2>
     <p class="user-email" id="profile-email">memuat...</p>
 
+    <!-- Quick Actions -->
+    <div class="quick-actions">
+      <a href="/riwayat.html" class="quick-btn">
+        <i class="fa-solid fa-clock-rotate-left" style="color: #3b82f6;"></i>
+        <span>Riwayat Booking</span>
+      </a>
+      <a href="/wishlist.html" class="quick-btn">
+        <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
+        <span>Wishlist</span>
+      </a>
+      <a href="/jadwal-sholat.html" class="quick-btn">
+        <i class="fa-solid fa-mosque" style="color: #059669;"></i>
+        <span>Jadwal Sholat</span>
+      </a>
+    </div>
+
+    <!-- Notifikasi Booking -->
+    <div class="notif-section">
+      <div class="notif-header">
+        <span class="notif-title"><i class="fa-solid fa-bell" style="margin-right:5px;"></i>Notifikasi</span>
+        <span class="notif-badge" id="notif-badge" style="display:none;">0</span>
+      </div>
+      <div class="notif-list" id="notif-list">
+        <div class="notif-loading"><i class="fa-solid fa-spinner fa-spin" style="margin-right:6px;"></i>Memuat notifikasi...</div>
+      </div>
+    </div>
+
     <button onclick="logoutUser()" class="btn" style="background: rgba(239, 68, 68, 0.1); color: #ef4444; width: 100%; border: 1px solid rgba(239, 68, 68, 0.3); padding: 12px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: all 0.2s;">
       <i class="fa-solid fa-right-from-bracket"></i> Keluar (Logout)
     </button>
@@ -420,7 +590,98 @@
       if (user.photoUrl) {
         document.getElementById('profile-avatar-display').innerHTML = `<img src="${user.photoUrl}" alt="Avatar">`;
       }
+
+      // Load Notifikasi Booking
+      loadNotifikasi(user.email);
     });
+
+    async function loadNotifikasi(email) {
+      const notifList = document.getElementById('notif-list');
+      const notifBadge = document.getElementById('notif-badge');
+      const token = localStorage.getItem('auth_token');
+
+      try {
+        const res = await fetch(`${API_URL}/api/bookings/my`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) throw new Error('Gagal fetch');
+        const data = await res.json();
+
+        // Gabungkan bookings + orders
+        const all = [...(data.bookings || []), ...(data.orders || [])];
+
+        // Filter yang perlu notifikasi (PENDING, atau baru PAID)
+        const pending = all.filter(b => b.status === 'PENDING');
+        const baru = all.filter(b => b.status === 'PAID' || b.status === 'confirmed');
+        const expired = all.filter(b => b.status === 'KADALUARSA');
+
+        const totalAlert = pending.length;
+        if (totalAlert > 0) {
+          notifBadge.style.display = 'inline-block';
+          notifBadge.textContent = totalAlert;
+        }
+
+        const items = [];
+
+        pending.forEach(b => {
+          items.push({
+            type: 'pending',
+            label: b.itemName,
+            sub: 'Menunggu pembayaran',
+            icon: 'fa-clock',
+            cls: '',
+            iconCls: 'pending'
+          });
+        });
+
+        baru.forEach(b => {
+          items.push({
+            type: 'paid',
+            label: b.itemName,
+            sub: 'Pembayaran dikonfirmasi ✓',
+            icon: 'fa-circle-check',
+            cls: 'paid',
+            iconCls: 'paid'
+          });
+        });
+
+        expired.forEach(b => {
+          items.push({
+            type: 'expired',
+            label: b.itemName,
+            sub: 'Booking kadaluarsa',
+            icon: 'fa-circle-xmark',
+            cls: '',
+            iconCls: 'expired'
+          });
+        });
+
+        if (items.length === 0) {
+          notifList.innerHTML = `<div class="notif-empty"><i class="fa-regular fa-bell-slash" style="font-size:1.5rem; display:block; margin-bottom:6px;"></i>Tidak ada notifikasi</div>`;
+          return;
+        }
+
+        // Tampilkan maks 4 item terbaru
+        notifList.innerHTML = items.slice(0, 4).map(item => `
+          <a href="/riwayat.html" class="notif-item ${item.cls}">
+            <div class="notif-icon ${item.iconCls}"><i class="fa-solid ${item.icon}"></i></div>
+            <div class="notif-text">
+              <strong>${item.label}</strong>
+              <span>${item.sub}</span>
+            </div>
+            <i class="fa-solid fa-chevron-right notif-arrow"></i>
+          </a>
+        `).join('');
+
+        if (items.length > 4) {
+          notifList.innerHTML += `<a href="/riwayat.html" style="display:block; text-align:center; font-size:0.82rem; color:#3b82f6; font-weight:600; padding:8px; text-decoration:none;">Lihat semua (${items.length}) →</a>`;
+        }
+
+      } catch (e) {
+        notifList.innerHTML = `<div class="notif-empty">Tidak dapat memuat notifikasi</div>`;
+      }
+    }
 
     // Modal Logic
     const modal = document.getElementById('avatar-modal');
