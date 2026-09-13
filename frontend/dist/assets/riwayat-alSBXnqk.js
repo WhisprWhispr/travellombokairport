@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 40px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -644,18 +644,18 @@
                     LIHAT LAINNYA <i class="fa-solid fa-chevron-right" style="font-size:0.5rem;"></i>
                 </span>
             </div>
-        </div>`).join(``)),g(`packages-container`,b,u,6),g(`cars-container`,o,d,4),g(`motorcycles-container`,s,d,4),g(`drone-container`,p,f)};window.generateEtiketPDF=e=>{if(!e){alert(`Data tiket tidak ditemukan, cek status dulu.`);return}let t=e.isDp===!0||e.isDp===`true`,n=e.status===`PAID`,r=n?`#16a34a`:e.status===`PENDING`?`#d97706`:`#dc2626`,i=n?`#dcfce7`:e.status===`PENDING`?`#fef3c7`:`#fee2e2`,a=e.status||`UNKNOWN`,o=n?`&#10003;`:e.status===`PENDING`?`&#9203;`:`&#10007;`;t&&(r=`#ea580c`,i=`#fff7ed`,a=`DP - BELUM LUNAS`,o=`&#9651;`);let s=e=>{if(!e)return`-`;try{return new Date(e).toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`})}catch{return e}},c=e.transactionId&&e.transactionId.startsWith(`ORD-`),l=e.transactionId&&e.transactionId.startsWith(`BKG-`),u=(e.itemName||``).toLowerCase(),d=`Reservasi`;l||u.includes(`transfer`)||u.includes(`rental`)||u.includes(`sewa`)||u.includes(`mobil`)||u.includes(`motor`)?d=`Rental & Transfer`:c&&(d=`Paket Tour / QRIS`);let f=new Date().toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`,hour:`2-digit`,minute:`2-digit`}),p=window.location.origin+`/logo.png`,m=0,h=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null,g=u.includes(`mobil`)||u.includes(`avanza`)||u.includes(`innova`)||u.includes(`hiace`)||u.includes(`brio`)||u.includes(`xpander`)||u.includes(`alphard`)||u.includes(`fortuner`),_=u.includes(`motor`);(u.includes(`airport`)||u.includes(`transfer`)||u.includes(`tour`)||u.includes(`paket`))&&(g=!1,_=!1),h&&h.category&&(h.category===`car`?g=!0:h.category===`motorcycle`?_=!0:(g=!1,_=!1)),_?m=503e3:g&&(m=1003e3);let v=u.includes(`driver`)||u.includes(`supir`)||u.includes(`dengan supir`),y=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null;y&&y.driverOptions&&y.driverOptions!==`Tidak Include Driver`&&(v=!0),v&&(m=0);let b=``;m>0&&(b=`
+        </div>`).join(``)),g(`packages-container`,b,u,6),g(`cars-container`,o,d,4),g(`motorcycles-container`,s,d,4),g(`drone-container`,p,f)};window.generateEtiketPDF=e=>{if(!e){alert(`Data tiket tidak ditemukan, cek status dulu.`);return}let t=e.isDp===!0||e.isDp===`true`,n=`#dc2626`,r=`#fee2e2`,i=e.status||`UNKNOWN`,a=`&#10007;`;e.status===`PAID`||e.status===`COMPLETED`?(n=`#16a34a`,r=`#dcfce7`,a=`&#10003;`):e.status===`PENDING`?(n=`#d97706`,r=`#fef3c7`,a=`&#9203;`):e.status===`PROCESSING`&&(n=`#2563eb`,r=`#dbeafe`,a=`&#9881;`),t&&(n=`#ea580c`,r=`#fff7ed`,i=`DP - BELUM LUNAS`,a=`&#9651;`);let o=e=>{if(!e)return`-`;try{return new Date(e).toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`})}catch{return e}},s=e.transactionId&&e.transactionId.startsWith(`ORD-`),c=e.transactionId&&e.transactionId.startsWith(`BKG-`),l=(e.itemName||``).toLowerCase(),u=`Reservasi`;c||l.includes(`transfer`)||l.includes(`rental`)||l.includes(`sewa`)||l.includes(`mobil`)||l.includes(`motor`)?u=`Rental & Transfer`:s&&(u=`Paket Tour / QRIS`);let d=new Date().toLocaleDateString(`id-ID`,{day:`2-digit`,month:`long`,year:`numeric`,hour:`2-digit`,minute:`2-digit`}),f=window.location.origin+`/logo.png`,p=0,m=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null,h=l.includes(`mobil`)||l.includes(`avanza`)||l.includes(`innova`)||l.includes(`hiace`)||l.includes(`brio`)||l.includes(`xpander`)||l.includes(`alphard`)||l.includes(`fortuner`),g=l.includes(`motor`);(l.includes(`airport`)||l.includes(`transfer`)||l.includes(`tour`)||l.includes(`paket`))&&(h=!1,g=!1),m&&m.category&&(m.category===`car`?h=!0:m.category===`motorcycle`?g=!0:(h=!1,g=!1)),g?p=503e3:h&&(p=1003e3);let _=l.includes(`driver`)||l.includes(`supir`)||l.includes(`dengan supir`),v=window.globalItems?window.globalItems.find(t=>t.title===(e.itemName||``)):null;v&&v.driverOptions&&v.driverOptions!==`Tidak Include Driver`&&(_=!0),_&&(p=0);let y=``;p>0&&(y=`
             <div style="background:#e0f2fe;border-left:4px solid #38bdf8;padding:8px 16px;margin-bottom:12px;border-radius:4px;">
                 <div style="font-size:10px;font-weight:700;color:#0369a1;margin-bottom:2px;">&#8505; Catatan Deposit</div>
-                <div style="font-size:10px;color:#0c4a6e;line-height:1.4;">Total pembayaran <b>sudah termasuk uang deposit</b> sebesar <strong>Rp ${m.toLocaleString(`id-ID`)}</strong>. Deposit akan dikembalikan 100% setelah masa sewa berakhir jika kondisi unit baik.</div>
-            </div>`);let x=document.createElement(`div`);x.style.cssText=`
+                <div style="font-size:10px;color:#0c4a6e;line-height:1.4;">Total pembayaran <b>sudah termasuk uang deposit</b> sebesar <strong>Rp ${p.toLocaleString(`id-ID`)}</strong>. Deposit akan dikembalikan 100% setelah masa sewa berakhir jika kondisi unit baik.</div>
+            </div>`);let b=document.createElement(`div`);b.style.cssText=`
         width:794px; background:#fff; margin:0; padding:0;
         font-family:'Segoe UI',Arial,sans-serif; font-size:14px; color:#1e293b;
         box-sizing:border-box; display:flex; flex-direction:column; overflow:hidden;
-    `,x.innerHTML=`
+    `,b.innerHTML=`
 <div style="background:linear-gradient(135deg,#1d4ed8 0%,#0369a1 60%,#0891b2 100%);padding:18px 30px 16px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;margin:0;width:100%;box-sizing:border-box;">
             <div style="display:flex;align-items:center;gap:16px;">
-                <img src="${p}" crossorigin="anonymous"
+                <img src="${f}" crossorigin="anonymous"
                      style="width:60px;height:60px;border-radius:12px;background:#fff;
                             padding:6px;object-fit:contain;flex-shrink:0;">
                 <div>
@@ -669,10 +669,10 @@
             <div style="font-size:11px;opacity:0.65;font-family:monospace;margin-top:3px;">${e.transactionId}</div>
             </div>
         </div>
-        <div style="background:${i};border-left:5px solid ${r};padding:8px 30px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%;box-sizing:border-box;">
-            <div style="width:10px;height:10px;border-radius:50%;background:${r};flex-shrink:0;"></div>
-            <div style="font-size:12px;font-weight:700;color:${r};">STATUS: ${a}</div>
-            <div style="font-size:10px;color:#475569;margin-left:auto;">Diterbitkan: ${f}</div>
+        <div style="background:${r};border-left:5px solid ${n};padding:8px 30px;display:flex;align-items:center;gap:12px;flex-shrink:0;width:100%;box-sizing:border-box;">
+            <div style="width:10px;height:10px;border-radius:50%;background:${n};flex-shrink:0;"></div>
+            <div style="font-size:12px;font-weight:700;color:${n};">STATUS: ${i}</div>
+            <div style="font-size:10px;color:#475569;margin-left:auto;">Diterbitkan: ${d}</div>
         </div>
 
         <div style="padding:14px 30px;flex:1;width:100%;box-sizing:border-box;">
@@ -686,13 +686,13 @@
                                 font-family:monospace;letter-spacing:1.5px;">${e.transactionId}</div>
                 </div>
                 <div style="display:flex;flex-direction:column;align-items:center;gap:4px;">
-                    <div style="width:52px;height:52px;border-radius:50%;background:${i};
-                                border:2px solid ${r};display:flex;align-items:center;
-                                justify-content:center;font-size:22px;color:${r};font-weight:700;">
-                        ${o}
+                    <div style="width:52px;height:52px;border-radius:50%;background:${r};
+                                border:2px solid ${n};display:flex;align-items:center;
+                                justify-content:center;font-size:22px;color:${n};font-weight:700;">
+                        ${a}
                     </div>
-                    <div style="font-size:10px;font-weight:700;color:${r};
-                                text-transform:uppercase;letter-spacing:1px;">${a}</div>
+                    <div style="font-size:10px;font-weight:700;color:${n};
+                                text-transform:uppercase;letter-spacing:1px;">${i}</div>
                 </div>
             </div>
 
@@ -701,11 +701,11 @@
                 <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
                 <div style="flex:1;">
                     <div style="font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">&#9888; Pembayaran DP &mdash; Belum Lunas</div>
-                    <div style="font-size:11px;color:#9a3412;">Terbayar: <strong>Rp ${Number(e.itemPrice||0).toLocaleString(`id-ID`)}</strong> &nbsp;&bull;&nbsp; Sisa Tagihan: <strong>${e.fullPrice?`Rp `+Number(Number(e.fullPrice)-(Number(e.itemPrice||0)-m)).toLocaleString(`id-ID`):`Lihat admin`}</strong></div>
+                    <div style="font-size:11px;color:#9a3412;">Terbayar: <strong>Rp ${Number(e.itemPrice||0).toLocaleString(`id-ID`)}</strong> &nbsp;&bull;&nbsp; Sisa Tagihan: <strong>${e.fullPrice?`Rp `+Number(Number(e.fullPrice)-(Number(e.itemPrice||0)-p)).toLocaleString(`id-ID`):`Lihat admin`}</strong></div>
                     <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sebelum waktu pelaksanaan / keberangkatan.</div>
                 </div>
             </div>`:``}
-            ${b}
+            ${y}
 
             <!-- Informasi Pemesan -->
             <div style="font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#94a3b8;margin-bottom:6px;">Informasi Pemesan</div>
@@ -742,18 +742,18 @@
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Jenis Layanan</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${d}</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${u}</div>
                 </div>
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Tanggal Pelaksanaan</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${s(e.startDate||e.details?.date)}</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${o(e.startDate||e.details?.date)}</div>
                 </div>
                 ${e.endDate?`
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Tanggal Selesai</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${s(e.endDate)}</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${o(e.endDate)}</div>
                 </div>
                 `:``}
                 ${e.details?.time?`
@@ -812,7 +812,7 @@
                         </div>
                         <div>
                             <div style="font-size:10px;color:#0369a1;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Info Waktu Berakhir</div>
-                            <div style="font-size:12px;color:#0369a1;">${t.includes(`paket`)||t.includes(`tour`)||t.includes(`trip`)||t.includes(`honeymoon`)||e.transactionId&&e.transactionId.startsWith(`ORD-`)?`Paket/layanan berakhir pada <strong>${s(e.endDate)}</strong>.`:`Masa sewa berakhir pada <strong>${s(e.endDate)}</strong>.`}</div>
+                            <div style="font-size:12px;color:#0369a1;">${t.includes(`paket`)||t.includes(`tour`)||t.includes(`trip`)||t.includes(`honeymoon`)||e.transactionId&&e.transactionId.startsWith(`ORD-`)?`Paket/layanan berakhir pada <strong>${o(e.endDate)}</strong>.`:`Masa sewa berakhir pada <strong>${o(e.endDate)}</strong>.`}</div>
                         </div>
                     </div>
                     `})():``}
@@ -849,14 +849,14 @@
                         Dokumen ini diterbitkan secara digital oleh sistem<br>
                         Travel Lombok Airport dan sah tanpa tanda tangan fisik.
                     </div>
-                    <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${f}</div>
+                    <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${d}</div>
                     <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:20px;padding:3px 10px;">
                         <span style="font-size:9px;color:#fff;font-weight:700;letter-spacing:0.5px;">&#127760; Dipesan melalui website www.travellombokairport.com</span>
                     </div>
                 </div>
             </div>
         </div>
-    `;let S=document.createElement(`div`);S.style.cssText=`position:absolute; left:0; top:0; width:794px; z-index:-9999; visibility:hidden; overflow:hidden; background:#fff; padding:0; margin:0;`,x.style.minHeight=`auto`,S.appendChild(x),document.body.appendChild(S);let C=x.offsetHeight+100,w={margin:0,filename:`e-Tiket_${e.transactionId}.pdf`,image:{type:`jpeg`,quality:.98},html2canvas:{scale:2,useCORS:!0,allowTaint:!0,logging:!1,backgroundColor:`#ffffff`,scrollY:0,windowY:0},jsPDF:{unit:`px`,format:[794,C],orientation:`portrait`,hotfixes:[`px_scaling`]},pagebreak:{mode:`avoid-all`}};html2pdf().set(w).from(x).save().then(()=>{document.body.removeChild(S)}).catch(e=>{document.body.removeChild(S),console.error(`PDF generation error:`,e)})},window.cekStatusBooking=async(t,n=`booking`)=>{t.preventDefault();let r=n===`booking`?`input-cek-booking`:`input-cek-orderan`,i=n===`booking`?`btn-cek-booking`:`btn-cek-orderan`,a=document.getElementById(r),o=document.getElementById(i),s=a.value.trim();if(!s)return;let c=o.innerHTML;o.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> Mengecek...`,o.disabled=!0;try{let t=await fetch(`${e}/bookings/check/${s}?_t=${new Date().getTime()}`,{cache:`no-store`});if(t.ok){let e=await t.json(),n=`#ef4444`,r=`fa-circle-xmark`;e.status===`PAID`||e.status===`COMPLETED`?(n=`#10b981`,r=`fa-circle-check`):e.status===`PENDING`?(n=`#f59e0b`,r=`fa-clock`):e.status===`PROCESSING`&&(n=`#3b82f6`,r=`fa-gears`);let i=e.type===`order`||e.transactionId&&e.transactionId.startsWith(`ORD-`)?`🛒 Pesanan Tour / QRIS (ORD-)`:`🚗 Rental & Transfer (BKG-)`,a=``;e.status===`PROCESSING`?a=`
+    `;let x=document.createElement(`div`);x.style.cssText=`position:absolute; left:0; top:0; width:794px; z-index:-9999; visibility:hidden; overflow:hidden; background:#fff; padding:0; margin:0;`,b.style.minHeight=`auto`,x.appendChild(b),document.body.appendChild(x);let S=b.offsetHeight+100,C={margin:0,filename:`e-Tiket_${e.transactionId}.pdf`,image:{type:`jpeg`,quality:.98},html2canvas:{scale:2,useCORS:!0,allowTaint:!0,logging:!1,backgroundColor:`#ffffff`,scrollY:0,windowY:0},jsPDF:{unit:`px`,format:[794,S],orientation:`portrait`,hotfixes:[`px_scaling`]},pagebreak:{mode:`avoid-all`}};html2pdf().set(C).from(b).save().then(()=>{document.body.removeChild(x)}).catch(e=>{document.body.removeChild(x),console.error(`PDF generation error:`,e)})},window.cekStatusBooking=async(t,n=`booking`)=>{t.preventDefault();let r=n===`booking`?`input-cek-booking`:`input-cek-orderan`,i=n===`booking`?`btn-cek-booking`:`btn-cek-orderan`,a=document.getElementById(r),o=document.getElementById(i),s=a.value.trim();if(!s)return;let c=o.innerHTML;o.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> Mengecek...`,o.disabled=!0;try{let t=await fetch(`${e}/bookings/check/${s}?_t=${new Date().getTime()}`,{cache:`no-store`});if(t.ok){let e=await t.json(),n=`#ef4444`,r=`fa-circle-xmark`;e.status===`PAID`||e.status===`COMPLETED`?(n=`#10b981`,r=`fa-circle-check`):e.status===`PENDING`?(n=`#f59e0b`,r=`fa-clock`):e.status===`PROCESSING`&&(n=`#3b82f6`,r=`fa-gears`);let i=e.type===`order`||e.transactionId&&e.transactionId.startsWith(`ORD-`)?`🛒 Pesanan Tour / QRIS (ORD-)`:`🚗 Rental & Transfer (BKG-)`,a=``;e.status===`PROCESSING`?a=`
                 <div style="margin-top: 15px; padding: 15px; background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82f6; border-radius: 10px; text-align: left; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.05);">
                     <h5 style="color: #1e40af; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-circle-info"></i> Sedang Diproses

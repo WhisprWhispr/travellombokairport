@@ -1856,11 +1856,24 @@ window.generateEtiketPDF = (data) => {
 
     const isDpPayment = data.isDp === true || data.isDp === 'true';
 
-    const isPaid = data.status === 'PAID';
-    let sc = isPaid ? '#16a34a' : (data.status === 'PENDING' ? '#d97706' : '#dc2626');
-    let scBg = isPaid ? '#dcfce7' : (data.status === 'PENDING' ? '#fef3c7' : '#fee2e2');
+    let sc = '#dc2626';
+    let scBg = '#fee2e2';
     let stText = data.status || 'UNKNOWN';
-    let stIcon = isPaid ? '&#10003;' : (data.status === 'PENDING' ? '&#9203;' : '&#10007;');
+    let stIcon = '&#10007;'; // X mark
+
+    if (data.status === 'PAID' || data.status === 'COMPLETED') {
+        sc = '#16a34a';
+        scBg = '#dcfce7';
+        stIcon = '&#10003;'; // Check mark
+    } else if (data.status === 'PENDING') {
+        sc = '#d97706';
+        scBg = '#fef3c7';
+        stIcon = '&#9203;'; // Hourglass
+    } else if (data.status === 'PROCESSING') {
+        sc = '#2563eb';
+        scBg = '#dbeafe';
+        stIcon = '&#9881;'; // Gear
+    }
 
     // Override untuk DP: tampilkan status khusus DP
     if (isDpPayment) {
