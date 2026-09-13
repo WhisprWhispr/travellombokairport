@@ -375,7 +375,7 @@
 
       <div style="border-top:1px dashed #cbd5e1; margin:10px 0;"></div>
       
-      <button onclick="window.open('https://wa.me/6289676963255?text=Halo%20SukaCoding,%20saya%20tertarik%20untuk%20membuat%20website%20profesional.', '_blank')" class="menu-item" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 16px; margin-bottom: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(124, 58, 237, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(124, 58, 237, 0.3)';">
+      <button onclick="loadInlineView('native-view-sukacoding', this, 'Pembuatan Website')" class="menu-item" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); color: white; border: none; padding: 12px 16px; margin-bottom: 10px; font-weight: 700; box-shadow: 0 4px 15px rgba(124, 58, 237, 0.3); transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(124, 58, 237, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(124, 58, 237, 0.3)';">
         <i class="fa-solid fa-laptop-code" style="color: #fde047;"></i> Butuh Website? SukaCoding
       </button>
 
@@ -466,6 +466,44 @@
           <div style="text-align:center; margin-top:15px;">
             <button onclick="profileFetchPrayer(true)" style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:#94a3b8; padding:7px 18px; border-radius:30px; font-size:0.8rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Perbarui Lokasi</button>
           </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Native SukaCoding View -->
+    <div id="native-view-sukacoding" class="native-view-content" style="flex:1;">
+      <div class="inline-view-header">
+        <h2 class="inline-view-title"><i class="fa-solid fa-laptop-code" style="color:#7c3aed;"></i> Pembuatan Website</h2>
+        <button class="close-inline-btn" onclick="closeInlineView()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      
+      <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 10px; border: 1px solid #f1f5f9;">
+        <div style="background: linear-gradient(135deg, #4f46e5, #7c3aed); padding: 40px 20px; text-align: center; color: white;">
+          <i class="fa-solid fa-code" style="font-size: 3.5rem; color: #fde047; margin-bottom: 15px;"></i>
+          <h2 style="font-weight: 800; font-size: 1.8rem; margin: 0 0 10px;">SukaCoding</h2>
+          <p style="font-size: 1rem; opacity: 0.9; max-width: 400px; margin: 0 auto;">Solusi Pembuatan Website Profesional & Modern untuk Bisnis Anda.</p>
+        </div>
+        
+        <div style="padding: 30px;">
+          <h3 style="font-size: 1.1rem; color: #0f172a; margin-bottom: 20px; font-weight: 700;">Mengapa Memilih Kami?</h3>
+          <div style="display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 30px;">
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 36px; height: 36px; background: #f0fdf4; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-bolt"></i></div>
+              <div><h4 style="margin: 0 0 4px; font-size: 0.95rem; color: #0f172a;">Super Cepat</h4><p style="margin: 0; font-size: 0.85rem; color: #64748b;">Performa website optimal dan loading secepat kilat.</p></div>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 36px; height: 36px; background: #eff6ff; color: #2563eb; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-mobile-screen"></i></div>
+              <div><h4 style="margin: 0 0 4px; font-size: 0.95rem; color: #0f172a;">Responsif</h4><p style="margin: 0; font-size: 0.85rem; color: #64748b;">Tampilan sempurna di HP, Tablet, maupun Desktop.</p></div>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: flex-start;">
+              <div style="width: 36px; height: 36px; background: #fef2f2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0;"><i class="fa-solid fa-ranking-star"></i></div>
+              <div><h4 style="margin: 0 0 4px; font-size: 0.95rem; color: #0f172a;">Desain Premium</h4><p style="margin: 0; font-size: 0.85rem; color: #64748b;">Meningkatkan kepercayaan pelanggan dengan UI/UX modern.</p></div>
+            </div>
+          </div>
+          
+          <button onclick="window.open('https://wa.me/6289676963255?text=Halo%20SukaCoding,%20saya%20tertarik%20untuk%20membuat%20website%20profesional.', '_blank')" style="width: 100%; background: #22c55e; color: white; border: none; padding: 15px; border-radius: 12px; font-size: 1rem; font-weight: 700; cursor: pointer; transition: all 0.3s; box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(34, 197, 94, 0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(34, 197, 94, 0.3)';">
+            <i class="fa-brands fa-whatsapp" style="font-size: 1.1em; margin-right: 5px;"></i> Konsultasi Gratis di WhatsApp
+          </button>
         </div>
       </div>
     </div>
@@ -1171,6 +1209,10 @@
         const view = document.getElementById('native-view-jadwal');
         view.classList.add('active');
         loadJadwalSholat();
+      }
+      else if (urlOrView === 'native-view-sukacoding') {
+        const view = document.getElementById('native-view-sukacoding');
+        if (view) view.classList.add('active');
       }
     }
 
