@@ -365,13 +365,49 @@
       </div>
     </div>
 
-    <!-- Iframe View for Jadwal Sholat -->
+    <!-- Native Jadwal Sholat View -->
     <div id="native-view-jadwal" class="native-view-content" style="flex:1;">
-      <div class="inline-view-header">
-        <h2 class="inline-view-title"><i class="fa-solid fa-mosque" style="color:#059669;"></i> Jadwal Sholat</h2>
+      <div class="inline-view-header" style="margin-bottom:0;">
+        <h2 class="inline-view-title"><i class="fa-solid fa-mosque" style="color:#34d399;"></i> Jadwal Sholat</h2>
         <button class="close-inline-btn" onclick="closeNativeView()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <iframe id="inline-frame-jadwal" src="about:blank" style="width:100%; flex:1; border:none; border-radius:16px;"></iframe>
+      <!-- Prayer Box - dark themed -->
+      <div id="prayer-box-profile" style="background:linear-gradient(135deg,#0f172a 0%,#1e1b4b 100%); border-radius:20px; padding:30px 25px; color:white; flex:1; overflow-y:auto; margin-top:15px;">
+        <div style="text-align:center; margin-bottom:25px;">
+          <h2 style="font-weight:800; font-size:1.8rem; margin:0 0 5px; background:linear-gradient(to right,#34d399,#38bdf8); -webkit-background-clip:text; -webkit-text-fill-color:transparent;">Jadwal Sholat</h2>
+          <div id="p-prayer-city" style="color:#94a3b8; font-size:0.95rem;"><i class="fa-solid fa-location-dot"></i> Memuat lokasi...</div>
+          <div id="p-prayer-date" style="color:#64748b; font-size:0.8rem; margin-top:4px;"></div>
+        </div>
+
+        <div id="p-location-prompt" style="display:none; text-align:center; padding:30px 0;">
+          <div style="width:70px; height:70px; background:rgba(52,211,153,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 15px;">
+            <i class="fa-solid fa-location-crosshairs" style="font-size:2rem; color:#34d399;"></i>
+          </div>
+          <h3 style="font-weight:600; margin-bottom:10px;">Izin Lokasi Diperlukan</h3>
+          <p style="color:#94a3b8; font-size:0.9rem; margin-bottom:20px;">Kami butuh lokasi untuk hitung jadwal sholat akurat.</p>
+          <button onclick="profileFetchPrayer(true)" style="background:linear-gradient(135deg,#10b981,#059669); color:white; border:none; padding:10px 25px; border-radius:30px; font-weight:600; cursor:pointer;">Izinkan Sekarang</button>
+        </div>
+
+        <div id="p-prayer-loading" style="text-align:center; padding:30px 0;">
+          <i class="fa-solid fa-circle-notch fa-spin" style="font-size:2.5rem; color:#34d399; display:block; margin-bottom:15px;"></i>
+          <p style="color:#94a3b8;">Menghitung jadwal sholat...</p>
+        </div>
+
+        <div id="p-prayer-content" style="display:none;">
+          <!-- Countdown -->
+          <div style="background:rgba(255,255,255,0.05); padding:20px; border-radius:16px; text-align:center; margin-bottom:20px; border:1px solid rgba(255,255,255,0.05); position:relative; overflow:hidden;">
+            <div style="position:absolute; bottom:0; left:0; height:3px; background:linear-gradient(90deg,#34d399,#38bdf8); transition:width 1s linear;" id="p-prayer-progress" style="width:0%;"></div>
+            <h4 style="color:#94a3b8; font-size:0.85rem; font-weight:500; margin:0 0 5px; text-transform:uppercase; letter-spacing:1px;">Menuju <span id="p-next-prayer-name" style="color:white; font-weight:700;">...</span></h4>
+            <div id="p-next-prayer-countdown" style="font-size:2.8rem; font-weight:800; font-family:monospace; letter-spacing:-1px;">--:--:--</div>
+          </div>
+          <!-- Cards -->
+          <div id="p-prayer-cards" style="display:flex; gap:10px; overflow-x:auto; padding-bottom:10px; scroll-snap-type:x mandatory; scrollbar-width:none;">
+          </div>
+          <div style="text-align:center; margin-top:15px;">
+            <button onclick="profileFetchPrayer(true)" style="background:transparent; border:1px solid rgba(255,255,255,0.2); color:#94a3b8; padding:7px 18px; border-radius:30px; font-size:0.8rem; cursor:pointer;"><i class="fa-solid fa-rotate-right"></i> Perbarui Lokasi</button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -696,7 +732,15 @@
         const res = await fetch(`${API_URL}/bookings/my-history`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await res.json();
+        
+        // Baca sebagai text dulu untuk menghindari JSON parse error
+        const rawText = await res.text();
+        let data;
+        try {
+          data = JSON.parse(rawText);
+        } catch(parseErr) {
+          throw new Error('Respons server tidak valid. Pastikan backend berjalan dengan benar.');
+        }
 
         if (!res.ok) {
           if (res.status === 401 || res.status === 403) {
@@ -834,10 +878,135 @@
       else if (urlOrView === '/jadwal-sholat.html') {
         const view = document.getElementById('native-view-jadwal');
         view.classList.add('active');
-        const frame = document.getElementById('inline-frame-jadwal');
-        if (frame.src === 'about:blank' || frame.src === window.location.href) {
-            frame.src = urlOrView + '?inline=1';
+        loadJadwalSholat();
+      }
+    }
+
+    // ====== JADWAL SHOLAT NATIVE ======
+    let profilePrayerInterval = null;
+
+    async function loadJadwalSholat() {
+      // Cek cache dulu
+      const cached = localStorage.getItem('prayerData');
+      if (cached) {
+        try { profileRenderPrayer(JSON.parse(cached)); return; } catch(e) {}
+      }
+      profileFetchPrayer(false);
+    }
+
+    async function profileFetchPrayer(force = false) {
+      if (!force) {
+        const cached = localStorage.getItem('prayerData');
+        if (cached) { try { profileRenderPrayer(JSON.parse(cached)); return; } catch(e) {} }
+      }
+
+      document.getElementById('p-location-prompt').style.display = 'none';
+      document.getElementById('p-prayer-loading').style.display = 'block';
+      document.getElementById('p-prayer-content').style.display = 'none';
+
+      if (!navigator.geolocation) {
+        document.getElementById('p-prayer-loading').style.display = 'none';
+        document.getElementById('p-location-prompt').style.display = 'block';
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          const { latitude: lat, longitude: lng } = pos.coords;
+          try {
+            // Ambil waktu sholat
+            const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lng}&method=11&tune=3,3,3,3,3,3,3,3,3`);
+            const data = await res.json();
+            if (data && data.code === 200) {
+              const timings = data.data.timings;
+              // Reverse geocode untuk nama kota
+              let cityName = 'Lokasi Anda';
+              try {
+                const geo = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                const geoData = await geo.json();
+                cityName = geoData.address?.city || geoData.address?.town || geoData.address?.village || cityName;
+              } catch(e) {}
+
+              const prayerData = {
+                city: cityName,
+                date: data.data.date.readable,
+                timings: { Subuh: timings.Fajr, Dzuhur: timings.Dhuhr, Ashar: timings.Asr, Maghrib: timings.Maghrib, Isya: timings.Isha },
+                timestamp: Date.now()
+              };
+              localStorage.setItem('prayerData', JSON.stringify(prayerData));
+              profileRenderPrayer(prayerData);
+            } else {
+              throw new Error('API error');
+            }
+          } catch(e) {
+            document.getElementById('p-prayer-loading').style.display = 'none';
+            document.getElementById('p-location-prompt').style.display = 'block';
+          }
+        },
+        () => {
+          document.getElementById('p-prayer-loading').style.display = 'none';
+          document.getElementById('p-location-prompt').style.display = 'block';
         }
+      );
+    }
+
+    function profileRenderPrayer(data) {
+      document.getElementById('p-prayer-loading').style.display = 'none';
+      document.getElementById('p-location-prompt').style.display = 'none';
+      document.getElementById('p-prayer-content').style.display = 'block';
+      document.getElementById('p-prayer-city').innerHTML = `<i class="fa-solid fa-location-dot" style="color:#34d399;"></i> ${data.city}`;
+      document.getElementById('p-prayer-date').textContent = data.date;
+
+      const cards = document.getElementById('p-prayer-cards');
+      cards.innerHTML = '';
+
+      const now = new Date();
+      const currentMins = now.getHours() * 60 + now.getMinutes();
+      let nextPrayerName = null, nextPrayerTime = null, prevPrayerTime = null, lastMins = 0;
+
+      const icons = { subuh: 'fa-cloud-sun', dzuhur: 'fa-sun', ashar: 'fa-cloud', maghrib: 'fa-moon', isya: 'fa-star-and-crescent' };
+
+      for (const [name, timeStr] of Object.entries(data.timings)) {
+        const [h, m] = timeStr.split(':').map(Number);
+        const prayerMins = h * 60 + m;
+        let isNext = false;
+        if (!nextPrayerTime && currentMins < prayerMins) {
+          isNext = true;
+          nextPrayerName = name;
+          nextPrayerTime = new Date(); nextPrayerTime.setHours(h, m, 0, 0);
+          prevPrayerTime = new Date();
+          if (lastMins === 0) { prevPrayerTime.setDate(prevPrayerTime.getDate() - 1); prevPrayerTime.setHours(19, 30, 0, 0); }
+          else { prevPrayerTime.setHours(Math.floor(lastMins/60), lastMins%60, 0, 0); }
+        }
+        lastMins = prayerMins;
+        const iconClass = icons[name.toLowerCase()] || 'fa-clock';
+        cards.innerHTML += `<div style="background:${isNext?'linear-gradient(135deg,rgba(16,185,129,0.15),rgba(5,150,105,0.15))':'rgba(255,255,255,0.03)'}; padding:20px 15px; border-radius:16px; display:flex; flex-direction:column; align-items:center; gap:5px; border:1px solid ${isNext?'rgba(52,211,153,0.6)':'rgba(255,255,255,0.08)'}; min-width:110px; flex-shrink:0; scroll-snap-align:center; transform:scale(${isNext?'1.05':'1'}); box-shadow:${isNext?'0 12px 25px -5px rgba(16,185,129,0.3)':'none'}; transition:all 0.3s;">
+          <i class="fa-solid ${iconClass}" style="font-size:1.5rem; color:${isNext?'#34d399':'#64748b'};"></i>
+          <span style="font-size:0.78rem; color:${isNext?'#34d399':'#94a3b8'}; font-weight:${isNext?'800':'600'}; text-transform:uppercase; letter-spacing:1px;">${name}</span>
+          <span style="font-size:1.7rem; font-weight:800; color:${isNext?'white':'#e2e8f0'}; font-family:monospace;">${timeStr}</span>
+        </div>`;
+      }
+
+      // Countdown
+      if (profilePrayerInterval) clearInterval(profilePrayerInterval);
+      if (nextPrayerTime) {
+        document.getElementById('p-next-prayer-name').textContent = nextPrayerName;
+        const updateCD = () => {
+          const t = nextPrayerTime - new Date();
+          if (prevPrayerTime) {
+            const pct = Math.min(100, Math.max(0, ((new Date()-prevPrayerTime)/(nextPrayerTime-prevPrayerTime))*100));
+            const pb = document.getElementById('p-prayer-progress');
+            if (pb) pb.style.width = pct + '%';
+          }
+          if (t <= 0) { clearInterval(profilePrayerInterval); document.getElementById('p-next-prayer-countdown').textContent = '00:00:00'; return; }
+          const h = Math.floor(t/(1000*60*60)), mi = Math.floor((t%(1000*60*60))/(1000*60)), s = Math.floor((t%(1000*60))/1000);
+          document.getElementById('p-next-prayer-countdown').textContent = `${String(h).padStart(2,'0')}:${String(mi).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        };
+        updateCD();
+        profilePrayerInterval = setInterval(updateCD, 1000);
+      } else {
+        document.getElementById('p-next-prayer-name').textContent = 'Besok';
+        document.getElementById('p-next-prayer-countdown').textContent = '--:--:--';
       }
     }
 
