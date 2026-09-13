@@ -2205,11 +2205,34 @@ window.cekStatusBooking = async (event, type = 'booking') => {
 
         if (response.ok) {
             const data = await response.json();
-            const statusColor = data.status === 'PAID' ? '#22c55e' : (data.status === 'PENDING' ? '#f59e0b' : '#ef4444');
-            const statusIcon = data.status === 'PAID' ? 'fa-circle-check' : (data.status === 'PENDING' ? 'fa-clock' : 'fa-circle-xmark');
+            let statusColor = '#ef4444';
+            let statusIcon = 'fa-circle-xmark';
+            
+            if (data.status === 'PAID' || data.status === 'COMPLETED') {
+                statusColor = '#10b981';
+                statusIcon = 'fa-circle-check';
+            } else if (data.status === 'PENDING') {
+                statusColor = '#f59e0b';
+                statusIcon = 'fa-clock';
+            } else if (data.status === 'PROCESSING') {
+                statusColor = '#3b82f6';
+                statusIcon = 'fa-gears';
+            }
+
             const typeLabel = (data.type === 'order' || (data.transactionId && data.transactionId.startsWith('ORD-')))
                 ? '🛒 Pesanan Tour / QRIS (ORD-)'
                 : '🚗 Rental & Transfer (BKG-)';
+
+            let processInfo = '';
+            if (data.status === 'PROCESSING') {
+                processInfo = `
+                <div style="margin-top: 15px; padding: 15px; background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82f6; border-radius: 10px; text-align: left; box-shadow: 0 4px 6px rgba(59, 130, 246, 0.05);">
+                    <h5 style="color: #1e40af; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                        <i class="fa-solid fa-circle-info"></i> Sedang Diproses
+                    </h5>
+                    <p style="color: #334155; font-size: 0.8rem; margin: 0; line-height: 1.5;">Pesanan Anda telah kami terima dan <b>sedang dalam tahap verifikasi serta penjadwalan</b> oleh tim profesional kami. Proses ini membutuhkan waktu yang singkat. Kami akan menghubungi Anda melalui WhatsApp jika diperlukan koordinasi lebih lanjut.</p>
+                </div>`;
+            }
 
             const htmlContent = `
                 <div style="text-align: center; margin-bottom: 20px;">
@@ -2252,6 +2275,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                         <i class="fa-solid fa-file-pdf"></i> Unduh e-Tiket PDF
                     </button>
                 </div>
+                ${processInfo}
             `;
 
             // Simpan data lengkap untuk PDF
