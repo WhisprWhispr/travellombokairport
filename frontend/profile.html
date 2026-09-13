@@ -924,7 +924,7 @@
                 grid.innerHTML = savedItems.map(item => `
                     <div class="package-card" style="cursor:pointer;" onclick="window.location.href='/#${item.id}'">
                         <button onclick="event.stopPropagation(); let w = JSON.parse(localStorage.getItem('app_wishlist'))||[]; if(w.includes('${item.id}')) w = w.filter(id=>id!=='${item.id}'); localStorage.setItem('app_wishlist', JSON.stringify(w)); if(window.toggleWishlist) window.toggleWishlist('${item.id}'); loadInlineView('/wishlist.html', null, 'Wishlist Anda');" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:#ef4444; border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;"><i class="fa-solid fa-heart"></i></button>
-                        <img src="${item.image}" class="package-image" alt="${item.title}">
+                        <img src="${item.imageUrl}" class="package-image" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600'">
                         <div class="package-content">
                             <h3 class="package-title">${item.title}</h3>
                             <div class="package-price">Rp ${item.price.toLocaleString('id-ID')}</div>
