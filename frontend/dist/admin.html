@@ -314,9 +314,9 @@
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
               <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
                 Mode Pemeliharaan (Maintenance Mode)
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
-                  <input type="checkbox" id="setting-maintenance-mode" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch">
+                  <input type="checkbox" id="setting-maintenance-mode" onchange="window.saveGlobalSettings()" >
+                  <span class="slider round" ></span>
                 </label>
               </label>
               <p style="font-size: 0.85rem; color: #ef4444; margin-top: 5px;"><strong>Perhatian:</strong> Jika aktif, pengunjung website akan melihat halaman "Sedang Pemeliharaan" dan tidak bisa melakukan interaksi apapun. Matikan jika website sudah normal.</p>
@@ -325,9 +325,9 @@
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
               <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
                 Perbaikan AI (AI Maintenance)
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
-                  <input type="checkbox" id="setting-ai-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch">
+                  <input type="checkbox" id="setting-ai-maintenance" onchange="window.saveGlobalSettings()" >
+                  <span class="slider round" ></span>
                 </label>
               </label>
               <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, fitur AI (Lombok AI) tidak dapat digunakan oleh pengunjung website. Pengunjung akan melihat pesan pemeliharaan AI di dalam chat widget.</p>
@@ -336,9 +336,9 @@
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
               <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
                 Pemeliharaan QRIS (Instanpay)
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
-                  <input type="checkbox" id="setting-qris-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch">
+                  <input type="checkbox" id="setting-qris-maintenance" onchange="window.saveGlobalSettings()" >
+                  <span class="slider round" ></span>
                 </label>
               </label>
               <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran QRIS. Sistem akan memberitahu mereka bahwa pembayaran QRIS sedang dalam perbaikan.</p>
@@ -347,9 +347,9 @@
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
               <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
                 Pemeliharaan Virtual Account
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
-                  <input type="checkbox" id="setting-va-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch">
+                  <input type="checkbox" id="setting-va-maintenance" onchange="window.saveGlobalSettings()" >
+                  <span class="slider round" ></span>
                 </label>
               </label>
               <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran Virtual Account. Sistem akan memberitahu mereka bahwa pembayaran Virtual Account sedang dalam perbaikan.</p>
@@ -358,9 +358,9 @@
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
               <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
                 Pemeliharaan Transfer Manual WA
-                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
-                  <input type="checkbox" id="setting-manual-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch">
+                  <input type="checkbox" id="setting-manual-maintenance" onchange="window.saveGlobalSettings()" >
+                  <span class="slider round" ></span>
                 </label>
               </label>
               <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran Transfer Manual WA (disembunyikan dari pilihan pembayaran).</p>
@@ -378,9 +378,9 @@
                     <div style="font-size: 0.8rem; color: #78350f; line-height: 1.4;">Aktifkan untuk menaikkan harga motor & mobil saat event</div>
                   </div>
                 </div>
-                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0; margin-top: 4px;">
-                  <input type="checkbox" id="setting-event-mode" onchange="window.toggleEventModeUI(); window.saveGlobalSettings();" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch" style="flex-shrink: 0; margin-top: 4px;">
+                  <input type="checkbox" id="setting-event-mode" onchange="window.toggleEventModeUI(); window.saveGlobalSettings();" >
+                  <span class="slider round" ></span>
                 </label>
               </div>
 
@@ -428,9 +428,9 @@
                     <div style="font-size: 0.8rem; color: #166534; line-height: 1.4;">Aktifkan untuk menampilkan popup event (dengan countdown timer) kepada pengunjung website</div>
                   </div>
                 </div>
-                <label class="switch" style="position: relative; display: inline-block; width: 60px; height: 32px; flex-shrink: 0; margin-top: 4px;">
-                  <input type="checkbox" id="setting-coming-soon-mode" onchange="window.toggleComingSoonUI();" style="opacity: 0; width: 0; height: 0;">
-                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                <label class="switch" style="flex-shrink: 0; margin-top: 4px;">
+                  <input type="checkbox" id="setting-coming-soon-mode" onchange="window.toggleComingSoonUI();" >
+                  <span class="slider round" ></span>
                 </label>
               </div>
 
