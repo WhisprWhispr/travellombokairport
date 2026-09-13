@@ -4211,6 +4211,32 @@ window.checkAuthUI = () => {
                     avatarContainer.innerHTML = `<i class="fa-solid fa-user"></i>`;
                 }
             }
+            // Cek untuk notifikasi pending
+            const footerNotifBadge = document.getElementById('footer-notif-badge');
+            if (footerNotifBadge) {
+                fetch(`${API_URL}/api/bookings/my-history`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                })
+                .then(r => r.ok ? r.json() : null)
+                .then(data => {
+                    if (data && Array.isArray(data)) {
+                        const pendingCount = data.filter(item => {
+                            if (item.status !== 'PENDING') return false;
+                            const created = item.createdAt ? new Date(item.createdAt).getTime() : 0;
+                            const isExpired = !isNaN(created) && (Date.now() - created) > 60 * 60 * 1000;
+                            return !isExpired;
+                        }).length;
+                        
+                        if (pendingCount > 0) {
+                            footerNotifBadge.innerText = pendingCount;
+                            footerNotifBadge.style.display = 'flex';
+                        } else {
+                            footerNotifBadge.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(e => console.error('Error fetching notif:', e));
+            }
         } else {
             authContainer.style.display = 'flex';
             userContainer.style.display = 'none';
