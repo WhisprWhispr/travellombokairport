@@ -17,24 +17,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
   if(new URLSearchParams(window.location.search).get('inline') === '1') {
-    document.documentElement.style.background = 'transparent';
-    document.body.style.background = 'transparent';
-    document.addEventListener('DOMContentLoaded', () => {
-      const nav = document.querySelector('.navbar');
-      if(nav) nav.style.display = 'none';
-      const footer = document.querySelector('.footer');
-      if(footer) footer.style.display = 'none';
-      const section = document.querySelector('.section');
-      if(section) {
-        section.style.paddingTop = '20px';
-        const title = section.querySelector('.section-title');
-        if(title) title.style.display = 'none';
-      }
-      
-      // Khusus jadwal sholat hide header
-      const header = document.querySelector('.section-header');
-      if(header) header.style.display = 'none';
-    });
+    document.write('<style>.navbar, .footer, .section-header, .section-title { display: none !important; } .section { padding-top: 0px !important; margin-top: 0px !important; } body, html { background: transparent !important; }</style>');
   }
 </script>
 </head>
@@ -266,6 +249,7 @@
   </script>
 </body>
 </html>
+
 
 
 

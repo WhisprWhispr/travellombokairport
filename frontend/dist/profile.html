@@ -81,11 +81,23 @@
     .inline-view-container.active { display: flex; }
     
     .inline-view-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-    .inline-view-title { font-size: 1.5rem; font-weight: 800; color: #0f172a; }
-    .close-inline-btn { background: #f1f5f9; border: none; color: #64748b; width: 36px; height: 36px; border-radius: 50%; font-size: 1.1rem; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; }
-    .close-inline-btn:hover { background: #fee2e2; color: #ef4444; }
+    .notif-text span { font-size: 0.85rem; color: #64748b; }
+    .notif-arrow { color: #94a3b8; }
     
-    #inline-frame { width: 100%; flex: 1; border: none; border-radius: 16px; background: white; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .notif-empty { text-align: center; padding: 30px; color: #94a3b8; font-size: 1rem; background: white; border-radius: 16px; border: 1px dashed #cbd5e1; }
+
+    /* Native View Styles */
+    .native-view-content { display: none; flex-direction: column; animation: fadeIn 0.4s ease; height: 100%; overflow-y: auto;}
+    .native-view-content.active { display: flex; }
+    
+    /* Packages Grid (for Wishlist) */
+    .packages-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .package-card { background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #f1f5f9; transition: all 0.3s; position: relative; }
+    .package-card:hover { transform: translateY(-5px); box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+    .package-image { width: 100%; height: 200px; object-fit: cover; }
+    .package-content { padding: 20px; }
+    .package-title { font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 10px; }
+    .package-price { color: #059669; font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; }
 
     /* Notif */
     .notif-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 15px; }
@@ -342,13 +354,41 @@
       </div>
     </div>
 
-    <!-- Container Inline View -->
-    <div class="inline-view-container" id="inline-container">
+    <!-- Native Riwayat View -->
+    <div id="native-view-riwayat" class="native-view-content">
       <div class="inline-view-header">
-        <h2 class="inline-view-title" id="inline-title">Tampilan</h2>
-        <button class="close-inline-btn" onclick="closeInlineView()"><i class="fa-solid fa-xmark"></i></button>
+        <h2 class="inline-view-title"><i class="fa-solid fa-clock-rotate-left" style="color:var(--primary-blue);"></i> Riwayat Booking</h2>
+        <button class="close-inline-btn" onclick="closeNativeView()"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <iframe id="inline-frame" src="about:blank"></iframe>
+      <div id="riwayat-page-container">
+        <!-- Content injected by main.js -->
+      </div>
+    </div>
+
+    <!-- Native Wishlist View -->
+    <div id="native-view-wishlist" class="native-view-content">
+      <div class="inline-view-header">
+        <h2 class="inline-view-title"><i class="fa-solid fa-heart" style="color:#ef4444;"></i> Wishlist Anda</h2>
+        <button class="close-inline-btn" onclick="closeNativeView()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="wishlist-empty" style="display: none; text-align: center; padding: 60px 20px; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
+            <i class="fa-regular fa-heart" style="font-size: 4rem; color: #cbd5e1; margin-bottom: 20px; display: block;"></i>
+            <h3 style="color: #475569; margin-bottom: 10px;">Wishlist Anda masih kosong</h3>
+            <p style="color: #94a3b8; font-size: 0.95rem; margin-bottom: 25px;">Simpan paket tour impian Anda dengan mengklik ikon hati.</p>
+            <a href="/#packages" class="btn btn-green" style="padding: 12px 25px; border-radius: 30px;">Cari Paket Tour</a>
+      </div>
+      <div id="wishlist-grid" class="packages-grid">
+        <!-- Content injected by main.js -->
+      </div>
+    </div>
+
+    <!-- Iframe View for Jadwal Sholat -->
+    <div id="native-view-jadwal" class="native-view-content" style="flex:1;">
+      <div class="inline-view-header">
+        <h2 class="inline-view-title"><i class="fa-solid fa-mosque" style="color:#059669;"></i> Jadwal Sholat</h2>
+        <button class="close-inline-btn" onclick="closeNativeView()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <iframe id="inline-frame-jadwal" src="about:blank" style="width:100%; flex:1; border:none; border-radius:16px;"></iframe>
     </div>
   </div>
 
@@ -648,38 +688,82 @@
       }
     }
 
-    // Inline View Logic
-    function loadInlineView(url, btnElement, title) {
+    // Inline/Native View Logic
+    function loadInlineView(urlOrView, btnElement, title) {
       // Remove active class from all menu items
       document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
       // Add active class to clicked button
       if (btnElement) btnElement.classList.add('active');
 
-      const container = document.getElementById('inline-container');
       const defaultView = document.getElementById('default-view');
-      const frame = document.getElementById('inline-frame');
-
-      // Show container, hide default
       defaultView.style.display = 'none';
-      container.classList.add('active');
-      document.getElementById('inline-title').textContent = title;
 
-      // Load URL with ?inline=1
-      frame.src = url + '?inline=1';
+      // Hide all native views
+      document.querySelectorAll('.native-view-content').forEach(view => view.classList.remove('active'));
+
+      if (urlOrView === '/riwayat.html') {
+        const view = document.getElementById('native-view-riwayat');
+        view.classList.add('active');
+        if (window.showRiwayatTransaksi) {
+          window.showRiwayatTransaksi(true);
+        } else {
+          document.getElementById('riwayat-page-container').innerHTML = '<div style="text-align:center; padding:40px; color:#ef4444;">Sistem belum siap. Coba refresh.</div>';
+        }
+      } 
+      else if (urlOrView === '/wishlist.html') {
+        const view = document.getElementById('native-view-wishlist');
+        view.classList.add('active');
+        
+        // Define missing logic for renderWishlist if it doesn't run automatically
+        if (window.globalItems && window.getWishlist) {
+            const wishlist = window.getWishlist();
+            const savedItems = window.globalItems.filter(item => wishlist.includes(item.id));
+            const grid = document.getElementById("wishlist-grid");
+            const emptyState = document.getElementById("wishlist-empty");
+            
+            if (savedItems.length === 0) {
+                grid.style.display = 'none';
+                emptyState.style.display = 'block';
+            } else {
+                emptyState.style.display = 'none';
+                grid.style.display = 'grid';
+                grid.innerHTML = savedItems.map(item => `
+                    <div class="package-card" style="cursor:pointer;" onclick="window.location.href='/#${item.id}'">
+                        <button onclick="event.stopPropagation(); window.toggleWishlist('${item.id}'); loadInlineView('/wishlist.html', null, 'Wishlist Anda');" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:#ef4444; border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2;"><i class="fa-solid fa-heart"></i></button>
+                        <img src="${item.image}" class="package-image" alt="${item.title}">
+                        <div class="package-content">
+                            <h3 class="package-title">${item.title}</h3>
+                            <div class="package-price">Rp ${item.price.toLocaleString('id-ID')}</div>
+                            <div style="font-size:0.85rem; color:#64748b; margin-bottom:15px;"><i class="fa-regular fa-clock"></i> ${item.duration}</div>
+                            <button class="btn btn-green" style="width:100%; padding:8px; border-radius:10px;">Detail</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } else {
+           // Wait a bit for main.js to load items
+           setTimeout(() => loadInlineView(urlOrView, btnElement, title), 500);
+        }
+      } 
+      else if (urlOrView === '/jadwal-sholat.html') {
+        const view = document.getElementById('native-view-jadwal');
+        view.classList.add('active');
+        const frame = document.getElementById('inline-frame-jadwal');
+        if (frame.src === 'about:blank' || frame.src === window.location.href) {
+            frame.src = urlOrView + '?inline=1';
+        }
+      }
     }
 
-    function closeInlineView() {
+    function closeNativeView() {
       // Set active back to Dasbor
       document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
-      document.getElementById('menu-beranda').classList.add('active');
+      const menuBeranda = document.getElementById('menu-beranda');
+      if(menuBeranda) menuBeranda.classList.add('active');
       
-      const container = document.getElementById('inline-container');
+      document.querySelectorAll('.native-view-content').forEach(view => view.classList.remove('active'));
       const defaultView = document.getElementById('default-view');
-      const frame = document.getElementById('inline-frame');
-      
-      container.classList.remove('active');
       defaultView.style.display = 'block';
-      frame.src = 'about:blank';
     }
   </script>
 </body>
