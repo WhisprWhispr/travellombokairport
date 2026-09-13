@@ -691,6 +691,38 @@
       }
     }
 
+    window.checkPaymentStatus = async function(txId, btnElement) {
+        const originalText = btnElement.innerHTML;
+        btnElement.disabled = true;
+        btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengecek...';
+        try {
+            const statusRes = await fetch(`${API_URL}/api/payment/status/${txId}`);
+            const statusData = await statusRes.json();
+            if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data?.status?.toUpperCase())) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Pembayaran Berhasil!',
+                    text: 'Terima kasih, pembayaran Anda telah kami terima.',
+                    confirmButtonColor: '#10b981'
+                }).then(() => {
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Belum Diterima',
+                    text: 'Sistem belum menerima status pembayaran. Jika Anda sudah transfer, harap tunggu beberapa menit lalu coba lagi, atau hubungi Admin.',
+                    confirmButtonColor: '#3b82f6'
+                });
+            }
+        } catch (e) {
+            Swal.fire('Error', 'Gagal mengecek status ke server.', 'error');
+        } finally {
+            btnElement.disabled = false;
+            btnElement.innerHTML = originalText;
+        }
+    };
+
     // Modal Logic
     const modal = document.getElementById('avatar-modal');
     const modalContent = document.getElementById('avatar-modal-content');
@@ -758,7 +790,8 @@
                     <div style="background:white; padding:15px; border-radius:16px; display:inline-block; border:2px dashed #cbd5e1; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
                       <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(data.rawQrisString)}" style="width:200px; height:200px; display:block;">
                     </div>
-                    <div style="margin-top:20px; font-size:0.85rem; color:#64748b; line-height:1.5;">Scan QR code di atas menggunakan aplikasi <b style="color:#334155;">Mobile Banking</b> atau <b style="color:#334155;">E-Wallet</b> (Gopay, OVO, Dana, dll) Anda.</div>
+                    <div style="margin-top:20px; margin-bottom:15px; font-size:0.85rem; color:#64748b; line-height:1.5;">Scan QR code di atas menggunakan aplikasi <b style="color:#334155;">Mobile Banking</b> atau <b style="color:#334155;">E-Wallet</b> (Gopay, OVO, Dana, dll) Anda.</div>
+                    <button type="button" onclick="window.checkPaymentStatus('${txId}', this)" style="background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; width:100%; box-shadow:0 4px 12px rgba(16,185,129,0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-check-circle"></i> Saya Sudah Bayar</button>
                   </div>
                 `;
             } else if (method === 'va' && data.vaNumber) {
@@ -770,7 +803,10 @@
                       ${iconHtml} Virtual Account
                     </div>
                     <div style="font-family:'Courier New', Courier, monospace; font-size:1.6rem; font-weight:900; color:#1e293b; letter-spacing:3px; user-select:all; margin-bottom:20px; background:white; padding:15px; border-radius:12px; border:1px dashed #94a3b8;">${data.vaNumber}</div>
-                    <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); alert('Nomor Virtual Account berhasil disalin!');" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; width:100%; box-shadow:0 4px 12px rgba(37, 99, 235, 0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy"></i> Salin Nomor VA</button>
+                    <div style="display:flex; gap:10px;">
+                      <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); alert('Nomor Virtual Account berhasil disalin!');" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; flex:1; box-shadow:0 4px 12px rgba(37, 99, 235, 0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy"></i> Salin VA</button>
+                      <button type="button" onclick="window.checkPaymentStatus('${txId}', this)" style="background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; flex:1; box-shadow:0 4px 12px rgba(16,185,129,0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-check-circle"></i> Bayar</button>
+                    </div>
                   </div>
                 `;
             } else {
