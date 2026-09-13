@@ -729,7 +729,7 @@
       </div>`;
 
       try {
-        const res = await fetch(`${API_URL}/bookings/my-history`, {
+        const res = await fetch(`/api/bookings/my-history`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
         
