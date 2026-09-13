@@ -516,6 +516,19 @@
     </div>
   </div>
 
+  <!-- Modal Detail Transaksi -->
+  <div class="avatar-modal-overlay" id="tx-modal">
+    <div class="avatar-modal" id="tx-modal-content" style="max-width: 500px; padding: 25px;">
+      <div class="modal-header" style="border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px; margin-bottom: 15px;">
+        <h3 style="color:#0f172a;"><i class="fa-solid fa-receipt" style="color:#3b82f6;"></i> Detail Transaksi</h3>
+        <button class="close-modal" onclick="closeTxModal()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="tx-modal-body" style="font-size: 0.9rem; color: #475569; display:flex; flex-direction:column; gap:12px;">
+        <div style="text-align:center; padding:30px;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:#3b82f6;"></i><p style="margin-top:10px;">Memuat detail...</p></div>
+      </div>
+    </div>
+  </div>
+
   <script src="/config.js"></script>
   <script src="/main.js"></script>
   <script>
@@ -613,6 +626,7 @@
         pending.forEach(b => {
           items.push({
             type: 'pending',
+            transactionId: b.transactionId,
             label: b.itemName,
             sub: 'Menunggu pembayaran',
             icon: 'fa-clock',
@@ -624,6 +638,7 @@
         baru.forEach(b => {
           items.push({
             type: 'paid',
+            transactionId: b.transactionId,
             label: b.itemName,
             sub: 'Pembayaran dikonfirmasi ✓',
             icon: 'fa-circle-check',
@@ -635,6 +650,7 @@
         expired.forEach(b => {
           items.push({
             type: 'expired',
+            transactionId: b.transactionId,
             label: b.itemName,
             sub: 'Booking kadaluarsa',
             icon: 'fa-circle-xmark',
@@ -650,7 +666,7 @@
 
         // Tampilkan maks 4 item terbaru
         notifList.innerHTML = items.slice(0, 4).map(item => `
-          <a href="/riwayat.html" class="notif-item ${item.cls}">
+          <a href="#" onclick="openTransactionModal('${item.transactionId}'); return false;" class="notif-item ${item.cls}">
             <div class="notif-icon ${item.iconCls}"><i class="fa-solid ${item.icon}"></i></div>
             <div class="notif-text" style="flex:1;">
               <strong style="display:flex; align-items:center; gap:8px;">
@@ -690,8 +706,86 @@
       document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
       document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
       
-      event.target.classList.add('active');
+      const buttons = Array.from(document.querySelectorAll('.tab-btn'));
+      const activeBtn = buttons.find(b => b.getAttribute('onclick').includes(tabId));
+      if (activeBtn) activeBtn.classList.add('active');
+      
       document.getElementById('tab-' + tabId).classList.add('active');
+    }
+
+    // Modal Transaksi Logic
+    async function openTransactionModal(txId) {
+      if (!txId || txId === 'undefined') return;
+      const modal = document.getElementById('tx-modal');
+      const content = document.getElementById('tx-modal-content');
+      const body = document.getElementById('tx-modal-body');
+      
+      modal.style.display = 'flex';
+      setTimeout(() => content.classList.add('show'), 10);
+      
+      body.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:#3b82f6;"></i><p style="margin-top:10px;">Memuat detail...</p></div>';
+      
+      try {
+        const res = await fetch(`${API_URL}/api/bookings/check/${txId}`);
+        if (!res.ok) throw new Error('Data tidak ditemukan');
+        const data = await res.json();
+        
+        const isPaid = data.status === 'PAID';
+        const statusColor = isPaid ? '#10b981' : (data.status === 'PENDING' ? '#f59e0b' : '#ef4444');
+        const statusBg = isPaid ? 'rgba(16,185,129,0.1)' : (data.status === 'PENDING' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)');
+        const parsedPrice = parseInt((data.itemPrice || 0).toString().replace(/\D/g, ''));
+        const priceStr = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
+        
+        let paymentInfo = '';
+        if (data.status === 'PENDING') {
+          paymentInfo = `<div style="margin-top:15px;"><a href="/verify.html?id=${txId}" style="display:block; text-align:center; background:#10b981; color:white; padding:12px; border-radius:10px; font-weight:700; text-decoration:none;">Selesaikan Pembayaran</a></div>`;
+        }
+        
+        body.innerHTML = `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:10px 15px; border-radius:10px;">
+            <strong style="color:#0f172a;">${data.transactionId}</strong>
+            <span style="font-size:0.75rem; font-weight:700; color:${statusColor}; background:${statusBg}; padding:3px 10px; border-radius:20px;">${data.status}</span>
+          </div>
+          <div style="padding: 10px 5px;">
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="color:#64748b;">Layanan</span>
+              <strong style="color:#0f172a; text-align:right;">${data.itemName}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="color:#64748b;">Nama Pemesan</span>
+              <strong style="color:#0f172a; text-align:right;">${data.customerName}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="color:#64748b;">No. HP/WA</span>
+              <strong style="color:#0f172a; text-align:right;">${data.phone}</strong>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="color:#64748b;">Email</span>
+              <strong style="color:#0f172a; text-align:right; word-break:break-all;">${data.customerEmail}</strong>
+            </div>
+            ${data.startDate ? `
+            <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
+              <span style="color:#64748b;">Tgl Pelaksanaan</span>
+              <strong style="color:#0f172a; text-align:right;">${new Date(data.startDate).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'})}</strong>
+            </div>` : ''}
+            <div style="border-top:1px dashed #e2e8f0; margin:15px 0;"></div>
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="color:#64748b;">Total Pembayaran</span>
+              <strong style="color:#3b82f6; font-size:1.2rem;">${priceStr}</strong>
+            </div>
+          </div>
+          ${paymentInfo}
+        `;
+      } catch (err) {
+        body.innerHTML = `<div style="text-align:center; padding:30px;"><i class="fa-solid fa-triangle-exclamation" style="font-size:2rem; color:#ef4444;"></i><p style="margin-top:10px; color:#ef4444;">Gagal memuat detail transaksi.</p></div>`;
+      }
+    }
+
+    function closeTxModal() {
+      const modal = document.getElementById('tx-modal');
+      const content = document.getElementById('tx-modal-content');
+      content.classList.remove('show');
+      setTimeout(() => modal.style.display = 'none', 300);
     }
 
     // Avatar Selection Logic
@@ -875,7 +969,7 @@
             </div>
             <div style="display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:12px; border-top:1px dashed #f1f5f9;">
               <strong style="color:#3b82f6; font-size:1rem;">${price}</strong>
-              <a href="/riwayat.html" style="font-size:0.82rem; color:#0ea5e9; font-weight:600; background:#f0f9ff; padding:5px 12px; border-radius:20px; text-decoration:none;">
+              <a href="#" onclick="openTransactionModal('${item.transactionId}'); return false;" style="font-size:0.82rem; color:#0ea5e9; font-weight:600; background:#f0f9ff; padding:5px 12px; border-radius:20px; text-decoration:none;">
                 Lihat Detail <i class="fa-solid fa-arrow-right" style="font-size:0.8em;"></i>
               </a>
             </div>
