@@ -652,9 +652,12 @@
         notifList.innerHTML = items.slice(0, 4).map(item => `
           <a href="/riwayat.html" class="notif-item ${item.cls}">
             <div class="notif-icon ${item.iconCls}"><i class="fa-solid ${item.icon}"></i></div>
-            <div class="notif-text">
-              <strong>${item.label}</strong>
-              <span>${item.sub}</span>
+            <div class="notif-text" style="flex:1;">
+              <strong style="display:flex; align-items:center; gap:8px;">
+                ${item.label}
+                ${item.type === 'pending' ? '<span style="background:#ef4444; color:white; font-size:0.6rem; padding:2px 8px; border-radius:12px; font-weight:700; box-shadow:0 0 10px rgba(239,68,68,0.5);">AKSI DIPERLUKAN</span>' : ''}
+              </strong>
+              <span style="${item.type === 'pending' ? 'color:#ef4444; font-weight:600;' : ''}">${item.sub}</span>
             </div>
             <i class="fa-solid fa-chevron-right notif-arrow"></i>
           </a>
