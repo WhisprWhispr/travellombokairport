@@ -875,6 +875,26 @@
     }
 
     // Inline/Native View Logic
+    function closeInlineView() {
+      // Remove active class from all menu items
+      document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
+      // Add active class to 'Dasbor Akun' button
+      const berandaBtn = document.getElementById('menu-beranda');
+      if (berandaBtn) berandaBtn.classList.add('active');
+
+      // Hide all native views
+      document.querySelectorAll('.native-view-content').forEach(view => view.classList.remove('active'));
+      
+      // Show default dashboard view
+      const defaultView = document.getElementById('default-view');
+      if (defaultView) defaultView.style.display = 'block';
+
+      // Scroll ke atas di HP agar user melihat konten yang baru dimuat
+      if (window.innerWidth <= 768) {
+         document.querySelector('.dashboard-content').scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
     function loadInlineView(urlOrView, btnElement, title) {
       // Remove active class from all menu items
       document.querySelectorAll('.menu-item').forEach(btn => btn.classList.remove('active'));
