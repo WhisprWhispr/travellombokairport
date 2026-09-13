@@ -518,7 +518,7 @@
 
   <!-- Modal Detail Transaksi -->
   <div class="avatar-modal-overlay" id="tx-modal">
-    <div class="avatar-modal" id="tx-modal-content" style="max-width: 500px; padding: 25px;">
+    <div class="avatar-modal" id="tx-modal-content" style="max-width: 500px; padding: 25px; max-height: 85vh; overflow-y: auto; overflow-x: hidden;">
       <div class="modal-header" style="border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px; margin-bottom: 15px;">
         <h3 style="color:#0f172a;"><i class="fa-solid fa-receipt" style="color:#3b82f6;"></i> Detail Transaksi</h3>
         <button class="close-modal" onclick="closeTxModal()"><i class="fa-solid fa-xmark"></i></button>
@@ -752,20 +752,25 @@
             
             if (method === 'qris' && data.rawQrisString) {
                 paymentInfo = `
-                  <div style="margin-top:15px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #cbd5e1; text-align:center;">
-                    <h4 style="margin:0 0 10px; color:#0f172a;"><img src="https://qris.id/homepage/images/qris.png" height="24" style="vertical-align:middle; margin-right:8px;"> Scan untuk Membayar</h4>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(data.rawQrisString)}" style="width:200px; height:200px; border-radius:10px; padding:10px; background:white; border:1px solid #e2e8f0; display:inline-block;">
-                    <div style="margin-top:15px; font-size:0.85rem; color:#64748b;">Scan QR code di atas menggunakan aplikasi mobile banking atau e-wallet (Gopay, OVO, Dana, dll).</div>
+                  <div style="margin-top:20px; background:linear-gradient(to bottom, #ffffff, #f8fafc); padding:25px; border-radius:16px; border:1px solid #e2e8f0; text-align:center; box-shadow:0 10px 25px -5px rgba(0,0,0,0.05);">
+                    <div style="display:inline-block; background:#ef4444; color:white; font-weight:800; padding:4px 12px; border-radius:20px; font-size:0.85rem; margin-bottom:15px; letter-spacing:1px;">QRIS</div>
+                    <h4 style="margin:0 0 15px; color:#0f172a; font-size:1.1rem; font-weight:700;">Scan untuk Membayar</h4>
+                    <div style="background:white; padding:15px; border-radius:16px; display:inline-block; border:2px dashed #cbd5e1; box-shadow:0 4px 6px -1px rgba(0,0,0,0.05);">
+                      <img src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(data.rawQrisString)}" style="width:200px; height:200px; display:block;">
+                    </div>
+                    <div style="margin-top:20px; font-size:0.85rem; color:#64748b; line-height:1.5;">Scan QR code di atas menggunakan aplikasi <b style="color:#334155;">Mobile Banking</b> atau <b style="color:#334155;">E-Wallet</b> (Gopay, OVO, Dana, dll) Anda.</div>
                   </div>
                 `;
             } else if (method === 'va' && data.vaNumber) {
                 const bankIcon = data.vaBank === 'BCA' ? '/bca.svg' : (data.vaBank === 'BRI' ? '/bri.svg' : (data.vaBank === 'MANDIRI' ? '/mandiri.svg' : ''));
-                const iconHtml = bankIcon ? `<img src="${bankIcon}" height="24">` : `<b>${data.vaBank || 'Virtual Account'}</b>`;
+                const iconHtml = bankIcon ? `<img src="${bankIcon}" height="24">` : `<div style="background:#0f172a; color:white; padding:4px 10px; border-radius:6px; font-size:0.8rem; font-weight:bold;">${data.vaBank || 'VA'}</div>`;
                 paymentInfo = `
-                  <div style="margin-top:15px; background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #cbd5e1; text-align:center;">
-                    <div style="margin-bottom:10px; display:flex; justify-content:center; align-items:center; gap:8px;">${iconHtml} Virtual Account</div>
-                    <div style="font-size:1.4rem; font-weight:800; color:#1e293b; letter-spacing:2px; user-select:all; margin-bottom:15px;">${data.vaNumber}</div>
-                    <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); alert('Berhasil disalin');" style="background:#3b82f6; color:white; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;"><i class="fa-regular fa-copy"></i> Salin Nomor VA</button>
+                  <div style="margin-top:20px; background:linear-gradient(to right, #f8fafc, #f1f5f9); padding:25px; border-radius:16px; border:1px solid #cbd5e1; text-align:center; box-shadow:inset 0 2px 4px rgba(0,0,0,0.02);">
+                    <div style="margin-bottom:15px; display:flex; justify-content:center; align-items:center; gap:10px; font-weight:600; color:#475569; font-size:0.9rem;">
+                      ${iconHtml} Virtual Account
+                    </div>
+                    <div style="font-family:'Courier New', Courier, monospace; font-size:1.6rem; font-weight:900; color:#1e293b; letter-spacing:3px; user-select:all; margin-bottom:20px; background:white; padding:15px; border-radius:12px; border:1px dashed #94a3b8;">${data.vaNumber}</div>
+                    <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); alert('Nomor Virtual Account berhasil disalin!');" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; width:100%; box-shadow:0 4px 12px rgba(37, 99, 235, 0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy"></i> Salin Nomor VA</button>
                   </div>
                 `;
             } else {
