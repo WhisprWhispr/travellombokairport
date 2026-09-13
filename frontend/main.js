@@ -2922,16 +2922,25 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                     ${(() => {
                         const isQrisMaint = window.globalSettings && window.globalSettings.qrisMaintenanceMode;
                         const isVaMaint = window.globalSettings && window.globalSettings.vaMaintenanceMode;
-                        let qrisOpt = isQrisMaint ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option>' : '<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option>';
-                        let vaOpt = isVaMaint ? '<option value="va" disabled>Virtual Account (Sedang Pemeliharaan)</option>' : '<option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option>';
-                        let manualOpt = `<option value="manual" ${(isQrisMaint && isVaMaint) ? 'selected' : ''}>Transfer Manual (Verifikasi WA)</option>`;
+                        const isManualMaint = window.globalSettings && window.globalSettings.manualMaintenanceMode;
+                        const defaultOpt = !isQrisMaint ? 'qris' : (!isVaMaint ? 'va' : (!isManualMaint ? 'manual' : 'none'));
+                        
+                        let qrisOpt = isQrisMaint ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option>' : `<option value="qris" ${defaultOpt === 'qris' ? 'selected' : ''}>QRIS Otomatis (Verifikasi Instan) — 1 Jam</option>`;
+                        let vaOpt = isVaMaint ? '<option value="va" disabled>Virtual Account (Sedang Pemeliharaan)</option>' : `<option value="va" ${defaultOpt === 'va' ? 'selected' : ''}>Virtual Account (Verifikasi Otomatis) — 24 Jam</option>`;
+                        let manualOpt = isManualMaint ? '' : `<option value="manual" ${defaultOpt === 'manual' ? 'selected' : ''}>Transfer Manual (Verifikasi WA)</option>`;
                         return qrisOpt + vaOpt + manualOpt;
                     })()}
                 </select>
             </div>
 
             <!-- VA Bank Selector (hanya muncul saat pilih Virtual Account) -->
-            <div id="va-bank-selector" style="display:none; background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bae6fd;">
+            <div id="va-bank-selector" style="display: ${(() => {
+                const isQrisMaint = window.globalSettings && window.globalSettings.qrisMaintenanceMode;
+                const isVaMaint = window.globalSettings && window.globalSettings.vaMaintenanceMode;
+                const isManualMaint = window.globalSettings && window.globalSettings.manualMaintenanceMode;
+                const defaultOpt = !isQrisMaint ? 'qris' : (!isVaMaint ? 'va' : (!isManualMaint ? 'manual' : 'none'));
+                return defaultOpt === 'va' ? 'block' : 'none';
+            })()}; background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bae6fd;">
                 <p style="font-size: 0.85rem; color: #0369a1; margin-bottom: 10px; font-weight: 600;"><i class="fa-solid fa-building-columns"></i> Pilih Bank Virtual Account:</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                     ${['BNI','BRI','MANDIRI','PERMATA','BCA'].map(bank => `
@@ -2943,7 +2952,13 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <p style="font-size: 0.78rem; color: #64748b; margin-top: 8px;"><i class="fa-solid fa-clock"></i> Batas waktu pembayaran: <strong>24 jam</strong></p>
             </div>
 
-            <div id="bank-details" style="display: ${window.globalSettings && window.globalSettings.qrisMaintenanceMode ? 'block' : 'none'}; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
+            <div id="bank-details" style="display: ${(() => {
+                const isQrisMaint = window.globalSettings && window.globalSettings.qrisMaintenanceMode;
+                const isVaMaint = window.globalSettings && window.globalSettings.vaMaintenanceMode;
+                const isManualMaint = window.globalSettings && window.globalSettings.manualMaintenanceMode;
+                const defaultOpt = !isQrisMaint ? 'qris' : (!isVaMaint ? 'va' : (!isManualMaint ? 'manual' : 'none'));
+                return defaultOpt === 'manual' ? 'block' : 'none';
+            })()}; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Silakan transfer ke salah satu rekening berikut:</p>
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
                     <img src="/mandiri.svg" style="height: 25px; object-fit: contain;" alt="Mandiri">

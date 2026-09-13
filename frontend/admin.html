@@ -352,6 +352,17 @@
               <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran Virtual Account. Sistem akan memberitahu mereka bahwa pembayaran Virtual Account sedang dalam perbaikan.</p>
             </div>
 
+            <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0;">
+              <label style="display: flex; align-items: center; justify-content: space-between; font-weight: 700; color: var(--primary-blue); font-size: 1.1rem;">
+                Pemeliharaan Transfer Manual WA
+                <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
+                  <input type="checkbox" id="setting-manual-maintenance" onchange="window.saveGlobalSettings()" style="opacity: 0; width: 0; height: 0;">
+                  <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 34px;"></span>
+                </label>
+              </label>
+              <p style="font-size: 0.85rem; color: #f59e0b; margin-top: 5px;">Jika aktif, pengunjung tidak dapat memilih metode pembayaran Transfer Manual WA (disembunyikan dari pilihan pembayaran).</p>
+            </div>
+
             <!-- EVENT MODE SECTION -->
             <div class="form-group mb-4 pb-4" style="border-bottom: 1px solid #e2e8f0; background: linear-gradient(135deg, #fff7ed, #fef3c7); border-radius: 12px; padding: 20px; border: 2px solid #f59e0b;">
               <div style="display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 12px; gap: 15px;">

@@ -1167,12 +1167,12 @@
                     else if(this.value==='va') { d.style.display='none'; va.style.display='block'; }
                     else { d.style.display='none'; va.style.display='none'; }
                 ">
-                    ${(()=>{let e=window.globalSettings&&window.globalSettings.qrisMaintenanceMode,t=window.globalSettings&&window.globalSettings.vaMaintenanceMode,n=e?`<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option>`:`<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option>`,r=t?`<option value="va" disabled>Virtual Account (Sedang Pemeliharaan)</option>`:`<option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option>`,i=`<option value="manual" ${e&&t?`selected`:``}>Transfer Manual (Verifikasi WA)</option>`;return n+r+i})()}
+                    ${(()=>{let e=window.globalSettings&&window.globalSettings.qrisMaintenanceMode,t=window.globalSettings&&window.globalSettings.vaMaintenanceMode,n=window.globalSettings&&window.globalSettings.manualMaintenanceMode,r=e?t?n?`none`:`manual`:`va`:`qris`,i=e?`<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option>`:`<option value="qris" ${r===`qris`?`selected`:``}>QRIS Otomatis (Verifikasi Instan) — 1 Jam</option>`,a=t?`<option value="va" disabled>Virtual Account (Sedang Pemeliharaan)</option>`:`<option value="va" ${r===`va`?`selected`:``}>Virtual Account (Verifikasi Otomatis) — 24 Jam</option>`,o=n?``:`<option value="manual" ${r===`manual`?`selected`:``}>Transfer Manual (Verifikasi WA)</option>`;return i+a+o})()}
                 </select>
             </div>
 
             <!-- VA Bank Selector (hanya muncul saat pilih Virtual Account) -->
-            <div id="va-bank-selector" style="display:none; background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bae6fd;">
+            <div id="va-bank-selector" style="display: ${(()=>{let e=window.globalSettings&&window.globalSettings.qrisMaintenanceMode,t=window.globalSettings&&window.globalSettings.vaMaintenanceMode,n=window.globalSettings&&window.globalSettings.manualMaintenanceMode;return(e?t?n?`none`:`manual`:`va`:`qris`)==`va`?`block`:`none`})()}; background: #f0f9ff; padding: 15px; border-radius: 8px; margin-bottom: 16px; border: 1px solid #bae6fd;">
                 <p style="font-size: 0.85rem; color: #0369a1; margin-bottom: 10px; font-weight: 600;"><i class="fa-solid fa-building-columns"></i> Pilih Bank Virtual Account:</p>
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
                     ${[`BNI`,`BRI`,`MANDIRI`,`PERMATA`,`BCA`].map(e=>`
@@ -1184,7 +1184,7 @@
                 <p style="font-size: 0.78rem; color: #64748b; margin-top: 8px;"><i class="fa-solid fa-clock"></i> Batas waktu pembayaran: <strong>24 jam</strong></p>
             </div>
 
-            <div id="bank-details" style="display: ${window.globalSettings&&window.globalSettings.qrisMaintenanceMode?`block`:`none`}; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
+            <div id="bank-details" style="display: ${(()=>{let e=window.globalSettings&&window.globalSettings.qrisMaintenanceMode,t=window.globalSettings&&window.globalSettings.vaMaintenanceMode,n=window.globalSettings&&window.globalSettings.manualMaintenanceMode;return(e?t?n?`none`:`manual`:`va`:`qris`)==`manual`?`block`:`none`})()}; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 20px; border: 1px solid #cbd5e1;">
                 <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 10px;">Silakan transfer ke salah satu rekening berikut:</p>
                 <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px; background: white; padding: 10px; border-radius: 8px; border: 1px solid #e2e8f0;">
                     <img src="/mandiri.svg" style="height: 25px; object-fit: contain;" alt="Mandiri">
