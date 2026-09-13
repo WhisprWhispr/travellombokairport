@@ -570,15 +570,25 @@
       const token = localStorage.getItem('auth_token');
 
       try {
-        const res = await fetch(`${API_URL}/api/bookings/my`, {
+        const res = await fetch(`${API_URL}/api/bookings/my-history`, {
           headers: { 'Authorization': `Bearer ${token}` }
         });
 
         if (!res.ok) throw new Error('Gagal fetch');
         const data = await res.json();
 
-        // Gabungkan bookings + orders
-        const all = [...(data.bookings || []), ...(data.orders || [])];
+        // Data langsung berupa array
+        const all = data || [];
+        
+        all.forEach(item => {
+          if (item.status === 'PENDING') {
+            const created = item.createdAt ? new Date(item.createdAt).getTime() : 0;
+            const elapsed = Date.now() - created;
+            const method = (item.paymentMethod || '').toLowerCase();
+            if (method === 'va' && created > 0 && elapsed > 24 * 60 * 60 * 1000) item.status = 'KADALUARSA';
+            else if (method !== 'va' && created > 0 && elapsed > 60 * 60 * 1000) item.status = 'KADALUARSA';
+          }
+        });
 
         // Filter yang perlu notifikasi (PENDING, atau baru PAID)
         const pending = all.filter(b => b.status === 'PENDING');
