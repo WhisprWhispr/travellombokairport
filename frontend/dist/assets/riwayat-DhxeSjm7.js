@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 40px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -1583,32 +1583,42 @@ Nomor Rekening: 1610017191425`,f=e?`Saya telah melakukan Booking via Website den
                     </div>
                 </div>
             </div>
-        `})},a.forEach(e=>{if(e.status===`PENDING`){let t=e.createdAt?new Date(e.createdAt).getTime():0,n=Date.now()-t;(e.paymentMethod||``).toLowerCase()===`va`?t>0&&n>864e5&&(e.status=`KADALUARSA`):t>0&&n>36e5&&(e.status=`KADALUARSA`)}let t=e.status===`PAID`,n=t?`#10b981`:e.status===`PENDING`?`#f59e0b`:`#ef4444`,r=t?`rgba(16, 185, 129, 0.1)`:e.status===`PENDING`?`rgba(245, 158, 11, 0.1)`:`rgba(239, 68, 68, 0.1)`,i=e.type===`order`?`fa-box`:`fa-car`,a=parseInt((e.itemPrice||``).toString().replace(/\D/g,``)),s=!isNaN(a)&&a>0?`Rp `+a.toLocaleString(`id-ID`):`-`,c=e.createdAt?new Date(e.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`short`,year:`numeric`}):`-`,l=encodeURIComponent(JSON.stringify(e));o+=`
-                <div onclick="window.showTransactionDetail('${l}')" style="background:white; border-radius:16px; padding:16px; border:1px solid #e2e8f0; position:relative; box-shadow:0 4px 10px rgba(0,0,0,0.02); cursor:pointer; transition: transform 0.2s, box-shadow 0.2s;" onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 12px 25px rgba(0,0,0,0.06)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.02)';">
-                    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding-bottom:12px; border-bottom:1px dashed #e2e8f0;">
-                        <span style="font-size:0.75rem; color:#64748b; font-weight:600; font-family:monospace; display:flex; align-items:center; gap:6px;">
-                            <i class="fa-solid fa-hashtag" style="opacity:0.6;"></i>${e.transactionId}
-                            <button onclick="window.copyTxId(this, '${e.transactionId}', event)" style="background:var(--primary-blue); color:white; border:none; border-radius:4px; width:20px; height:20px; display:flex; align-items:center; justify-content:center; cursor:pointer;" title="Salin ID"><i class="fa-regular fa-copy" style="font-size:0.65rem;"></i></button>
-                        </span>
-                        <span style="font-size:0.75rem; font-weight:700; color:${n}; background:${r}; padding:4px 10px; border-radius:12px; letter-spacing:0.5px;">
+        `})},a.forEach(e=>{if(e.status===`PENDING`){let t=e.createdAt?new Date(e.createdAt).getTime():0,n=Date.now()-t;(e.paymentMethod||``).toLowerCase()===`va`?t>0&&n>864e5&&(e.status=`KADALUARSA`):t>0&&n>36e5&&(e.status=`KADALUARSA`)}let t=e.status===`PAID`,n=t?`#10b981`:e.status===`PENDING`?`#f59e0b`:`#ef4444`,r=t?`rgba(16, 185, 129, 0.1)`:e.status===`PENDING`?`rgba(245, 158, 11, 0.1)`:`rgba(239, 68, 68, 0.1)`,i=`fa-file-invoice-dollar`,a=(e.itemName||``).toLowerCase();a.includes(`trip`)||a.includes(`tour`)||a.includes(`paket`)?i=`fa-map-location-dot`:a.includes(`motor`)||a.includes(`vario`)||a.includes(`nmax`)||a.includes(`pcx`)||a.includes(`beat`)?i=`fa-motorcycle`:a.includes(`mobil`)||a.includes(`avanza`)||a.includes(`innova`)||a.includes(`brio`)||a.includes(`hiace`)||a.includes(`fortuner`)?i=`fa-car`:a.includes(`website`)||a.includes(`jasa`)?i=`fa-laptop-code`:a.includes(`drone`)||a.includes(`kamera`)||a.includes(`gopro`)?i=`fa-camera`:e.type===`order`&&(i=`fa-box`);let s=parseInt((e.itemPrice||``).toString().replace(/\D/g,``)),c=!isNaN(s)&&s>0?`Rp `+s.toLocaleString(`id-ID`):`-`,l=e.createdAt?new Date(e.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`short`,year:`numeric`}):`-`,u=encodeURIComponent(JSON.stringify(e));o+=`
+                <div onclick="window.showTransactionDetail('${u}')" style="background: white; border-radius: 20px; padding: 20px; border: 1px solid #f1f5f9; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.03); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)'; this.style.borderColor='#e2e8f0';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.03)'; this.style.borderColor='#f1f5f9';">
+                    
+                    <!-- Header: ID & Status -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
+                        <div style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 10px; border: 1px solid #f1f5f9;">
+                            <i class="fa-solid fa-receipt" style="color: #94a3b8; font-size: 0.8rem;"></i>
+                            <span style="font-size: 0.75rem; color: #475569; font-weight: 700; font-family: monospace; letter-spacing: 0.5px;">${e.transactionId}</span>
+                            <button onclick="window.copyTxId(this, '${e.transactionId}', event)" style="background: white; color: var(--primary-blue); border: 1px solid #e2e8f0; border-radius: 6px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Salin ID" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='var(--primary-blue)';"><i class="fa-regular fa-copy" style="font-size: 0.65rem;"></i></button>
+                        </div>
+                        <span style="font-size: 0.7rem; font-weight: 800; color: ${n}; background: ${r}; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;">
                             ${e.status}
                         </span>
                     </div>
-                    <div style="display:flex; gap:12px; margin-bottom:12px;">
-                        <div style="width:45px; height:45px; border-radius:12px; background:#f8fafc; border:1px solid #f1f5f9; color:var(--primary-blue); display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:1.2rem;">
+
+                    <!-- Body: Icon & Title -->
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; flex: 1;">
+                        <div style="width: 55px; height: 55px; border-radius: 14px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.4rem; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 4px 10px rgba(14, 165, 233, 0.1);">
                             <i class="fa-solid ${i}"></i>
                         </div>
-                        <div style="flex:1;">
-                            <h4 style="margin:0 0 5px; font-size:1rem; color:#1e293b; font-weight:700; line-height:1.3;">${e.itemName}</h4>
-                            <div style="font-size:0.8rem; color:#64748b; display:flex; align-items:center; gap:6px;">
-                                <i class="fa-regular fa-calendar" style="font-size:0.9em; color:#94a3b8;"></i> Dipesan: ${c}
+                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
+                            <h4 style="margin: 0 0 6px; font-size: 1.05rem; color: #0f172a; font-weight: 800; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${e.itemName}</h4>
+                            <div style="font-size: 0.8rem; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 500;">
+                                <i class="fa-regular fa-calendar-days" style="color: #94a3b8;"></i> Dipesan: ${l}
                             </div>
                         </div>
                     </div>
-                    <div style="display:flex; align-items:center; margin-top:12px; padding-top:12px; border-top:1px dashed #f1f5f9;">
-                        <div style="font-weight:800; color:var(--primary-blue); font-size:1.05rem;">${s}</div>
-                        <div style="margin-left:auto; font-size:0.85rem; color:#0ea5e9; font-weight:600; background:#f0f9ff; padding:6px 12px; border-radius:20px;">
-                            Lihat Detail <i class="fa-solid fa-arrow-right" style="margin-left:4px; font-size:0.85em;"></i>
+
+                    <!-- Footer: Price & Action -->
+                    <div style="display: flex; align-items: center; justify-content: space-between; padding-top: 16px; border-top: 1px dashed #e2e8f0;">
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-bottom: 2px;">Total Harga</span>
+                            <span style="font-weight: 900; color: var(--primary-green); font-size: 1.2rem; letter-spacing: -0.5px;">${c}</span>
+                        </div>
+                        <div style="background: var(--primary-blue); color: white; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.2); transition: all 0.2s;" onmouseover="this.style.background='#0284c7'; this.style.boxShadow='0 6px 15px rgba(14, 165, 233, 0.3)';" onmouseout="this.style.background='var(--primary-blue)'; this.style.boxShadow='0 4px 10px rgba(14, 165, 233, 0.2)';">
+                            Lihat Detail <i class="fa-solid fa-arrow-right" style="font-size: 0.9em;"></i>
                         </div>
                     </div>
                 </div>
