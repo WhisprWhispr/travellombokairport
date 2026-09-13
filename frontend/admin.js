@@ -2153,6 +2153,7 @@ window.fetchGlobalSettings = async () => {
             const maintenanceToggle = document.getElementById('setting-maintenance-mode');
             const aiMaintenanceToggle = document.getElementById('setting-ai-maintenance');
             const qrisMaintenanceToggle = document.getElementById('setting-qris-maintenance');
+            const vaMaintenanceToggle = document.getElementById('setting-va-maintenance');
             
             if (droneStatus && data.droneAvailable) {
                 droneStatus.value = data.droneAvailable;
@@ -2196,6 +2197,9 @@ window.fetchGlobalSettings = async () => {
             }
             if (qrisMaintenanceToggle) {
                 qrisMaintenanceToggle.checked = data.qrisMaintenanceMode === true;
+            }
+            if (vaMaintenanceToggle) {
+                vaMaintenanceToggle.checked = data.vaMaintenanceMode === true;
             }
 
             // ====== EVENT MODE ======
@@ -2444,6 +2448,7 @@ window.saveGlobalSettings = async () => {
     const maintenanceMode = document.getElementById('setting-maintenance-mode') ? document.getElementById('setting-maintenance-mode').checked : false;
     const aiMaintenanceMode = document.getElementById('setting-ai-maintenance') ? document.getElementById('setting-ai-maintenance').checked : false;
     const qrisMaintenanceMode = document.getElementById('setting-qris-maintenance') ? document.getElementById('setting-qris-maintenance').checked : false;
+    const vaMaintenanceMode = document.getElementById('setting-va-maintenance') ? document.getElementById('setting-va-maintenance').checked : false;
 
     // ====== EVENT MODE ======
     const eventModeEl = document.getElementById('setting-event-mode');
@@ -2500,6 +2505,7 @@ window.saveGlobalSettings = async () => {
                 maintenanceMode: maintenanceMode,
                 aiMaintenanceMode: aiMaintenanceMode,
                 qrisMaintenanceMode: qrisMaintenanceMode,
+                vaMaintenanceMode: vaMaintenanceMode,
                 eventMode: eventMode,
                 eventName: eventName,
                 eventPriceIncrease: eventPriceIncrease,

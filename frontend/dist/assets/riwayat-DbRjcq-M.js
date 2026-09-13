@@ -1167,7 +1167,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                     else if(this.value==='va') { d.style.display='none'; va.style.display='block'; }
                     else { d.style.display='none'; va.style.display='none'; }
                 ">
-                    ${window.globalSettings&&window.globalSettings.qrisMaintenanceMode?`<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option><option value="va">Virtual Account (Verifikasi Otomatis)</option><option value="manual" selected>Transfer Manual (Verifikasi WA)</option>`:`<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option><option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option><option value="manual">Transfer Manual (Verifikasi WA)</option>`}
+                    ${(()=>{let e=window.globalSettings&&window.globalSettings.qrisMaintenanceMode,t=window.globalSettings&&window.globalSettings.vaMaintenanceMode,n=e?`<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option>`:`<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option>`,r=t?`<option value="va" disabled>Virtual Account (Sedang Pemeliharaan)</option>`:`<option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option>`,i=`<option value="manual" ${e&&t?`selected`:``}>Transfer Manual (Verifikasi WA)</option>`;return n+r+i})()}
                 </select>
             </div>
 

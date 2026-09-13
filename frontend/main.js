@@ -2919,9 +2919,14 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                     else if(this.value==='va') { d.style.display='none'; va.style.display='block'; }
                     else { d.style.display='none'; va.style.display='none'; }
                 ">
-                    ${window.globalSettings && window.globalSettings.qrisMaintenanceMode 
-                        ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option><option value="va">Virtual Account (Verifikasi Otomatis)</option><option value="manual" selected>Transfer Manual (Verifikasi WA)</option>'
-                        : '<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option><option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option><option value="manual">Transfer Manual (Verifikasi WA)</option>'}
+                    ${(() => {
+                        const isQrisMaint = window.globalSettings && window.globalSettings.qrisMaintenanceMode;
+                        const isVaMaint = window.globalSettings && window.globalSettings.vaMaintenanceMode;
+                        let qrisOpt = isQrisMaint ? '<option value="qris" disabled>QRIS Otomatis (Sedang Pemeliharaan)</option>' : '<option value="qris">QRIS Otomatis (Verifikasi Instan) — 1 Jam</option>';
+                        let vaOpt = isVaMaint ? '<option value="va" disabled>Virtual Account (Sedang Pemeliharaan)</option>' : '<option value="va">Virtual Account (Verifikasi Otomatis) — 24 Jam</option>';
+                        let manualOpt = `<option value="manual" ${(isQrisMaint && isVaMaint) ? 'selected' : ''}>Transfer Manual (Verifikasi WA)</option>`;
+                        return qrisOpt + vaOpt + manualOpt;
+                    })()}
                 </select>
             </div>
 
