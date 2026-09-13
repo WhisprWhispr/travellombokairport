@@ -56,6 +56,10 @@
       z-index: 1;
       position: relative;
       text-align: center;
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .profile-card.expanded {
+      max-width: 900px;
     }
     .back-link {
       display: inline-flex;
@@ -435,8 +439,60 @@
       color: #64748b;
       font-weight: 500;
     }
-    #file-input {
+    .quick-btn.active {
+      background: #e0f2fe;
+      border-color: #3b82f6;
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    }
+    .quick-btn.active i {
+      transform: scale(1.1);
+    }
+    
+    /* Inline View Container */
+    .inline-view-container {
       display: none;
+      width: 100%;
+      border-top: 1px dashed #cbd5e1;
+      margin-top: 20px;
+      padding-top: 20px;
+      animation: fadeInDown 0.4s ease forwards;
+    }
+    .inline-view-container.active {
+      display: block;
+    }
+    .inline-view-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .inline-view-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .close-inline-btn {
+      background: none;
+      border: none;
+      color: #94a3b8;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .close-inline-btn:hover { color: #ef4444; }
+    
+    #inline-frame {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      min-height: 400px;
+      background: transparent;
+      transition: height 0.3s ease;
+    }
+
+    @keyframes fadeInDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
@@ -464,18 +520,27 @@
 
     <!-- Quick Actions -->
     <div class="quick-actions">
-      <a href="/riwayat.html" class="quick-btn">
+      <button onclick="loadInlineView('/riwayat.html', this, 'Riwayat Booking')" class="quick-btn">
         <i class="fa-solid fa-clock-rotate-left" style="color: #3b82f6;"></i>
         <span>Riwayat Booking</span>
-      </a>
-      <a href="/wishlist.html" class="quick-btn">
+      </button>
+      <button onclick="loadInlineView('/wishlist.html', this, 'Wishlist Anda')" class="quick-btn">
         <i class="fa-solid fa-heart" style="color: #ef4444;"></i>
         <span>Wishlist</span>
-      </a>
-      <a href="/jadwal-sholat.html" class="quick-btn">
+      </button>
+      <button onclick="loadInlineView('/jadwal-sholat.html', this, 'Jadwal Sholat')" class="quick-btn">
         <i class="fa-solid fa-mosque" style="color: #059669;"></i>
         <span>Jadwal Sholat</span>
-      </a>
+      </button>
+    </div>
+
+    <!-- Container Inline View -->
+    <div class="inline-view-container" id="inline-container">
+      <div class="inline-view-header">
+        <span class="inline-view-title" id="inline-title">Tampilan</span>
+        <button class="close-inline-btn" onclick="closeInlineView()"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <iframe id="inline-frame" src="about:blank"></iframe>
     </div>
 
     <!-- Notifikasi Booking -->
@@ -788,6 +853,72 @@
         console.error(error);
         Swal.fire('Gagal', error.message, 'error');
       }
+    }
+
+    // Inline View Logic
+    function loadInlineView(url, btnElement, title) {
+      // Remove active class from all buttons
+      document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
+      // Add active class to clicked button
+      btnElement.classList.add('active');
+
+      const container = document.getElementById('inline-container');
+      const frame = document.getElementById('inline-frame');
+      const card = document.querySelector('.profile-card');
+      const notifSection = document.querySelector('.notif-section');
+
+      // Expand card & show container
+      card.classList.add('expanded');
+      container.classList.add('active');
+      if(notifSection) notifSection.style.display = 'none';
+
+      document.getElementById('inline-title').textContent = title;
+
+      // Load URL with ?inline=1
+      frame.src = url + '?inline=1';
+
+      // Adjust height automatically when iframe loads
+      frame.onload = () => {
+        try {
+          const doc = frame.contentDocument || frame.contentWindow.document;
+          
+          // Remove internal scrolling from the iframe body to get true scrollHeight
+          doc.body.style.overflow = 'hidden';
+          doc.documentElement.style.overflow = 'hidden';
+          
+          // Create a ResizeObserver to continuously track height changes
+          const resizeObserver = new ResizeObserver(entries => {
+            for (let entry of entries) {
+              const newHeight = entry.target.scrollHeight;
+              frame.style.height = (newHeight + 50) + 'px'; // add buffer
+            }
+          });
+          
+          resizeObserver.observe(doc.body);
+          
+          // Initial height set
+          const height = doc.documentElement.scrollHeight || doc.body.scrollHeight;
+          frame.style.height = (height + 50) + 'px';
+        } catch (e) {
+          // Fallback if cross-origin or errors out
+          frame.style.height = '600px';
+        }
+      };
+    }
+
+    function closeInlineView() {
+      // Remove active class
+      document.querySelectorAll('.quick-btn').forEach(btn => btn.classList.remove('active'));
+      
+      const container = document.getElementById('inline-container');
+      const card = document.querySelector('.profile-card');
+      const frame = document.getElementById('inline-frame');
+      const notifSection = document.querySelector('.notif-section');
+      
+      container.classList.remove('active');
+      card.classList.remove('expanded');
+      frame.src = 'about:blank';
+      if(notifSection) notifSection.style.display = 'block';
     }
   </script>
 </body>
