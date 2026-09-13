@@ -594,6 +594,9 @@
         // Data langsung berupa array
         const all = data || [];
         
+        // Simpan data transaksi secara global agar bisa diakses oleh modal
+        window.allTransactions = all;
+        
         all.forEach(item => {
           if (item.status === 'PENDING') {
             const created = item.createdAt ? new Date(item.createdAt).getTime() : 0;
@@ -726,25 +729,54 @@
       body.innerHTML = '<div style="text-align:center; padding:30px;"><i class="fa-solid fa-circle-notch fa-spin" style="font-size:2rem; color:#3b82f6;"></i><p style="margin-top:10px;">Memuat detail...</p></div>';
       
       try {
-        const res = await fetch(`${API_URL}/api/bookings/check/${txId}`);
-        if (!res.ok) throw new Error('Data tidak ditemukan');
-        const data = await res.json();
+        let data = null;
+        if (window.allTransactions) {
+           data = window.allTransactions.find(t => t.transactionId === txId || t.id === txId);
+        }
+        
+        if (!data) {
+            const res = await fetch(`${API_URL}/api/bookings/check/${txId}`);
+            if (!res.ok) throw new Error('Data tidak ditemukan');
+            data = await res.json();
+        }
         
         const isPaid = data.status === 'PAID';
         const statusColor = isPaid ? '#10b981' : (data.status === 'PENDING' ? '#f59e0b' : '#ef4444');
         const statusBg = isPaid ? 'rgba(16,185,129,0.1)' : (data.status === 'PENDING' ? 'rgba(245,158,11,0.1)' : 'rgba(239,68,68,0.1)');
-        const parsedPrice = parseInt((data.itemPrice || 0).toString().replace(/\D/g, ''));
+        const parsedPrice = parseInt((data.itemPrice || data.totalPrice || data.price || 0).toString().replace(/\D/g, ''));
         const priceStr = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
         
         let paymentInfo = '';
         if (data.status === 'PENDING') {
-          const waText = `Halo Admin, pesanan saya dengan ID: ${txId} (${data.itemName}) masih PENDING. Saya ingin melanjutkan pembayaran.`;
-          paymentInfo = `
-            <div style="margin-top:15px; background:#fffbeb; padding:12px; border-radius:10px; border:1px solid #fde68a; font-size:0.85rem; color:#b45309; text-align:center;">
-              <p style="margin:0 0 10px 0;">Kode pembayaran otomatis (QRIS/VA) hanya muncul satu kali saat pemesanan dibuat. Untuk melanjutkan atau mengonfirmasi pembayaran, silakan hubungi Admin.</p>
-              <a href="https://wa.me/6289676963255?text=${encodeURIComponent(waText)}" target="_blank" style="display:inline-flex; justify-content:center; align-items:center; gap:8px; background:#25D366; color:white; padding:10px 20px; border-radius:10px; font-weight:700; text-decoration:none;"><i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i> Hubungi Admin via WA</a>
-            </div>
-          `;
+            const method = (data.paymentMethod || '').toLowerCase();
+            
+            if (method === 'qris' && data.rawQrisString) {
+                paymentInfo = `
+                  <div style="margin-top:15px; background:#f8fafc; padding:20px; border-radius:12px; border:1px solid #cbd5e1; text-align:center;">
+                    <h4 style="margin:0 0 10px; color:#0f172a;"><img src="https://qris.id/homepage/images/qris.png" height="24" style="vertical-align:middle; margin-right:8px;"> Scan untuk Membayar</h4>
+                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(data.rawQrisString)}" style="width:200px; height:200px; border-radius:10px; padding:10px; background:white; border:1px solid #e2e8f0; display:inline-block;">
+                    <div style="margin-top:15px; font-size:0.85rem; color:#64748b;">Scan QR code di atas menggunakan aplikasi mobile banking atau e-wallet (Gopay, OVO, Dana, dll).</div>
+                  </div>
+                `;
+            } else if (method === 'va' && data.vaNumber) {
+                const bankIcon = data.vaBank === 'BCA' ? '/bca.svg' : (data.vaBank === 'BRI' ? '/bri.svg' : (data.vaBank === 'MANDIRI' ? '/mandiri.svg' : ''));
+                const iconHtml = bankIcon ? `<img src="${bankIcon}" height="24">` : `<b>${data.vaBank || 'Virtual Account'}</b>`;
+                paymentInfo = `
+                  <div style="margin-top:15px; background:#f8fafc; padding:15px; border-radius:12px; border:1px solid #cbd5e1; text-align:center;">
+                    <div style="margin-bottom:10px; display:flex; justify-content:center; align-items:center; gap:8px;">${iconHtml} Virtual Account</div>
+                    <div style="font-size:1.4rem; font-weight:800; color:#1e293b; letter-spacing:2px; user-select:all; margin-bottom:15px;">${data.vaNumber}</div>
+                    <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); alert('Berhasil disalin');" style="background:#3b82f6; color:white; border:none; padding:10px 15px; border-radius:8px; font-weight:bold; cursor:pointer; width:100%;"><i class="fa-regular fa-copy"></i> Salin Nomor VA</button>
+                  </div>
+                `;
+            } else {
+                const waText = `Halo Admin, pesanan saya dengan ID: ${txId} (${data.itemName}) masih PENDING. Saya ingin melanjutkan pembayaran.`;
+                paymentInfo = `
+                  <div style="margin-top:15px; background:#fffbeb; padding:12px; border-radius:10px; border:1px solid #fde68a; font-size:0.85rem; color:#b45309; text-align:center;">
+                    <p style="margin:0 0 10px 0;">Selesaikan pembayaran melalui konfirmasi manual dengan admin kami.</p>
+                    <a href="https://wa.me/6289676963255?text=${encodeURIComponent(waText)}" target="_blank" style="display:inline-flex; justify-content:center; align-items:center; gap:8px; background:#25D366; color:white; padding:10px 20px; border-radius:10px; font-weight:700; text-decoration:none; width:100%;"><i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i> Hubungi Admin via WA</a>
+                  </div>
+                `;
+            }
         }
         
         body.innerHTML = `
@@ -755,24 +787,24 @@
           <div style="padding: 10px 5px;">
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
               <span style="color:#64748b;">Layanan</span>
-              <strong style="color:#0f172a; text-align:right;">${data.itemName}</strong>
+              <strong style="color:#0f172a; text-align:right;">${data.itemName || data.serviceName || data.packageName || '-'}</strong>
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
               <span style="color:#64748b;">Nama Pemesan</span>
-              <strong style="color:#0f172a; text-align:right;">${data.customerName}</strong>
+              <strong style="color:#0f172a; text-align:right;">${data.customerName || '-'}</strong>
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
               <span style="color:#64748b;">No. HP/WA</span>
-              <strong style="color:#0f172a; text-align:right;">${data.phone}</strong>
+              <strong style="color:#0f172a; text-align:right;">${data.phone || data.wa || '-'}</strong>
             </div>
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
               <span style="color:#64748b;">Email</span>
-              <strong style="color:#0f172a; text-align:right; word-break:break-all;">${data.customerEmail}</strong>
+              <strong style="color:#0f172a; text-align:right; word-break:break-all;">${data.customerEmail || data.email || '-'}</strong>
             </div>
-            ${data.startDate ? `
+            ${data.startDate || data.travelDate ? `
             <div style="display:flex; justify-content:space-between; margin-bottom:8px;">
               <span style="color:#64748b;">Tgl Pelaksanaan</span>
-              <strong style="color:#0f172a; text-align:right;">${new Date(data.startDate).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'})}</strong>
+              <strong style="color:#0f172a; text-align:right;">${new Date(data.startDate || data.travelDate).toLocaleDateString('id-ID', {day:'numeric',month:'long',year:'numeric'})}</strong>
             </div>` : ''}
             <div style="border-top:1px dashed #e2e8f0; margin:15px 0;"></div>
             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -913,6 +945,9 @@
         } catch(parseErr) {
           throw new Error('Respons server tidak valid. Pastikan backend berjalan dengan benar.');
         }
+        
+        // Simpan global untuk modal
+        window.allTransactions = data;
 
         if (!res.ok) {
           if (res.status === 401 || res.status === 403) {
