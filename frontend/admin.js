@@ -1720,7 +1720,7 @@ window.fetchWithdrawals = async () => {
         let totalRevenue = 0;
         bookings.forEach(b => {
             if (b.status === 'PAID' || b.status === 'COMPLETED') {
-                totalRevenue += (b.price || 0);
+                totalRevenue += (Number(b.price) || Number(b.totalPrice) || Number(b.itemPrice) || 0);
             }
         });
         
