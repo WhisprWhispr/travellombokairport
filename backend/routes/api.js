@@ -56,6 +56,30 @@ router.get('/items', async (req, res) => {
     }
 });
 
+// GET balance (stored persistent, not recalculated from bookings)
+router.get('/balance', verifyToken, async (req, res) => {
+    try {
+        const doc = await db.collection('settings').doc('balance').get();
+        const totalRevenue = doc.exists ? (doc.data().totalRevenue || 0) : 0;
+        res.json({ totalRevenue });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// PUT balance - manually set totalRevenue (Main Admin only, for correction)
+router.put('/balance', verifyToken, async (req, res) => {
+    try {
+        const isMainAdmin = req.user && req.user.email === 'ridhosandhika18022022@gmail.com';
+        if (!isMainAdmin) return res.status(403).json({ error: 'Hanya Admin Pusat yang bisa mengubah balance' });
+        const { totalRevenue } = req.body;
+        await db.collection('settings').doc('balance').set({ totalRevenue: Number(totalRevenue) || 0 }, { merge: true });
+        res.json({ success: true, totalRevenue });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // GET settings
 router.get('/settings', async (req, res) => {
     try {

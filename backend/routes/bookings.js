@@ -117,6 +117,29 @@ router.get('/check/:transactionId', async (req, res) => {
     }
 });
 
+// Helper: update persistent balance when booking status changes
+async function updateBalanceOnStatusChange(bookingData, oldStatus, newStatus) {
+    try {
+        const paidStatuses = ['PAID', 'COMPLETED'];
+        const wasRevenue = paidStatuses.includes(oldStatus);
+        const isRevenue = paidStatuses.includes(newStatus);
+        if (wasRevenue === isRevenue) return; // no change needed
+
+        const amount = Number(bookingData.price) || Number(bookingData.totalPrice) || Number(bookingData.itemPrice) || 0;
+        if (amount === 0) return;
+
+        const delta = isRevenue ? amount : -amount;
+        const balanceRef = db.collection('settings').doc('balance');
+        await db.runTransaction(async (t) => {
+            const doc = await t.get(balanceRef);
+            const current = doc.exists ? (doc.data().totalRevenue || 0) : 0;
+            t.set(balanceRef, { totalRevenue: current + delta }, { merge: true });
+        });
+    } catch (e) {
+        console.error('Balance update error:', e);
+    }
+}
+
 // PUT update booking status by transactionId (for QRIS payment callback - no auth required)
 router.put('/by-txid/:transactionId/status', async (req, res) => {
     try {
@@ -126,8 +149,13 @@ router.put('/by-txid/:transactionId/status', async (req, res) => {
         const snapshot = await db.collection('bookings').where('transactionId', '==', transactionId).get();
         if (snapshot.empty) return res.status(404).json({ message: 'Booking not found' });
         const docId = snapshot.docs[0].id;
+        const oldData = snapshot.docs[0].data();
+        const oldStatus = oldData.status || 'PENDING';
         await db.collection('bookings').doc(docId).update({ status });
         
+        // Update persistent balance
+        await updateBalanceOnStatusChange(oldData, oldStatus, status);
+
         // Fetch full booking data to send email
         const updatedDoc = await db.collection('bookings').doc(docId).get();
         if (updatedDoc.exists) {
@@ -148,9 +176,17 @@ router.put('/:id/status', verifyToken, async (req, res) => {
         if (!status) {
             return res.status(400).json({ message: 'Status is required' });
         }
-        
+
+        // Get old status before updating
+        const oldDoc = await db.collection('bookings').doc(id).get();
+        const oldStatus = oldDoc.exists ? (oldDoc.data().status || 'PENDING') : 'PENDING';
+        const bookingData = oldDoc.exists ? oldDoc.data() : {};
+
         await db.collection('bookings').doc(id).update({ status });
         
+        // Update persistent balance
+        await updateBalanceOnStatusChange(bookingData, oldStatus, status);
+
         const updatedDoc = await db.collection('bookings').doc(id).get();
         if (updatedDoc.exists) {
             sendStatusChangeEmail({ id, ...updatedDoc.data() });

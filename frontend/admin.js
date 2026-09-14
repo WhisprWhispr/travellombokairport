@@ -1713,16 +1713,17 @@ window.fetchWithdrawals = async () => {
             document.getElementById('th-admin-aksi').style.display = 'none';
         }
         
-        // Fetch all bookings to calculate revenue
-        const bReq = await fetch(`${API_URL}/bookings`, { headers: getAuthHeaders() });
-        const bookings = await bReq.json();
-        
+        // Ambil totalRevenue dari balance tersimpan (PERMANEN, tidak terpengaruh hapus booking)
         let totalRevenue = 0;
-        bookings.forEach(b => {
-            if (b.status === 'PAID' || b.status === 'COMPLETED') {
-                totalRevenue += (Number(b.price) || Number(b.totalPrice) || Number(b.itemPrice) || 0);
+        try {
+            const bRes = await fetch(`${API_URL}/balance`, { headers: getAuthHeaders() });
+            if (bRes.ok) {
+                const bData = await bRes.json();
+                totalRevenue = bData.totalRevenue || 0;
             }
-        });
+        } catch (e) {
+            console.warn('Gagal ambil balance, gunakan fallback:', e);
+        }
         
         // Fetch withdrawals
         const wReq = await fetch(`${API_URL}/withdrawals`, { headers: getAuthHeaders() });
@@ -1737,7 +1738,8 @@ window.fetchWithdrawals = async () => {
             list.innerHTML = `<tr><td colspan="${colspan}" class="text-center">Belum ada riwayat penarikan.</td></tr>`;
         } else {
             withdrawals.forEach(w => {
-                if (w.status !== 'REJECTED') totalWithdrawn += (w.amount || 0) + (w.fee || 0);
+                // Hanya penarikan COMPLETED yang mengurangi saldo
+                if (w.status === 'COMPLETED') totalWithdrawn += (w.amount || 0) + (w.fee || 0);
                 
                 let statusBadge = '';
                 if (w.status === 'PENDING') statusBadge = '<span style="background: #f59e0b; color: white; padding: 3px 8px; border-radius: 4px; font-size: 0.8rem;">Pending</span>';
