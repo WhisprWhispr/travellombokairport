@@ -1262,6 +1262,7 @@ Salam hangat,
                         </td>
                         <td>
                             <strong>${b.itemName}</strong>
+                            ${(b.isDp === true || b.isDp === 'true') ? `<span style="background:#f59e0b; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:5px;">DP</span>` : ''}
                             ${b.details?.pickup ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Pickup:</b> ${b.details.pickup}</small>` : ''}
                             ${b.details?.dropoff ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Drop-off:</b> ${b.details.dropoff}</small>` : ''}
                             ${b.details?.flightNumber ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Flight:</b> ${b.details.flightNumber}</small>` : ''}
