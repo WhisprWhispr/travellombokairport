@@ -585,7 +585,18 @@
               <h2 style="margin: 0;">Penarikan Dana</h2>
               <p style="margin: 5px 0 0 0; color: var(--text-gray);">Minimal penarikan Rp 100.000 | Biaya Admin Rp 3.000 | Maksimal proses 7 hari</p>
             </div>
-            <div style="background: var(--primary-green); color: white; padding: 15px 25px; border-radius: 10px; text-align: center;">
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+            <div style="background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <span style="font-size: 0.9rem; color: #64748b;">Total Pemasukan (Paid)</span>
+              <h3 id="total-revenue-display" style="margin: 5px 0 0 0; font-size: 1.3rem; color: #3b82f6;">Rp 0</h3>
+            </div>
+            <div style="background: white; border: 1px solid #e2e8f0; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+              <span style="font-size: 0.9rem; color: #64748b;">Total Saldo Keluar</span>
+              <h3 id="total-withdrawn-display" style="margin: 5px 0 0 0; font-size: 1.3rem; color: #ef4444;">Rp 0</h3>
+            </div>
+            <div style="background: var(--primary-green); color: white; padding: 15px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);">
               <span style="font-size: 0.9rem; opacity: 0.9;">Total Saldo Aktif</span>
               <h3 id="total-balance-display" style="margin: 5px 0 0 0; font-size: 1.5rem;">Rp 0</h3>
             </div>

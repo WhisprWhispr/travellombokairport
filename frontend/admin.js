@@ -1767,7 +1767,15 @@ window.fetchWithdrawals = async () => {
         }
         
         currentBalance = totalRevenue - totalWithdrawn;
-        document.getElementById("total-balance-display").innerText = `Rp ${currentBalance.toLocaleString('id-ID')}`;
+        
+        const revEl = document.getElementById("total-revenue-display");
+        if (revEl) revEl.innerText = `Rp ${totalRevenue.toLocaleString('id-ID')}`;
+        
+        const drawnEl = document.getElementById("total-withdrawn-display");
+        if (drawnEl) drawnEl.innerText = `Rp ${totalWithdrawn.toLocaleString('id-ID')}`;
+        
+        const balEl = document.getElementById("total-balance-display");
+        if (balEl) balEl.innerText = `Rp ${currentBalance.toLocaleString('id-ID')}`;
         
     } catch (e) {
         console.error("Error fetching withdrawals:", e);
