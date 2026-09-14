@@ -57,6 +57,18 @@ apiRoutes.get('/items', async (c) => {
     }
 });
 
+// GET balance (stored persistent, not recalculated from bookings)
+apiRoutes.get('/balance', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const doc = await db.collection('settings').doc('balance').get();
+        const totalRevenue = doc.exists ? (doc.data().totalRevenue || 0) : 0;
+        return c.json({ totalRevenue });
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // GET settings (public)
 apiRoutes.get('/settings', async (c) => {
     try {

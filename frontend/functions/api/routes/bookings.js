@@ -356,6 +356,29 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
     }
 });
 
+// Helper: update persistent balance when booking status changes
+async function updateBalanceOnStatusChange(db, bookingData, oldStatus, newStatus) {
+    try {
+        const paidStatuses = ['PAID', 'COMPLETED'];
+        const wasRevenue = paidStatuses.includes(oldStatus);
+        const isRevenue = paidStatuses.includes(newStatus);
+        if (wasRevenue === isRevenue) return; // no change needed
+
+        const amount = Number(bookingData.price) || Number(bookingData.totalPrice) || Number(bookingData.itemPrice) || 0;
+        if (amount === 0) return;
+
+        const delta = isRevenue ? amount : -amount;
+        const balanceRef = db.collection('settings').doc('balance');
+        await db.runTransaction(async (t) => {
+            const doc = await t.get(balanceRef);
+            const current = doc.exists ? (doc.data().totalRevenue || 0) : 0;
+            t.set(balanceRef, { totalRevenue: current + delta }, { merge: true });
+        });
+    } catch (e) {
+        console.error('Balance update error:', e);
+    }
+}
+
 // PUT update booking status by transactionId (for QRIS payment callback - no auth required)
 bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
     try {
@@ -374,6 +397,11 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
         
         const docId = snapshot.docs[0].id;
         const oldData = snapshot.docs[0].data();
+        const oldStatus = oldData.status || 'PENDING';
+        await db.collection('bookings').doc(docId).update({ status });
+        
+        // Update persistent balance
+        await updateBalanceOnStatusChange(db, oldData, oldStatus, status);
         await db.collection('bookings').doc(docId).update({ status });
         
         // --- Kirim Email jika status berubah jadi PAID ---
@@ -500,7 +528,15 @@ bookingsRoutes.put('/:id/status', verifyToken, async (c) => {
             return c.json({ message: 'Status is required' }, 400);
         }
         
+        const oldDoc = await db.collection('bookings').doc(id).get();
+        const oldStatus = oldDoc.exists ? (oldDoc.data().status || 'PENDING') : 'PENDING';
+        const bookingData = oldDoc.exists ? oldDoc.data() : {};
+
         await db.collection('bookings').doc(id).update({ status });
+        
+        // Update persistent balance
+        await updateBalanceOnStatusChange(db, bookingData, oldStatus, status);
+
         return c.json({ message: 'Booking status updated successfully', status });
     } catch (error) {
         return c.json({ error: error.message }, 500);
