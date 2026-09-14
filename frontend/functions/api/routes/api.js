@@ -63,7 +63,8 @@ apiRoutes.get('/balance', verifyToken, async (c) => {
         const db = getDb(c);
         const doc = await db.collection('settings').doc('balance').get();
         const totalRevenue = doc.exists ? (doc.data().totalRevenue || 0) : 0;
-        return c.json({ totalRevenue });
+        const totalDpRevenue = doc.exists ? (doc.data().totalDpRevenue || 0) : 0;
+        return c.json({ totalRevenue, totalDpRevenue });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }

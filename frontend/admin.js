@@ -1713,13 +1713,15 @@ window.fetchWithdrawals = async () => {
             document.getElementById('th-admin-aksi').style.display = 'none';
         }
         
-        // Ambil totalRevenue dari balance tersimpan (PERMANEN, tidak terpengaruh hapus booking)
+        // Ambil totalRevenue dan totalDpRevenue dari balance tersimpan
         let totalRevenue = 0;
+        let totalDpRevenue = 0;
         try {
             const bRes = await fetch(`${API_URL}/balance`, { headers: getAuthHeaders() });
             if (bRes.ok) {
                 const bData = await bRes.json();
                 totalRevenue = bData.totalRevenue || 0;
+                totalDpRevenue = bData.totalDpRevenue || 0;
             }
         } catch (e) {
             console.warn('Gagal ambil balance, gunakan fallback:', e);
@@ -1768,10 +1770,13 @@ window.fetchWithdrawals = async () => {
             });
         }
         
-        currentBalance = totalRevenue - totalWithdrawn;
+        currentBalance = totalRevenue + totalDpRevenue - totalWithdrawn;
         
         const revEl = document.getElementById("total-revenue-display");
         if (revEl) revEl.innerText = `Rp ${totalRevenue.toLocaleString('id-ID')}`;
+        
+        const dpRevEl = document.getElementById("total-dp-revenue-display");
+        if (dpRevEl) dpRevEl.innerText = `Rp ${totalDpRevenue.toLocaleString('id-ID')}`;
         
         const drawnEl = document.getElementById("total-withdrawn-display");
         if (drawnEl) drawnEl.innerText = `Rp ${totalWithdrawn.toLocaleString('id-ID')}`;

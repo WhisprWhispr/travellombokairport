@@ -368,11 +368,19 @@ async function updateBalanceOnStatusChange(db, bookingData, oldStatus, newStatus
         if (amount === 0) return;
 
         const delta = isRevenue ? amount : -amount;
+        const isDp = bookingData.isDp === true || bookingData.isDp === 'true';
+
         const balanceRef = db.collection('settings').doc('balance');
         await db.runTransaction(async (t) => {
             const doc = await t.get(balanceRef);
-            const current = doc.exists ? (doc.data().totalRevenue || 0) : 0;
-            t.set(balanceRef, { totalRevenue: current + delta }, { merge: true });
+            const currentTotal = doc.exists ? (doc.data().totalRevenue || 0) : 0;
+            const currentDp = doc.exists ? (doc.data().totalDpRevenue || 0) : 0;
+            
+            if (isDp) {
+                t.set(balanceRef, { totalDpRevenue: currentDp + delta }, { merge: true });
+            } else {
+                t.set(balanceRef, { totalRevenue: currentTotal + delta }, { merge: true });
+            }
         });
     } catch (e) {
         console.error('Balance update error:', e);
