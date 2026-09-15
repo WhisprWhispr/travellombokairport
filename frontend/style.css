@@ -543,6 +543,7 @@ ul {
   transition: var(--transition);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .card:hover {
@@ -591,6 +592,7 @@ ul {
   flex-direction: column;
   overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 100%;
 }
 .package-card:hover {
   transform: translateY(-5px);
