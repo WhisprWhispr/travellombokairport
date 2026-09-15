@@ -1056,12 +1056,12 @@
 
   <!-- Gempa Modal -->
   <div id="gempa-modal" class="tour-modal-overlay" style="z-index: 100000; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px);">
-    <div class="tour-modal-content" style="max-width: 450px; border-radius: 20px; overflow: hidden; padding: 0;">
-      <div style="background: linear-gradient(135deg, #dc2626, #991b1b); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+    <div class="tour-modal-content" style="max-width: 450px; border-radius: 20px; overflow: hidden; padding: 0; max-height: 90vh; display: flex; flex-direction: column;">
+      <div style="background: linear-gradient(135deg, #dc2626, #991b1b); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
         <h3 style="color: white; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-house-crack"></i> Gempa Terkini BMKG</h3>
         <button onclick="document.getElementById('gempa-modal').classList.remove('active')" style="background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div style="padding: 20px; text-align: center;">
+      <div style="padding: 20px; text-align: center; overflow-y: auto; flex-grow: 1;">
         <div id="gempa-loading">
           <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #dc2626; margin-bottom: 10px;"></i>
           <p>Memuat data dari BMKG...</p>
