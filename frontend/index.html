@@ -1129,6 +1129,145 @@
     });
   </script>
 
+  <!-- Instagram Slide-out Panel -->
+  <button onclick="toggleIGSidebar()" id="ig-floating-btn" style="position: fixed; left: 0; top: 60%; transform: translateY(-50%); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); color: white; border: none; padding: 12px 10px 12px 14px; border-radius: 0 10px 10px 0; font-size: 1.5rem; cursor: pointer; z-index: 9999; box-shadow: 2px 4px 10px rgba(0,0,0,0.2); transition: width 0.3s, padding 0.3s; display: flex; align-items: center; gap: 10px; overflow: hidden; white-space: nowrap; width: 45px;">
+    <i class="fa-brands fa-instagram"></i>
+    <span style="font-size: 0.9rem; font-weight: 700;">Live Feed</span>
+  </button>
+
+  <style>
+    #ig-floating-btn:hover {
+      width: 130px;
+    }
+    #ig-sidebar {
+      position: fixed;
+      left: -400px;
+      top: 0;
+      width: 380px;
+      max-width: 90vw;
+      height: 100vh;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(15px);
+      z-index: 100000;
+      box-shadow: 5px 0 25px rgba(0,0,0,0.15);
+      transition: left 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+      display: flex;
+      flex-direction: column;
+    }
+    #ig-sidebar.open {
+      left: 0;
+    }
+    .ig-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.4);
+      z-index: 99999;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.3s;
+    }
+    .ig-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+    .ig-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      padding: 20px;
+      overflow-y: auto;
+    }
+    .ig-item {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      overflow: hidden;
+      position: relative;
+      cursor: pointer;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+      transition: transform 0.3s;
+    }
+    .ig-item:hover {
+      transform: scale(1.03);
+    }
+    .ig-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .ig-item .ig-hover {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+      font-size: 1.5rem;
+    }
+    .ig-item:hover .ig-hover {
+      opacity: 1;
+    }
+  </style>
+
+  <div class="ig-overlay" id="ig-overlay" onclick="toggleIGSidebar()"></div>
+  <div id="ig-sidebar">
+    <div style="padding: 20px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #e2e8f0;">
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 45px; height: 45px; border-radius: 50%; background: linear-gradient(45deg, #f09433, #dc2743); padding: 2px;">
+          <div style="width: 100%; height: 100%; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; overflow: hidden;">
+             <img src="/img/logo.webp" alt="Logo" style="height: 25px; object-fit: contain;">
+          </div>
+        </div>
+        <div>
+          <h4 style="margin: 0; font-size: 1.1rem; font-weight: 800; color: #0f172a;">Travel Lombok</h4>
+          <p style="margin: 0; font-size: 0.8rem; color: #64748b;">@travellombokairport</p>
+        </div>
+      </div>
+      <button onclick="toggleIGSidebar()" style="background: #f1f5f9; border: none; width: 35px; height: 35px; border-radius: 50%; color: #64748b; cursor: pointer; display: flex; align-items: center; justify-content: center;"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    
+    <div style="padding: 15px 20px 5px; text-align: center;">
+      <a href="https://instagram.com/travellombokairport" target="_blank" style="display: inline-block; background: #0f172a; color: white; text-decoration: none; padding: 10px 20px; border-radius: 20px; font-weight: 700; font-size: 0.9rem; width: 100%;"><i class="fa-brands fa-instagram" style="margin-right: 5px;"></i> Follow Instagram Kami</a>
+    </div>
+
+    <div class="ig-grid">
+      <!-- Dummy images to simulate IG feed -->
+      <a href="#" class="ig-item">
+        <img src="https://images.unsplash.com/photo-1559628233-100c798642d4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Lombok Trip">
+        <div class="ig-hover"><i class="fa-brands fa-instagram"></i></div>
+      </a>
+      <a href="#" class="ig-item">
+        <img src="https://images.unsplash.com/photo-1576085449234-7164923e595b?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Mandalika">
+        <div class="ig-hover"><i class="fa-brands fa-instagram"></i></div>
+      </a>
+      <a href="#" class="ig-item">
+        <img src="https://images.unsplash.com/photo-1512100356356-de1b84283e18?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Rinjani">
+        <div class="ig-hover"><i class="fa-brands fa-instagram"></i></div>
+      </a>
+      <a href="#" class="ig-item">
+        <img src="https://images.unsplash.com/photo-1621689255242-cdfb2846171d?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Senggigi">
+        <div class="ig-hover"><i class="fa-brands fa-instagram"></i></div>
+      </a>
+      <a href="#" class="ig-item">
+        <img src="https://images.unsplash.com/photo-1588668214407-6ea9a6d8c272?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Gili Trawangan">
+        <div class="ig-hover"><i class="fa-brands fa-instagram"></i></div>
+      </a>
+      <a href="#" class="ig-item">
+        <img src="https://images.unsplash.com/photo-1625902143093-4e4f7a26fba4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Sasak Village">
+        <div class="ig-hover"><i class="fa-brands fa-instagram"></i></div>
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function toggleIGSidebar() {
+      document.getElementById('ig-sidebar').classList.toggle('open');
+      document.getElementById('ig-overlay').classList.toggle('active');
+    }
+  </script>
+
 <script type="module" src="/pwa.js"></script>
 </body>
 </html>
