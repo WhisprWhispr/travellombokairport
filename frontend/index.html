@@ -238,6 +238,125 @@
     </div>
   </header>
 
+  <!-- Weather Widget (Real-time Lombok) -->
+  <section id="weather-widget-section" style="margin-top: -45px; position: relative; z-index: 10; margin-bottom: 20px;">
+    <div class="container">
+      <div id="lombok-weather-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-radius: 20px; padding: 22px 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: default;">
+        
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <div id="weather-icon-container" style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #0284c7; box-shadow: inset 0 2px 6px rgba(255,255,255,0.7), 0 4px 10px rgba(2,132,199,0.15);">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </div>
+          <div>
+            <h4 style="margin: 0 0 4px 0; color: #0f172a; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;">Cuaca Lombok Saat Ini</h4>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <p id="weather-desc" style="margin: 0; color: #475569; font-size: 0.9rem; font-weight: 600;">Memuat data cuaca...</p>
+              <span id="weather-status-badge" style="display:none; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-plane-up"></i> Aman Terbangkan Drone</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 35px; align-items: center; margin-left: auto;" id="weather-stats-container">
+          <div style="text-align: center;">
+            <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Suhu</p>
+            <h3 id="weather-temp" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">--<span style="font-size:1rem;color:#64748b;">°C</span></h3>
+          </div>
+          <div style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
+          <div style="text-align: center;">
+            <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Kelembaban</p>
+            <h3 id="weather-humidity" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">--<span style="font-size:1rem;color:#64748b;">%</span></h3>
+          </div>
+          <div style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
+          <div style="text-align: center;">
+            <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Angin</p>
+            <h3 id="weather-wind" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">-- <span style="font-size:0.85rem;color:#64748b;">km/h</span></h3>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Fetch Weather Data using Open-Meteo (Tanpa API Key, 100% Gratis & Unlimited)
+    document.addEventListener("DOMContentLoaded", function() {
+      // Koordinat Lombok (Bandara/Mataram)
+      const lat = -8.5833;
+      const lon = 116.1167; 
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,wind_speed_10m&timezone=Asia%2FMakassar`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if(data && data.current) {
+            const current = data.current;
+            document.getElementById('weather-temp').innerHTML = Math.round(current.temperature_2m) + '<span style="font-size:1rem;color:#64748b;">°C</span>';
+            document.getElementById('weather-humidity').innerHTML = current.relative_humidity_2m + '<span style="font-size:1rem;color:#64748b;">%</span>';
+            document.getElementById('weather-wind').innerHTML = Math.round(current.wind_speed_10m) + ' <span style="font-size:0.85rem;color:#64748b;">km/h</span>';
+            
+            // Interpretasi Kode Cuaca (WMO)
+            const code = current.weather_code;
+            const isDay = current.is_day;
+            const windSpeed = current.wind_speed_10m;
+            
+            let iconClass = 'fa-solid fa-cloud';
+            let desc = 'Berawan';
+            let iconColor = '#94a3b8'; 
+            let iconBg = 'linear-gradient(135deg, #f1f5f9, #e2e8f0)';
+
+            if (code === 0) {
+              desc = 'Cerah';
+              iconClass = isDay ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+              iconColor = isDay ? '#d97706' : '#475569';
+              iconBg = isDay ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #e2e8f0, #cbd5e1)';
+            } else if (code === 1 || code === 2 || code === 3) {
+              desc = 'Cerah Berawan';
+              iconClass = isDay ? 'fa-solid fa-cloud-sun' : 'fa-solid fa-cloud-moon';
+              iconColor = isDay ? '#0284c7' : '#475569';
+              iconBg = isDay ? 'linear-gradient(135deg, #e0f2fe, #bae6fd)' : 'linear-gradient(135deg, #e2e8f0, #cbd5e1)';
+            } else if (code >= 51 && code <= 67) {
+              desc = 'Hujan Ringan - Sedang';
+              iconClass = 'fa-solid fa-cloud-rain';
+              iconColor = '#2563eb';
+              iconBg = 'linear-gradient(135deg, #dbeafe, #bfdbfe)';
+            } else if (code >= 71 && code <= 99) {
+              desc = 'Hujan Lebat / Badai';
+              iconClass = 'fa-solid fa-cloud-bolt';
+              iconColor = '#4338ca';
+              iconBg = 'linear-gradient(135deg, #e0e7ff, #c7d2fe)';
+            }
+
+            document.getElementById('weather-desc').innerText = desc + (isDay ? ' (Siang)' : ' (Malam)');
+            const iconContainer = document.getElementById('weather-icon-container');
+            iconContainer.innerHTML = `<i class="${iconClass}"></i>`;
+            iconContainer.style.color = iconColor;
+            iconContainer.style.background = iconBg;
+            
+            // Logika Drone: Aman jika tidak hujan (code < 50) dan angin < 20 km/h
+            const badge = document.getElementById('weather-status-badge');
+            if (code < 50 && windSpeed < 20) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'inline-block';
+                badge.style.background = '#fee2e2';
+                badge.style.color = '#dc2626';
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Cuaca Ekstrem';
+            }
+
+            // Hover effect interaktif
+            const card = document.getElementById('lombok-weather-card');
+            card.onmouseover = () => card.style.transform = 'translateY(-6px)';
+            card.onmouseout = () => card.style.transform = 'translateY(0)';
+          }
+        })
+        .catch(err => {
+          console.error("Gagal mengambil data cuaca:", err);
+          document.getElementById('weather-desc').innerText = "Gagal memuat cuaca";
+          document.getElementById('weather-icon-container').innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>`;
+        });
+    });
+  </script>
+
   <!-- Penjelasan Fitur Aplikasi (Wajib untuk Verifikasi Google) -->
   <section id="google-verification-banner" class="section" style="background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #f0fdf4 100%); padding: 40px 0;">
     <div class="container">
