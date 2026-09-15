@@ -239,6 +239,41 @@
   </header>
 
   <!-- Weather Widget (Real-time Lombok) -->
+  <style>
+    @media (max-width: 768px) {
+      #lombok-weather-card {
+        flex-direction: column;
+        align-items: stretch !important;
+        padding: 20px 15px !important;
+        gap: 15px !important;
+      }
+      #lombok-weather-card > div:first-child {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px !important;
+      }
+      #lombok-weather-card > div:first-child > div:last-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px !important;
+      }
+      #weather-stats-container {
+        margin-left: 0 !important;
+        width: 100%;
+        justify-content: space-between !important;
+        gap: 5px !important;
+        padding-top: 15px;
+        border-top: 1px dashed rgba(0,0,0,0.1);
+      }
+      #weather-stats-container > div {
+        flex: 1;
+      }
+      .weather-divider {
+        display: none !important;
+      }
+    }
+  </style>
   <section id="weather-widget-section" style="margin-top: -45px; position: relative; z-index: 10; margin-bottom: 20px;">
     <div class="container">
       <div id="lombok-weather-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-radius: 20px; padding: 22px 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: default;">
@@ -261,12 +296,12 @@
             <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Suhu</p>
             <h3 id="weather-temp" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">--<span style="font-size:1rem;color:#64748b;">°C</span></h3>
           </div>
-          <div style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
+          <div class="weather-divider" style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
           <div style="text-align: center;">
             <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Kelembaban</p>
             <h3 id="weather-humidity" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">--<span style="font-size:1rem;color:#64748b;">%</span></h3>
           </div>
-          <div style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
+          <div class="weather-divider" style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
           <div style="text-align: center;">
             <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Angin</p>
             <h3 id="weather-wind" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">-- <span style="font-size:0.85rem;color:#64748b;">km/h</span></h3>
