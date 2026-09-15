@@ -123,6 +123,13 @@
 <script src="/protect.js"></script>
 </head>
 <body>
+  <!-- Tsunami Alert Banner (Hidden by default) -->
+  <div id="tsunami-alert-banner" style="display: none; background: #dc2626; color: white; text-align: center; padding: 12px 20px; font-weight: 700; font-size: 0.9rem; z-index: 10000; position: relative;">
+    <i class="fa-solid fa-triangle-exclamation fa-beat" style="margin-right: 8px;"></i>
+    <span id="tsunami-alert-text">PERINGATAN DINI TSUNAMI - Segera Jauhi Pantai!</span>
+    <button onclick="this.parentElement.style.display='none'" style="position: absolute; right: 15px; top: 10px; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
   <!-- Navbar -->
   <nav class="navbar">
     <div class="container nav-content">
@@ -284,9 +291,10 @@
           </div>
           <div>
             <h4 style="margin: 0 0 4px 0; color: #0f172a; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;">Cuaca Lombok Saat Ini</h4>
-            <div style="display: flex; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
               <p id="weather-desc" style="margin: 0; color: #475569; font-size: 0.9rem; font-weight: 600;">Memuat data cuaca...</p>
               <span id="weather-status-badge" style="display:none; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-plane-up"></i> Aman Terbangkan Drone</span>
+              <button id="btn-gempa" onclick="document.getElementById('gempa-modal').classList.add('active')" style="display:none; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; cursor: pointer; align-items: center; gap: 4px; transition: all 0.2s;"><i class="fa-solid fa-house-crack"></i> Info Gempa BMKG</button>
             </div>
           </div>
         </div>
@@ -1045,6 +1053,82 @@
             </div>
         </div>
     </div>
+
+  <!-- Gempa Modal -->
+  <div id="gempa-modal" class="tour-modal-overlay" style="z-index: 100000; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px);">
+    <div class="tour-modal-content" style="max-width: 450px; border-radius: 20px; overflow: hidden; padding: 0;">
+      <div style="background: linear-gradient(135deg, #dc2626, #991b1b); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h3 style="color: white; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-house-crack"></i> Gempa Terkini BMKG</h3>
+        <button onclick="document.getElementById('gempa-modal').classList.remove('active')" style="background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding: 20px; text-align: center;">
+        <div id="gempa-loading">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #dc2626; margin-bottom: 10px;"></i>
+          <p>Memuat data dari BMKG...</p>
+        </div>
+        <div id="gempa-content" style="display: none;">
+          <h2 id="gempa-mag" style="color: #dc2626; font-size: 2.5rem; font-weight: 900; margin: 0;"></h2>
+          <p style="color: #64748b; font-weight: 700; margin: 0 0 15px 0;">Skala Richter</p>
+          
+          <div style="background: #f8fafc; border-radius: 12px; padding: 15px; text-align: left; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-solid fa-location-dot" style="color: #dc2626; width: 20px;"></i> <strong id="gempa-wilayah"></strong></p>
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-regular fa-clock" style="color: #0284c7; width: 20px;"></i> <span id="gempa-waktu"></span></p>
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-solid fa-arrow-down-up-across-line" style="color: #16a34a; width: 20px;"></i> Kedalaman: <strong id="gempa-dalam"></strong></p>
+            <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-wave-square" style="color: #f59e0b; width: 20px;"></i> Potensi: <strong id="gempa-potensi"></strong></p>
+          </div>
+          
+          <img id="gempa-map" src="" alt="Peta Gempa BMKG" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; min-height: 150px; background: #f1f5f9;">
+          
+          <p style="font-size: 0.7rem; color: #94a3b8; margin: 15px 0 0 0;">Sumber Data Terbuka: API BMKG Resmi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fetch Gempa BMKG
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json')
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.Infogempa && data.Infogempa.gempa) {
+            const gempa = data.Infogempa.gempa;
+            
+            // Tampilkan tombol Info Gempa di widget cuaca
+            const btnGempa = document.getElementById('btn-gempa');
+            if(btnGempa) {
+                btnGempa.style.display = 'inline-flex';
+                // Jika gempa > 5.0, tombol dibuat kedap-kedip untuk menarik perhatian
+                if(parseFloat(gempa.Magnitude) > 5.0) {
+                    btnGempa.style.animation = 'fa-beat 2s infinite';
+                }
+            }
+            
+            // Cek Potensi Tsunami
+            if (gempa.Potensi.toLowerCase().includes("tsunami")) {
+                const alertBanner = document.getElementById('tsunami-alert-banner');
+                if(alertBanner) {
+                    alertBanner.style.display = 'block';
+                    document.getElementById('tsunami-alert-text').innerText = "PERINGATAN DINI TSUNAMI: " + gempa.Wilayah + " (" + gempa.Magnitude + " SR)";
+                }
+            }
+
+            // Isi isi Modal Gempa
+            document.getElementById('gempa-mag').innerText = gempa.Magnitude;
+            document.getElementById('gempa-wilayah').innerText = gempa.Wilayah;
+            document.getElementById('gempa-waktu').innerText = gempa.Tanggal + " | " + gempa.Jam;
+            document.getElementById('gempa-dalam').innerText = gempa.Kedalaman;
+            document.getElementById('gempa-potensi').innerText = gempa.Potensi;
+            document.getElementById('gempa-map').src = "https://data.bmkg.go.id/DataMKG/TEWS/" + gempa.Shakemap;
+            
+            document.getElementById('gempa-loading').style.display = 'none';
+            document.getElementById('gempa-content').style.display = 'block';
+          }
+        })
+        .catch(err => console.error("Gagal memuat data BMKG:", err));
+    });
+  </script>
+
 <script type="module" src="/pwa.js"></script>
 </body>
 </html>
