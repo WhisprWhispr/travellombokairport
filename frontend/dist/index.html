@@ -30,7 +30,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 
   <script>
     // INSTANT MAINTENANCE CHECK (Anti-Flash for PWA)
@@ -745,15 +746,34 @@
 
       <div class="row info-check-row mt-5" style="display: flex; justify-content: center;">
         <div class="col-md-8 col-lg-6" style="min-width: 300px;">
-          <div class="info-check w-100" id="cek-orderan" style="margin-top: 0; background: #f0fdf4; border: 2px dashed var(--primary-green);">
-            <h3 class="text-center mb-4" style="color: var(--primary-green);">CEK ORDERAN ANDA</h3>
-            <p class="text-center mb-3 text-gray">Cek status Pesanan Paket Tour via QRIS (ID: <b>ORD-...</b>)</p>
-            <form class="check-form" id="form-cek-orderan" onsubmit="window.cekStatusBooking(event, 'orderan')">
-              <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-                <input type="text" id="input-cek-orderan" placeholder="Contoh: ORD-1234567" class="form-control" required style="margin-bottom: 0;">
-                <button type="button" class="btn" style="background: white; color: var(--primary-green); border: 1px solid #bbf7d0; padding: 0 15px;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('input-cek-orderan').value = text; Swal.fire({icon: 'success', title: 'Berhasil Ditempel', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); }).catch(err => Swal.fire({icon: 'error', title: 'Akses Ditolak', text: 'Browser Anda memblokir akses clipboard. Silakan paste secara manual (Ctrl+V atau Tahan lalu Tempel).'}));" title="Tempel / Paste"><i class="fa-solid fa-paste"></i></button>
+          <div class="info-check w-100" id="cek-orderan" style="margin-top: 0; background: #ffffff; border-radius: 16px; padding: 35px 25px; box-shadow: 0 10px 40px rgba(0, 153, 112, 0.08), 0 1px 3px rgba(0,0,0,0.05); border: 1px solid rgba(0, 153, 112, 0.1); position: relative; overflow: hidden;">
+            <!-- Background Decoration -->
+            <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(0,153,112,0.1) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;"></div>
+            <div style="position: absolute; bottom: -50px; left: -50px; width: 150px; height: 150px; background: radial-gradient(circle, rgba(0,153,112,0.08) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;"></div>
+            
+            <div style="text-align: center; margin-bottom: 25px; position: relative; z-index: 1;">
+              <div style="display: inline-flex; align-items: center; justify-content: center; width: 60px; height: 60px; border-radius: 16px; background: linear-gradient(135deg, var(--primary-green), #00b386); color: white; margin-bottom: 20px; box-shadow: 0 8px 16px rgba(0, 153, 112, 0.2);">
+                <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 24px;"></i>
               </div>
-              <button type="submit" class="btn btn-green w-100" id="btn-cek-orderan" style="background: var(--primary-green);">CEK STATUS ORDERAN</button>
+              <h3 style="color: #1e293b; font-weight: 700; font-size: 1.5rem; margin-bottom: 10px; letter-spacing: -0.5px;">Cek Orderan Anda</h3>
+              <p style="color: #64748b; font-size: 0.95rem; margin: 0; padding: 0 10px;">Pantau status pesanan (Paket Tour via QRIS) secara real-time. (ID: <b>ORD-...</b>)</p>
+            </div>
+            
+            <form class="check-form" id="form-cek-orderan" onsubmit="window.cekStatusBooking(event, 'orderan')" style="position: relative; z-index: 1;">
+              <div style="display: flex; gap: 10px; margin-bottom: 1.5rem;">
+                <div style="flex: 1; position: relative;">
+                  <div style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); color: #94a3b8; pointer-events: none;">
+                    <i class="fa-solid fa-receipt"></i>
+                  </div>
+                  <input type="text" id="input-cek-orderan" placeholder="Contoh: ORD-MBG787" class="form-control" required style="width: 100%; margin-bottom: 0; padding-left: 45px; height: 50px; border-radius: 12px; border: 1.5px solid #e2e8f0; background: #f8fafc; font-size: 1rem; color: #334155; transition: all 0.3s ease; box-shadow: none;" onfocus="this.style.borderColor='var(--primary-green)'; this.style.backgroundColor='#ffffff'; this.style.boxShadow='0 0 0 4px rgba(0,153,112,0.1)'" onblur="this.style.borderColor='#e2e8f0'; this.style.backgroundColor='#f8fafc'; this.style.boxShadow='none'">
+                </div>
+                <button type="button" class="btn" style="height: 50px; width: 50px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; background: white; color: var(--primary-green); border: 1.5px solid #e2e8f0; border-radius: 12px; transition: all 0.2s ease; cursor: pointer; padding: 0;" onmouseover="this.style.borderColor='var(--primary-green)'; this.style.color='var(--primary-green)'; this.style.background='#f0fdf4'" onmouseout="this.style.borderColor='#e2e8f0'; this.style.background='white'; this.style.color='var(--primary-green)'" onclick="navigator.clipboard.readText().then(text => { document.getElementById('input-cek-orderan').value = text; Swal.fire({icon: 'success', title: 'Berhasil Ditempel', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); }).catch(err => Swal.fire({icon: 'error', title: 'Akses Ditolak', text: 'Browser Anda memblokir akses clipboard. Silakan paste secara manual.'}));" title="Tempel ID Pesanan">
+                  <i class="fa-solid fa-paste" style="font-size: 1.1rem;"></i>
+                </button>
+              </div>
+              <button type="submit" class="btn w-100" id="btn-cek-orderan" style="background: linear-gradient(135deg, var(--primary-green) 0%, #00b386 100%); color: white; border: none; height: 50px; border-radius: 12px; font-weight: 600; font-size: 1.05rem; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(0, 153, 112, 0.25); transition: all 0.3s ease; text-transform: uppercase;" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(0, 153, 112, 0.3)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(0, 153, 112, 0.25)'">
+                <i class="fa-solid fa-satellite-dish" style="margin-right: 8px;"></i> CEK STATUS ORDERAN
+              </button>
             </form>
           </div>
         </div>
@@ -1020,7 +1040,8 @@
       offset: 100,
       duration: 800
     });
-  </script>
+  </script>
+
 
     <!-- AI Chatbot UI -->
     <div id="ai-chat-widget">
@@ -1154,6 +1175,7 @@
         .catch(err => console.error("Gagal memuat data BMKG:", err));
     });
   </script>
-
+
+
 </body>
 </html>
