@@ -7,8 +7,8 @@
   
   <!-- SEO Meta Tags -->
   <title>Travel Lombok Airport</title>
-  <meta name="description" content="Travel Lombok Airport melayani antar jemput bandara, sewa mobil, sewa motor, paket tour wisata, dokumentasi drone, dan fotografer profesional di Lombok.">
-  <meta name="keywords" content="sewa mobil lombok, rental mobil lombok murah, sewa avanza lombok, antar jemput bandara lombok, travel lombok airport, paket wisata lombok, travel agent lombok, sewa mobil mandalika, jemput bandara bil, jasa transport lombok, sewa innova lombok, sewa hiace lombok, wisata gili trawangan, sewa drone lombok, fotografer liburan lombok, tour guide lombok, travel lombok terpercaya, antar jemput hotel senggigi, liburan keluarga lombok, Travel Lombok Airport, lombok airport">
+  <meta name="description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil lepas kunci/dengan supir murah terpercaya di Lombok.">
+  <meta name="keywords" content="sewa mobil lombok, rental mobil lombok murah, sewa avanza lombok, antar jemput bandara lombok, travel lombok airport, paket wisata lombok, travel agent lombok, sewa mobil mandalika, jemput bandara bil, jasa transport lombok, sewa innova lombok, sewa hiace lombok, wisata gili trawangan, sewa drone lombok, fotografer liburan lombok, tour guide lombok, travel lombok terpercaya, antar jemput hotel senggigi, liburan keluarga lombok">
   <meta name="author" content="Travel Lombok Airport">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://travellombokairport.com/">
@@ -17,21 +17,20 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://travellombokairport.com/">
   <meta property="og:title" content="Travel Lombok Airport">
-  <meta property="og:description" content="Layanan transportasi, antar jemput bandara, dan paket wisata terbaik di Lombok.">
+  <meta property="og:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
   <meta property="og:image" content="https://travellombokairport.com/logo.png">
 
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://travellombokairport.com/">
   <meta property="twitter:title" content="Travel Lombok Airport">
-  <meta property="twitter:description" content="Layanan transportasi, antar jemput bandara, dan paket wisata terbaik di Lombok.">
+  <meta property="twitter:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
   <meta property="twitter:image" content="https://travellombokairport.com/logo.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <script>
     // INSTANT MAINTENANCE CHECK (Anti-Flash for PWA)
@@ -121,12 +120,56 @@
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#2563eb">
 <script src="/protect.js"></script>
+  <!-- Structured Data (JSON-LD) for Local SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": "Travel Lombok Airport",
+    "image": "https://travellombokairport.com/logo.png",
+    "@id": "https://travellombokairport.com/",
+    "url": "https://travellombokairport.com/",
+    "telephone": "+6289676963255",
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "Bandara Internasional Lombok (BIL)",
+      "addressLocality": "Lombok Tengah",
+      "addressRegion": "NTB",
+      "postalCode": "83573",
+      "addressCountry": "ID"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": -8.7612,
+      "longitude": 116.2754
+    },
+    "openingHoursSpecification": {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": [
+        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+      ],
+      "opens": "00:00",
+      "closes": "23:59"
+    },
+    "sameAs": [
+      "https://instagram.com/travellombokairport"
+    ],
+    "priceRange": "$$"
+  }
+  </script>
   <script type="module" crossorigin src="/assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
   <script type="module" crossorigin src="/assets/main-rN9ss1qU.js"></script>
   <script type="module" crossorigin src="/assets/pwa-DYmKx9RI.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-BSGSbSZN.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-C5cZ9_T1.css">
 </head>
 <body>
+  <!-- Tsunami Alert Banner (Hidden by default) -->
+  <div id="tsunami-alert-banner" style="display: none; background: #dc2626; color: white; text-align: center; padding: 12px 20px; font-weight: 700; font-size: 0.9rem; z-index: 10000; position: relative;">
+    <i class="fa-solid fa-triangle-exclamation fa-beat" style="margin-right: 8px;"></i>
+    <span id="tsunami-alert-text">PERINGATAN DINI TSUNAMI - Segera Jauhi Pantai!</span>
+    <button onclick="this.parentElement.style.display='none'" style="position: absolute; right: 15px; top: 10px; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+
   <!-- Navbar -->
   <nav class="navbar">
     <div class="container nav-content">
@@ -241,6 +284,161 @@
       </div>
     </div>
   </header>
+
+  <!-- Weather Widget (Real-time Lombok) -->
+  <style>
+    @media (max-width: 768px) {
+      #lombok-weather-card {
+        flex-direction: column;
+        align-items: stretch !important;
+        padding: 20px 15px !important;
+        gap: 15px !important;
+      }
+      #lombok-weather-card > div:first-child {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px !important;
+      }
+      #lombok-weather-card > div:first-child > div:last-child {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px !important;
+      }
+      #weather-stats-container {
+        margin-left: 0 !important;
+        width: 100%;
+        justify-content: space-between !important;
+        gap: 5px !important;
+        padding-top: 15px;
+        border-top: 1px dashed rgba(0,0,0,0.1);
+      }
+      #weather-stats-container > div {
+        flex: 1;
+      }
+      .weather-divider {
+        display: none !important;
+      }
+    }
+  </style>
+  <section id="weather-widget-section" style="margin-top: -45px; position: relative; z-index: 10; margin-bottom: 20px;">
+    <div class="container">
+      <div id="lombok-weather-card" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px); border-radius: 20px; padding: 22px 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); border: 1px solid rgba(255,255,255,1); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1); cursor: default;">
+        
+        <div style="display: flex; align-items: center; gap: 18px;">
+          <div id="weather-icon-container" style="background: linear-gradient(135deg, #e0f2fe, #bae6fd); width: 65px; height: 65px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: #0284c7; box-shadow: inset 0 2px 6px rgba(255,255,255,0.7), 0 4px 10px rgba(2,132,199,0.15);">
+            <i class="fa-solid fa-spinner fa-spin"></i>
+          </div>
+          <div>
+            <h4 style="margin: 0 0 4px 0; color: #0f172a; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;">Cuaca Lombok Saat Ini</h4>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
+              <p id="weather-desc" style="margin: 0; color: #475569; font-size: 0.9rem; font-weight: 600;">Memuat data cuaca...</p>
+              <span id="weather-status-badge" style="display:none; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-plane-up"></i> Aman Terbangkan Drone</span>
+              <button id="btn-gempa" onclick="document.getElementById('gempa-modal').classList.add('active')" style="display:none; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: #fee2e2; color: #dc2626; border: 1px solid #fca5a5; cursor: pointer; align-items: center; gap: 4px; transition: all 0.2s;"><i class="fa-solid fa-house-crack"></i> Info Gempa BMKG</button>
+            </div>
+          </div>
+        </div>
+        
+        <div style="display: flex; gap: 35px; align-items: center; margin-left: auto;" id="weather-stats-container">
+          <div style="text-align: center;">
+            <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Suhu</p>
+            <h3 id="weather-temp" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">--<span style="font-size:1rem;color:#64748b;">°C</span></h3>
+          </div>
+          <div class="weather-divider" style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
+          <div style="text-align: center;">
+            <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Kelembaban</p>
+            <h3 id="weather-humidity" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">--<span style="font-size:1rem;color:#64748b;">%</span></h3>
+          </div>
+          <div class="weather-divider" style="width: 1.5px; height: 35px; background: #e2e8f0; border-radius: 2px;"></div>
+          <div style="text-align: center;">
+            <p style="margin: 0 0 2px 0; color: #94a3b8; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">Angin</p>
+            <h3 id="weather-wind" style="margin: 0; color: #0f172a; font-weight: 900; font-size: 1.6rem;">-- <span style="font-size:0.85rem;color:#64748b;">km/h</span></h3>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <script>
+    // Fetch Weather Data using Open-Meteo (Tanpa API Key, 100% Gratis & Unlimited)
+    document.addEventListener("DOMContentLoaded", function() {
+      // Koordinat Lombok (Bandara/Mataram)
+      const lat = -8.5833;
+      const lon = 116.1167; 
+      const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,wind_speed_10m&timezone=Asia%2FMakassar`;
+
+      fetch(url)
+        .then(response => response.json())
+        .then(data => {
+          if(data && data.current) {
+            const current = data.current;
+            document.getElementById('weather-temp').innerHTML = Math.round(current.temperature_2m) + '<span style="font-size:1rem;color:#64748b;">°C</span>';
+            document.getElementById('weather-humidity').innerHTML = current.relative_humidity_2m + '<span style="font-size:1rem;color:#64748b;">%</span>';
+            document.getElementById('weather-wind').innerHTML = Math.round(current.wind_speed_10m) + ' <span style="font-size:0.85rem;color:#64748b;">km/h</span>';
+            
+            // Interpretasi Kode Cuaca (WMO)
+            const code = current.weather_code;
+            const isDay = current.is_day;
+            const windSpeed = current.wind_speed_10m;
+            
+            let iconClass = 'fa-solid fa-cloud';
+            let desc = 'Berawan';
+            let iconColor = '#94a3b8'; 
+            let iconBg = 'linear-gradient(135deg, #f1f5f9, #e2e8f0)';
+
+            if (code === 0) {
+              desc = 'Cerah';
+              iconClass = isDay ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
+              iconColor = isDay ? '#d97706' : '#475569';
+              iconBg = isDay ? 'linear-gradient(135deg, #fef3c7, #fde68a)' : 'linear-gradient(135deg, #e2e8f0, #cbd5e1)';
+            } else if (code === 1 || code === 2 || code === 3) {
+              desc = 'Cerah Berawan';
+              iconClass = isDay ? 'fa-solid fa-cloud-sun' : 'fa-solid fa-cloud-moon';
+              iconColor = isDay ? '#0284c7' : '#475569';
+              iconBg = isDay ? 'linear-gradient(135deg, #e0f2fe, #bae6fd)' : 'linear-gradient(135deg, #e2e8f0, #cbd5e1)';
+            } else if (code >= 51 && code <= 67) {
+              desc = 'Hujan Ringan - Sedang';
+              iconClass = 'fa-solid fa-cloud-rain';
+              iconColor = '#2563eb';
+              iconBg = 'linear-gradient(135deg, #dbeafe, #bfdbfe)';
+            } else if (code >= 71 && code <= 99) {
+              desc = 'Hujan Lebat / Badai';
+              iconClass = 'fa-solid fa-cloud-bolt';
+              iconColor = '#4338ca';
+              iconBg = 'linear-gradient(135deg, #e0e7ff, #c7d2fe)';
+            }
+
+            document.getElementById('weather-desc').innerText = desc + (isDay ? ' (Siang)' : ' (Malam)');
+            const iconContainer = document.getElementById('weather-icon-container');
+            iconContainer.innerHTML = `<i class="${iconClass}"></i>`;
+            iconContainer.style.color = iconColor;
+            iconContainer.style.background = iconBg;
+            
+            // Logika Drone: Aman jika tidak hujan (code < 50) dan angin < 20 km/h
+            const badge = document.getElementById('weather-status-badge');
+            if (code < 50 && windSpeed < 20) {
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'inline-block';
+                badge.style.background = '#fee2e2';
+                badge.style.color = '#dc2626';
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Cuaca Ekstrem';
+            }
+
+            // Hover effect interaktif
+            const card = document.getElementById('lombok-weather-card');
+            card.onmouseover = () => card.style.transform = 'translateY(-6px)';
+            card.onmouseout = () => card.style.transform = 'translateY(0)';
+          }
+        })
+        .catch(err => {
+          console.error("Gagal mengambil data cuaca:", err);
+          document.getElementById('weather-desc').innerText = "Gagal memuat cuaca";
+          document.getElementById('weather-icon-container').innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>`;
+        });
+    });
+  </script>
 
   <!-- Penjelasan Fitur Aplikasi (Wajib untuk Verifikasi Google) -->
   <section id="google-verification-banner" class="section" style="background: linear-gradient(135deg, #f0f4ff 0%, #faf5ff 50%, #f0fdf4 100%); padding: 40px 0;">
@@ -545,21 +743,8 @@
         </div>
       </div>
 
-      <div class="row info-check-row mt-5" style="display: flex; flex-wrap: wrap; gap: 20px;">
-        <div class="col-md-6" style="flex: 1; min-width: 300px;">
-          <div class="info-check w-100" id="cek-booking" style="margin-top: 0;">
-            <h3 class="text-center mb-4">CEK BOOKING ANDA</h3>
-            <p class="text-center mb-3 text-gray">Cek status Booking Rental &amp; Transfer (ID: <b>BKG-...</b>)</p>
-            <form class="check-form" id="form-cek-booking" onsubmit="window.cekStatusBooking(event, 'booking')">
-              <div style="display: flex; gap: 10px; margin-bottom: 1rem;">
-                <input type="text" id="input-cek-booking" placeholder="Contoh: BKG-1234567" class="form-control" required style="margin-bottom: 0;">
-                <button type="button" class="btn" style="background: var(--bg-light); color: var(--text-dark); border: 1px solid #cbd5e1; padding: 0 15px;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('input-cek-booking').value = text; Swal.fire({icon: 'success', title: 'Berhasil Ditempel', toast: true, position: 'top-end', showConfirmButton: false, timer: 2000}); }).catch(err => Swal.fire({icon: 'error', title: 'Akses Ditolak', text: 'Browser Anda memblokir akses clipboard. Silakan paste secara manual (Ctrl+V atau Tahan lalu Tempel).'}));" title="Tempel / Paste"><i class="fa-solid fa-paste"></i></button>
-              </div>
-              <button type="submit" class="btn btn-green w-100" id="btn-cek-booking">CEK STATUS BOOKING</button>
-            </form>
-          </div>
-        </div>
-        <div class="col-md-6" style="flex: 1; min-width: 300px;">
+      <div class="row info-check-row mt-5" style="display: flex; justify-content: center;">
+        <div class="col-md-8 col-lg-6" style="min-width: 300px;">
           <div class="info-check w-100" id="cek-orderan" style="margin-top: 0; background: #f0fdf4; border: 2px dashed var(--primary-green);">
             <h3 class="text-center mb-4" style="color: var(--primary-green);">CEK ORDERAN ANDA</h3>
             <p class="text-center mb-3 text-gray">Cek status Pesanan Paket Tour via QRIS (ID: <b>ORD-...</b>)</p>
@@ -673,7 +858,7 @@
             <li><a href="/galeri.html">Galeri</a></li>
             <li><a href="/tentang-kami.html">Tentang Kami</a></li>
             <li><a href="/kontak.html">Kontak</a></li>
-            <li><a href="/#cek-booking">Cek Booking</a></li>
+
           </ul>
         </div>
         
@@ -835,8 +1020,7 @@
       offset: 100,
       duration: 800
     });
-  </script>
-
+  </script>
 
     <!-- AI Chatbot UI -->
     <div id="ai-chat-widget">
@@ -854,7 +1038,7 @@
                         <i class="fa-solid fa-headset"></i>
                     </div>
                     <div>
-                        <h4 style="margin: 0; font-size: 1rem; font-weight: 800;">Lombok AI</h4>
+                        <h4 style="margin: 0; font-size: 1rem; font-weight: 800;">Lombok AI (CS)</h4>
                         <span style="font-size: 0.75rem; opacity: 0.9;">Online 24 Jam</span>
                     </div>
                 </div>
@@ -896,5 +1080,80 @@
         </div>
     </div>
 
+  <!-- Gempa Modal -->
+  <div id="gempa-modal" class="tour-modal-overlay" style="z-index: 100000; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px);">
+    <div class="tour-modal-content" style="max-width: 450px; border-radius: 20px; overflow: hidden; padding: 0; max-height: 90vh; display: flex; flex-direction: column;">
+      <div style="background: linear-gradient(135deg, #dc2626, #991b1b); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+        <h3 style="color: white; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-house-crack"></i> Gempa Terkini BMKG</h3>
+        <button onclick="document.getElementById('gempa-modal').classList.remove('active')" style="background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div style="padding: 20px; text-align: center; overflow-y: auto; flex-grow: 1;">
+        <div id="gempa-loading">
+          <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #dc2626; margin-bottom: 10px;"></i>
+          <p>Memuat data dari BMKG...</p>
+        </div>
+        <div id="gempa-content" style="display: none;">
+          <h2 id="gempa-mag" style="color: #dc2626; font-size: 2.5rem; font-weight: 900; margin: 0;"></h2>
+          <p style="color: #64748b; font-weight: 700; margin: 0 0 15px 0;">Skala Richter</p>
+          
+          <div style="background: #f8fafc; border-radius: 12px; padding: 15px; text-align: left; margin-bottom: 15px; border: 1px solid #e2e8f0;">
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-solid fa-location-dot" style="color: #dc2626; width: 20px;"></i> <strong id="gempa-wilayah"></strong></p>
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-regular fa-clock" style="color: #0284c7; width: 20px;"></i> <span id="gempa-waktu"></span></p>
+            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-solid fa-arrow-down-up-across-line" style="color: #16a34a; width: 20px;"></i> Kedalaman: <strong id="gempa-dalam"></strong></p>
+            <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-wave-square" style="color: #f59e0b; width: 20px;"></i> Potensi: <strong id="gempa-potensi"></strong></p>
+          </div>
+          
+          <img id="gempa-map" src="" alt="Peta Gempa BMKG" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; min-height: 150px; background: #f1f5f9;">
+          
+          <p style="font-size: 0.7rem; color: #94a3b8; margin: 15px 0 0 0;">Sumber Data Terbuka: API BMKG Resmi</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Fetch Gempa BMKG
+    document.addEventListener("DOMContentLoaded", function() {
+      fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json')
+        .then(response => response.json())
+        .then(data => {
+          if (data && data.Infogempa && data.Infogempa.gempa) {
+            const gempa = data.Infogempa.gempa;
+            
+            // Tampilkan tombol Info Gempa di widget cuaca
+            const btnGempa = document.getElementById('btn-gempa');
+            if(btnGempa) {
+                btnGempa.style.display = 'inline-flex';
+                // Jika gempa > 5.0, tombol dibuat kedap-kedip untuk menarik perhatian
+                if(parseFloat(gempa.Magnitude) > 5.0) {
+                    btnGempa.style.animation = 'fa-beat 2s infinite';
+                }
+            }
+            
+            // Cek Potensi Tsunami
+            if (gempa.Potensi.toLowerCase().includes("tsunami")) {
+                const alertBanner = document.getElementById('tsunami-alert-banner');
+                if(alertBanner) {
+                    alertBanner.style.display = 'block';
+                    document.getElementById('tsunami-alert-text').innerText = "PERINGATAN DINI TSUNAMI: " + gempa.Wilayah + " (" + gempa.Magnitude + " SR)";
+                }
+            }
+
+            // Isi isi Modal Gempa
+            document.getElementById('gempa-mag').innerText = gempa.Magnitude;
+            document.getElementById('gempa-wilayah').innerText = gempa.Wilayah;
+            document.getElementById('gempa-waktu').innerText = gempa.Tanggal + " | " + gempa.Jam;
+            document.getElementById('gempa-dalam').innerText = gempa.Kedalaman;
+            document.getElementById('gempa-potensi').innerText = gempa.Potensi;
+            document.getElementById('gempa-map').src = "https://data.bmkg.go.id/DataMKG/TEWS/" + gempa.Shakemap;
+            
+            document.getElementById('gempa-loading').style.display = 'none';
+            document.getElementById('gempa-content').style.display = 'block';
+          }
+        })
+        .catch(err => console.error("Gagal memuat data BMKG:", err));
+    });
+  </script>
+
 </body>
 </html>
