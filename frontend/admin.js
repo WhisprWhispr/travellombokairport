@@ -3123,7 +3123,7 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
 
         if (!response.ok) {
             const err = await response.json();
-            throw new Error(err.error || 'Gagal mengupload gambar');
+            throw new Error(err.details ? `${err.error}: ${err.details}` : (err.error || 'Gagal mengupload file'));
         }
 
         const data = await response.json();
