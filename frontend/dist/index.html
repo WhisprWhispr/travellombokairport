@@ -331,7 +331,17 @@
             <i class="fa-solid fa-spinner fa-spin"></i>
           </div>
           <div>
-            <h4 style="margin: 0 0 4px 0; color: #0f172a; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;">Cuaca Lombok Saat Ini</h4>
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 4px 0;">
+              <h4 style="margin: 0; color: #0f172a; font-weight: 800; font-size: 1.15rem; letter-spacing: -0.3px;">Cuaca</h4>
+              <select id="weather-region-select" style="padding: 2px 8px; border-radius: 8px; border: 1px solid #cbd5e1; background: #f8fafc; font-size: 0.85rem; font-weight: 700; color: #0f172a; outline: none; cursor: pointer;" onchange="fetchLombokWeather()">
+                <option value="-8.5833,116.1167">Mataram (Pusat)</option>
+                <option value="-8.8950,116.2775">Mandalika / Kuta</option>
+                <option value="-8.7612,116.2754">Bandara BIL</option>
+                <option value="-8.4964,116.0469">Senggigi</option>
+                <option value="-8.3517,116.0378">Gili Trawangan</option>
+                <option value="-8.3670,116.5240">Sembalun / Rinjani</option>
+              </select>
+            </div>
             <div style="display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
               <p id="weather-desc" style="margin: 0; color: #475569; font-size: 0.9rem; font-weight: 600;">Memuat data cuaca...</p>
               <span id="weather-status-badge" style="display:none; padding: 3px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: #dcfce7; color: #16a34a;"><i class="fa-solid fa-plane-up"></i> Aman Terbangkan Drone</span>
@@ -363,12 +373,22 @@
 
   <script>
     // Fetch Weather Data using Open-Meteo (Tanpa API Key, 100% Gratis & Unlimited)
-    document.addEventListener("DOMContentLoaded", function() {
-      // Koordinat Lombok (Bandara/Mataram)
-      const lat = -8.5833;
-      const lon = 116.1167; 
+    function fetchLombokWeather() {
+      let lat = -8.5833;
+      let lon = 116.1167; 
+      
+      const regionSelect = document.getElementById('weather-region-select');
+      if (regionSelect) {
+          const coords = regionSelect.value.split(',');
+          lat = parseFloat(coords[0]);
+          lon = parseFloat(coords[1]);
+      }
+
       const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,is_day,precipitation,weather_code,wind_speed_10m&timezone=Asia%2FMakassar`;
 
+      // Set loading state
+      document.getElementById('weather-desc').innerText = "Memuat data...";
+      
       fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -446,7 +466,9 @@
           document.getElementById('weather-desc').innerText = "Gagal memuat cuaca";
           document.getElementById('weather-icon-container').innerHTML = `<i class="fa-solid fa-circle-exclamation"></i>`;
         });
-    });
+    }
+
+    document.addEventListener("DOMContentLoaded", fetchLombokWeather);
   </script>
 
   <!-- Penjelasan Fitur Aplikasi (Wajib untuk Verifikasi Google) -->
