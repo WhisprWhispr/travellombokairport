@@ -3200,12 +3200,18 @@ window.uploadVideoToServer = async function(fileInput, targetInputId) {
     btn.disabled = true;
 
     try {
-        // Step 1: Get signature from server
-        const sigRes = await fetch('/api/upload-signature', {
-            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
-        });
-        if (!sigRes.ok) throw new Error('Gagal mendapatkan signature upload');
-        const { cloudName, apiKey, timestamp, signature } = await sigRes.json();
+        // Step 1: Generate signature CLIENT-SIDE (avoid Cloudflare bot challenge)
+        const cloudName = 'mvhjuh83';
+        const apiKey = '636819913243949';
+        const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
+        const timestamp = Math.round(Date.now() / 1000);
+        const strToSign = `timestamp=${timestamp}${apiSecret}`;
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(strToSign);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
         // Step 2: Determine resource type
         const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
