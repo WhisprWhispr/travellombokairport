@@ -62,7 +62,13 @@ app.post('/upload', async (c) => {
         cloudinaryFormData.append('timestamp', timestamp);
         cloudinaryFormData.append('signature', signature);
         
-        const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
+        let resourceType = 'auto';
+        if (file && file.type) {
+            if (file.type.startsWith('video/')) resourceType = 'video';
+            else if (file.type.startsWith('image/')) resourceType = 'image';
+        }
+
+        const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
             method: 'POST',
             body: cloudinaryFormData
         });

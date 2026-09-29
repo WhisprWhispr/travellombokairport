@@ -5,7 +5,7 @@ async function testUpload() {
     const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
     
     const timestamp = Math.round((new Date).getTime() / 1000);
-    const strToSign = \	imestamp=\\\;
+    const strToSign = 'timestamp=' + timestamp + apiSecret;
     const signature = crypto.createHash('sha1').update(strToSign).digest('hex');
 
     const formData = new FormData();
@@ -16,7 +16,7 @@ async function testUpload() {
     formData.append('timestamp', timestamp);
     formData.append('signature', signature);
 
-    const res = await fetch(\https://api.cloudinary.com/v1_1/\/auto/upload\, {
+    const res = await fetch('https://api.cloudinary.com/v1_1/' + cloudName + '/auto/upload', {
         method: 'POST',
         body: formData
     });
