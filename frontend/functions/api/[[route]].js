@@ -62,7 +62,7 @@ app.post('/upload', async (c) => {
         cloudinaryFormData.append('timestamp', timestamp);
         cloudinaryFormData.append('signature', signature);
         
-        const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+        const cloudinaryRes = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/auto/upload`, {
             method: 'POST',
             body: cloudinaryFormData
         });

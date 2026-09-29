@@ -1031,12 +1031,14 @@
           </div>
 
           <div class="form-group">
-            <label>URL Video YouTube</label>
+            <label>URL Video (YouTube / Upload)</label>
             <div class="form-row-responsive align-center">
-              <input type="url" id="drone-video-url" required placeholder="https://youtube.com/watch?v=..." style="flex: 1;">
+              <input type="url" id="drone-video-url" required placeholder="Upload video atau paste URL YouTube..." style="flex: 1;">
+              <input type="file" id="drone-video-upload" accept="video/*" style="display: none;" onchange="uploadImageToServer(this, 'drone-video-url')">
+              <button type="button" class="btn btn-outline" style="border-color: #10b981; color: #10b981;" onclick="document.getElementById('drone-video-upload').click()"><i class="fa-solid fa-upload"></i> Upload</button>
               <button type="button" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6;" onclick="navigator.clipboard.readText().then(text => { document.getElementById('drone-video-url').value = text; }).catch(err => { alert('Gagal mengakses clipboard: ' + err); })"><i class="fa-solid fa-paste"></i> Paste</button>
             </div>
-            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Masukkan URL YouTube yang valid (contoh: https://youtu.be/...)</p>
+            <p style="font-size: 0.8rem; color: #64748b; margin-top: 5px;">Pilih "Upload" untuk mengunggah video ke server, atau masukkan URL eksternal (contoh: https://youtu.be/...)</p>
           </div>
 
           <button type="submit" class="btn btn-green w-100 mt-4"><i class="fa-solid fa-save"></i> SIMPAN VIDEO</button>
