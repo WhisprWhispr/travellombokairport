@@ -420,11 +420,19 @@
             const badge = document.getElementById('weather-status-badge');
             if (code < 50 && windSpeed < 20) {
                 badge.style.display = 'inline-block';
+                badge.style.background = '#dcfce7';
+                badge.style.color = '#16a34a';
+                badge.innerHTML = '<i class="fa-solid fa-plane-up"></i> Aman Terbangkan Drone';
+            } else if (code < 50 && windSpeed >= 20) {
+                badge.style.display = 'inline-block';
+                badge.style.background = '#fef08a';
+                badge.style.color = '#854d0e';
+                badge.innerHTML = '<i class="fa-solid fa-wind"></i> Angin Kencang (Drone Bahaya)';
             } else {
                 badge.style.display = 'inline-block';
                 badge.style.background = '#fee2e2';
                 badge.style.color = '#dc2626';
-                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Cuaca Ekstrem';
+                badge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Cuaca Buruk (Drone Bahaya)';
             }
 
             // Hover effect interaktif
@@ -1104,8 +1112,8 @@
   <!-- Gempa Modal -->
   <div id="gempa-modal" class="tour-modal-overlay" style="z-index: 100000; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px);">
     <div class="tour-modal-content" style="max-width: 450px; border-radius: 20px; overflow: hidden; padding: 0; max-height: 90vh; display: flex; flex-direction: column;">
-      <div style="background: linear-gradient(135deg, #dc2626, #991b1b); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-        <h3 style="color: white; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-house-crack"></i> Gempa Terkini BMKG</h3>
+      <div id="gempa-header" style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
+        <h3 style="color: white; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-house-crack"></i> Info Gempa BMKG</h3>
         <button onclick="document.getElementById('gempa-modal').classList.remove('active')" style="background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div style="padding: 20px; text-align: center; overflow-y: auto; flex-grow: 1;">
@@ -1157,6 +1165,10 @@
                 if(alertBanner) {
                     alertBanner.style.display = 'block';
                     document.getElementById('tsunami-alert-text').innerText = "PERINGATAN DINI TSUNAMI: " + gempa.Wilayah + " (" + gempa.Magnitude + " SR)";
+                }
+                const gempaHeader = document.getElementById('gempa-header');
+                if(gempaHeader) {
+                    gempaHeader.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
                 }
             }
 
