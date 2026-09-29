@@ -518,18 +518,27 @@
               <div style="position: absolute; bottom: -30px; left: 20px; width: 120px; height: 120px; background: radial-gradient(circle, rgba(16,185,129,0.2) 0%, transparent 70%); border-radius: 50%;"></div>
               
               <div style="position: relative; z-index: 1;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px;">
-                  <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(99,102,241,0.4);">
+                <style>
+                  .license-header-responsive { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+                  .license-grid-responsive { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+                  .license-id-card-responsive { grid-column: span 2; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+                  @media (max-width: 500px) {
+                    .license-grid-responsive { grid-template-columns: 1fr; }
+                    .license-id-card-responsive { grid-column: span 1; }
+                  }
+                </style>
+                <div class="license-header-responsive">
+                  <div style="background: linear-gradient(135deg, #6366f1, #8b5cf6); width: 38px; height: 38px; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(99,102,241,0.4); flex-shrink: 0;">
                     <i class="fa-solid fa-shield-halved" style="color: white; font-size: 1rem;"></i>
                   </div>
-                  <div>
+                  <div style="min-width: 150px;">
                     <div style="font-size: 0.7rem; font-weight: 700; color: #6366f1; letter-spacing: 2px; text-transform: uppercase;">Licensed Software</div>
                     <div style="font-size: 1.05rem; font-weight: 800; color: #f8fafc;">Informasi Lisensi</div>
                   </div>
-                  <div style="margin-left: auto; background: linear-gradient(135deg, #10b981, #059669); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; color: white; letter-spacing: 0.5px;">✓ AKTIF</div>
+                  <div style="margin-left: auto; background: linear-gradient(135deg, #10b981, #059669); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; color: white; letter-spacing: 0.5px; white-space: nowrap;">✓ AKTIF</div>
                 </div>
 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <div class="license-grid-responsive">
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Diterbitkan Oleh</div>
                     <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px;">
@@ -544,7 +553,7 @@
                   </div>
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Penerima Lisensi</div>
-                    <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px;">
+                    <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
                       <i class="fa-solid fa-building" style="color: #f59e0b; font-size: 0.85rem;"></i> Travel Lombok Airport
                     </div>
                   </div>
@@ -562,13 +571,13 @@
                   </div>
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Developed By</div>
-                    <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px;">
+                    <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
                       <i class="fa-solid fa-user-astronaut" style="color: #a855f7; font-size: 0.85rem;"></i> Ridho Sandhika
                     </div>
                   </div>
-                  <div style="grid-column: span 2; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center;">
+                  <div class="license-id-card-responsive">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">ID Lisensi</div>
-                    <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px; font-family: monospace; letter-spacing: 1px;">
+                    <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px; font-family: monospace; letter-spacing: 1px; flex-wrap: wrap;">
                       <i class="fa-solid fa-key" style="color: #fbbf24; font-size: 0.85rem;"></i> ID-7891-SC-RS
                     </div>
                   </div>
