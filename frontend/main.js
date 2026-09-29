@@ -1273,7 +1273,7 @@ const createDroneCard = (item, index = 0) => {
 
     if (iframeSrc) {
         if (iframeSrc.endsWith('.mp4')) {
-            mediaHtml = `<video width="100%" height="100%" controls style="border-radius: 20px 20px 0 0; object-fit: cover; background: #000;"><source src="${iframeSrc}" type="video/mp4">Your browser does not support HTML video.</video>`;
+            mediaHtml = `<video width="100%" height="100%" controls style="border-radius: 20px 20px 0 0; object-fit: contain; background: #000;"><source src="${iframeSrc}" type="video/mp4">Your browser does not support HTML video.</video>`;
         } else {
             mediaHtml = `<iframe width="100%" height="100%" src="${iframeSrc}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="border-radius: 20px 20px 0 0; background: #000;"></iframe>`;
         }
@@ -1290,7 +1290,7 @@ const createDroneCard = (item, index = 0) => {
 
     return `
     <div class="card drone-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
-        <div class="img-wrapper" style="height: 250px; position: relative;">
+        <div class="img-wrapper" style="height: ${iframeSrc && iframeSrc.endsWith('.mp4') ? 'auto; min-height: 200px' : '250px'}; position: relative;">
             <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
             ${mediaHtml}
