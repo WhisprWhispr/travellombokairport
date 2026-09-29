@@ -1298,7 +1298,7 @@ const createDroneCard = (item, index = 0) => {
         <div class="content" style="padding: 20px;">
             <h3 style="color: var(--primary-blue); font-size: 1.2rem; margin-bottom: 5px;">${item.title}</h3>
             ${dateHtml}
-            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 25px;">${item.description}</p>
+            <p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 25px;">${(item.description || '').replace(/\n/g, '<br>')}</p>
             ${buttonHtml}
         </div>
     </div>
