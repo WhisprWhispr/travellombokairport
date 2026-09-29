@@ -3186,7 +3186,79 @@ window.uploadImageToServer = async function(fileInput, targetInputId) {
     }
 };
 
-// ====== AI KNOWLEDGE BASE ======
+// --- DIRECT VIDEO UPLOAD TO CLOUDINARY (Bypass Cloudflare, no server size limit) ---
+window.uploadVideoToServer = async function(fileInput, targetInputId) {
+    const file = fileInput.files[0];
+    if (!file) return;
+
+    const targetInput = document.getElementById(targetInputId);
+    // Find the Upload button (the one right after the hidden file input)
+    const btn = fileInput.nextElementSibling;
+    const originalText = btn.innerHTML;
+
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengunggah...';
+    btn.disabled = true;
+
+    try {
+        // Step 1: Get signature from server
+        const sigRes = await fetch('/api/upload-signature', {
+            headers: { 'Authorization': 'Bearer ' + localStorage.getItem('adminToken') }
+        });
+        if (!sigRes.ok) throw new Error('Gagal mendapatkan signature upload');
+        const { cloudName, apiKey, timestamp, signature } = await sigRes.json();
+
+        // Step 2: Determine resource type
+        const resourceType = file.type.startsWith('video/') ? 'video' : 'image';
+
+        // Step 3: Upload directly from browser to Cloudinary
+        const cloudinaryFormData = new FormData();
+        cloudinaryFormData.append('file', file);
+        cloudinaryFormData.append('api_key', apiKey);
+        cloudinaryFormData.append('timestamp', timestamp);
+        cloudinaryFormData.append('signature', signature);
+
+        const cloudinaryRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+            { method: 'POST', body: cloudinaryFormData }
+        );
+
+        if (!cloudinaryRes.ok) {
+            const errData = await cloudinaryRes.json();
+            throw new Error(errData.error?.message || 'Gagal upload ke Cloudinary');
+        }
+
+        const result = await cloudinaryRes.json();
+        targetInput.value = result.secure_url;
+
+        // Show success message
+        let oldMsg = targetInput.parentNode.parentNode.querySelector('.upload-msg');
+        if (oldMsg) oldMsg.remove();
+        const msgNode = document.createElement('div');
+        msgNode.className = 'upload-msg';
+        msgNode.style.cssText = 'color:#10b981;font-size:0.85rem;margin-top:8px;font-weight:600;';
+        msgNode.innerHTML = '<i class="fa-solid fa-circle-check"></i> Video berhasil diunggah!';
+        targetInput.parentNode.parentNode.insertBefore(msgNode, targetInput.parentNode.nextSibling);
+
+        btn.innerHTML = '<i class="fa-solid fa-check" style="color:#4CAF50;"></i> Berhasil';
+        setTimeout(() => { if (btn) btn.innerHTML = originalText; }, 3000);
+
+    } catch (error) {
+        console.error('Video Upload Error:', error);
+        let oldMsg = targetInput.parentNode.parentNode.querySelector('.upload-msg');
+        if (oldMsg) oldMsg.remove();
+        const msgNode = document.createElement('div');
+        msgNode.className = 'upload-msg';
+        msgNode.style.cssText = 'color:#ef4444;font-size:0.85rem;margin-top:8px;font-weight:600;';
+        msgNode.innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Gagal: ' + (error.message || 'Terjadi kesalahan');
+        targetInput.parentNode.parentNode.insertBefore(msgNode, targetInput.parentNode.nextSibling);
+        btn.innerHTML = originalText;
+    } finally {
+        btn.disabled = false;
+        fileInput.value = '';
+    }
+};
+
+
 window.fetchAiKnowledgeBase = async () => {
     try {
         const token = localStorage.getItem('adminToken');

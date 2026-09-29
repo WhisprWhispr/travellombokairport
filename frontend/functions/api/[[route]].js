@@ -91,6 +91,33 @@ app.post('/upload', async (c) => {
     }
 });
 
+// GET /api/upload-signature - Generate Cloudinary signature for direct browser upload (video/large files)
+app.get('/upload-signature', async (c) => {
+    try {
+        const cloudName = 'mvhjuh83';
+        const apiKey = '636819913243949';
+        const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
+        
+        const timestamp = Math.round((new Date).getTime() / 1000);
+        const strToSign = `timestamp=${timestamp}${apiSecret}`;
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(strToSign);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        return c.json({
+            cloudName,
+            apiKey,
+            timestamp,
+            signature
+        });
+    } catch (error) {
+        return c.json({ error: 'Internal Server Error', message: error.message }, 500);
+    }
+});
+
 // For fallback in api.js
 app.route('/', apiRoutes);
 
