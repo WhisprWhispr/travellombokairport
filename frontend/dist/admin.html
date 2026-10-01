@@ -547,9 +547,48 @@
                   .license-header-responsive { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
                   .license-grid-responsive { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
                   .license-id-card-responsive { grid-column: span 2; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
-                  @media (max-width: 500px) {
-                    .license-grid-responsive { grid-template-columns: 1fr; }
-                    .license-id-card-responsive { grid-column: span 1; }
+                  .license-rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+                  
+                  /* Scrollbar Styling for webkit */
+                  .horizontal-scroll::-webkit-scrollbar { height: 6px; }
+                  .horizontal-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+                  .horizontal-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+                  
+                  @media (max-width: 600px) {
+                    .license-grid-responsive { 
+                      display: flex; 
+                      flex-wrap: nowrap; 
+                      overflow-x: auto; 
+                      scroll-snap-type: x mandatory; 
+                      padding-bottom: 15px; 
+                      -webkit-overflow-scrolling: touch; 
+                      margin-right: -20px; /* pull to edge */
+                      padding-right: 20px;
+                    }
+                    .license-grid-responsive > div { 
+                      min-width: 260px; 
+                      scroll-snap-align: start; 
+                      flex-shrink: 0; 
+                    }
+                    .license-grid-responsive > .license-id-card-responsive { 
+                      min-width: 300px; 
+                    }
+                    
+                    .license-rights-grid {
+                      display: flex;
+                      flex-wrap: nowrap;
+                      overflow-x: auto;
+                      scroll-snap-type: x mandatory;
+                      padding-bottom: 15px;
+                      -webkit-overflow-scrolling: touch;
+                      margin-right: -20px;
+                      padding-right: 20px;
+                    }
+                    .license-rights-grid > div {
+                      min-width: 280px;
+                      scroll-snap-align: start;
+                      flex-shrink: 0;
+                    }
                   }
                 </style>
                 <div class="license-header-responsive">
@@ -563,7 +602,7 @@
                   <div style="margin-left: auto; background: linear-gradient(135deg, #10b981, #059669); padding: 4px 12px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; color: white; letter-spacing: 0.5px; white-space: nowrap;">✓ AKTIF</div>
                 </div>
 
-                <div class="license-grid-responsive">
+                <div class="license-grid-responsive horizontal-scroll">
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Diterbitkan Oleh</div>
                     <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px;">
@@ -658,7 +697,7 @@
                 </div>
 
                 <!-- USAGE RIGHTS & RESTRICTIONS -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px;">
+                <div class="license-rights-grid horizontal-scroll">
                   <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 16px;">
                     <div style="color: #10b981; font-size: 0.75rem; letter-spacing: 2px; font-weight: 800; margin-bottom: 12px; text-transform: uppercase;">USAGE RIGHTS</div>
                     <div style="font-size: 0.85rem; line-height: 2;">
