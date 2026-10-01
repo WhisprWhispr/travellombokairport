@@ -12,6 +12,7 @@ import promosRoutes from './functions/api/routes/promos.js';
 import blogsRoutes from './functions/api/routes/blogs.js';
 import analyticsRoutes from './functions/api/routes/analytics.js';
 import reportsRoutes from './functions/api/routes/reports.js';
+import { getDbFromEnv } from './functions/api/config/firebase.js';
 
 const app = new Hono().basePath('/api');
 
@@ -92,4 +93,50 @@ app.post('/upload', async (c) => {
 // For fallback in api.js
 app.route('/', apiRoutes);
 
-export default app;
+// --- CLOUDFLARE CRON: Auto-expire VA payments after 24 hours ---
+async function runAutoExpireCron(env) {
+    try {
+        const db = getDbFromEnv(env);
+        const now = Date.now();
+        const limit24h = 24 * 60 * 60 * 1000;
+        let expiredCount = 0;
+
+        const cols = ['bookings', 'orderan', 'orders'];
+        for (const col of cols) {
+            const snap = await db.collection(col).where('status', '==', 'PENDING').get();
+            const docs = [];
+            snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+
+            for (const doc of docs) {
+                const method = (doc.paymentMethod || '').toLowerCase();
+                if (method !== 'va') continue;
+
+                const expStr = doc.expiredAtISO || doc.expiredAt;
+                let shouldExpire = false;
+                if (expStr) {
+                    const expTime = new Date(expStr).getTime();
+                    if (!isNaN(expTime) && now > expTime) shouldExpire = true;
+                } else {
+                    const created = doc.createdAt ? new Date(doc.createdAt).getTime() : 0;
+                    if (created > 0 && (now - created) > limit24h) shouldExpire = true;
+                }
+
+                if (shouldExpire) {
+                    await db.collection(col).doc(doc.id).update({ status: 'KADALUARSA' });
+                    expiredCount++;
+                }
+            }
+        }
+
+        console.log(`[CRON] Auto-expire: ${expiredCount} pesanan VA diubah ke KADALUARSA.`);
+    } catch (err) {
+        console.error('[CRON] Error auto-expire:', err.message);
+    }
+}
+
+export default {
+    fetch: app.fetch.bind(app),
+    async scheduled(event, env, ctx) {
+        ctx.waitUntil(runAutoExpireCron(env));
+    }
+};

@@ -452,6 +452,19 @@ export function getDb(c) {
     }
 }
 
+export function getDbFromEnv(env) {
+    if (dbInstance) return dbInstance;
+    const serviceAccountStr = env.FIREBASE_SERVICE_ACCOUNT;
+    if (!serviceAccountStr) throw new Error("Missing FIREBASE_SERVICE_ACCOUNT");
+    const serviceAccount = JSON.parse(serviceAccountStr);
+    dbInstance = new FirestoreClient(
+        serviceAccount.project_id,
+        serviceAccount.client_email,
+        serviceAccount.private_key
+    );
+    return dbInstance;
+}
+
 export const admin = {
     firestore: {
         FieldValue: {
