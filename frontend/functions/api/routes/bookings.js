@@ -204,8 +204,13 @@ bookingsRoutes.delete('/:id', verifyToken, async (c) => {
     try {
         const db = getDb(c);
         const id = c.req.param('id');
-        await db.collection('bookings').doc(id).delete();
-        return c.json({ message: 'Booking deleted successfully' });
+        
+        // Hapus dari semua kemungkinan collection untuk memastikan data benar-benar bersih
+        await db.collection('bookings').doc(id).delete().catch(e => console.log(e));
+        await db.collection('orders').doc(id).delete().catch(e => console.log(e));
+        await db.collection('orderan').doc(id).delete().catch(e => console.log(e));
+        
+        return c.json({ message: 'Booking deleted successfully from all collections' });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }
