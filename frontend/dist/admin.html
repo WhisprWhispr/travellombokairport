@@ -548,28 +548,48 @@
                   .license-grid-responsive { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
                   .license-id-card-responsive { grid-column: span 2; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
                   .license-rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+                  /* Scrollbar Styling for webkit */
+                  .horizontal-scroll::-webkit-scrollbar { height: 6px; }
+                  .horizontal-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
+                  .horizontal-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
                   
                   @media (max-width: 600px) {
                     .license-grid-responsive { 
-                      grid-template-columns: 1fr 1fr; /* Keep 2 columns on mobile but smaller gaps */
-                      gap: 8px;
+                      display: grid !important; 
+                      grid-template-rows: 1fr 1fr; /* 2 Rows */
+                      grid-auto-columns: 240px; /* Card width */
+                      grid-auto-flow: column; /* Flow horizontally */
+                      overflow-x: auto; 
+                      gap: 12px;
+                      padding-bottom: 15px; 
+                      -webkit-overflow-scrolling: touch; 
+                      scroll-snap-type: x mandatory;
+                      margin-right: -30px; /* Break out of parent padding */
+                      padding-right: 30px;
                     }
                     .license-grid-responsive > div {
-                      padding: 10px 12px !important;
-                    }
-                    .license-grid-responsive > div > div:first-child {
-                      font-size: 0.65rem !important; /* Smaller label */
-                    }
-                    .license-grid-responsive > div > div:last-child {
-                      font-size: 0.85rem !important; /* Smaller value */
+                      scroll-snap-align: start;
+                      padding: 12px 14px !important;
                     }
                     .license-id-card-responsive { 
-                      grid-column: span 2; 
-                      padding: 12px !important;
+                      grid-column: auto !important; /* Reset span 2 */
+                      grid-row: span 2; /* Make it a tall card taking 2 rows */
                     }
                     .license-rights-grid { 
-                      grid-template-columns: 1fr; 
-                      gap: 10px;
+                      display: flex !important;
+                      flex-wrap: nowrap;
+                      overflow-x: auto;
+                      gap: 12px;
+                      padding-bottom: 15px;
+                      -webkit-overflow-scrolling: touch;
+                      scroll-snap-type: x mandatory;
+                      margin-right: -30px;
+                      padding-right: 30px;
+                    }
+                    .license-rights-grid > div {
+                      min-width: 280px;
+                      flex-shrink: 0;
+                      scroll-snap-align: start;
                     }
                   }
                 </style>
