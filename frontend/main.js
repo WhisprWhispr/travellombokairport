@@ -27,6 +27,45 @@ window.forcePaymentSuccess = async (txId, btnElement) => {
     }
 };
 
+window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
+    if (event) event.stopPropagation();
+    
+    const handleSuccess = () => {
+        if (btnElement) {
+            btnElement.innerHTML = successHtml;
+            if (btnElement.tagName === 'BUTTON' && !successHtml.includes('fa-check')) {
+                 btnElement.style.background = '#10b981';
+            }
+            setTimeout(() => { 
+                btnElement.innerHTML = defaultHtml; 
+                if (btnElement.tagName === 'BUTTON' && !successHtml.includes('fa-check')) {
+                    btnElement.style.background = '';
+                }
+            }, 2000);
+        } else {
+            Swal.fire({icon: 'success', title: 'Tersalin!', toast: true, position: 'top', showConfirmButton: false, timer: 1500});
+        }
+    };
+
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(handleSuccess).catch(err => {
+            console.error('Gagal menyalin:', err);
+        });
+    } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            handleSuccess();
+        } catch (err) {
+            console.error('Gagal menyalin:', err);
+        }
+        document.body.removeChild(textArea);
+    }
+};
+
 // ====== MAINTENANCE MODE CHECK + EVENT MODE FETCH ======
 // Run ASAP before page renders, skip for admin/maintenance/login pages
 (async () => {
@@ -3609,9 +3648,9 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                         <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
                         <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
                             <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
-                            <div style="font-size:1.5rem;font-weight:900;color:#0c4a6e;letter-spacing:1px;word-break:break-all;">${d.vaNumber || '-'}</div>
-                            <button onclick="navigator.clipboard.writeText('${d.vaNumber}');this.innerHTML='<i class=\'fa-solid fa-check\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\'fa-regular fa-copy\'></i> Salin Nomor',2000);" 
-                                style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
+                            <div style="font-size:clamp(1.1rem, 5vw, 1.5rem);font-weight:900;color:#0c4a6e;letter-spacing:1px;word-break:break-all;">${d.vaNumber || '-'}</div>
+                            <button onclick="window.copyText('${d.vaNumber}', this, '<i class=\\'fa-solid fa-check\\'></i> Tersalin!', '<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor', event)" 
+                                style="margin-top:10px;padding:8px 20px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.9rem;font-weight:bold;">
                                 <i class="fa-regular fa-copy"></i> Salin Nomor
                             </button>
                         </div>
@@ -4437,37 +4476,7 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             <div style="display:flex; flex-direction:column; gap:20px;">
         `;
         window.copyTxId = (btn, id, event) => {
-            if (event) event.stopPropagation();
-            if (navigator.clipboard) {
-                navigator.clipboard.writeText(id).then(() => {
-                    const originalHtml = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                    btn.style.background = '#10b981';
-                    setTimeout(() => {
-                        btn.innerHTML = originalHtml;
-                        btn.style.background = 'var(--primary-blue)';
-                    }, 2000);
-                }).catch(err => console.error('Gagal menyalin:', err));
-            } else {
-                // Fallback for older browsers
-                const textArea = document.createElement("textarea");
-                textArea.value = id;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    const originalHtml = btn.innerHTML;
-                    btn.innerHTML = '<i class="fa-solid fa-check"></i>';
-                    btn.style.background = '#10b981';
-                    setTimeout(() => {
-                        btn.innerHTML = originalHtml;
-                        btn.style.background = 'var(--primary-blue)';
-                    }, 2000);
-                } catch (err) {
-                    console.error('Gagal menyalin:', err);
-                }
-                document.body.removeChild(textArea);
-            }
+            window.copyText(id, btn, '<i class="fa-solid fa-check"></i>', '<i class="fa-regular fa-copy"></i>', event);
         };
 
         window.resumePayment = async (transactionId, itemName) => {
@@ -4619,8 +4628,8 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                                 <div style="padding: 30px 25px 25px;">
                                     <div style="background: white; border: 2px dashed var(--primary-blue); border-radius: 16px; padding: 25px 20px; margin-bottom: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.03);">
                                         <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 5px; font-weight: 600;">Nomor Virtual Account</div>
-                                        <div style="font-size: 2rem; font-weight: 900; color: var(--primary-blue); letter-spacing: 2px; margin-bottom: 15px;">${vaNumber}</div>
-                                        <button onclick="navigator.clipboard.writeText('${vaNumber}');this.innerHTML='<i class=\\'fa-solid fa-check\\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor',2000);" 
+                                        <div style="font-size: clamp(1.2rem, 5vw, 2rem); font-weight: 900; color: var(--primary-blue); letter-spacing: 2px; margin-bottom: 15px; word-break: break-all;">${vaNumber}</div>
+                                        <button onclick="window.copyText('${vaNumber}', this, '<i class=\\'fa-solid fa-check\\'></i> Tersalin!', '<i class=\\'fa-regular fa-copy\\'></i> Salin Nomor', event)" 
                                             style="padding:10px 24px; background:linear-gradient(135deg, var(--primary-blue), #1e3a8a); color:white; border:none; border-radius:12px; cursor:pointer; font-size:0.95rem; font-weight:bold; box-shadow:0 4px 10px rgba(12,74,110,0.25); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.05)';" onmouseout="this.style.transform='scale(1)';">
                                             <i class="fa-regular fa-copy"></i> Salin Nomor
                                         </button>
@@ -4764,10 +4773,10 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     <!-- ID & Layanan Card -->
                     <div style="background: white; border-radius: 18px; padding: 22px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
                         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
-                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
-                            <div style="display:flex; align-items:center; gap:10px;">
-                                <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:1.05rem; letter-spacing:0.5px;">${item.transactionId}</span>
-                                <button onclick="window.copyTxId(this, '${item.transactionId}', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.9rem;"></i></button>
+                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
+                            <div style="display:flex; align-items:center; gap:8px; max-width: 60%;">
+                                <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:0.9rem; letter-spacing:0; word-break:break-all; text-align:right;">${item.transactionId}</span>
+                                <button onclick="window.copyText('${item.transactionId}', this, '<i class=\\'fa-solid fa-check\\'></i>', '<i class=\\'fa-regular fa-copy\\'></i>', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.9rem;"></i></button>
                             </div>
                         </div>
                         <div style="display:flex; flex-direction:column; gap:8px;">
@@ -4836,10 +4845,10 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     
                     <!-- Header: ID & Status -->
                     <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;">
-                        <div style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 10px; border: 1px solid #f1f5f9;">
-                            <i class="fa-solid fa-receipt" style="color: #94a3b8; font-size: 0.8rem;"></i>
-                            <span style="font-size: 0.75rem; color: #475569; font-weight: 700; font-family: monospace; letter-spacing: 0.5px;">${item.transactionId}</span>
-                            <button onclick="window.copyTxId(this, '${item.transactionId}', event)" style="background: white; color: var(--primary-blue); border: 1px solid #e2e8f0; border-radius: 6px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;" title="Salin ID" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='var(--primary-blue)';"><i class="fa-regular fa-copy" style="font-size: 0.65rem;"></i></button>
+                        <div style="display: flex; align-items: center; gap: 8px; background: #f8fafc; padding: 6px 12px; border-radius: 10px; border: 1px solid #f1f5f9; max-width: 65%;">
+                            <i class="fa-solid fa-receipt" style="color: #94a3b8; font-size: 0.8rem; flex-shrink: 0;"></i>
+                            <span style="font-size: 0.75rem; color: #475569; font-weight: 700; font-family: monospace; letter-spacing: 0; word-break: break-all;">${item.transactionId}</span>
+                            <button onclick="window.copyText('${item.transactionId}', this, '<i class=\\'fa-solid fa-check\\'></i>', '<i class=\\'fa-regular fa-copy\\'></i>', event)" style="background: white; color: var(--primary-blue); border: 1px solid #e2e8f0; border-radius: 6px; width: 22px; height: 22px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0;" title="Salin ID" onmouseover="this.style.background='var(--primary-blue)'; this.style.color='white';" onmouseout="this.style.background='white'; this.style.color='var(--primary-blue)';"><i class="fa-regular fa-copy" style="font-size: 0.65rem;"></i></button>
                         </div>
                         <span style="font-size: 0.7rem; font-weight: 800; color: ${statusColor}; background: ${statusBg}; padding: 6px 12px; border-radius: 20px; letter-spacing: 0.5px; text-transform: uppercase;">
                             ${item.status}
