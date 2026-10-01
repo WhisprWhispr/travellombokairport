@@ -308,7 +308,7 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
 bookingsRoutes.get('/check/:transactionId', async (c) => {
     try {
         const db = getDb(c);
-        const transactionId = c.req.param('transactionId').trim().toUpperCase();
+        const transactionId = c.req.param('transactionId').trim();
 
         // Deteksi tipe berdasarkan prefix ID
         const isBKG = transactionId.startsWith('BKG-');
