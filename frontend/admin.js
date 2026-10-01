@@ -1073,7 +1073,7 @@ window.showTab = (tab) => {
         "ai-knowledge-section", "bookings-section", "orders-section", 
         "web-bookings-section", "gallery-section", "reviews-section",
         "item-reviews-section", "promos-section", "blogs-section",
-        "withdrawal-section", "reports-section", "license-section",
+        "withdrawal-section", "reports-section",
         "settings-section", "users-section", "login-logs-section", "drivers-section"
     ];
     sectionsToHide.forEach(id => {
@@ -1131,9 +1131,6 @@ window.showTab = (tab) => {
             reportsSection.style.display = "block";
             fetchAdminReports();
         }
-    } else if (tab === "license") {
-        const licenseSection = document.getElementById("license-section");
-        if (licenseSection) licenseSection.style.display = "block";
     } else if (tab === "gallery") {
         document.getElementById("gallery-section").style.display = "block";
         document.getElementById("add-gallery-btn").style.display = "inline-block";
