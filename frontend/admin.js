@@ -3586,17 +3586,21 @@ window.fetchAdminReports = async () => {
             table.innerHTML = data.reports.map(r => {
                 const userLabel = r.userInfo && r.userInfo.name ? r.userInfo.name : (r.userInfo && r.userInfo.email ? r.userInfo.email : 'Anonim');
                 const isDone = r.status === 'DONE';
-                return `
-                <tr>
-                    <td style="font-size: 0.82rem; color: #64748b; white-space: nowrap;">${new Date(r.createdAt).toLocaleDateString('id-ID', {day:'2-digit',month:'short',year:'numeric'})}<br><span style="font-size:0.75rem;">${new Date(r.createdAt).toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'})}</span></td>
-                    <td><strong style="font-size:0.88rem;">${r.category}</strong></td>
-                    <td style="max-width: 220px; white-space: normal; font-size: 0.88rem;">${r.detail || '-'}</td>
-                    <td><span class="badge ${isDone ? 'badge-success' : 'badge-warning'}">${isDone ? 'SELESAI' : 'BARU'}</span><br><small style="color:#94a3b8;font-size:0.75rem;">${userLabel}</small></td>
-                    <td>
-                        ${!isDone ? `<button onclick="window.markReportDone('${r.id}')" class="btn btn-outline btn-sm" style="font-size:0.78rem; white-space:nowrap;"><i class="fa-solid fa-check"></i> Selesai</button>` : '<span style="color:#10b981;font-size:0.82rem;">✓ Done</span>'}
-                    </td>
-                </tr>
-            `}).join('');
+                const badgeClass = isDone ? 'badge-success' : 'badge-warning';
+                const badgeLabel = isDone ? 'SELESAI' : 'BARU';
+                const actionCell = isDone
+                    ? '<span style="color:#10b981;font-size:0.82rem;">&#10003; Done</span>'
+                    : '<button onclick="window.markReportDone(\'' + r.id + '\')" class="btn btn-outline btn-sm" style="font-size:0.78rem; white-space:nowrap;"><i class="fa-solid fa-check"></i> Selesai</button>';
+                const tgl = new Date(r.createdAt).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
+                const jam = new Date(r.createdAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+                return '<tr>'
+                    + '<td style="font-size:0.82rem;color:#64748b;white-space:nowrap;">' + tgl + '<br><span style="font-size:0.75rem;">' + jam + '</span></td>'
+                    + '<td><strong style="font-size:0.88rem;">' + (r.category || '-') + '</strong></td>'
+                    + '<td style="max-width:220px;white-space:normal;font-size:0.88rem;">' + (r.detail || '-') + '</td>'
+                    + '<td><span class="badge ' + badgeClass + '">' + badgeLabel + '</span><br><small style="color:#94a3b8;font-size:0.75rem;">' + userLabel + '</small></td>'
+                    + '<td>' + actionCell + '</td>'
+                    + '</tr>';
+            }).join('');
         } else {
             table.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada laporan masalah.</td></tr>';
         }
