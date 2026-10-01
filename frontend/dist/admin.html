@@ -549,45 +549,27 @@
                   .license-id-card-responsive { grid-column: span 2; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
                   .license-rights-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
                   
-                  /* Scrollbar Styling for webkit */
-                  .horizontal-scroll::-webkit-scrollbar { height: 6px; }
-                  .horizontal-scroll::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius: 10px; }
-                  .horizontal-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
-                  
                   @media (max-width: 600px) {
                     .license-grid-responsive { 
-                      display: flex; 
-                      flex-wrap: nowrap; 
-                      overflow-x: auto; 
-                      scroll-snap-type: x mandatory; 
-                      padding-bottom: 15px; 
-                      -webkit-overflow-scrolling: touch; 
-                      margin-right: -20px; /* pull to edge */
-                      padding-right: 20px;
+                      grid-template-columns: 1fr 1fr; /* Keep 2 columns on mobile but smaller gaps */
+                      gap: 8px;
                     }
-                    .license-grid-responsive > div { 
-                      min-width: 260px; 
-                      scroll-snap-align: start; 
-                      flex-shrink: 0; 
+                    .license-grid-responsive > div {
+                      padding: 10px 12px !important;
                     }
-                    .license-grid-responsive > .license-id-card-responsive { 
-                      min-width: 300px; 
+                    .license-grid-responsive > div > div:first-child {
+                      font-size: 0.65rem !important; /* Smaller label */
                     }
-                    
-                    .license-rights-grid {
-                      display: flex;
-                      flex-wrap: nowrap;
-                      overflow-x: auto;
-                      scroll-snap-type: x mandatory;
-                      padding-bottom: 15px;
-                      -webkit-overflow-scrolling: touch;
-                      margin-right: -20px;
-                      padding-right: 20px;
+                    .license-grid-responsive > div > div:last-child {
+                      font-size: 0.85rem !important; /* Smaller value */
                     }
-                    .license-rights-grid > div {
-                      min-width: 280px;
-                      scroll-snap-align: start;
-                      flex-shrink: 0;
+                    .license-id-card-responsive { 
+                      grid-column: span 2; 
+                      padding: 12px !important;
+                    }
+                    .license-rights-grid { 
+                      grid-template-columns: 1fr; 
+                      gap: 10px;
                     }
                   }
                 </style>
