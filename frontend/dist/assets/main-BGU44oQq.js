@@ -1551,71 +1551,73 @@ Nomor Rekening: 1610017191425`,f=e?`Saya telah melakukan Booking via Website den
                 <span style="color:#64748b; font-size:0.85rem; font-weight:600; min-width: 120px;">${e}</span>
                 <span style="color:#1e293b; font-weight:700; font-size:0.95rem; text-align: right; word-break: break-word;">${t}</span>
             </div>
-        `;s+=c(`Nama Pemesan`,t.customerName||t.userEmail),s+=c(`Email`,t.customerEmail||t.userEmail),s+=c(`No. HP / WA`,t.phone||t.details?.phone),s+=c(`Tgl Keberangkatan`,t.startDate||t.details?.date),t.endDate&&(s+=c(`Tgl Selesai`,t.endDate)),t.details?.time&&(s+=c(`Waktu`,t.details.time)),t.details?.pax&&(s+=c(`Jumlah Peserta`,t.details.pax+` Orang`)),t.details?.pickup&&(s+=c(`Lokasi Jemput`,t.details.pickup)),t.details?.dropoff&&(s+=c(`Tujuan`,t.details.dropoff)),t.details?.flightNumber&&(s+=c(`No. Penerbangan`,t.details.flightNumber)),Swal.fire({showCloseButton:!1,showConfirmButton:!1,width:`520px`,padding:`0`,html:`
-            <div style="text-align: left; font-family: 'Inter', sans-serif; background: #f8fafc; border-radius: 20px; overflow: hidden;">
-                <!-- Header Card (Premium Gradient) -->
-                <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 40px 20px 50px; text-align: center; position: relative;">
-                    <button onclick="Swal.close()" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';"><i class="fa-solid fa-chevron-left" style="margin-right:2px;"></i></button>
-                    <div style="width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--primary-blue); font-size: 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-                        <i class="fa-solid fa-receipt"></i>
+        `;s+=c(`Nama Pemesan`,t.customerName||t.userEmail),s+=c(`Email`,t.customerEmail||t.userEmail),s+=c(`No. HP / WA`,t.phone||t.details?.phone),s+=c(`Tgl Keberangkatan`,t.startDate||t.details?.date),t.endDate&&(s+=c(`Tgl Selesai`,t.endDate)),t.details?.time&&(s+=c(`Waktu`,t.details.time)),t.details?.pax&&(s+=c(`Jumlah Peserta`,t.details.pax+` Orang`)),t.details?.pickup&&(s+=c(`Lokasi Jemput`,t.details.pickup)),t.details?.dropoff&&(s+=c(`Tujuan`,t.details.dropoff)),t.details?.flightNumber&&(s+=c(`No. Penerbangan`,t.details.flightNumber));let l=document.getElementById(`riwayat-page-container`);l&&(window.scrollTo({top:0,behavior:`smooth`}),l.innerHTML=`
+            <div style="max-width: 520px; margin: 0 auto; padding-bottom: 40px; animation: slideInUp 0.3s ease-out forwards;">
+                <div style="text-align: left; font-family: 'Inter', sans-serif; background: #f8fafc; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
+                    <!-- Header Card (Premium Gradient) -->
+                    <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 40px 20px 50px; text-align: center; position: relative;">
+                        <button onclick="window.showRiwayatTransaksi(true)" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';"><i class="fa-solid fa-chevron-left" style="margin-right:2px;"></i></button>
+                        <div style="width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--primary-blue); font-size: 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                            <i class="fa-solid fa-receipt"></i>
+                        </div>
+                        <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Detail Transaksi</h3>
+                        <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">${a}</p>
+                        
+                        <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);">
+                            <span style="display:inline-block; font-size:0.9rem; font-weight:800; color: white; background: ${n?`var(--primary-green)`:t.status===`PENDING`?`#f59e0b`:`#ef4444`}; padding:8px 24px; border-radius:30px; letter-spacing:1px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); border: 3px solid white;">
+                                ${t.status}
+                            </span>
+                        </div>
                     </div>
-                    <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Detail Transaksi</h3>
-                    <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">${a}</p>
                     
-                    <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);">
-                        <span style="display:inline-block; font-size:0.9rem; font-weight:800; color: white; background: ${n?`var(--primary-green)`:t.status===`PENDING`?`#f59e0b`:`#ef4444`}; padding:8px 24px; border-radius:30px; letter-spacing:1px; box-shadow: 0 6px 15px rgba(0,0,0,0.15); border: 3px solid white;">
-                            ${t.status}
-                        </span>
-                    </div>
-                </div>
-                
-                <!-- Main Content Body -->
-                <div style="padding: 45px 25px 25px;">
-                    <!-- Total Pembayaran -->
-                    <div style="background: white; border-radius: 18px; padding: 25px; margin-bottom: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
-                        <p style="color: #64748b; font-size: 0.95rem; font-weight: 600; margin: 0 0 5px; text-transform: uppercase; letter-spacing: 0.5px;">Total Pembayaran</p>
-                        <h2 style="color: var(--primary-green); font-size: 2.4rem; font-weight: 900; margin: 0; letter-spacing: -0.5px;">${i}</h2>
-                    </div>
+                    <!-- Main Content Body -->
+                    <div style="padding: 45px 25px 25px;">
+                        <!-- Total Pembayaran -->
+                        <div style="background: white; border-radius: 18px; padding: 25px; margin-bottom: 20px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
+                            <p style="color: #64748b; font-size: 0.95rem; font-weight: 600; margin: 0 0 5px; text-transform: uppercase; letter-spacing: 0.5px;">Total Pembayaran</p>
+                            <h2 style="color: var(--primary-green); font-size: 2.4rem; font-weight: 900; margin: 0; letter-spacing: -0.5px;">${i}</h2>
+                        </div>
 
-                    <!-- ID & Layanan Card -->
-                    <div style="background: white; border-radius: 18px; padding: 22px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
-                        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
-                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
-                            <div style="display:flex; align-items:center; gap:10px; width:100%;">
-                                <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:1.1rem; letter-spacing:0.5px; word-break:break-all;">${t.transactionId}</span>
-                                <button onclick="window.copyText('${t.transactionId}', this, '<i class=\\'fa-solid fa-check\\'></i>', '<i class=\\'fa-regular fa-copy\\'></i>', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.95rem;"></i></button>
+                        <!-- ID & Layanan Card -->
+                        <div style="background: white; border-radius: 18px; padding: 22px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
+                            <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
+                                <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
+                                <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                                    <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:1.1rem; letter-spacing:0.5px; word-break:break-all;">${t.transactionId}</span>
+                                    <button onclick="window.copyText('${t.transactionId}', this, '<i class=\\'fa-solid fa-check\\'></i>', '<i class=\\'fa-regular fa-copy\\'></i>', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.95rem;"></i></button>
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction:column; gap:8px;">
+                                <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-layer-group" style="opacity:0.6; margin-right:8px;"></i> Layanan</span>
+                                <span style="font-weight:800; color:#1e293b; font-size:1.15rem; line-height: 1.4; padding-left: 26px;">${t.itemName}</span>
                             </div>
                         </div>
-                        <div style="display:flex; flex-direction:column; gap:8px;">
-                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-layer-group" style="opacity:0.6; margin-right:8px;"></i> Layanan</span>
-                            <span style="font-weight:800; color:#1e293b; font-size:1.15rem; line-height: 1.4; padding-left: 26px;">${t.itemName}</span>
-                        </div>
-                    </div>
 
-                    <!-- Informasi Pemesanan -->
-                    <div style="background: white; border-radius: 18px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); margin-bottom: 25px;">
-                        <h4 style="color:#1e293b; font-size:1.1rem; margin-top:0; margin-bottom:20px; display:flex; align-items:center; gap:10px; font-weight: 800; border-bottom: 2px solid #f8fafc; padding-bottom: 15px;">
-                            <i class="fa-solid fa-list-check" style="color:var(--primary-blue);"></i> Rincian Pesanan
-                        </h4>
-                        <div style="display: flex; flex-direction: column;">
-                            ${s}
+                        <!-- Informasi Pemesanan -->
+                        <div style="background: white; border-radius: 18px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02); margin-bottom: 25px;">
+                            <h4 style="color:#1e293b; font-size:1.1rem; margin-top:0; margin-bottom:20px; display:flex; align-items:center; gap:10px; font-weight: 800; border-bottom: 2px solid #f8fafc; padding-bottom: 15px;">
+                                <i class="fa-solid fa-list-check" style="color:var(--primary-blue);"></i> Rincian Pesanan
+                            </h4>
+                            <div style="display: flex; flex-direction: column;">
+                                ${s}
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Action Buttons -->
-                    <div style="margin-top: 20px;">
-                        ${o}
-                        
-        <button onclick="Swal.close(); setTimeout(()=>{ window.generateEtiketPDF(window._lastBookingData); }, 300)" 
+                        <!-- Action Buttons -->
+                        <div style="margin-top: 20px;">
+                            ${o}
+                            
+        <button onclick="window.generateEtiketPDF(window._lastBookingData);" 
             style="background:linear-gradient(135deg, var(--primary-blue), #1e3a8a); border:none; color:white; font-size:1rem; padding:16px 20px; border-radius:14px; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:800; width:100%; margin-top:12px; box-shadow:0 8px 20px rgba(12,74,110,0.3); transition:all 0.3s;"
             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(12,74,110,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(12,74,110,0.3)';">
             <i class="fa-solid fa-file-pdf" style="font-size:1.2rem;"></i> Download E-Tiket (PDF)
         </button>
     
+                        </div>
                     </div>
                 </div>
             </div>
-        `})},a.forEach(e=>{if(e.status===`PENDING`){let t=e.createdAt?new Date(e.createdAt).getTime():0,n=Date.now()-t;(e.paymentMethod||``).toLowerCase()===`va`?t>0&&n>864e5&&(e.status=`KADALUARSA`):t>0&&n>36e5&&(e.status=`KADALUARSA`)}let t=e.status===`PAID`,n=t?`#10b981`:e.status===`PENDING`?`#f59e0b`:`#ef4444`,r=t?`rgba(16, 185, 129, 0.1)`:e.status===`PENDING`?`rgba(245, 158, 11, 0.1)`:`rgba(239, 68, 68, 0.1)`,i=`fa-file-invoice-dollar`,a=(e.itemName||``).toLowerCase();a.includes(`trip`)||a.includes(`tour`)||a.includes(`paket`)?i=`fa-map-location-dot`:a.includes(`motor`)||a.includes(`vario`)||a.includes(`nmax`)||a.includes(`pcx`)||a.includes(`beat`)?i=`fa-motorcycle`:a.includes(`mobil`)||a.includes(`avanza`)||a.includes(`innova`)||a.includes(`brio`)||a.includes(`hiace`)||a.includes(`fortuner`)?i=`fa-car`:a.includes(`website`)||a.includes(`jasa`)?i=`fa-laptop-code`:a.includes(`drone`)||a.includes(`kamera`)||a.includes(`gopro`)?i=`fa-camera`:e.type===`order`&&(i=`fa-box`);let s=parseInt((e.itemPrice||``).toString().replace(/\D/g,``)),c=!isNaN(s)&&s>0?`Rp `+s.toLocaleString(`id-ID`):`-`,l=e.createdAt?new Date(e.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`short`,year:`numeric`}):`-`,u=encodeURIComponent(JSON.stringify(e));o+=`
+            `)},a.forEach(e=>{if(e.status===`PENDING`){let t=e.createdAt?new Date(e.createdAt).getTime():0,n=Date.now()-t;(e.paymentMethod||``).toLowerCase()===`va`?t>0&&n>864e5&&(e.status=`KADALUARSA`):t>0&&n>36e5&&(e.status=`KADALUARSA`)}let t=e.status===`PAID`,n=t?`#10b981`:e.status===`PENDING`?`#f59e0b`:`#ef4444`,r=t?`rgba(16, 185, 129, 0.1)`:e.status===`PENDING`?`rgba(245, 158, 11, 0.1)`:`rgba(239, 68, 68, 0.1)`,i=`fa-file-invoice-dollar`,a=(e.itemName||``).toLowerCase();a.includes(`trip`)||a.includes(`tour`)||a.includes(`paket`)?i=`fa-map-location-dot`:a.includes(`motor`)||a.includes(`vario`)||a.includes(`nmax`)||a.includes(`pcx`)||a.includes(`beat`)?i=`fa-motorcycle`:a.includes(`mobil`)||a.includes(`avanza`)||a.includes(`innova`)||a.includes(`brio`)||a.includes(`hiace`)||a.includes(`fortuner`)?i=`fa-car`:a.includes(`website`)||a.includes(`jasa`)?i=`fa-laptop-code`:a.includes(`drone`)||a.includes(`kamera`)||a.includes(`gopro`)?i=`fa-camera`:e.type===`order`&&(i=`fa-box`);let s=parseInt((e.itemPrice||``).toString().replace(/\D/g,``)),c=!isNaN(s)&&s>0?`Rp `+s.toLocaleString(`id-ID`):`-`,l=e.createdAt?new Date(e.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`short`,year:`numeric`}):`-`,u=encodeURIComponent(JSON.stringify(e));o+=`
                 <div onclick="window.showTransactionDetail('${u}')" style="background: white; border-radius: 20px; padding: 20px; border: 1px solid #f1f5f9; position: relative; box-shadow: 0 10px 25px rgba(0,0,0,0.03); cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); display: flex; flex-direction: column;" onmouseover="this.style.transform='translateY(-4px)'; this.style.boxShadow='0 20px 40px rgba(0,0,0,0.08)'; this.style.borderColor='#e2e8f0';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px rgba(0,0,0,0.03)'; this.style.borderColor='#f1f5f9';">
                     
                     <!-- Header: ID & Status -->
