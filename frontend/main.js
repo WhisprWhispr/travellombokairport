@@ -5788,6 +5788,12 @@ window.submitBugReport = async (category, formId) => {
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
     }
     
+    let userInfo = {};
+    try {
+        const u = localStorage.getItem('user');
+        if (u && u !== 'undefined') userInfo = JSON.parse(u);
+    } catch(e) {}
+    
     try {
         const response = await fetch(`${API_URL}/reports`, {
             method: 'POST',
@@ -5796,7 +5802,7 @@ window.submitBugReport = async (category, formId) => {
                 category: category,
                 detail: detail,
                 sessionId: localStorage.getItem('sessionId') || 'anonymous',
-                userInfo: JSON.parse(localStorage.getItem('user')) || {}
+                userInfo: userInfo
             })
         });
         
@@ -5813,10 +5819,11 @@ window.submitBugReport = async (category, formId) => {
             `;
             msgs.scrollTop = msgs.scrollHeight;
         } else {
-            throw new Error("Failed to send");
+            const errText = await response.text();
+            throw new Error("Gagal mengirim: " + errText);
         }
     } catch (e) {
-        alert("Terjadi kesalahan saat mengirim laporan. Silakan coba lagi nanti.");
+        alert("Terjadi kesalahan: " + e.message);
         if(btn) {
             btn.disabled = false;
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Coba Kirim Ulang';
