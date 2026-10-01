@@ -4717,14 +4717,14 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                 `;
             }
 
-            let detailsHtml = '';
+            let detailsHtml = '<div style="border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;"><table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0;"><tbody>';
             const showRow = (label, val) => {
                 if (!val || val === '-') return '';
                 return `
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0;">
-                <span style="color:#64748b; font-size:0.85rem; font-weight:600; min-width: 120px;">${label}</span>
-                <span style="color:#1e293b; font-weight:700; font-size:0.95rem; text-align: right; word-break: break-word;">${val}</span>
-            </div>
+            <tr>
+                <td style="padding: 12px 15px; border: 1px solid #e2e8f0; color:#64748b; font-weight:600; width: 40%; background: #f8fafc; vertical-align: top;">${label}</td>
+                <td style="padding: 12px 15px; border: 1px solid #e2e8f0; color:#1e293b; font-weight:700; word-break: break-word; background: white;">${val}</td>
+            </tr>
         `;
             };
 
@@ -4738,6 +4738,7 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             if (item.details?.pickup) detailsHtml += showRow('Lokasi Jemput', item.details.pickup);
             if (item.details?.dropoff) detailsHtml += showRow('Tujuan', item.details.dropoff);
             if (item.details?.flightNumber) detailsHtml += showRow('No. Penerbangan', item.details.flightNumber);
+            detailsHtml += '</tbody></table></div>';
 
             const container = document.getElementById('riwayat-page-container');
             if (!container) return;

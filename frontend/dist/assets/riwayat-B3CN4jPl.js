@@ -1546,12 +1546,12 @@ Nomor Rekening: 1610017191425`,f=e?`Saya telah melakukan Booking via Website den
             onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 10px 25px rgba(22,163,74,0.4)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 8px 20px rgba(22,163,74,0.3)';">
             <i class="fa-solid fa-qrcode" style="font-size:1.2rem;"></i> Lanjutkan Pembayaran
         </button>
-                `);let s=``,c=(e,t)=>!t||t===`-`?``:`
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 15px; padding-bottom: 10px; margin-bottom: 10px; border-bottom: 1px dashed #e2e8f0;">
-                <span style="color:#64748b; font-size:0.85rem; font-weight:600; min-width: 120px;">${e}</span>
-                <span style="color:#1e293b; font-weight:700; font-size:0.95rem; text-align: right; word-break: break-word;">${t}</span>
-            </div>
-        `;s+=c(`Nama Pemesan`,t.customerName||t.userEmail),s+=c(`Email`,t.customerEmail||t.userEmail),s+=c(`No. HP / WA`,t.phone||t.details?.phone),s+=c(`Tgl Keberangkatan`,t.startDate||t.details?.date),t.endDate&&(s+=c(`Tgl Selesai`,t.endDate)),t.details?.time&&(s+=c(`Waktu`,t.details.time)),t.details?.pax&&(s+=c(`Jumlah Peserta`,t.details.pax+` Orang`)),t.details?.pickup&&(s+=c(`Lokasi Jemput`,t.details.pickup)),t.details?.dropoff&&(s+=c(`Tujuan`,t.details.dropoff)),t.details?.flightNumber&&(s+=c(`No. Penerbangan`,t.details.flightNumber));let l=document.getElementById(`riwayat-page-container`);l&&(window.scrollTo({top:0,behavior:`smooth`}),l.innerHTML=`
+                `);let s=`<div style="border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;"><table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0;"><tbody>`,c=(e,t)=>!t||t===`-`?``:`
+            <tr>
+                <td style="padding: 12px 15px; border: 1px solid #e2e8f0; color:#64748b; font-weight:600; width: 40%; background: #f8fafc; vertical-align: top;">${e}</td>
+                <td style="padding: 12px 15px; border: 1px solid #e2e8f0; color:#1e293b; font-weight:700; word-break: break-word; background: white;">${t}</td>
+            </tr>
+        `;s+=c(`Nama Pemesan`,t.customerName||t.userEmail),s+=c(`Email`,t.customerEmail||t.userEmail),s+=c(`No. HP / WA`,t.phone||t.details?.phone),s+=c(`Tgl Keberangkatan`,t.startDate||t.details?.date),t.endDate&&(s+=c(`Tgl Selesai`,t.endDate)),t.details?.time&&(s+=c(`Waktu`,t.details.time)),t.details?.pax&&(s+=c(`Jumlah Peserta`,t.details.pax+` Orang`)),t.details?.pickup&&(s+=c(`Lokasi Jemput`,t.details.pickup)),t.details?.dropoff&&(s+=c(`Tujuan`,t.details.dropoff)),t.details?.flightNumber&&(s+=c(`No. Penerbangan`,t.details.flightNumber)),s+=`</tbody></table></div>`;let l=document.getElementById(`riwayat-page-container`);l&&(window.scrollTo({top:0,behavior:`smooth`}),l.innerHTML=`
             <div style="max-width: 520px; margin: 0 auto; padding-bottom: 40px; animation: slideInUp 0.3s ease-out forwards;">
                 <div style="text-align: left; font-family: 'Inter', sans-serif; background: #f8fafc; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0;">
                     <!-- Header Card (Premium Gradient) -->
