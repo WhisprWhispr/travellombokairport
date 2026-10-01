@@ -20,6 +20,7 @@ const aiRoutes = require('./routes/ai');
 const promosRoutes = require('./routes/promos');
 const blogsRoutes = require('./routes/blogs');
 const analyticsRoutes = require('./routes/analytics');
+const reportsRoutes = require('./routes/reports');
 app.use('/api', apiRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/bookings', bookingsRoutes);
@@ -29,6 +30,7 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/promos', promosRoutes);
 app.use('/api/blogs', blogsRoutes);
 app.use('/api/analytics', analyticsRoutes);
+app.use('/api/reports', reportsRoutes);
 
 // Base route
 app.get('/', (req, res) => {
