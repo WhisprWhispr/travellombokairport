@@ -27,6 +27,17 @@ window.forcePaymentSuccess = async (txId, btnElement) => {
     }
 };
 
+window.generateTicketId = (prefix) => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+    const nums = '0123456789';
+    let res = prefix;
+    for (let i = 0; i < 5; i++) {
+        res += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    res += nums.charAt(Math.floor(Math.random() * nums.length));
+    return res;
+};
+
 window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
     if (event) event.stopPropagation();
     
@@ -3612,7 +3623,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             <p style="color:#0369a1;font-size:0.9rem;">Sedang membuat Virtual Account ${bankCode}...</p>
         </div>`;
 
-        const pendingTxId = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 9000 + 1000);
+        const pendingTxId = window.generateTicketId('ORD-');
         try {
             await fetch(`${API_URL}/bookings`, {
                 method: 'POST',
@@ -3721,7 +3732,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     `;
 
     // Simpan booking PENDING ke DB SEBELUM QRIS dibuat, agar selalu tercatat di admin
-    const pendingTxId = 'ORD-' + Date.now() + '-' + Math.floor(Math.random() * 9000 + 1000);
+    const pendingTxId = window.generateTicketId('ORD-');
     window._pendingQrisTxId = pendingTxId;
     try {
         await fetch(`${API_URL}/bookings`, {
@@ -3854,7 +3865,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     const modalBody = document.getElementById("checkout-modal-body");
     const idPrefix = isBookingOnly ? "BKG-" : "ORD-";
-    const id = transactionId || (idPrefix + Math.floor(Math.random() * 10000));
+    const id = transactionId || window.generateTicketId(idPrefix);
 
     if (window.activePollInterval) clearInterval(window.activePollInterval);
 

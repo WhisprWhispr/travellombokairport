@@ -54,7 +54,7 @@ paymentRoutes.post('/qris', async (c) => {
         const payload = {
             amount: parseInt(amount),
             method: 'qris',
-            reference_id: reference_id || `ORD-${Date.now()}`
+            reference_id: reference_id || generateTicketId('ORD-')
         };
 
         const response = await fetch(`${BORDERPAY_BASE_URL}/payments`, {
@@ -124,7 +124,7 @@ paymentRoutes.post('/va', async (c) => {
             amount: parseInt(amount),
             method: 'va',
             bank_code: bank_code.toUpperCase(),
-            reference_id: reference_id || `ORD-${Date.now()}`
+            reference_id: reference_id
         };
 
         const response = await fetch(`${BORDERPAY_BASE_URL}/payments`, {
