@@ -2364,12 +2364,14 @@ window.cekStatusBooking = async (event, type = 'booking') => {
             }
 
             const htmlContent = `
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <div style="font-size: 3rem; color: ${statusColor}; margin-bottom: 10px;">
+                <div style="text-align: center; margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+                    <div style="font-size: 3.5rem; color: ${statusColor}; margin-bottom: 5px;">
                         <i class="fa-solid ${statusIcon}"></i>
                     </div>
-                    <span style="background: ${statusColor}; color: white; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.85rem;">${data.status}</span>
-                    <div style="margin-top: 8px; font-size: 0.78rem; color: #64748b; background: #f8fafc; display: inline-block; padding: 3px 10px; border-radius: 20px;">${typeLabel}</div>
+                    <div>
+                        <span style="background: ${statusColor}; color: white; padding: 6px 16px; border-radius: 20px; font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px;">${data.status}</span>
+                    </div>
+                    <div style="font-size: 0.78rem; color: #64748b; background: #f8fafc; padding: 4px 12px; border-radius: 20px; border: 1px solid #e2e8f0; margin-top: 2px;">${typeLabel}</div>
                 </div>
                 
                 <div style="background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; text-align: left;">
