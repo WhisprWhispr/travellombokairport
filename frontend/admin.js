@@ -3590,7 +3590,7 @@ window.fetchAdminReports = async () => {
                 const badgeLabel = isDone ? 'SELESAI' : 'BARU';
                 const actionCell = isDone
                     ? '<span style="color:#10b981;font-size:0.82rem;">&#10003; Done</span>'
-                    : '<button onclick="window.markReportDone(\'' + r.id + '\')" class="btn btn-outline btn-sm" style="font-size:0.78rem; white-space:nowrap;"><i class="fa-solid fa-check"></i> Selesai</button>';
+                    : '<button onclick="window.markReportDone(\'' + r.id + '\')" style="background:#fff;color:#3b82f6;border:1.5px solid #3b82f6;padding:5px 12px;border-radius:7px;font-size:0.8rem;cursor:pointer;white-space:nowrap;font-weight:600;"><i class="fa-solid fa-check"></i> Selesai</button>';
                 const tgl = new Date(r.createdAt).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
                 const jam = new Date(r.createdAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
                 return '<tr>'
