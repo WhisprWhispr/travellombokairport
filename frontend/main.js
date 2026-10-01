@@ -5701,3 +5701,145 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+// --- AI BUG REPORT FEATURE ---
+
+window.showBugReportOptions = () => {
+    const msgs = document.getElementById('chat-messages');
+    if (!msgs) return;
+
+    const categories = [
+        "Laporan Bug / Error Aplikasi",
+        "Harga Tidak Sesuai / Salah Harga",
+        "Kendala Pembayaran / Transaksi",
+        "Informasi Paket Tidak Jelas",
+        "Kendala Saat Pemesanan / Booking",
+        "E-Tiket Tidak Muncul / Gagal Download",
+        "Akun / Login Bermasalah",
+        "Kritik & Saran Pelayanan",
+        "Saran Fitur Baru",
+        "Masalah Lainnya"
+    ];
+
+    let btnsHtml = categories.map((cat, index) => `
+        <button onclick="window.showBugReportForm('${cat}')" style="display: block; width: 100%; text-align: left; background: white; color: #1e293b; border: 1px solid #e2e8f0; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; margin-bottom: 6px; transition: background 0.2s;">
+            ${index + 1}. ${cat}
+        </button>
+    `).join('');
+
+    msgs.innerHTML += `
+        <div class="message ai-message">
+            Silakan pilih kategori laporan/kendala yang Anda alami di bawah ini:
+            <div style="margin-top: 10px;">
+                ${btnsHtml}
+            </div>
+        </div>
+    `;
+    msgs.scrollTop = msgs.scrollHeight;
+};
+
+window.showBugReportForm = (category) => {
+    const msgs = document.getElementById('chat-messages');
+    if (!msgs) return;
+
+    // Tambahkan pesan konfirmasi pilihan dari user
+    msgs.innerHTML += `
+        <div class="message user-message">
+            Kategori: ${category}
+        </div>
+    `;
+
+    const formId = 'bug-form-' + Date.now();
+    
+    msgs.innerHTML += `
+        <div class="message ai-message" style="background-color: #fff1f2; border: 1px solid #fecaca; color: #991b1b;">
+            <strong>Anda memilih: ${category}</strong><br><br>
+            Silakan ceritakan detail masalah atau kendala yang Anda alami secara lengkap. Jika ini terkait pesanan, sebutkan juga ID Transaksi Anda jika ada.
+            <div style="margin-top: 12px;" id="${formId}">
+                <textarea id="bug-detail-${formId}" placeholder="Ketik detail laporan di sini..." rows="4" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #fca5a5; font-family: inherit; font-size: 0.85rem; resize: none; margin-bottom: 8px; outline: none;"></textarea>
+                <button onclick="window.submitBugReport('${category}', '${formId}')" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: background 0.2s;">
+                    <i class="fa-solid fa-paper-plane"></i> Kirim Laporan
+                </button>
+            </div>
+        </div>
+    `;
+    msgs.scrollTop = msgs.scrollHeight;
+    
+    // Auto focus textarea
+    setTimeout(() => {
+        const ta = document.getElementById(`bug-detail-${formId}`);
+        if(ta) ta.focus();
+    }, 100);
+};
+
+window.submitBugReport = async (category, formId) => {
+    const ta = document.getElementById(`bug-detail-${formId}`);
+    if (!ta) return;
+    const detail = ta.value.trim();
+    
+    if (!detail) {
+        alert("Detail laporan tidak boleh kosong!");
+        return;
+    }
+    
+    const btn = document.querySelector(`#${formId} button`);
+    if(btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
+    }
+    
+    try {
+        const response = await fetch(`${API_URL}/reports`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                category: category,
+                detail: detail,
+                sessionId: localStorage.getItem('sessionId') || 'anonymous',
+                userInfo: JSON.parse(localStorage.getItem('user')) || {}
+            })
+        });
+        
+        if (response.ok) {
+            // Hilangkan form
+            const formContainer = document.getElementById(formId);
+            if(formContainer) formContainer.innerHTML = `<div style="color: #166534; font-weight: bold;"><i class="fa-solid fa-check-circle"></i> Laporan Terkirim</div>`;
+            
+            const msgs = document.getElementById('chat-messages');
+            msgs.innerHTML += `
+                <div class="message ai-message">
+                    Terima kasih! Laporan Anda telah berhasil dikirim ke tim kami. Kami akan segera menindaklanjutinya secepat mungkin 🙏.
+                </div>
+            `;
+            msgs.scrollTop = msgs.scrollHeight;
+        } else {
+            throw new Error("Failed to send");
+        }
+    } catch (e) {
+        alert("Terjadi kesalahan saat mengirim laporan. Silakan coba lagi nanti.");
+        if(btn) {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Coba Kirim Ulang';
+        }
+    }
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Munculkan tombol Laporkan Masalah di chat setiap 5 menit
+    setInterval(() => {
+        const msgs = document.getElementById('chat-messages');
+        if (msgs) {
+            msgs.innerHTML += `
+                <div class="message ai-message" style="background-color: #f8fafc; border: 1px dashed #cbd5e1;">
+                    Ada kendala dengan layanan kami? Anda dapat melaporkannya kapan saja.
+                    <div style="margin-top: 8px;">
+                        <button onclick="window.showBugReportOptions()" style="text-align: left; background: #fef2f2; color: #ef4444; border: 1px solid #fecaca; padding: 8px 12px; border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;">
+                            <i class="fa-solid fa-triangle-exclamation"></i> Laporkan Masalah / Bug
+                        </button>
+                    </div>
+                </div>
+            `;
+            msgs.scrollTop = msgs.scrollHeight;
+        }
+    }, 5 * 60 * 1000);
+});

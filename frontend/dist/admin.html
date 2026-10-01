@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-DGgMHmwX.js"></script>
+  <script type="module" crossorigin src="/assets/admin-C3rqYvCg.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-DYmKx9RI.js">
   <link rel="stylesheet" crossorigin href="/assets/main-C5cZ9_T1.css">
@@ -83,6 +83,7 @@
           <li><a href="#" onclick="showTab('stats')"><i class="fa-solid fa-chart-bar"></i> Statistik Web</a></li>
           <li><a href="#" onclick="showTab('analytics')"><i class="fa-solid fa-chart-line"></i> Statistik Pengunjung</a></li>
           <li><a href="#" onclick="showTab('ai-chats')"><i class="fa-solid fa-comments"></i> Riwayat Chat AI</a></li>
+          <li><a href="#" onclick="showTab('reports')"><i class="fa-solid fa-bug"></i> Laporan AI</a></li>
           <li><a href="#" onclick="showTab('ai-knowledge')"><i class="fa-solid fa-brain"></i> Ajari AI (Knowledge Base)</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
           <li><a href="#" onclick="showTab('users')"><i class="fa-solid fa-users"></i> Pengguna</a></li>
@@ -309,6 +310,27 @@
         </section>
 
         <!-- Settings Section -->
+        <!-- Reports Section -->
+        <section id="reports-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Laporan Masalah / Bug</h2>
+          <div class="table-responsive mt-4">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Tanggal</th>
+                  <th>Kategori</th>
+                  <th>Detail Laporan</th>
+                  <th>Status</th>
+                  <th>Aksi</th>
+                </tr>
+              </thead>
+              <tbody id="admin-reports-table">
+                <tr><td colspan="5" class="text-center">Loading reports...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+
         <section id="settings-section" class="admin-content glass-panel mt-4" style="display: none;">
           <h2>Pengaturan Global</h2>
           <div class="mt-4" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">

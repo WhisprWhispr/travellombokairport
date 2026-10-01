@@ -1080,6 +1080,8 @@ window.showTab = (tab) => {
       const blogsSection = document.getElementById("blogs-section");
       if (blogsSection) blogsSection.style.display = "none";
     document.getElementById("withdrawal-section").style.display = "none";
+    const reportsSection = document.getElementById("reports-section");
+    if (reportsSection) reportsSection.style.display = "none";
     document.getElementById("settings-section").style.display = "none";
     const usersSection = document.getElementById("users-section");
     if (usersSection) usersSection.style.display = "none";
@@ -1130,6 +1132,12 @@ window.showTab = (tab) => {
         if (aiKnowledgeSection) {
             aiKnowledgeSection.style.display = "block";
             fetchAiKnowledgeBase();
+        }
+    } else if (tab === "reports") {
+        const reportsSection = document.getElementById("reports-section");
+        if (reportsSection) {
+            reportsSection.style.display = "block";
+            fetchAdminReports();
         }
     } else if (tab === "gallery") {
         document.getElementById("gallery-section").style.display = "block";
@@ -3562,3 +3570,34 @@ window.filterAdminOrders = (status, btnElem) => {
     window.adminRenderRows(filtered, 'Tidak ada pesanan dengan status ' + status, tableElem);
 };
 
+// --- AI BUG REPORTS ---
+window.fetchAdminReports = async () => {
+    const table = document.getElementById("admin-reports-table");
+    if (!table) return;
+    table.innerHTML = '<tr><td colspan="5" class="text-center"><i class="fa-solid fa-spinner fa-spin"></i> Loading...</td></tr>';
+    
+    try {
+        const res = await fetch(`${API_URL}/reports`, {
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('adminToken')}` }
+        });
+        const data = await res.json();
+        
+        if (data.success && data.reports.length > 0) {
+            table.innerHTML = data.reports.map(r => `
+                <tr>
+                    <td style="font-size: 0.85rem; color: #64748b;">${new Date(r.createdAt).toLocaleString('id-ID')}</td>
+                    <td><strong>${r.category}</strong></td>
+                    <td style="max-width: 300px; white-space: normal;">${r.detail}</td>
+                    <td><span class="badge ${r.status === 'NEW' ? 'badge-warning' : 'badge-success'}">${r.status || 'NEW'}</span></td>
+                    <td>
+                        <button onclick="alert('User Info: ' + JSON.stringify(${JSON.stringify(r.userInfo || {})}).replace(/,/g, ', '));" class="btn btn-outline btn-sm"><i class="fa-solid fa-user"></i> User Info</button>
+                    </td>
+                </tr>
+            `).join('');
+        } else {
+            table.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada laporan masalah.</td></tr>';
+        }
+    } catch (e) {
+        table.innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat laporan.</td></tr>';
+    }
+};
