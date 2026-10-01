@@ -2314,9 +2314,11 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                 statusIcon = 'fa-gears';
             }
 
-            const typeLabel = (data.type === 'order' || (data.transactionId && data.transactionId.startsWith('ORD-')))
-                ? '🛒 Pesanan Tour / QRIS (ORD-)'
-                : '🚗 Rental & Transfer (BKG-)';
+            let typeLabel = '🚗 Rental & Transfer (BKG-)';
+            if (data.type === 'order' || (data.transactionId && data.transactionId.startsWith('ORD-'))) {
+                const isVa = (data.paymentMethod || '').toLowerCase() === 'va' || !!data.vaNumber;
+                typeLabel = isVa ? '🛒 Pesanan Tour / Virtual Account (ORD-)' : '🛒 Pesanan Tour / QRIS (ORD-)';
+            }
 
             let processInfo = '';
             if (data.status === 'PROCESSING') {

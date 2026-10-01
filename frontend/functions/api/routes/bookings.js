@@ -354,7 +354,9 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             fullPrice: data.fullPrice || data.price || data.totalPrice || 0,
             createdAt: data.createdAt || null,
             type: isORD ? 'order' : 'booking',
-            details: data.details || null
+            details: data.details || null,
+            paymentMethod: data.paymentMethod || null,
+            vaNumber: data.vaNumber || data.va_number || null
         });
     } catch (error) {
         return c.json({ error: error.message }, 500);
