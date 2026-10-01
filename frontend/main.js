@@ -3,6 +3,30 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
 // Changed so that localhost hits Vite proxy on /api exactly like production
 const API_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? '/api' : '/api';
 
+window.forcePaymentSuccess = async (txId, btnElement) => {
+    const originalText = btnElement.innerHTML;
+    btnElement.disabled = true;
+    btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...';
+    const msgDiv = document.getElementById('manual-check-msg');
+    if (msgDiv) msgDiv.innerHTML = '';
+
+    try {
+        const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
+        const statusData = await statusRes.json();
+        if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
+            if (window.activePollInterval) clearInterval(window.activePollInterval);
+            window.simulateQrisSuccess(false, txId);
+        } else {
+            if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.';
+        }
+    } catch (e) {
+        if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.';
+    } finally {
+        btnElement.disabled = false;
+        btnElement.innerHTML = originalText;
+    }
+};
+
 // ====== MAINTENANCE MODE CHECK + EVENT MODE FETCH ======
 // Run ASAP before page renders, skip for admin/maintenance/login pages
 (async () => {
@@ -3585,7 +3609,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                         <p style="color:#64748b;font-size:0.85rem;margin-bottom:15px;">Transfer tepat sesuai jumlah ke nomor VA berikut:</p>
                         <div style="background:#f0f9ff;border:2px solid #0ea5e9;border-radius:12px;padding:20px;margin-bottom:15px;">
                             <div style="font-size:0.8rem;color:#64748b;margin-bottom:5px;">Nomor Virtual Account</div>
-                            <div style="font-size:1.8rem;font-weight:900;color:#0c4a6e;letter-spacing:3px;">${d.vaNumber || '-'}</div>
+                            <div style="font-size:1.5rem;font-weight:900;color:#0c4a6e;letter-spacing:1px;word-break:break-all;">${d.vaNumber || '-'}</div>
                             <button onclick="navigator.clipboard.writeText('${d.vaNumber}');this.innerHTML='<i class=\'fa-solid fa-check\'></i> Tersalin!';setTimeout(()=>this.innerHTML='<i class=\'fa-regular fa-copy\'></i> Salin Nomor',2000);" 
                                 style="margin-top:10px;padding:6px 16px;background:#0ea5e9;color:white;border:none;border-radius:8px;cursor:pointer;font-size:0.85rem;">
                                 <i class="fa-regular fa-copy"></i> Salin Nomor
@@ -3599,6 +3623,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                         <div style="color:#0369a1;font-size:0.9rem;margin-bottom:15px;">
                             <i class="fa-solid fa-spinner fa-spin"></i> Sistem sedang menunggu pembayaran...
                         </div>
+                        <div id="manual-check-msg" style="color: #ef4444; font-size: 0.85rem; margin-bottom: 10px; font-weight: bold;"></div>
                         <button type="button" class="btn btn-blue" style="width:100%;padding:10px;font-weight:bold;border-radius:8px;" onclick="forcePaymentSuccess('${d.transactionId}', this)">SAYA SUDAH BAYAR</button>
                         <div style="margin-top:12px;padding:10px;background:#fff8f1;border-radius:8px;border:1px solid #ffedd5;font-size:0.8rem;color:#d97706;">
                             <i class="fa-solid fa-circle-info"></i> Pastikan transfer dilakukan ke nomor VA yang benar dengan jumlah yang tepat.
@@ -3733,29 +3758,6 @@ window.processCheckout = async (itemName, price, method = 'web') => {
                 </div>
             `;
 
-            window.forcePaymentSuccess = async (txId, btnElement) => {
-                const originalText = btnElement.innerHTML;
-                btnElement.disabled = true;
-                btnElement.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...';
-                const msgDiv = document.getElementById('manual-check-msg');
-                if (msgDiv) msgDiv.innerHTML = '';
-
-                try {
-                    const statusRes = await fetch(`${API_URL}/payment/status/${txId}`);
-                    const statusData = await statusRes.json();
-                    if (statusData.success && ['PAID', 'SUCCESS', 'SETTLEMENT', 'COMPLETED'].includes(statusData.data.status?.toUpperCase())) {
-                        if (window.activePollInterval) clearInterval(window.activePollInterval);
-                        window.simulateQrisSuccess(false, txId);
-                    } else {
-                        if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.';
-                    }
-                } catch (e) {
-                    if (msgDiv) msgDiv.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.';
-                } finally {
-                    btnElement.disabled = false;
-                    btnElement.innerHTML = originalText;
-                }
-            };
 
             const pollInterval = setInterval(async () => {
                 const controller = new AbortController();
