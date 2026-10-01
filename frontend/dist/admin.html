@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-DodCFeCw.js"></script>
+  <script type="module" crossorigin src="/assets/admin-BasdsHK6.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-DYmKx9RI.js">
   <link rel="stylesheet" crossorigin href="/assets/main-C5cZ9_T1.css">
@@ -89,6 +89,7 @@
           <li><a href="#" onclick="showTab('users')"><i class="fa-solid fa-users"></i> Pengguna</a></li>
           <li><a href="#" onclick="showTab('login-logs')"><i class="fa-solid fa-history"></i> Log Aktivitas Login</a></li>
           <li><a href="/"><i class="fa-solid fa-globe"></i> View Site</a></li>
+          <li><a href="#" onclick="showTab('license')"><i class="fa-solid fa-certificate"></i> Lisensi Software</a></li>
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
           <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
           <li style="margin-top: 5px;"><a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
@@ -331,7 +332,136 @@
           </div>
         </section>
 
-        <section id="settings-section" class="admin-content glass-panel mt-4" style="display: none;">
+        <!-- License Section -->
+        <section id="license-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <div style="max-width: 720px; margin: 0 auto; font-family: 'Courier New', monospace;">
+            
+            <!-- Header Box -->
+            <div style="border: 2px solid #3b82f6; border-radius: 12px; overflow: hidden; background: linear-gradient(135deg, #0f172a 0%, #1e3a5f 100%); color: white; padding: 0;">
+              
+              <!-- Title Bar -->
+              <div style="background: linear-gradient(90deg, #1d4ed8, #3b82f6); padding: 18px 24px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.2);">
+                <div style="font-size: 0.75rem; color: #bfdbfe; letter-spacing: 2px; margin-bottom: 4px;">╔══════════════════════════════════════════╗</div>
+                <div style="font-size: 1.1rem; font-weight: 800; letter-spacing: 4px; color: #ffffff;">SOFTWARE LICENSE CENTER</div>
+                <div style="font-size: 0.75rem; color: #bfdbfe; letter-spacing: 2px; margin-top: 4px;">╚══════════════════════════════════════════╝</div>
+              </div>
+
+              <div style="padding: 24px;">
+
+                <!-- STATUS -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;">
+                  <div style="color: #60a5fa; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">LICENSE STATUS</div>
+                  <div style="display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 0.85rem;">
+                    <span style="color: #94a3b8;">Status</span><span style="color: #4ade80; font-weight: 700;">● ACTIVE</span>
+                    <span style="color: #94a3b8;">License Type</span><span style="color: #f1f5f9;">PROPRIETARY</span>
+                    <span style="color: #94a3b8;">License ID</span><span style="color: #fbbf24; font-weight: 700;">ID-7891-SC-RS</span>
+                    <span style="color: #94a3b8;">License Edition</span><span style="color: #f1f5f9;">PROFESSIONAL</span>
+                    <span style="color: #94a3b8;">License Version</span><span style="color: #f1f5f9;">18.02.22</span>
+                  </div>
+                </div>
+
+                <!-- LICENSE HOLDER -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;">
+                  <div style="color: #60a5fa; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">LICENSE HOLDER</div>
+                  <div style="display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 0.85rem;">
+                    <span style="color: #94a3b8;">Licensed To</span><span style="color: #f1f5f9;">Travel Lombok Airport</span>
+                    <span style="color: #94a3b8;">Licensed Domain</span><span style="color: #38bdf8;">travellombokairport.com</span>
+                    <span style="color: #94a3b8;">License Scope</span><span style="color: #f1f5f9;">Single Domain</span>
+                    <span style="color: #94a3b8;">Deployment Type</span><span style="color: #f1f5f9;">Web Application</span>
+                    <span style="color: #94a3b8;">Deployment Region</span><span style="color: #f1f5f9;">Indonesia</span>
+                  </div>
+                </div>
+
+                <!-- SOFTWARE INFO -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;">
+                  <div style="color: #60a5fa; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">SOFTWARE INFORMATION</div>
+                  <div style="display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 0.85rem;">
+                    <span style="color: #94a3b8;">Software Category</span><span style="color: #f1f5f9;">Web-Based Management System</span>
+                    <span style="color: #94a3b8;">Platform</span><span style="color: #f1f5f9;">Web Application</span>
+                    <span style="color: #94a3b8;">Environment</span><span style="color: #f1f5f9;">Production</span>
+                    <span style="color: #94a3b8;">Access Type</span><span style="color: #f1f5f9;">Authorized Users</span>
+                    <span style="color: #94a3b8;">Commercial Use</span><span style="color: #4ade80;">Permitted</span>
+                  </div>
+                </div>
+
+                <!-- LICENSE TERM -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;">
+                  <div style="color: #60a5fa; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">LICENSE TERM</div>
+                  <div style="display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 0.85rem;">
+                    <span style="color: #94a3b8;">Issue Date</span><span style="color: #f1f5f9;">2026</span>
+                    <span style="color: #94a3b8;">Effective Date</span><span style="color: #f1f5f9;">2026</span>
+                    <span style="color: #94a3b8;">Expiration</span><span style="color: #f87171;">20-08-2027</span>
+                    <span style="color: #94a3b8;">Renewal</span><span style="color: #f1f5f9;">-</span>
+                    <span style="color: #94a3b8;">Transfer</span><span style="color: #f87171;">Restricted</span>
+                  </div>
+                </div>
+
+                <!-- AUTHORIZATION -->
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;">
+                  <div style="color: #60a5fa; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">AUTHORIZATION</div>
+                  <div style="display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 0.85rem;">
+                    <span style="color: #94a3b8;">Issued By</span><span style="color: #f1f5f9;">SukaCoding</span>
+                    <span style="color: #94a3b8;">Developed By</span><span style="color: #f1f5f9;">Ridho Sandhika</span>
+                    <span style="color: #94a3b8;">License Authority</span><span style="color: #f1f5f9;">SukaCoding</span>
+                    <span style="color: #94a3b8;">Developer Copyright</span><span style="color: #fbbf24;">© 2026 SukaCoding</span>
+                  </div>
+                </div>
+
+                <!-- USAGE RIGHTS & RESTRICTIONS -->
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 18px;">
+                  <div style="background: rgba(74,222,128,0.07); border: 1px solid rgba(74,222,128,0.25); border-radius: 10px; padding: 16px 20px;">
+                    <div style="color: #4ade80; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">USAGE RIGHTS</div>
+                    <div style="font-size: 0.82rem; line-height: 2;">
+                      <div style="color: #86efac;">✓ Authorized Domain Usage</div>
+                      <div style="color: #86efac;">✓ Commercial Operation</div>
+                      <div style="color: #86efac;">✓ Authorized User Access</div>
+                      <div style="color: #86efac;">✓ Software Updates*</div>
+                      <div style="color: #86efac;">✓ Technical Support*</div>
+                    </div>
+                  </div>
+                  <div style="background: rgba(248,113,113,0.07); border: 1px solid rgba(248,113,113,0.25); border-radius: 10px; padding: 16px 20px;">
+                    <div style="color: #f87171; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">RESTRICTIONS</div>
+                    <div style="font-size: 0.82rem; line-height: 2;">
+                      <div style="color: #fca5a5;">✕ Unauthorized Copying</div>
+                      <div style="color: #fca5a5;">✕ Unauthorized Redistribution</div>
+                      <div style="color: #fca5a5;">✕ Unauthorized Resale</div>
+                      <div style="color: #fca5a5;">✕ Unauthorized Deployment</div>
+                      <div style="color: #fca5a5;">✕ Unauthorized Modification</div>
+                      <div style="color: #fca5a5;">✕ License Transfer</div>
+                      <div style="color: #fca5a5;">✕ Unregistered Domain Use</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- VERIFICATION -->
+                <div style="background: rgba(251,191,36,0.07); border: 1px solid rgba(251,191,36,0.3); border-radius: 10px; padding: 16px 20px; margin-bottom: 18px;">
+                  <div style="color: #fbbf24; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">LICENSE VERIFICATION</div>
+                  <div style="display: grid; grid-template-columns: 160px 1fr; gap: 8px; font-size: 0.85rem;">
+                    <span style="color: #94a3b8;">License ID</span><span style="color: #fbbf24; font-weight: 700;">ID-7891-SC-RS</span>
+                    <span style="color: #94a3b8;">Registered Domain</span><span style="color: #38bdf8;">travellombokairport.com</span>
+                    <span style="color: #94a3b8;">License Holder</span><span style="color: #f1f5f9;">Travel Lombok Airport</span>
+                    <span style="color: #94a3b8;">Verification</span><span style="color: #f1f5f9;">Server-Side License Validation*</span>
+                  </div>
+                </div>
+
+                <!-- LEGAL NOTICE -->
+                <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 16px 20px; margin-bottom: 16px;">
+                  <div style="color: #64748b; font-size: 0.7rem; letter-spacing: 3px; font-weight: 800; margin-bottom: 12px;">LEGAL NOTICE</div>
+                  <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.8; margin: 0;">This software is proprietary software developed and/or licensed by SukaCoding. The software and its associated source code, design, database structure, documentation, and system components are protected by applicable intellectual property laws.</p>
+                  <p style="font-size: 0.78rem; color: #94a3b8; line-height: 1.8; margin: 10px 0 0;">Unauthorized copying, distribution, resale, sublicensing, reverse engineering, modification, or deployment outside the authorized scope is strictly prohibited.</p>
+                </div>
+
+                <!-- FOOTER -->
+                <div style="text-align: center; padding-top: 8px; border-top: 1px solid rgba(255,255,255,0.08);">
+                  <span style="font-size: 0.78rem; color: #475569; letter-spacing: 2px;">© 2026 SukaCoding — All Rights Reserved.</span>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Settings Section -->
           <h2>Pengaturan Global</h2>
           <div class="mt-4" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
             

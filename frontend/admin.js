@@ -1082,6 +1082,8 @@ window.showTab = (tab) => {
     document.getElementById("withdrawal-section").style.display = "none";
     const reportsSection = document.getElementById("reports-section");
     if (reportsSection) reportsSection.style.display = "none";
+    const licenseSection = document.getElementById("license-section");
+    if (licenseSection) licenseSection.style.display = "none";
     document.getElementById("settings-section").style.display = "none";
     const usersSection = document.getElementById("users-section");
     if (usersSection) usersSection.style.display = "none";
@@ -1139,6 +1141,9 @@ window.showTab = (tab) => {
             reportsSection.style.display = "block";
             fetchAdminReports();
         }
+    } else if (tab === "license") {
+        const licenseSection = document.getElementById("license-section");
+        if (licenseSection) licenseSection.style.display = "block";
     } else if (tab === "gallery") {
         document.getElementById("gallery-section").style.display = "block";
         document.getElementById("add-gallery-btn").style.display = "inline-block";
