@@ -1579,11 +1579,11 @@ Nomor Rekening: 1610017191425`,f=e?`Saya telah melakukan Booking via Website den
 
                     <!-- ID & Layanan Card -->
                     <div style="background: white; border-radius: 18px; padding: 22px; margin-bottom: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.04); border: 1px solid rgba(0,0,0,0.02);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
-                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600; white-space: nowrap;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
-                            <div style="display:flex; align-items:center; gap:8px; max-width: 60%;">
-                                <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:0.9rem; letter-spacing:0; word-break:break-all; text-align:right;">${t.transactionId}</span>
-                                <button onclick="window.copyText('${t.transactionId}', this, '<i class=\\'fa-solid fa-check\\'></i>', '<i class=\\'fa-regular fa-copy\\'></i>', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:30px; height:30px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.9rem;"></i></button>
+                        <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:15px; border-bottom: 1px dashed #e2e8f0; padding-bottom: 15px;">
+                            <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-hashtag" style="opacity:0.6; margin-right:8px;"></i> ID Transaksi</span>
+                            <div style="display:flex; align-items:center; gap:10px; width:100%;">
+                                <span style="font-family:monospace; font-weight:800; color:var(--primary-blue); font-size:1.1rem; letter-spacing:0.5px; word-break:break-all;">${t.transactionId}</span>
+                                <button onclick="window.copyText('${t.transactionId}', this, '<i class=\\'fa-solid fa-check\\'></i>', '<i class=\\'fa-regular fa-copy\\'></i>', event)" style="background:var(--primary-green); color:white; border:none; border-radius:8px; width:32px; height:32px; display:flex; align-items:center; justify-content:center; cursor:pointer; flex-shrink:0; box-shadow: 0 4px 10px rgba(22, 163, 74, 0.3); transition: all 0.2s;" title="Salin ID" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy" style="font-size:0.95rem;"></i></button>
                             </div>
                         </div>
                         <div style="display:flex; flex-direction:column; gap:8px;">
