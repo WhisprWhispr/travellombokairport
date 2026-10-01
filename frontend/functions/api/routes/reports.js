@@ -40,4 +40,17 @@ reportsRoutes.post('/', async (c) => {
     }
 });
 
+// PATCH - update report status
+reportsRoutes.patch('/:id', async (c) => {
+    try {
+        const db = getDb(c);
+        const id = c.req.param('id');
+        const body = await c.req.json();
+        await db.collection('reports').doc(id).update({ status: body.status });
+        return c.json({ success: true });
+    } catch (error) {
+        return c.json({ success: false, error: error.message }, 500);
+    }
+});
+
 export default reportsRoutes;
