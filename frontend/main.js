@@ -1963,7 +1963,12 @@ window.generateEtiketPDF = (data) => {
     if (isBKG || nameLower.includes('transfer') || nameLower.includes('rental') || nameLower.includes('sewa') || nameLower.includes('mobil') || nameLower.includes('motor')) {
         typeLbl = 'Rental & Transfer';
     } else if (isORD) {
-        typeLbl = 'Paket Tour / QRIS';
+        const pm = (data.paymentMethod || '').toLowerCase();
+        if (pm === 'va') {
+            typeLbl = 'Paket Tour / Virtual Account';
+        } else {
+            typeLbl = 'Paket Tour / QRIS';
+        }
     }
     
     const issuedAt = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
