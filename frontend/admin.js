@@ -1056,49 +1056,39 @@ window.deleteItem = async (id) => {
 // Stats & Bookings logic
 window.showTab = (tab) => {
     document.querySelectorAll(".sidebar-menu a").forEach(el => el.classList.remove("active"));
-    event.currentTarget.classList.add("active");
-    document.querySelector('.admin-sidebar').classList.remove('active');
     
-    document.getElementById("items-section").style.display = "none";
-    document.getElementById("stats-section").style.display = "none";
-    const analyticsSection = document.getElementById("analytics-section");
-    if (analyticsSection) analyticsSection.style.display = "none";
-    const aiChatsSection = document.getElementById("ai-chats-section");
-    if (aiChatsSection) aiChatsSection.style.display = "none";
-    const aiKnowledgeSection = document.getElementById("ai-knowledge-section");
-    if (aiKnowledgeSection) aiKnowledgeSection.style.display = "none";
-    document.getElementById("bookings-section").style.display = "none";
-    document.getElementById("orders-section").style.display = "none";
-    document.getElementById("web-bookings-section").style.display = "none";
-    document.getElementById("gallery-section").style.display = "none";
-    const reviewsSection = document.getElementById("reviews-section");
-      if (reviewsSection) reviewsSection.style.display = "none";
-    const itemReviewsSection = document.getElementById("item-reviews-section");
-      if (itemReviewsSection) itemReviewsSection.style.display = "none";
-      const promosSection = document.getElementById("promos-section");
-      if (promosSection) promosSection.style.display = "none";
-      const blogsSection = document.getElementById("blogs-section");
-      if (blogsSection) blogsSection.style.display = "none";
-    document.getElementById("withdrawal-section").style.display = "none";
-    const reportsSection = document.getElementById("reports-section");
-    if (reportsSection) reportsSection.style.display = "none";
-    const licenseSection = document.getElementById("license-section");
-    if (licenseSection) licenseSection.style.display = "none";
-    document.getElementById("settings-section").style.display = "none";
-    const usersSection = document.getElementById("users-section");
-    if (usersSection) usersSection.style.display = "none";
-    const loginLogsSection = document.getElementById("login-logs-section");
-    if (loginLogsSection) loginLogsSection.style.display = "none";
-    document.getElementById("drivers-section").style.display = "none";
-    document.getElementById("guide-item-btn").style.display = "none";
-    document.getElementById("add-item-btn").style.display = "none";
-    document.getElementById("add-booking-btn").style.display = "none";
-    document.getElementById("add-gallery-btn").style.display = "none";
-    document.getElementById("add-driver-btn").style.display = "none";
-      const addPromoBtn = document.getElementById("add-promo-btn");
-      if (addPromoBtn) addPromoBtn.style.display = "none";
-      const addBlogBtn = document.getElementById("add-blog-btn");
-      if (addBlogBtn) addBlogBtn.style.display = "none";
+    try {
+        if (window.event && window.event.currentTarget) {
+            window.event.currentTarget.classList.add("active");
+        } else {
+            const link = document.querySelector(`.sidebar-menu a[onclick*="showTab('${tab}')"]`);
+            if (link) link.classList.add("active");
+        }
+    } catch(e) {}
+    
+    document.querySelector('.admin-sidebar')?.classList.remove('active');
+    
+    const sectionsToHide = [
+        "items-section", "stats-section", "analytics-section", "ai-chats-section",
+        "ai-knowledge-section", "bookings-section", "orders-section", 
+        "web-bookings-section", "gallery-section", "reviews-section",
+        "item-reviews-section", "promos-section", "blogs-section",
+        "withdrawal-section", "reports-section", "license-section",
+        "settings-section", "users-section", "login-logs-section", "drivers-section"
+    ];
+    sectionsToHide.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
+
+    const btnsToHide = [
+        "guide-item-btn", "add-item-btn", "add-booking-btn", "add-gallery-btn",
+        "add-driver-btn", "add-promo-btn", "add-blog-btn"
+    ];
+    btnsToHide.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.style.display = "none";
+    });
     
     if (tab === "items") {
         document.getElementById("items-section").style.display = "block";
