@@ -4717,13 +4717,13 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                 `;
             }
 
-            let detailsHtml = '<div style="border-radius: 8px; overflow: hidden; border: 1px solid #e2e8f0;"><table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0;"><tbody>';
+            let detailsHtml = '<div style="border-radius: 8px; overflow: hidden; border: 1px solid #94a3b8;"><table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin: 0;"><tbody>';
             const showRow = (label, val) => {
                 if (!val || val === '-') return '';
                 return `
             <tr>
-                <td style="padding: 12px 15px; border: 1px solid #e2e8f0; color:#64748b; font-weight:600; width: 40%; background: #f8fafc; vertical-align: top;">${label}</td>
-                <td style="padding: 12px 15px; border: 1px solid #e2e8f0; color:#1e293b; font-weight:700; word-break: break-word; background: white;">${val}</td>
+                <td style="padding: 12px 15px; border: 1px solid #cbd5e1; color:#64748b; font-weight:600; width: 40%; background: #f8fafc; vertical-align: top;">${label}</td>
+                <td style="padding: 12px 15px; border: 1px solid #cbd5e1; color:#1e293b; font-weight:700; word-break: break-word; background: white;">${val}</td>
             </tr>
         `;
             };
