@@ -593,6 +593,11 @@ bookingsRoutes.put('/:id/complete', async (c) => {
         
         await db.collection('bookings').doc(id).update({ status: 'COMPLETED' });
         return c.json({ message: 'Trip completed successfully' });
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
+});
+
 // GET cron job for sending H-1 email reminders via Resend (Public/Protected by Secret/Scheduled)
 bookingsRoutes.get('/cron/reminders', async (c) => {
     try {
