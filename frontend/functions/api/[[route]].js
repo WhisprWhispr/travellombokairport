@@ -39,6 +39,7 @@ app.route('/analytics', analyticsRoutes);
 app.route('/reports', reportsRoutes);
 app.route('/cron', cronRoutes);
 
+app.get('/cron-test', (c) => c.json({ status: 'ok', message: 'Hono router is working' }));
 
 app.post('/upload', async (c) => {
     try {
