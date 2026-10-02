@@ -593,6 +593,135 @@ bookingsRoutes.put('/:id/complete', async (c) => {
         
         await db.collection('bookings').doc(id).update({ status: 'COMPLETED' });
         return c.json({ message: 'Trip completed successfully' });
+// GET cron job for sending H-1 email reminders via Resend (Public/Protected by Secret/Scheduled)
+bookingsRoutes.get('/cron/reminders', async (c) => {
+    try {
+        const db = getDb(c);
+        
+        // Cek API Key Resend
+        const resendApiKey = c.env.RESEND_API_KEY;
+        if (!resendApiKey) {
+            return c.json({ error: 'RESEND_API_KEY is missing' }, 500);
+        }
+
+        // Dapatkan tanggal besok (H-1) dalam format YYYY-MM-DD
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        const yyyy = tomorrow.getFullYear();
+        const mm = String(tomorrow.getMonth() + 1).padStart(2, '0');
+        const dd = String(tomorrow.getDate()).padStart(2, '0');
+        const targetDate = `${yyyy}-${mm}-${dd}`;
+        
+        // Ambil data bookings yang PAID dan startDate == targetDate
+        const bkgSnap = await db.collection('bookings')
+            .where('status', '==', 'PAID')
+            .where('startDate', '==', targetDate)
+            .get();
+            
+        // Ambil data orders yang PAID dan (travelDate == targetDate ATAU startDate == targetDate)
+        const ordSnap1 = await db.collection('orders')
+            .where('status', '==', 'PAID')
+            .where('travelDate', '==', targetDate)
+            .get();
+            
+        const ordSnap2 = await db.collection('orders')
+            .where('status', '==', 'PAID')
+            .where('startDate', '==', targetDate)
+            .get();
+
+        const targets = [];
+        
+        bkgSnap.forEach(doc => {
+            const data = doc.data();
+            if (data.customerEmail && !data.reminderSent) {
+                targets.push({ id: doc.id, collection: 'bookings', ...data });
+            }
+        });
+        
+        ordSnap1.forEach(doc => {
+            const data = doc.data();
+            if (data.customerEmail && !data.reminderSent) {
+                targets.push({ id: doc.id, collection: 'orders', ...data });
+            }
+        });
+        
+        ordSnap2.forEach(doc => {
+            const data = doc.data();
+            // hindari duplikat
+            if (data.customerEmail && !data.reminderSent && !targets.find(t => t.id === doc.id)) {
+                targets.push({ id: doc.id, collection: 'orders', ...data });
+            }
+        });
+
+        const results = { sent: 0, failed: 0, errors: [] };
+
+        for (const t of targets) {
+            const emailHtml = `
+            <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
+                <div style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 25px; text-align: center; color: white;">
+                    <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
+                    <p style="margin: 5px 0 0; opacity: 0.9;">Pengingat Perjalanan Besok (H-1)</p>
+                </div>
+                <div style="padding: 30px;">
+                    <p>Halo <strong>${t.customerName || 'Pelanggan'}</strong>,</p>
+                    <p>Kami ingin mengingatkan Anda bahwa jadwal perjalanan Anda bersama Travel Lombok Airport akan berlangsung <strong>BESOK (${targetDate})</strong>.</p>
+                    
+                    <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 8px 0; color: #64748b; width: 40%;">ID Booking</td>
+                                <td style="padding: 8px 0; font-weight: bold;">${t.transactionId || t.id}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; color: #64748b;">Layanan</td>
+                                <td style="padding: 8px 0; font-weight: bold;">${t.itemName || t.packageName || t.serviceName || '-'}</td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 8px 0; color: #64748b;">Tanggal Penjemputan</td>
+                                <td style="padding: 8px 0; font-weight: bold;">${targetDate}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <p style="font-size: 14px; color: #334155;">Pastikan Anda sudah menyiapkan segala keperluan. Tim kami atau supir akan menghubungi Anda melalui WhatsApp untuk koordinasi titik jemput dan waktu penjemputan.</p>
+                    
+                    <p style="font-size: 14px; color: #64748b; margin-top: 20px;">Jika ada perubahan atau pertanyaan mendesak, silakan hubungi kami via WhatsApp di +62 896-7696-3255.</p>
+                    <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Sampai jumpa besok!<br><strong>Tim Travel Lombok Airport</strong></p>
+                </div>
+            </div>
+            `;
+
+            try {
+                const res = await fetch('https://api.resend.com/emails', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${resendApiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        from: 'Travel Lombok Airport <admin@travellombokairport.com>',
+                        to: t.customerEmail,
+                        subject: `[PENGINGAT H-1] Perjalanan Besok: ${t.itemName || t.packageName || 'Layanan Travel'}`,
+                        html: emailHtml
+                    })
+                });
+
+                if (res.ok) {
+                    results.sent++;
+                    // Update field reminderSent agar tidak dikirim berulang
+                    await db.collection(t.collection).doc(t.id).update({ reminderSent: true });
+                } else {
+                    const text = await res.text();
+                    results.failed++;
+                    results.errors.push({ id: t.id, error: text });
+                }
+            } catch (err) {
+                results.failed++;
+                results.errors.push({ id: t.id, error: err.message });
+            }
+        }
+
+        return c.json({ message: 'Proses pengingat H-1 selesai dieksekusi', results, targetDate });
     } catch (error) {
         return c.json({ error: error.message }, 500);
     }

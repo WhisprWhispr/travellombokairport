@@ -1074,7 +1074,7 @@ window.showTab = (tab) => {
         "web-bookings-section", "gallery-section", "reviews-section",
         "item-reviews-section", "promos-section", "blogs-section",
         "withdrawal-section", "reports-section",
-        "settings-section", "users-section", "login-logs-section", "drivers-section"
+        "settings-section", "users-section", "login-logs-section", "drivers-section", "cron-section"
     ];
     sectionsToHide.forEach(id => {
         const el = document.getElementById(id);
@@ -1173,8 +1173,120 @@ window.showTab = (tab) => {
         const loginLogsSection = document.getElementById("login-logs-section");
         if (loginLogsSection) loginLogsSection.style.display = "block";
         fetchLoginLogs();
+    } else if (tab === "cron") {
+        const cronSection = document.getElementById("cron-section");
+        if (cronSection) cronSection.style.display = "block";
+        fetchAdminCronJobs();
     }
 };
+
+// --- CRON JOBS LOGIC ---
+const fetchAdminCronJobs = async () => {
+    const tableBody = document.getElementById("cron-jobs-table");
+    if (!tableBody) return;
+    tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Memuat daftar cron jobs...</td></tr>';
+    
+    try {
+        const response = await fetch(`${API_URL}/cron/jobs`, { headers: getAuthHeaders() });
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error || 'Failed to load cron jobs');
+        
+        if (!data.jobs || data.jobs.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center">Belum ada tugas otomatis.</td></tr>';
+            return;
+        }
+        
+        tableBody.innerHTML = data.jobs.map(job => {
+            const lastStatusBadge = job.lastStatus === 1 ? '<span style="color:#10b981; font-weight:bold;">SUKSES</span>' : 
+                                   job.lastStatus === 0 ? '<span style="color:#64748b;">BELUM JALAN</span>' : 
+                                   '<span style="color:#ef4444; font-weight:bold;">ERROR</span>';
+            const statusBadge = job.enabled ? '<span style="background:#dcfce7; color:#166534; padding:3px 8px; border-radius:4px; font-size:0.8rem;">Aktif</span>' : '<span style="background:#fee2e2; color:#991b1b; padding:3px 8px; border-radius:4px; font-size:0.8rem;">Nonaktif</span>';
+            
+            const nextExec = job.nextExecution ? new Date(job.nextExecution * 1000).toLocaleString('id-ID') : '-';
+            
+            return `
+            <tr>
+                <td><strong>${job.title || 'Untitled'}</strong><br><small style="color:#64748b;">ID: ${job.jobId}</small></td>
+                <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${job.url}">
+                    <a href="${job.url}" target="_blank" style="color:var(--primary-blue); font-size:0.85rem;"><i class="fa-solid fa-link"></i> ${job.url}</a>
+                </td>
+                <td style="font-size:0.85rem;">Terjadwal</td>
+                <td>${lastStatusBadge}</td>
+                <td style="font-size:0.85rem;">${nextExec}</td>
+                <td>${statusBadge}</td>
+                <td>
+                    <button class="btn btn-outline" style="border-color:#3b82f6; color:#3b82f6; padding:4px 8px; font-size:0.8rem; margin-right:5px;" onclick="viewCronLog(${job.jobId})"><i class="fa-solid fa-file-lines"></i> Lihat Log</button>
+                    <button class="btn btn-outline" style="border-color:${job.enabled ? '#ef4444' : '#10b981'}; color:${job.enabled ? '#ef4444' : '#10b981'}; padding:4px 8px; font-size:0.8rem;" onclick="toggleCronJob(${job.jobId}, ${!job.enabled})">${job.enabled ? '<i class="fa-solid fa-pause"></i> Matikan' : '<i class="fa-solid fa-play"></i> Aktifkan'}</button>
+                </td>
+            </tr>
+            `;
+        }).join('');
+        
+    } catch (error) {
+        console.error(error);
+        tableBody.innerHTML = `<tr><td colspan="7" class="text-center" style="color:red;">Error: ${error.message}</td></tr>`;
+    }
+};
+
+window.viewCronLog = async (jobId) => {
+    const tableBody = document.getElementById("cron-history-table");
+    if (!tableBody) return;
+    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Memuat riwayat eksekusi...</td></tr>';
+    
+    try {
+        const response = await fetch(`${API_URL}/cron/jobs/${jobId}/history`, { headers: getAuthHeaders() });
+        const data = await response.json();
+        
+        if (!response.ok) throw new Error(data.error || 'Failed to load history');
+        
+        if (!data.history || data.history.length === 0) {
+            tableBody.innerHTML = '<tr><td colspan="5" class="text-center">Belum ada riwayat eksekusi untuk job ini.</td></tr>';
+            return;
+        }
+        
+        tableBody.innerHTML = data.history.map(item => {
+            const date = new Date(item.date * 1000).toLocaleString('id-ID');
+            const resultBadge = item.status === 1 ? '<span style="color:#10b981; font-weight:bold;"><i class="fa-solid fa-check-circle"></i> SUKSES</span>' : 
+                               '<span style="color:#ef4444; font-weight:bold;"><i class="fa-solid fa-xmark-circle"></i> ERROR</span>';
+            return `
+            <tr>
+                <td>${date}</td>
+                <td style="font-family:monospace; color:#64748b;">${item.identifier}</td>
+                <td>${item.duration} ms</td>
+                <td><span style="background:#e2e8f0; padding:2px 6px; border-radius:4px;">HTTP ${item.httpStatus}</span></td>
+                <td>${resultBadge}</td>
+            </tr>
+            `;
+        }).join('');
+        
+        // Scroll to history table smoothly
+        tableBody.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+    } catch (error) {
+        console.error(error);
+        tableBody.innerHTML = `<tr><td colspan="5" class="text-center" style="color:red;">Error: ${error.message}</td></tr>`;
+    }
+};
+
+window.toggleCronJob = async (jobId, enable) => {
+    try {
+        Swal.fire({ title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => Swal.showLoading() });
+        const response = await fetch(`${API_URL}/cron/jobs/${jobId}`, {
+            method: 'PATCH',
+            headers: getAuthHeaders(),
+            body: JSON.stringify({ job: { enabled: enable } })
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Gagal mengubah status');
+        
+        Swal.fire({ icon: 'success', title: 'Berhasil', text: enable ? 'Job diaktifkan' : 'Job dinonaktifkan', timer: 1500 });
+        fetchAdminCronJobs();
+    } catch (error) {
+        Swal.fire('Error', error.message, 'error');
+    }
+};
+
 
 const fetchAdminBookings = async () => {
     const bookingsTableBody = document.getElementById("admin-bookings-table");

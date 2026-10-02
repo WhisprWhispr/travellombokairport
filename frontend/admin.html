@@ -82,6 +82,7 @@
           <li><a href="#" onclick="showTab('ai-chats')"><i class="fa-solid fa-comments"></i> Riwayat Chat AI</a></li>
           <li><a href="#" onclick="showTab('reports')"><i class="fa-solid fa-bug"></i> Laporan AI</a></li>
           <li><a href="#" onclick="showTab('ai-knowledge')"><i class="fa-solid fa-brain"></i> Ajari AI (Knowledge Base)</a></li>
+          <li><a href="#" onclick="showTab('cron')"><i class="fa-solid fa-clock-rotate-left"></i> Automasi & Cron</a></li>
           <li><a href="#" onclick="showTab('settings')"><i class="fa-solid fa-cog"></i> Pengaturan Global</a></li>
           <li><a href="#" onclick="showTab('users')"><i class="fa-solid fa-users"></i> Pengguna</a></li>
           <li><a href="#" onclick="showTab('login-logs')"><i class="fa-solid fa-history"></i> Log Aktivitas Login</a></li>
@@ -307,6 +308,50 @@
         </section>
 
         <!-- Settings Section -->
+        <!-- Cron Jobs Section -->
+        <section id="cron-section" class="admin-content glass-panel mt-4" style="display: none;">
+          <h2>Manajemen Automasi & Cron</h2>
+          <div class="mt-4" style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+            <p style="color: #64748b; font-size: 0.95rem; margin-bottom: 20px;">Memantau tugas latar belakang otomatis. Data diambil secara langsung dari API cron-job.org.</p>
+            <div class="table-responsive">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Nama Tugas</th>
+                    <th>URL Endpoint</th>
+                    <th>Jadwal</th>
+                    <th>Eksekusi Terakhir</th>
+                    <th>Berikutnya</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="cron-jobs-table">
+                  <tr><td colspan="7" class="text-center">Memuat daftar cron jobs...</td></tr>
+                </tbody>
+              </table>
+            </div>
+            
+            <h3 class="mt-5 mb-3" style="font-size: 1.1rem; color: var(--primary-blue); border-bottom: 1px solid #e2e8f0; padding-bottom: 10px;">Riwayat Eksekusi (Log)</h3>
+            <div class="table-responsive">
+              <table class="admin-table" style="font-size: 0.85rem;">
+                <thead>
+                  <tr>
+                    <th>Waktu (WITA)</th>
+                    <th>ID Eksekusi</th>
+                    <th>Durasi (ms)</th>
+                    <th>HTTP Status</th>
+                    <th>Hasil Akhir</th>
+                  </tr>
+                </thead>
+                <tbody id="cron-history-table">
+                  <tr><td colspan="5" class="text-center">Pilih "Lihat Log" pada salah satu job di atas.</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
         <!-- Reports Section -->
         <section id="reports-section" class="admin-content glass-panel mt-4" style="display: none;">
           <h2>Laporan Masalah / Bug</h2>
