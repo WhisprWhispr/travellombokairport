@@ -13,11 +13,21 @@ const getHeaders = () => ({
 
 // GET /api/cron/jobs - List all cron jobs
 cronRoutes.get('/jobs', async (c) => {
-    return c.json({
-        jobs: [
-            { title: "Test Job", type: 0, enabled: true, saveResponses: true, schedule: { timezone: "Asia/Jakarta" }, lastExecution: { status: 1 } }
-        ]
-    });
+    try {
+        const response = await fetch(`${CRON_API_BASE}/jobs`, {
+            method: 'GET',
+            headers: getHeaders()
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to fetch jobs: ${response.status} ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        return c.json(data);
+    } catch (error) {
+        return c.json({ error: error.message }, 500);
+    }
 });
 
 // GET /api/cron/jobs/:id/history - Get job history

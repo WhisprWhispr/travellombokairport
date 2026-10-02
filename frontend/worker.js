@@ -12,6 +12,7 @@ import promosRoutes from './functions/api/routes/promos.js';
 import blogsRoutes from './functions/api/routes/blogs.js';
 import analyticsRoutes from './functions/api/routes/analytics.js';
 import reportsRoutes from './functions/api/routes/reports.js';
+import cronRoutes from './functions/api/routes/cron.js';
 import { getDbFromEnv } from './functions/api/config/firebase.js';
 
 const app = new Hono().basePath('/api');
@@ -38,6 +39,8 @@ app.route('/promos', promosRoutes);
 app.route('/blogs', blogsRoutes);
 app.route('/analytics', analyticsRoutes);
 app.route('/reports', reportsRoutes);
+app.route('/cron', cronRoutes);
+app.route('/reviews', apiRoutes);
 
 app.post('/upload', async (c) => {
     try {
