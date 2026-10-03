@@ -3097,15 +3097,15 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                         <input type="radio" name="payment-type-radio" id="pt-dp" value="dp" checked style="accent-color:#f59e0b;width:16px;height:16px;margin-top:2px;">
                         <div>
                             <div style="font-weight:700;color:#d97706;font-size:0.88rem;">Bayar DP</div>
-                            <div style="font-size:0.75rem;color:#92400e;margin-top:2px;">Bayar DP ${formatPrice(dpAmount)} ${depositAmount > 0 ? `+ Deposit ${formatPrice(depositAmount)}` : ''} sekarang.</div>
-                            <div style="font-size:0.75rem;font-weight:700;color:#d97706;margin-top:4px;">Total ditransfer: ${formatPrice(dpAmount + depositAmount)}</div>
+                            <div style="font-size:0.75rem;color:#92400e;margin-top:2px;">Bayar DP ${formatPrice(dpAmount)} ${depositAmount > 0 ? `+ Deposit ${formatPrice(depositAmount)}` : ''} + Layanan Rp 6.500 sekarang.</div>
+                            <div style="font-size:0.75rem;font-weight:700;color:#d97706;margin-top:4px;">Total ditransfer: ${formatPrice(dpAmount + depositAmount + 6500)}</div>
                         </div>
                     </label>
                     <label id="pt-full-label" onclick="window.setPaymentType('full')" style="flex:1;display:flex;align-items:flex-start;gap:10px;background:#f0fdf4;border:2px solid #e2e8f0;border-radius:10px;padding:12px;cursor:pointer;transition:all .2s;">
                         <input type="radio" name="payment-type-radio" id="pt-full" value="full" style="accent-color:#22c55e;width:16px;height:16px;margin-top:2px;">
                         <div>
                             <div style="font-weight:700;color:#15803d;font-size:0.88rem;">Bayar Lunas</div>
-                            <div style="font-size:0.75rem;color:#166534;margin-top:2px;">Lunas Biaya Sewa ${depositAmount > 0 ? `+ Deposit ${formatPrice(depositAmount)}` : ''}</div>
+                            <div style="font-size:0.75rem;color:#166534;margin-top:2px;">Lunas Sewa ${depositAmount > 0 ? `+ Deposit ${formatPrice(depositAmount)}` : ''} + Layanan Rp 6.500</div>
                             <div style="font-size:0.75rem;font-weight:700;color:#15803d;margin-top:4px;">Transfer sewa penuh + deposit</div>
                         </div>
                     </label>
@@ -3575,9 +3575,9 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\nJam Penjemputan: ${pickupTime}\nNomor Penerbangan: ${flightNum}\nJumlah Penumpang: ${pax}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 500.000\nSisa Pembayaran: ${finalPrice > 500000 ? formatPrice(finalPrice - 500000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\nJam Penjemputan: ${pickupTime}\nNomor Penerbangan: ${flightNum}\nJumlah Penumpang: ${pax}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nSubtotal: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nBiaya Layanan: Rp 6.500\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice + 6500) : 'Rp __________'}\nDP/Booking Fee: Rp 500.000\nSisa Pembayaran: ${finalPrice > 500000 ? formatPrice(finalPrice - 500000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
         } else {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon instruksi selanjutnya. Terima kasih.`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Subtotal: ${formatPrice(finalPrice)}\n- Biaya Layanan: Rp 6.500\n- Total Estimasi: ${formatPrice(finalPrice + 6500)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon instruksi selanjutnya. Terima kasih.`;
         }
         
         if (isManual && transactionId) {
