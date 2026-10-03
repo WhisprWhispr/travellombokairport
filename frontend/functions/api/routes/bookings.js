@@ -156,22 +156,22 @@ bookingsRoutes.post('/', async (c) => {
                         
                         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
                             <table style="width: 100%; border-collapse: collapse;">
-                                <tr>
-                                    <td style="padding: 8px 0; color: #64748b; width: 40%;">ID Booking</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${transactionId}</td>
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding: 10px 0; color: #64748b; width: 40%;">ID Booking</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${transactionId}</td>
                                 </tr>
-                                <tr>
-                                    <td style="padding: 8px 0; color: #64748b;">Layanan</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${body.itemName || '-'}</td>
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding: 10px 0; color: #64748b;">Layanan</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${body.itemName || '-'}</td>
                                 </tr>
                                 ${body.details && body.details.vehicle ? `
-                                <tr>
-                                    <td style="padding: 8px 0; color: #64748b;">Mobil/Kendaraan</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${body.details.vehicle}</td>
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding: 10px 0; color: #64748b;">Mobil/Kendaraan</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${body.details.vehicle}</td>
                                 </tr>` : ''}
                                 <tr>
-                                    <td style="padding: 8px 0; color: #64748b;">Tanggal</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${body.startDate || '-'} ${body.endDate ? 's.d ' + body.endDate : ''}</td>
+                                    <td style="padding: 10px 0; color: #64748b;">Tanggal</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${body.startDate || '-'} ${body.endDate ? 's.d ' + body.endDate : ''}</td>
                                 </tr>
                                 ${body.price ? `
                                 <tr style="border-top: 1px dashed #e2e8f0;">
@@ -481,22 +481,22 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
                         
                         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
                             <table style="width: 100%; border-collapse: collapse;">
-                                <tr>
-                                    <td style="padding: 8px 0; color: #64748b; width: 40%;">ID Booking</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${transactionId}</td>
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding: 10px 0; color: #64748b; width: 40%;">ID Booking</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${transactionId}</td>
                                 </tr>
-                                <tr>
-                                    <td style="padding: 8px 0; color: #64748b;">Layanan</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${oldData.itemName || '-'}</td>
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding: 10px 0; color: #64748b;">Layanan</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${oldData.itemName || '-'}</td>
                                 </tr>
                                 ${oldData.details && oldData.details.vehicle ? `
-                                <tr>
-                                    <td style="padding: 8px 0; color: #64748b;">Mobil/Kendaraan</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${oldData.details.vehicle}</td>
+                                <tr style="border-bottom: 1px solid #f1f5f9;">
+                                    <td style="padding: 10px 0; color: #64748b;">Mobil/Kendaraan</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${oldData.details.vehicle}</td>
                                 </tr>` : ''}
                                 <tr>
-                                    <td style="padding: 8px 0; color: #64748b;">Tanggal</td>
-                                    <td style="padding: 8px 0; font-weight: bold;">${oldData.startDate || '-'} ${oldData.endDate ? 's.d ' + oldData.endDate : ''}</td>
+                                    <td style="padding: 10px 0; color: #64748b;">Tanggal</td>
+                                    <td style="padding: 10px 0; font-weight: bold;">${oldData.startDate || '-'} ${oldData.endDate ? 's.d ' + oldData.endDate : ''}</td>
                                 </tr>
                                 ${oldData.price ? `
                                 <tr style="border-top: 1px dashed #e2e8f0;">
@@ -746,22 +746,22 @@ bookingsRoutes.get('/cron/reminders', async (c) => {
                     
                     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
                         <table style="width: 100%; border-collapse: collapse;">
-                            <tr>
-                                <td style="padding: 8px 0; color: #64748b; width: 40%;">ID Booking</td>
-                                <td style="padding: 8px 0; font-weight: bold;">${t.transactionId || t.id}</td>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 10px 0; color: #64748b; width: 40%;">ID Booking</td>
+                                <td style="padding: 10px 0; font-weight: bold;">${t.transactionId || t.id}</td>
                             </tr>
-                            <tr>
-                                <td style="padding: 8px 0; color: #64748b;">Layanan</td>
-                                <td style="padding: 8px 0; font-weight: bold;">${t.itemName || t.packageName || t.serviceName || '-'}</td>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 10px 0; color: #64748b;">Layanan</td>
+                                <td style="padding: 10px 0; font-weight: bold;">${t.itemName || t.packageName || t.serviceName || '-'}</td>
                             </tr>
                             ${t.details && t.details.vehicle ? `
-                            <tr>
-                                <td style="padding: 8px 0; color: #64748b;">Mobil/Kendaraan</td>
-                                <td style="padding: 8px 0; font-weight: bold;">${t.details.vehicle}</td>
+                            <tr style="border-bottom: 1px solid #f1f5f9;">
+                                <td style="padding: 10px 0; color: #64748b;">Mobil/Kendaraan</td>
+                                <td style="padding: 10px 0; font-weight: bold;">${t.details.vehicle}</td>
                             </tr>` : ''}
                             <tr>
-                                <td style="padding: 8px 0; color: #64748b;">Tanggal Penjemputan</td>
-                                <td style="padding: 8px 0; font-weight: bold;">${targetDate}</td>
+                                <td style="padding: 10px 0; color: #64748b;">Tanggal Penjemputan</td>
+                                <td style="padding: 10px 0; font-weight: bold;">${targetDate}</td>
                             </tr>
                         </table>
                     </div>
