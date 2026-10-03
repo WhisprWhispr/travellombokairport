@@ -2683,6 +2683,60 @@ window.submitBooking = (method) => {
         openCheckoutModal(itemName, estimatedPrice, 'web');
     }
 };
+// Cloudflare Turnstile Verification Helper for Checkout Modal
+window.ensureTurnstileScript = () => {
+    if (window.turnstile || document.querySelector('script[src*="challenges.cloudflare.com/turnstile"]')) return;
+    const script = document.createElement('script');
+    script.src = 'https://challenges.cloudflare.com/turnstile/v0/api.js';
+    script.async = true;
+    script.defer = true;
+    document.head.appendChild(script);
+};
+
+window.initCheckoutTurnstile = () => {
+    window.ensureTurnstileScript();
+    window._checkoutTurnstileToken = '';
+    const container = document.getElementById('checkout-turnstile');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const tryRender = (attempts = 0) => {
+        const el = document.getElementById('checkout-turnstile');
+        if (!el) return;
+
+        if (window.turnstile && typeof window.turnstile.render === 'function') {
+            try {
+                if (window._checkoutTurnstileWidgetId !== undefined) {
+                    try { window.turnstile.remove(window._checkoutTurnstileWidgetId); } catch(e){}
+                    window._checkoutTurnstileWidgetId = undefined;
+                }
+                window._checkoutTurnstileWidgetId = window.turnstile.render(el, {
+                    sitekey: '0x4AAAAAAEY5_o0-MiC2wPpS',
+                    theme: 'light',
+                    callback: (token) => {
+                        window._checkoutTurnstileToken = token;
+                        const errMsg = document.getElementById('turnstile-error-msg');
+                        if (errMsg) errMsg.style.display = 'none';
+                    },
+                    'expired-callback': () => {
+                        window._checkoutTurnstileToken = '';
+                    },
+                    'error-callback': () => {
+                        window._checkoutTurnstileToken = '';
+                    }
+                });
+            } catch (err) {
+                console.warn('Turnstile render warning:', err);
+            }
+        } else if (attempts < 30) {
+            setTimeout(() => tryRender(attempts + 1), 200);
+        }
+    };
+
+    setTimeout(() => tryRender(0), 100);
+};
+
 // Checkout & QRIS Flow
 window.closeCheckoutModal = () => {
     // Stop any active QRIS polling when modal is closed
@@ -2690,6 +2744,11 @@ window.closeCheckoutModal = () => {
         clearInterval(window.activePollInterval);
         window.activePollInterval = null;
     }
+    if (window.turnstile && window._checkoutTurnstileWidgetId !== undefined) {
+        try { window.turnstile.remove(window._checkoutTurnstileWidgetId); } catch(e){}
+        window._checkoutTurnstileWidgetId = undefined;
+    }
+    window._checkoutTurnstileToken = '';
     // Clear saved checkout state — user intentionally closed
     sessionStorage.removeItem('checkoutState');
     window._checkoutActive = false;
@@ -3131,11 +3190,27 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 </div>
             </div>
 
+            <!-- Cloudflare Turnstile Verification -->
+            <div id="checkout-turnstile-container" style="margin: 15px 0 20px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 68px;">
+                <div id="checkout-turnstile"></div>
+                <div id="turnstile-error-msg" style="color: #ef4444; font-size: 0.82rem; margin-top: 6px; font-weight: 600; display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Harap selesaikan verifikasi Cloudflare di atas.
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-green w-100" style="padding: 12px; font-size: 1.1rem;">LANJUTKAN PEMBAYARAN</button>
         `;
     } else {
         html += `
             <input type="hidden" id="co-payment" value="booking_only">
+            ${method !== 'wa' ? `
+            <!-- Cloudflare Turnstile Verification -->
+            <div id="checkout-turnstile-container" style="margin: 15px 0 20px 0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 68px;">
+                <div id="checkout-turnstile"></div>
+                <div id="turnstile-error-msg" style="color: #ef4444; font-size: 0.82rem; margin-top: 6px; font-weight: 600; display: none;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Harap selesaikan verifikasi Cloudflare di atas.
+                </div>
+            </div>` : ''}
             <button type="submit" class="btn btn-green w-100" style="padding: 12px; font-size: 1.1rem; background: ${method === 'wa' ? '#22c55e' : 'var(--primary-green)'}; border-color: ${method === 'wa' ? '#22c55e' : 'var(--primary-green)'};">${method === 'wa' ? '<i class="fa-brands fa-whatsapp"></i> LANJUTKAN VIA WA' : 'KIRIM BOOKING'}</button>
         `;
     }
@@ -3146,6 +3221,10 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
 
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
+
+    if (method !== 'wa') {
+        window.initCheckoutTurnstile();
+    }
 
     // Call updateTourPrice once to set the initial total including the default selected vehicle
     if (category === 'tour') {
@@ -3373,6 +3452,23 @@ window.setPaymentType = (type) => {
 window.processCheckout = async (itemName, price, method = 'web') => {
     if (method !== 'wa' && !window.checkAuthAndPrompt()) return;
 
+    if (method !== 'wa') {
+        const turnstileToken = window._checkoutTurnstileToken || document.querySelector('#checkout-modal [name="cf-turnstile-response"]')?.value;
+        if (!turnstileToken) {
+            const errMsg = document.getElementById('turnstile-error-msg');
+            if (errMsg) errMsg.style.display = 'block';
+
+            Swal.fire({
+                icon: 'warning',
+                title: 'Verifikasi Keamanan Diperlukan',
+                text: 'Harap selesaikan verifikasi Cloudflare Turnstile sebelum melanjutkan pembayaran.',
+                confirmButtonColor: '#22c55e',
+                confirmButtonText: 'Selesaikan Verifikasi'
+            });
+            return;
+        }
+    }
+
     const name = document.getElementById("co-name").value;
     const phone = document.getElementById("co-phone").value;
     const emailInput = document.getElementById("co-email")?.value || '';
@@ -3566,6 +3662,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         customerEmail,
         promoCode: promoCode,
         promoDiscount: promoDiscount,
+        turnstileToken: method !== 'wa' ? (window._checkoutTurnstileToken || document.querySelector('#checkout-modal [name="cf-turnstile-response"]')?.value || '') : '',
         details: {
             pickup: pickupLoc,
             dropoff: dropoffLoc,

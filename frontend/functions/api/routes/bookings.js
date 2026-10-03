@@ -108,6 +108,25 @@ bookingsRoutes.post('/', async (c) => {
     try {
         const db = getDb(c);
         const body = await c.req.json();
+
+        // Verifikasi Cloudflare Turnstile jika token disertakan
+        if (body.turnstileToken) {
+            const tsSecret = c.env.TURNSTILE_SECRET_KEY || '0x4AAAAAAEY5_u00djGsY0BHHKjNF38ZDs0';
+            try {
+                const tsResponse = await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `secret=${tsSecret}&response=${body.turnstileToken}`
+                });
+                const tsData = await tsResponse.json();
+                if (!tsData.success) {
+                    return c.json({ error: 'Verifikasi keamanan (Cloudflare Turnstile) tidak valid atau kadaluarsa.' }, 400);
+                }
+            } catch (tsErr) {
+                console.warn('Turnstile verification error:', tsErr);
+            }
+        }
+
         const newBooking = {
             ...body,
             createdAt: new Date().toISOString()
