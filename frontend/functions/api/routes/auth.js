@@ -145,7 +145,7 @@ authRoutes.post('/login', async (c) => {
         const payload = {
             id: firebaseUser.localId,
             email: firebaseUser.email,
-            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 24 hours
+            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // 30 days
         };
         
         const token = await sign(payload, secret);
@@ -264,7 +264,7 @@ authRoutes.post('/google', async (c) => {
             id: firebaseUser.localId,
             email: firebaseUser.email,
             name: firebaseUser.displayName || '',
-            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 24 hours
+            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // 30 days
         };
         
         const token = await sign(payload, secret);
@@ -413,7 +413,7 @@ authRoutes.post('/register', async (c) => {
             id: firebaseUser.localId,
             email: firebaseUser.email,
             name: name || '',
-            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 // 24 hours
+            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // 30 days
         };
         
         const token = await sign(payload, secret);
@@ -650,7 +650,7 @@ authRoutes.post('/check-verified', async (c) => {
         const jwtToken = await sign({
             id: user.localId,
             email: user.email,
-            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24
+            exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30 // 30 days
         }, secret);
 
         // Ambil data tambahan dari Firestore
