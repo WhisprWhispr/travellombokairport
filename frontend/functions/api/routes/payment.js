@@ -297,6 +297,16 @@ paymentRoutes.post('/webhook', async (c) => {
                                             <td style="padding: 8px 0; color: #64748b;">Tanggal</td>
                                             <td style="padding: 8px 0; font-weight: bold;">${oldData.startDate || '-'} ${oldData.endDate ? 's.d ' + oldData.endDate : ''}</td>
                                         </tr>
+                                        ${oldData.price ? `
+                                        <tr style="border-top: 1px dashed #e2e8f0;">
+                                            <td style="padding: 12px 0 8px; color: #64748b;">Biaya Layanan</td>
+                                            <td style="padding: 12px 0 8px; font-weight: bold;">Rp 6.500</td>
+                                        </tr>
+                                        <tr>
+                                            <td style="padding: 0 0 12px; color: #1e293b; font-weight: bold;">Total Dibayar</td>
+                                            <td style="padding: 0 0 12px; font-weight: bold; color: #16a34a; font-size: 16px;">Rp ${Number(oldData.price).toLocaleString('id-ID')}</td>
+                                        </tr>
+                                        ` : ''}
                                         <tr style="border-top: 1px solid #e2e8f0;">
                                             <td style="padding: 12px 0 0; color: #64748b;">Status Pembayaran</td>
                                             <td style="padding: 12px 0 0; font-weight: bold; color: #16a34a;">Pembayaran Berhasil (LUNAS)</td>
