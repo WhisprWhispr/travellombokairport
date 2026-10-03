@@ -164,6 +164,11 @@ bookingsRoutes.post('/', async (c) => {
                                     <td style="padding: 8px 0; color: #64748b;">Layanan</td>
                                     <td style="padding: 8px 0; font-weight: bold;">${body.itemName || '-'}</td>
                                 </tr>
+                                ${body.details && body.details.vehicle ? `
+                                <tr>
+                                    <td style="padding: 8px 0; color: #64748b;">Mobil/Kendaraan</td>
+                                    <td style="padding: 8px 0; font-weight: bold;">${body.details.vehicle}</td>
+                                </tr>` : ''}
                                 <tr>
                                     <td style="padding: 8px 0; color: #64748b;">Tanggal</td>
                                     <td style="padding: 8px 0; font-weight: bold;">${body.startDate || '-'} ${body.endDate ? 's.d ' + body.endDate : ''}</td>
@@ -474,6 +479,11 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
                                     <td style="padding: 8px 0; color: #64748b;">Layanan</td>
                                     <td style="padding: 8px 0; font-weight: bold;">${oldData.itemName || '-'}</td>
                                 </tr>
+                                ${oldData.details && oldData.details.vehicle ? `
+                                <tr>
+                                    <td style="padding: 8px 0; color: #64748b;">Mobil/Kendaraan</td>
+                                    <td style="padding: 8px 0; font-weight: bold;">${oldData.details.vehicle}</td>
+                                </tr>` : ''}
                                 <tr>
                                     <td style="padding: 8px 0; color: #64748b;">Tanggal</td>
                                     <td style="padding: 8px 0; font-weight: bold;">${oldData.startDate || '-'} ${oldData.endDate ? 's.d ' + oldData.endDate : ''}</td>
@@ -724,6 +734,11 @@ bookingsRoutes.get('/cron/reminders', async (c) => {
                                 <td style="padding: 8px 0; color: #64748b;">Layanan</td>
                                 <td style="padding: 8px 0; font-weight: bold;">${t.itemName || t.packageName || t.serviceName || '-'}</td>
                             </tr>
+                            ${t.details && t.details.vehicle ? `
+                            <tr>
+                                <td style="padding: 8px 0; color: #64748b;">Mobil/Kendaraan</td>
+                                <td style="padding: 8px 0; font-weight: bold;">${t.details.vehicle}</td>
+                            </tr>` : ''}
                             <tr>
                                 <td style="padding: 8px 0; color: #64748b;">Tanggal Penjemputan</td>
                                 <td style="padding: 8px 0; font-weight: bold;">${targetDate}</td>
