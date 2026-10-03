@@ -3648,6 +3648,9 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         // paymentAmount += 3000;
     }
 
+    // Tambahkan Biaya Layanan
+    paymentAmount += 6500;
+
     paymentAmount += depositAmount; // Selalu tambahkan deposit ke pembayaran saat ini
 
     const bookingData = {
