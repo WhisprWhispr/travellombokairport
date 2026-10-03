@@ -1490,7 +1490,7 @@ const init = async () => {
                         <div class="maint-blob"></div>
                         <div class="maint-blob2"></div>
                         <div class="maint-card">
-                            <img src="/logo.png" alt="Travel Lombok Airport Logo" style="height: 100px; object-fit: contain; margin-bottom: 30px;">
+                            <img src="/logo.png" alt="Travel AIRArport Logo" style="height: 100px; object-fit: contain; margin-bottom: 30px;">
                             <div class="maint-icon-container">
                                 <i class="fa-solid fa-person-digging" style="font-size: 2.5rem; color: #3b82f6;"></i>
                             </div>
@@ -2041,7 +2041,7 @@ window.generateEtiketPDF = (data) => {
                      style="width:60px;height:60px;border-radius:12px;background:#fff;
                             padding:6px;object-fit:contain;flex-shrink:0;">
                 <div>
-                    <div style="color:#fff;font-size:21px;font-weight:800;line-height:1.2;">Travel Lombok Airport</div>
+                    <div style="color:#fff;font-size:21px;font-weight:800;line-height:1.2;">Travel AIRArport</div>
                     <div style="color:rgba(255,255,255,0.75);font-size:11px;margin-top:2px;">Tour &amp; Travel Lombok &middot; www.travellombokairport.com</div>
                 </div>
             </div>
@@ -2224,7 +2224,7 @@ window.generateEtiketPDF = (data) => {
         <div style="background:#f8fafc;border-top:1px solid #e2e8f0;padding:10px 30px;flex-shrink:0;width:100%;box-sizing:border-box;">
             <div style="display:flex;justify-content:space-between;align-items:flex-end;">
                 <div>
-                    <div style="font-size:11px;color:#1e293b;font-weight:700;margin-bottom:4px;">Travel Lombok Airport</div>
+                    <div style="font-size:11px;color:#1e293b;font-weight:700;margin-bottom:4px;">Travel AIRArport</div>
                     <div style="font-size:10px;color:#64748b;line-height:1.8;">
                         &#128222; +62 896-7696-3255 (WhatsApp)<br>
                         &#127760; www.travellombokairport.com<br>
@@ -2234,7 +2234,7 @@ window.generateEtiketPDF = (data) => {
                 <div style="text-align:right;">
                     <div style="font-size:9px;color:#94a3b8;line-height:1.6;">
                         Dokumen ini diterbitkan secara digital oleh sistem<br>
-                        Travel Lombok Airport dan sah tanpa tanda tangan fisik.
+                        Travel AIRArport dan sah tanpa tanda tangan fisik.
                     </div>
                     <div style="font-size:10px;color:#64748b;margin-top:4px;">Dicetak: ${issuedAt}</div>
                     <div style="margin-top:6px;display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#1d4ed8,#0891b2);border-radius:20px;padding:3px 10px;">
@@ -2351,7 +2351,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                     <h5 style="color: #334155; margin: 0 0 6px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                         <i class="fa-solid fa-flag-checkered"></i> Pesanan Selesai
                     </h5>
-                    <p style="color: #1e293b; font-size: 0.8rem; margin: 0; line-height: 1.5;">Layanan untuk pesanan ini <b>telah selesai dilaksanakan</b>. Terima kasih telah mempercayakan perjalanan Anda bersama Travel Lombok Airport. Kami tunggu kedatangan Anda di perjalanan berikutnya!</p>
+                    <p style="color: #1e293b; font-size: 0.8rem; margin: 0; line-height: 1.5;">Layanan untuk pesanan ini <b>telah selesai dilaksanakan</b>. Terima kasih telah mempercayakan perjalanan Anda bersama Travel AIRArport. Kami tunggu kedatangan Anda di perjalanan berikutnya!</p>
                 </div>`;
             } else if (data.status === 'KADALUARSA') {
                 processInfo = `
@@ -3473,15 +3473,15 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         let introText = isManual ? "Saya telah melakukan Booking via Website dengan rincian:" : "Saya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:";
 
         if (category === 'motor') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 53.000) dan Deposit (Rp 503.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel AIRArport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 53.000) dan Deposit (Rp 503.000) diterima.\n💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'mobil') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 203.000) dan Deposit (Rp 1.003.000) diterima.\n👇 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
+            waText = `Halo Admin Travel AIRArport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 203.000) dan Deposit (Rp 1.003.000) diterima.\n👇 Pembayaran lock bookingan (DP)/Pelunasan transfer:\nBANK: Bank Rakyat Indonesia\nNama: Lalu Renggane\nNomor Rekening: 759801017387536\n\nBANK: Mandiri\nNama: Lalu Renggane\nNomor Rekening: 1610017191425`;
         } else if (category === 'airport') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
+            waText = `Halo Admin Travel AIRArport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\nJam Penjemputan: ${pickupTime}\nNomor Penerbangan: ${flightNum}\nJumlah Penumpang: ${pax}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 503.000\nSisa Pembayaran: ${finalPrice > 503000 ? formatPrice(finalPrice - 503000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
+            waText = `Halo Admin Travel AIRArport,\n\n${introText}\n\nFORM BOOKING PRIVATE TOUR LOMBOK\nMohon isi data berikut untuk proses booking:\nLokasi Jemput (berdasarkan GPS/Alamat): ${pickupLoc}\nLokasi Drop Off: ${dropoffLoc}\nJam Penjemputan: ${pickupTime}\nNomor Penerbangan: ${flightNum}\nJumlah Penumpang: ${pax}\n\nPaket yang Dipilih: ${itemName}\nKendaraan: ${tourVehicle}\n\nTotal Harga: ${finalPrice > 0 ? formatPrice(finalPrice) : 'Rp __________'}\nDP/Booking Fee: Rp 503.000\nSisa Pembayaran: ${finalPrice > 503000 ? formatPrice(finalPrice - 503000) : 'Rp __________'}\nCatatan/Request: ${notes || '-'}\nNama: ${name}\nTanggal: ${startDate}\nNo HP/WA: ${phone}\n\n${paymentInfo}`;
         } else {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon instruksi selanjutnya. Terima kasih.`;
+            waText = `Halo Admin Travel AIRArport,\n\n${introText}\n\n*Detail Pesanan*\n- Nama: ${name}\n- Layanan: ${itemName}\n- Tgl Mulai: ${startDate}\n- Tgl Selesai: ${endDate}\n${isPackage ? '' : `- Durasi: ${Math.ceil((selEnd - selStart) / (1000 * 60 * 60 * 24)) || 1} Hari\n`}${finalPrice > 0 ? `- Total Estimasi: ${formatPrice(finalPrice)}\n` : ''}- No HP/WA: ${phone}\n- Email: ${customerEmail || '-'}\n\nMohon instruksi selanjutnya. Terima kasih.`;
         }
         
         if (isManual && transactionId) {
@@ -3986,7 +3986,7 @@ window.downloadPdfInvoice = (id) => {
             <!-- Header -->
             <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0284c7; padding-bottom: 25px; margin-bottom: 35px;">
                 <div>
-                    <h1 style="color: #0284c7; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.5px;">TRAVEL LOMBOK AIRPORT</h1>
+                    <h1 style="color: #0284c7; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.5px;">TRAVEL AIRARPORT</h1>
                     <p style="margin: 8px 0 0 0; font-size: 15px; color: #64748b;">Layanan Transportasi & Wisata Profesional</p>
                     <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">📞 +62 878-7555-5203 | 🌐 travellombokairport.com</p>
                 </div>
@@ -4050,7 +4050,7 @@ window.downloadPdfInvoice = (id) => {
                 </div>
                 <p style="margin: 0 0 5px 0; font-size: 16px; color: #1e293b; font-weight: 600;">Terima kasih atas pesanan Anda!</p>
                 <p style="margin: 0; font-size: 13px;">Harap simpan e-Tiket ini dan tunjukkan kepada pengemudi atau petugas kami saat hari keberangkatan.</p>
-                <p style="margin: 15px 0 0 0; font-size: 11px; opacity: 0.7;">Dokumen ini diterbitkan secara otomatis oleh sistem Travel Lombok Airport dan sah tanpa tanda tangan.</p>
+                <p style="margin: 15px 0 0 0; font-size: 11px; opacity: 0.7;">Dokumen ini diterbitkan secara otomatis oleh sistem Travel AIRArport dan sah tanpa tanda tangan.</p>
                 <div style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #1d4ed8, #0891b2); border-radius: 20px; padding: 5px 14px;">
                     <span style="font-size: 11px; color: #fff; font-weight: 700; letter-spacing: 0.5px;">&#127760; Dipesan melalui website travellombokairport.com</span>
                 </div>
@@ -4985,8 +4985,8 @@ window.submitAuth = async (e) => {
 
 window.shareItem = (id, title, priceStr) => {
     const url = window.location.origin + window.location.pathname + '?item=' + id;
-    const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${title}*\n💰 *${priceStr}*\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
-    const textOther = `Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${title}\n💰 ${priceStr}\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${url}`;
+    const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel AIRArport* nih:\n\n📌 *${title}*\n💰 *${priceStr}*\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
+    const textOther = `Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel AIRArport!\n📌 ${title}\n💰 ${priceStr}\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${url}`;
     
     const waLink = `https://wa.me/?text=${encodeURIComponent(textWa)}`;
     const twLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(textOther)}`;
@@ -5055,7 +5055,7 @@ window.renderChatHistory = () => {
     // Prepend the greeting so it always starts with it.
     messagesContainer.insertAdjacentHTML('afterbegin', `
         <div class="message ai-message">
-            Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
+            Halo Kak! 👋 Saya AIRA, asisten virtual Travel AIRArport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
         </div>
     `);
     
@@ -5072,17 +5072,17 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 window.clearChatHistory = () => {
-    if (!confirm('Hapus semua riwayat percakapan dengan Lombok AI?')) return;
+    if (!confirm('Hapus semua riwayat percakapan dengan AIRA?')) return;
     chatHistory = [];
     localStorage.removeItem('aiChatHistory');
     const messagesContainer = document.getElementById('chat-messages');
     if (messagesContainer) {
         messagesContainer.innerHTML = `
             <div class="message ai-message">
-                Halo Kak! 👋 Saya Lombok AI, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
+                Halo Kak! 👋 Saya AIRA, asisten virtual Travel AIRArport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
             </div>
             <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
-                <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami. 🙏<br><br>Sehubungan dengan peningkatan infrastruktur keamanan data Travel Lombok Airport, sistem otentikasi kami saat ini sedang dalam masa transisi. Hal tersebut menyebabkan fitur **Masuk (Login)** maupun **Pengaturan Ulang Kata Sandi (Reset Password)** belum dapat beroperasi secara optimal untuk beberapa akun.<br><br>Sebagai solusi alternatif yang cepat dan aman, **kami merekomendasikan Anda untuk melakukan Registrasi ulang menggunakan alamat email yang sama**.<br><br>Anda tidak perlu khawatir, seluruh riwayat dan data akun Anda akan secara otomatis tersinkronisasi kembali dengan sistem keamanan kami yang terbaru sesaat setelah pendaftaran berhasil dilakukan.<br><br>Terima kasih atas pengertian serta kepercayaan Anda dalam menggunakan layanan kami.')" style="text-align: left; background: white; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s;">
+                <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami. 🙏<br><br>Sehubungan dengan peningkatan infrastruktur keamanan data Travel AIRArport, sistem otentikasi kami saat ini sedang dalam masa transisi. Hal tersebut menyebabkan fitur **Masuk (Login)** maupun **Pengaturan Ulang Kata Sandi (Reset Password)** belum dapat beroperasi secara optimal untuk beberapa akun.<br><br>Sebagai solusi alternatif yang cepat dan aman, **kami merekomendasikan Anda untuk melakukan Registrasi ulang menggunakan alamat email yang sama**.<br><br>Anda tidak perlu khawatir, seluruh riwayat dan data akun Anda akan secara otomatis tersinkronisasi kembali dengan sistem keamanan kami yang terbaru sesaat setelah pendaftaran berhasil dilakukan.<br><br>Terima kasih atas pengertian serta kepercayaan Anda dalam menggunakan layanan kami.')" style="text-align: left; background: white; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s;">
                     <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Bantuan Akses Akun (Gagal Login / Reset Sandi)
                 </button>
             </div>
@@ -5117,7 +5117,7 @@ window.toggleChat = async () => {
                     if (msgs && !msgs.innerHTML.includes('pemeliharaan')) {
                         msgs.innerHTML += `
                             <div class="message ai-message" style="background-color: #fef3c7; color: #92400e; border: 1px solid #f59e0b;">
-                                <i class="fa-solid fa-person-digging"></i> Mohon maaf, fitur Lombok AI sedang dalam pemeliharaan dan peningkatan sistem. Silakan hubungi kami via WhatsApp sementara waktu.
+                                <i class="fa-solid fa-person-digging"></i> Mohon maaf, fitur AIRA sedang dalam pemeliharaan dan peningkatan sistem. Silakan hubungi kami via WhatsApp sementara waktu.
                             </div>
                         `;
                         msgs.scrollTop = msgs.scrollHeight;

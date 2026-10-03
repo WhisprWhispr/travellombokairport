@@ -21,7 +21,7 @@ const app = new Hono().basePath('/api');
 app.use('*', cors());
 
 // Base Route
-app.get('/', (c) => c.text('Travel Lombok Airport API is running (Cloudflare Worker)'));
+app.get('/', (c) => c.text('Travel AIRArport API is running (Cloudflare Worker)'));
 
 // Mount Routes
 app.route('/items', apiRoutes);

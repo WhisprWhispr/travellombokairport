@@ -123,12 +123,12 @@ bookingsRoutes.post('/', async (c) => {
                 const emailHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                     <div style="background: linear-gradient(135deg, #16a34a, #2563eb); padding: 25px; text-align: center; color: white;">
-                        <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
+                        <h2 style="margin: 0; font-size: 24px;">Travel AIRArport</h2>
                         <p style="margin: 5px 0 0; opacity: 0.9;">E-Ticket & Invoice Perjalanan</p>
                     </div>
                     <div style="padding: 30px;">
                         <p>Halo <strong>${body.customerName || 'Pelanggan'}</strong>,</p>
-                        <p>Terima kasih telah memesan layanan di Travel Lombok Airport. Berikut adalah rincian pesanan Anda:</p>
+                        <p>Terima kasih telah memesan layanan di Travel AIRArport. Berikut adalah rincian pesanan Anda:</p>
                         
                         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
                             <table style="width: 100%; border-collapse: collapse;">
@@ -165,7 +165,7 @@ bookingsRoutes.post('/', async (c) => {
                         </div>
                         
                         <p style="font-size: 14px; color: #64748b;">Jika Anda memiliki pertanyaan atau butuh bantuan, silakan hubungi kami via WhatsApp di +62 896-7696-3255.</p>
-                        <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Hormat kami,<br><strong>Tim Travel Lombok Airport</strong></p>
+                        <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Hormat kami,<br><strong>Tim Travel AIRArport</strong></p>
                     </div>
                 </div>
             `;
@@ -179,7 +179,7 @@ bookingsRoutes.post('/', async (c) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: 'Travel Lombok Airport <admin@travellombokairport.com>',
+                        from: 'Travel AIRArport <admin@travellombokairport.com>',
                         to: body.customerEmail,
                         subject: `Invoice & E-Ticket: ${body.itemName || 'Layanan Travel'}`,
                         html: emailHtml
@@ -426,7 +426,7 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
                 const emailHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                     <div style="background: linear-gradient(135deg, #16a34a, #2563eb); padding: 25px; text-align: center; color: white;">
-                        <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
+                        <h2 style="margin: 0; font-size: 24px;">Travel AIRArport</h2>
                         <p style="margin: 5px 0 0; opacity: 0.9;">E-Ticket & Invoice Perjalanan (LUNAS)</p>
                     </div>
                     <div style="padding: 30px;">
@@ -455,7 +455,7 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
                         </div>
                         
                         <p style="font-size: 14px; color: #64748b;">Tim kami akan segera menghubungi Anda melalui WhatsApp untuk kordinasi lebih lanjut terkait penjemputan/pengantaran. Jika Anda memiliki pertanyaan atau butuh bantuan, silakan hubungi kami via WhatsApp di +62 896-7696-3255.</p>
-                        <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Hormat kami,<br><strong>Tim Travel Lombok Airport</strong></p>
+                        <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Hormat kami,<br><strong>Tim Travel AIRArport</strong></p>
                     </div>
                 </div>
                 `;
@@ -468,7 +468,7 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            from: 'Travel Lombok Airport <admin@travellombokairport.com>',
+                            from: 'Travel AIRArport <admin@travellombokairport.com>',
                             to: oldData.customerEmail,
                             bcc: ['lombokindah892@gmail.com', 'ridhosandhika78@gmail.com'],
                             subject: `[LUNAS] E-Ticket: ${oldData.itemName || 'Layanan Travel'}`,
@@ -664,12 +664,12 @@ bookingsRoutes.get('/cron/reminders', async (c) => {
             const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
                 <div style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 25px; text-align: center; color: white;">
-                    <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
+                    <h2 style="margin: 0; font-size: 24px;">Travel AIRArport</h2>
                     <p style="margin: 5px 0 0; opacity: 0.9;">Pengingat Perjalanan Besok (H-1)</p>
                 </div>
                 <div style="padding: 30px;">
                     <p>Halo <strong>${t.customerName || 'Pelanggan'}</strong>,</p>
-                    <p>Kami ingin mengingatkan Anda bahwa jadwal perjalanan Anda bersama Travel Lombok Airport akan berlangsung <strong>BESOK (${targetDate})</strong>.</p>
+                    <p>Kami ingin mengingatkan Anda bahwa jadwal perjalanan Anda bersama Travel AIRArport akan berlangsung <strong>BESOK (${targetDate})</strong>.</p>
                     
                     <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 15px; margin: 20px 0;">
                         <table style="width: 100%; border-collapse: collapse;">
@@ -691,7 +691,7 @@ bookingsRoutes.get('/cron/reminders', async (c) => {
                     <p style="font-size: 14px; color: #334155;">Pastikan Anda sudah menyiapkan segala keperluan. Tim kami atau supir akan menghubungi Anda melalui WhatsApp untuk koordinasi titik jemput dan waktu penjemputan.</p>
                     
                     <p style="font-size: 14px; color: #64748b; margin-top: 20px;">Jika ada perubahan atau pertanyaan mendesak, silakan hubungi kami via WhatsApp di +62 896-7696-3255.</p>
-                    <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Sampai jumpa besok!<br><strong>Tim Travel Lombok Airport</strong></p>
+                    <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Sampai jumpa besok!<br><strong>Tim Travel AIRArport</strong></p>
                 </div>
             </div>
             `;
@@ -704,7 +704,7 @@ bookingsRoutes.get('/cron/reminders', async (c) => {
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        from: 'Travel Lombok Airport <admin@travellombokairport.com>',
+                        from: 'Travel AIRArport <admin@travellombokairport.com>',
                         to: t.customerEmail,
                         subject: `[PENGINGAT H-1] Perjalanan Besok: ${t.itemName || t.packageName || 'Layanan Travel'}`,
                         html: emailHtml

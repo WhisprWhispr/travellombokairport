@@ -1,4 +1,4 @@
-// Protection Script - Travel Lombok Airport
+// Protection Script - Travel AIRArport
 (function() {
   'use strict';
 
