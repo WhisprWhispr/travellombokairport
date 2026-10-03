@@ -302,6 +302,13 @@ paymentRoutes.post('/webhook', async (c) => {
                                 <p style="font-size: 14px; color: #64748b;">Tim kami akan segera menghubungi Anda melalui WhatsApp untuk kordinasi lebih lanjut terkait penjemputan/pengantaran. Jika Anda memiliki pertanyaan atau butuh bantuan, silakan hubungi kami via WhatsApp di +62 896-7696-3255.</p>
                                 <p style="font-size: 14px; color: #64748b; margin-top: 30px;">Hormat kami,<br><strong>Tim Travel Lombok Airport</strong></p>
                             </div>
+                            <div style="background: #f8fafc; border-top: 1px solid #e2e8f0; padding: 20px 30px; text-align: center;">
+                                <p style="margin: 0 0 10px; font-size: 12px; color: #b91c1c; font-weight: bold; letter-spacing: 0.5px;">EMAIL OTOMATIS &mdash; MOHON TIDAK MEMBALAS</p>
+                                <p style="margin: 0 0 10px; font-size: 12px; color: #64748b; line-height: 1.6;">Email ini dibuat dan dikirim secara otomatis oleh sistem Travel Lombok Airport. Alamat email ini tidak dipantau, sehingga setiap balasan yang dikirim ke alamat ini <strong>tidak akan diterima maupun diproses</strong>.</p>
+                                <p style="margin: 0 0 10px; font-size: 12px; color: #64748b; line-height: 1.6;">Untuk pertanyaan, perubahan jadwal, atau bantuan, silakan hubungi Customer Service resmi kami melalui WhatsApp <a href="https://wa.me/6289676963255" target="_blank" style="color: #16a34a; font-weight: bold; text-decoration: none;">+62 896-7696-3255</a>.</p>
+                                <p style="margin: 0; font-size: 12px; color: #64748b; line-height: 1.6;">Demi keamanan Anda, kami <strong>tidak pernah</strong> meminta kata sandi, kode OTP, maupun transfer ke rekening selain rekening resmi Travel Lombok Airport.</p>
+                                <p style="margin: 15px 0 0; font-size: 11px; color: #94a3b8;">&copy; ${new Date().getFullYear()} Travel Lombok Airport &bull; <a href="https://travellombokairport.com" target="_blank" style="color: #94a3b8; text-decoration: underline;">travellombokairport.com</a></p>
+                            </div>
                         </div>
                         `;
 
@@ -313,7 +320,7 @@ paymentRoutes.post('/webhook', async (c) => {
                                     'Content-Type': 'application/json'
                                 },
                                 body: JSON.stringify({
-                                    from: 'Travel Lombok Airport <admin@travellombokairport.com>',
+                                    from: 'Travel Lombok Airport <noreply@travellombokairport.com>',
                                     to: oldData.customerEmail,
                                     bcc: ['lombokindah892@gmail.com', 'ridhosandhika78@gmail.com'],
                                     subject: `[LUNAS] E-Ticket: ${oldData.itemName || 'Layanan Travel'}`,
