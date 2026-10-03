@@ -1124,10 +1124,15 @@
                 </div>
             </div>
 
-            <div class="chat-input-area" style="display: flex; gap: 5px; align-items: center;">
-                <input type="text" id="chat-input" placeholder="Tanya rekomendasi paket..." onkeypress="handleChatKeyPress(event)" style="flex: 1;">
-                <button onclick="window.toggleVoiceInput()" id="mic-chat-btn" title="Gunakan Suara" style="background:transparent; color:#64748b; border:none; padding:10px; cursor:pointer; font-size:1.1rem; transition:color 0.3s;"><i class="fa-solid fa-microphone"></i></button>
-                <button onclick="sendChatMessage()" id="send-chat-btn"><i class="fa-solid fa-paper-plane"></i></button>
+            <div class="chat-footer-area" style="background: #ffffff; border-top: 1px solid #e2e8f0; flex-shrink: 0;">
+                <div class="chat-input-area" style="display: flex; gap: 5px; align-items: center; border-top: none; padding: 12px 14px 4px;">
+                    <input type="text" id="chat-input" placeholder="Tanya rekomendasi paket..." onkeypress="handleChatKeyPress(event)" style="flex: 1;">
+                    <button onclick="window.toggleVoiceInput()" id="mic-chat-btn" title="Gunakan Suara" style="background:transparent; color:#64748b; border:none; padding:10px; cursor:pointer; font-size:1.1rem; transition:color 0.3s;"><i class="fa-solid fa-microphone"></i></button>
+                    <button onclick="sendChatMessage()" id="send-chat-btn"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+                <div class="chat-disclaimer" style="text-align: center; font-size: 0.68rem; color: #94a3b8; padding: 0 14px 8px; line-height: 1.25; user-select: none;">
+                    AIRA dapat membuat kesalahan. Harap periksa kembali informasi penting.
+                </div>
             </div>
         </div>
     </div>
