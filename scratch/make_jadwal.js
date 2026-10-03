@@ -2,12 +2,12 @@ const fs = require('fs');
 let html = fs.readFileSync('frontend/tentang-kami.html', 'utf8');
 
 // Replace Meta Tags
-html = html.replace(/<title>.*?<\/title>/, '<title>Jadwal Sholat | Travel AIRArport</title>');
+html = html.replace(/<title>.*?<\/title>/, '<title>Jadwal Sholat | Travel Lombok Airport</title>');
 html = html.replace(/<meta name="description" content=".*?">/, '<meta name="description" content="Jadwal sholat harian yang akurat berdasarkan lokasi Anda.">');
-html = html.replace(/<meta name="keywords" content=".*?">/, '<meta name="keywords" content="jadwal sholat, waktu sholat, travel AIRArport">');
-html = html.replace(/<meta property="og:title" content=".*?">/, '<meta property="og:title" content="Jadwal Sholat | Travel AIRArport">');
+html = html.replace(/<meta name="keywords" content=".*?">/, '<meta name="keywords" content="jadwal sholat, waktu sholat, travel lombok airport">');
+html = html.replace(/<meta property="og:title" content=".*?">/, '<meta property="og:title" content="Jadwal Sholat | Travel Lombok Airport">');
 html = html.replace(/<meta property="og:description" content=".*?">/, '<meta property="og:description" content="Jadwal sholat harian yang akurat berdasarkan lokasi Anda.">');
-html = html.replace(/<meta property="twitter:title" content=".*?">/, '<meta property="twitter:title" content="Jadwal Sholat | Travel AIRArport">');
+html = html.replace(/<meta property="twitter:title" content=".*?">/, '<meta property="twitter:title" content="Jadwal Sholat | Travel Lombok Airport">');
 html = html.replace(/<meta property="twitter:description" content=".*?">/, '<meta property="twitter:description" content="Jadwal sholat harian yang akurat berdasarkan lokasi Anda.">');
 
 // Find the section to replace

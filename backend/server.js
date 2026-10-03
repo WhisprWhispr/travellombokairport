@@ -34,7 +34,7 @@ app.use('/api/reports', reportsRoutes);
 
 // Base route
 app.get('/', (req, res) => {
-    res.send('Travel AIRArport API is running');
+    res.send('Travel Lombok Airport API is running');
 });
 
 app.listen(PORT, () => {

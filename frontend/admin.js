@@ -344,7 +344,7 @@ const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR
 
 Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
 
-TRAVEL AIRARPORT 🚙`;
+TRAVEL LOMBOK AIRPORT 🚙`;
 
 const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI 
 
@@ -381,7 +381,7 @@ const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI
 
 Deposit akan dikembalikan setelah kendaraan diperiksa dan tidak terdapat kerusakan, kehilangan, atau kewajiban lainnya.
 
-TRAVEL AIRARPORT 🚙`;
+TRAVEL LOMBOK AIRPORT 🚙`;
 
 const checkAuth = () => {
     if (authToken) {
@@ -1343,7 +1343,7 @@ const fetchAdminBookings = async () => {
                     const waMsg = encodeURIComponent(
 `Assalamu'alaikum Wr. Wb. / Selamat ${new Date().getHours() < 11 ? 'Pagi' : new Date().getHours() < 15 ? 'Siang' : new Date().getHours() < 19 ? 'Sore' : 'Malam'}, Bapak/Ibu *${b.customerName}* 🙏
 
-Kami dari *Travel AIRArport* ingin menginformasikan detail pesanan Anda berikut ini:
+Kami dari *Travel Lombok Airport* ingin menginformasikan detail pesanan Anda berikut ini:
 
 〰〰〰 📋 *DETAIL PESANAN* 〰〰〰
 
@@ -1363,7 +1363,7 @@ Apabila Bapak/Ibu memiliki pertanyaan, ingin mengkonfirmasi jadwal, atau ada hal
 Terima kasih telah mempercayakan perjalanan Anda kepada kami. 🌴
 
 Salam hangat,
-- *Admin Travel AIRArport* -
+- *Admin Travel Lombok Airport* -
 
 📞 +62 896-7696-3255 (WhatsApp)
 🌐 www.travellombokairport.com`);
