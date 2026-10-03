@@ -178,13 +178,8 @@ bookingsRoutes.post('/', async (c) => {
                         <div style="background: #eff6ff; border-left: 4px solid #3b82f6; padding: 15px; margin-bottom: 20px;">
                             <h4 style="margin: 0 0 10px; color: #1e3a8a;">Instruksi Pembayaran</h4>
                             <p style="margin: 0; font-size: 14px; color: #334155; line-height: 1.5;">
-                                Untuk mengkonfirmasi pesanan ini, silakan selesaikan pembayaran ke rekening berikut:<br><br>
-                                <strong>BANK BRI</strong><br>
-                                Nama: Lalu Renggane<br>
-                                Nomor Rekening: 759801017387536<br><br>
-                                <strong>BANK MANDIRI</strong><br>
-                                Nama: Lalu Renggane<br>
-                                Nomor Rekening: 1610017191425
+                                Silakan selesaikan pembayaran pesanan Anda menggunakan <strong>QRIS</strong> atau <strong>Virtual Account</strong> yang tertera di layar pemesanan Anda sebelumnya.<br><br>
+                                Jika halaman pembayaran tertutup, Anda dapat melihat dan melanjutkan pembayaran melalui menu <a href="https://travellombokairport.com/riwayat.html" target="_blank" style="color: #2563eb; font-weight: bold; text-decoration: underline;">Riwayat Pesanan</a> di website kami.
                             </p>
                         </div>
                         
