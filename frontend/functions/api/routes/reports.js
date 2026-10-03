@@ -27,6 +27,10 @@ reportsRoutes.post('/', async (c) => {
         const newReport = {
             category: body.category || 'Masalah Lainnya',
             detail: body.detail || '',
+            itemId: body.itemId || '',
+            itemName: body.itemName || '',
+            itemPrice: body.itemPrice || '',
+            reportedPrice: body.reportedPrice || '',
             sessionId: body.sessionId || 'anonymous',
             userInfo: body.userInfo || {},
             status: 'NEW',

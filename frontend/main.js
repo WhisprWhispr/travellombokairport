@@ -5710,7 +5710,7 @@ window.showBugReportOptions = () => {
 
     const categories = [
         "Laporan Bug / Error Aplikasi",
-        "Harga Tidak Sesuai / Salah Harga",
+        "Katalog / Harga Tidak Sesuai",
         "Kendala Pembayaran / Transaksi",
         "Informasi Paket Tidak Jelas",
         "Kendala Saat Pemesanan / Booking",
@@ -5738,7 +5738,24 @@ window.showBugReportOptions = () => {
     msgs.scrollTop = msgs.scrollHeight;
 };
 
-window.showBugReportForm = (category) => {
+window.onBugReportItemChange = (formId) => {
+    const sel = document.getElementById(`bug-item-${formId}`);
+    const badge = document.getElementById(`bug-item-price-badge-${formId}`);
+    if (!sel || !badge) return;
+
+    const opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value || opt.value === 'other') {
+        badge.style.display = 'none';
+        return;
+    }
+
+    const rawPrice = opt.getAttribute('data-price');
+    const formatted = typeof formatPrice === 'function' ? formatPrice(rawPrice) : `Rp ${parseInt(rawPrice || 0, 10).toLocaleString('id-ID')}`;
+    badge.innerHTML = `<i class="fa-solid fa-tag" style="margin-right: 4px; color: #dc2626;"></i> Harga resmi sistem: <strong>${formatted}</strong>`;
+    badge.style.display = 'block';
+};
+
+window.showBugReportForm = async (category) => {
     const msgs = document.getElementById('chat-messages');
     if (!msgs) return;
 
@@ -5750,13 +5767,92 @@ window.showBugReportForm = (category) => {
     `;
 
     const formId = 'bug-form-' + Date.now();
-    
+    const isPriceReport = category.toLowerCase().includes('harga') || category.toLowerCase().includes('katalog');
+
+    let itemSelectHtml = '';
+    if (isPriceReport) {
+        let items = window.globalItems || [];
+        if (!items || items.length === 0) {
+            try {
+                items = await fetchItems();
+                window.globalItems = items;
+            } catch(e) {
+                items = [];
+            }
+        }
+
+        const groups = {
+            'Paket Tour & Wisata': [],
+            'Rental Mobil': [],
+            'Sewa Motor': [],
+            'Antar Jemput Bandara (Transfer)': [],
+            'Layanan Lainnya': []
+        };
+
+        (items || []).filter(i => !i.parentId).forEach(item => {
+            const cat = (item.category || '').toLowerCase();
+            let grp = 'Layanan Lainnya';
+            if (cat.includes('paket') || cat === 'tour' || cat === 'package' || cat === 'honeymoon') grp = 'Paket Tour & Wisata';
+            else if ((cat.includes('rental') || cat.includes('armada') || cat.includes('sewa') || cat === 'car') && cat !== 'motorcycle') grp = 'Rental Mobil';
+            else if (cat.includes('motor')) grp = 'Sewa Motor';
+            else if (cat.includes('transfer') || cat.includes('antar') || cat.includes('jemput')) grp = 'Antar Jemput Bandara (Transfer)';
+
+            groups[grp].push(item);
+        });
+
+        let optgroupsHtml = '';
+        for (const [groupName, groupItems] of Object.entries(groups)) {
+            if (groupItems.length > 0) {
+                const opts = groupItems.map(item => {
+                    const priceFormatted = typeof formatPrice === 'function' ? formatPrice(item.price) : `Rp ${(item.price || 0).toLocaleString('id-ID')}`;
+                    const itemName = (item.title || item.name || 'Item').replace(/"/g, '&quot;');
+                    return `<option value="${item.id}" data-name="${itemName}" data-price="${item.price || 0}">${itemName} — ${priceFormatted}</option>`;
+                }).join('');
+                optgroupsHtml += `<optgroup label="📂 ${groupName}">${opts}</optgroup>`;
+            }
+        }
+
+        itemSelectHtml = `
+            <div style="margin-bottom: 10px; text-align: left;">
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">
+                    <i class="fa-solid fa-list-check" style="color: #ef4444; margin-right: 4px;"></i> Pilih Item / Layanan yang Tidak Sesuai:
+                </label>
+                <select id="bug-item-${formId}" onchange="window.onBugReportItemChange('${formId}')" style="width: 100%; padding: 8px 10px; border-radius: 8px; border: 1.5px solid #f87171; font-family: inherit; font-size: 0.82rem; background: white; outline: none; cursor: pointer; box-sizing: border-box;">
+                    <option value="">-- Pilih dari Katalog Layanan --</option>
+                    ${optgroupsHtml}
+                    <option value="other">Item Lainnya (Tidak ada di daftar)</option>
+                </select>
+                <div id="bug-item-price-badge-${formId}" style="display: none; margin-top: 6px; padding: 6px 10px; background: #fef2f2; border: 1px dashed #fca5a5; border-radius: 6px; font-size: 0.78rem; color: #991b1b;"></div>
+            </div>
+            <div style="margin-bottom: 10px; text-align: left;">
+                <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">
+                    <i class="fa-solid fa-money-bill-wave" style="color: #ef4444; margin-right: 4px;"></i> Harga yang Anda Lihat / Seharusnya:
+                </label>
+                <input type="text" id="bug-expected-price-${formId}" placeholder="Contoh: Rp 300.000 atau di banner beda" style="width: 100%; padding: 8px 10px; border-radius: 8px; border: 1px solid #cbd5e1; font-family: inherit; font-size: 0.82rem; outline: none; box-sizing: border-box;">
+            </div>
+        `;
+    }
+
+    const descText = isPriceReport
+        ? 'Pilih item katalog di bawah yang harganya tidak sesuai dan sebutkan harga yang Anda temukan:'
+        : 'Silakan ceritakan detail masalah atau kendala yang Anda alami secara lengkap. Jika ini terkait pesanan, sebutkan juga ID Transaksi Anda jika ada.';
+
+    const taPlaceholder = isPriceReport
+        ? 'Jelaskan detail ketidaksesuaian (misal: saat checkout harga berubah, atau di WhatsApp beda)...'
+        : 'Ketik detail laporan di sini...';
+
     msgs.innerHTML += `
         <div class="message ai-message" style="background-color: #fff1f2; border: 1px solid #fecaca; color: #991b1b;">
             <strong>Anda memilih: ${category}</strong><br><br>
-            Silakan ceritakan detail masalah atau kendala yang Anda alami secara lengkap. Jika ini terkait pesanan, sebutkan juga ID Transaksi Anda jika ada.
+            ${descText}
             <div style="margin-top: 12px;" id="${formId}">
-                <textarea id="bug-detail-${formId}" placeholder="Ketik detail laporan di sini..." rows="4" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #fca5a5; font-family: inherit; font-size: 0.85rem; resize: none; margin-bottom: 8px; outline: none;"></textarea>
+                ${itemSelectHtml}
+                <div style="margin-bottom: 4px; text-align: left;">
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; color: #1e293b; margin-bottom: 4px;">
+                        <i class="fa-solid fa-comment-dots" style="color: #ef4444; margin-right: 4px;"></i> ${isPriceReport ? 'Catatan / Keterangan Tambahan:' : 'Detail Laporan:'}
+                    </label>
+                </div>
+                <textarea id="bug-detail-${formId}" placeholder="${taPlaceholder}" rows="3" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #fca5a5; font-family: inherit; font-size: 0.85rem; resize: none; margin-bottom: 8px; outline: none; box-sizing: border-box;"></textarea>
                 <button onclick="window.submitBugReport('${category}', '${formId}')" style="background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: bold; cursor: pointer; width: 100%; transition: background 0.2s;">
                     <i class="fa-solid fa-paper-plane"></i> Kirim Laporan
                 </button>
@@ -5764,57 +5860,98 @@ window.showBugReportForm = (category) => {
         </div>
     `;
     msgs.scrollTop = msgs.scrollHeight;
-    
-    // Auto focus textarea
+
+    // Auto focus textarea or item select
     setTimeout(() => {
-        const ta = document.getElementById(`bug-detail-${formId}`);
-        if(ta) ta.focus();
+        const sel = document.getElementById(`bug-item-${formId}`);
+        if (sel) {
+            sel.focus();
+        } else {
+            const ta = document.getElementById(`bug-detail-${formId}`);
+            if (ta) ta.focus();
+        }
     }, 100);
 };
 
 window.submitBugReport = async (category, formId) => {
+    const isPriceReport = category.toLowerCase().includes('harga') || category.toLowerCase().includes('katalog');
     const ta = document.getElementById(`bug-detail-${formId}`);
-    if (!ta) return;
-    const detail = ta.value.trim();
-    
-    if (!detail) {
-        alert("Detail laporan tidak boleh kosong!");
+    const detail = ta ? ta.value.trim() : '';
+
+    const itemSelect = document.getElementById(`bug-item-${formId}`);
+    const expectedInput = document.getElementById(`bug-expected-price-${formId}`);
+
+    let selectedItemId = '';
+    let selectedItemName = '';
+    let selectedItemPrice = '';
+    let expectedPrice = '';
+
+    if (isPriceReport && itemSelect) {
+        if (!itemSelect.value) {
+            alert("Harap pilih item/layanan katalog yang harganya tidak sesuai!");
+            itemSelect.focus();
+            return;
+        }
+        selectedItemId = itemSelect.value;
+        const opt = itemSelect.options[itemSelect.selectedIndex];
+        selectedItemName = opt.getAttribute('data-name') || opt.text;
+        selectedItemPrice = typeof formatPrice === 'function' ? formatPrice(opt.getAttribute('data-price') || 0) : opt.getAttribute('data-price');
+
+        if (expectedInput) {
+            expectedPrice = expectedInput.value.trim();
+        }
+    }
+
+    if (!detail && !expectedPrice) {
+        alert("Harap isi keterangan atau harga yang seharusnya!");
+        if (ta) ta.focus();
         return;
     }
-    
+
+    let fullDetail = detail;
+    if (isPriceReport && selectedItemName) {
+        fullDetail = `[ITEM KATALOG]: ${selectedItemName} (Harga Sistem: ${selectedItemPrice || '-'})` +
+                     (expectedPrice ? `\n[HARGA SEHARUSNYA/DITEMUKAN]: ${expectedPrice}` : '') +
+                     (detail ? `\n[KETERANGAN]: ${detail}` : '');
+    }
+
     const btn = document.querySelector(`#${formId} button`);
     if(btn) {
         btn.disabled = true;
         btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
     }
-    
+
     let userInfo = {};
     try {
         const u = localStorage.getItem('user');
         if (u && u !== 'undefined') userInfo = JSON.parse(u);
     } catch(e) {}
-    
+
     try {
         const response = await fetch(`${API_URL}/reports`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
                 category: category,
-                detail: detail,
+                detail: fullDetail,
+                itemId: selectedItemId,
+                itemName: selectedItemName,
+                itemPrice: selectedItemPrice,
+                reportedPrice: expectedPrice,
                 sessionId: localStorage.getItem('sessionId') || 'anonymous',
                 userInfo: userInfo
             })
         });
-        
+
         if (response.ok) {
             // Hilangkan form
             const formContainer = document.getElementById(formId);
-            if(formContainer) formContainer.innerHTML = `<div style="color: #166534; font-weight: bold;"><i class="fa-solid fa-check-circle"></i> Laporan Terkirim</div>`;
-            
+            if(formContainer) formContainer.innerHTML = `<div style="color: #166534; font-weight: bold; padding: 8px 0;"><i class="fa-solid fa-check-circle"></i> Laporan Berhasil Dikirim!</div>`;
+
             const msgs = document.getElementById('chat-messages');
             msgs.innerHTML += `
                 <div class="message ai-message">
-                    Terima kasih! Laporan Anda telah berhasil dikirim ke tim kami. Kami akan segera menindaklanjutinya secepat mungkin 🙏.
+                    Terima kasih banyak atas informasinya Kak! 🙏 Laporan ketidaksesuaian harga untuk item <strong>${selectedItemName || category}</strong> telah berhasil diteruskan ke tim kami untuk segera dicek dan diperbarui.
                 </div>
             `;
             msgs.scrollTop = msgs.scrollHeight;
