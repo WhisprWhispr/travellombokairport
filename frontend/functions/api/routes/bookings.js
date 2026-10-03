@@ -141,9 +141,14 @@ bookingsRoutes.post('/', async (c) => {
             if (resendApiKey) {
                 const emailHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <div style="background: linear-gradient(135deg, #16a34a, #2563eb); padding: 25px; text-align: center; color: white;">
-                        <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
-                        <p style="margin: 5px 0 0; opacity: 0.9;">E-Ticket & Invoice Perjalanan</p>
+                    <div style="background: #ffffff; padding: 22px 25px 16px; text-align: center;">
+                        <a href="https://travellombokairport.com" target="_blank" style="text-decoration: none;">
+                            <img src="https://travellombokairport.com/logo-email.png" alt="Travel Lombok Airport" width="200" style="display: block; margin: 0 auto; width: 200px; max-width: 70%; height: auto; border: 0;">
+                        </a>
+                    </div>
+                    <div style="background-color: #2563eb; background: linear-gradient(135deg, #16a34a, #2563eb); padding: 22px 25px; text-align: center; color: white;">
+                        <h2 style="margin: 0; font-size: 22px; letter-spacing: 0.5px;">E-Ticket & Invoice Perjalanan</h2>
+                        <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">Travel Lombok Airport</p>
                     </div>
                     <div style="padding: 30px;">
                         <p>Halo <strong>${body.customerName || 'Pelanggan'}</strong>,</p>
@@ -444,9 +449,14 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
             if (resendApiKey) {
                 const emailHtml = `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                    <div style="background: linear-gradient(135deg, #16a34a, #2563eb); padding: 25px; text-align: center; color: white;">
-                        <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
-                        <p style="margin: 5px 0 0; opacity: 0.9;">E-Ticket & Invoice Perjalanan (LUNAS)</p>
+                    <div style="background: #ffffff; padding: 22px 25px 16px; text-align: center;">
+                        <a href="https://travellombokairport.com" target="_blank" style="text-decoration: none;">
+                            <img src="https://travellombokairport.com/logo-email.png" alt="Travel Lombok Airport" width="200" style="display: block; margin: 0 auto; width: 200px; max-width: 70%; height: auto; border: 0;">
+                        </a>
+                    </div>
+                    <div style="background-color: #2563eb; background: linear-gradient(135deg, #16a34a, #2563eb); padding: 22px 25px; text-align: center; color: white;">
+                        <h2 style="margin: 0; font-size: 22px; letter-spacing: 0.5px;">PEMBAYARAN BERHASIL</h2>
+                        <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">E-Ticket & Invoice Perjalanan (LUNAS)</p>
                     </div>
                     <div style="padding: 30px;">
                         <p>Halo <strong>${oldData.customerName || 'Pelanggan'}</strong>,</p>
@@ -682,9 +692,14 @@ bookingsRoutes.get('/cron/reminders', async (c) => {
         for (const t of targets) {
             const emailHtml = `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05);">
-                <div style="background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 25px; text-align: center; color: white;">
-                    <h2 style="margin: 0; font-size: 24px;">Travel Lombok Airport</h2>
-                    <p style="margin: 5px 0 0; opacity: 0.9;">Pengingat Perjalanan Besok (H-1)</p>
+                <div style="background: #ffffff; padding: 22px 25px 16px; text-align: center;">
+                    <a href="https://travellombokairport.com" target="_blank" style="text-decoration: none;">
+                        <img src="https://travellombokairport.com/logo-email.png" alt="Travel Lombok Airport" width="200" style="display: block; margin: 0 auto; width: 200px; max-width: 70%; height: auto; border: 0;">
+                    </a>
+                </div>
+                <div style="background-color: #ea580c; background: linear-gradient(135deg, #f59e0b, #ea580c); padding: 22px 25px; text-align: center; color: white;">
+                    <h2 style="margin: 0; font-size: 22px; letter-spacing: 0.5px;">Pengingat Perjalanan Besok</h2>
+                    <p style="margin: 5px 0 0; opacity: 0.9; font-size: 14px;">H-1 &bull; Travel Lombok Airport</p>
                 </div>
                 <div style="padding: 30px;">
                     <p>Halo <strong>${t.customerName || 'Pelanggan'}</strong>,</p>
