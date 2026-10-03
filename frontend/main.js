@@ -3644,8 +3644,8 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             paymentAmount = discountedTotal;
         }
     } else {
-        // Tambahkan kode unik/admin fee 3000 untuk pembayaran penuh
-        paymentAmount += 3000;
+        // Biaya tambahan 3000 dihilangkan (sesuai permintaan)
+        // paymentAmount += 3000;
     }
 
     paymentAmount += depositAmount; // Selalu tambahkan deposit ke pembayaran saat ini
