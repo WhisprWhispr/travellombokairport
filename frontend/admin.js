@@ -2420,19 +2420,31 @@ window.toggleComingSoonUI = () => {
     }
 };
 
-window.copyInputText = (id) => {
+window.copyInputText = async (id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.select();
-    document.execCommand("copy");
-    Swal.fire({
-        toast: true,
-        position: 'top-end',
-        icon: 'success',
-        title: 'Teks disalin!',
-        showConfirmButton: false,
-        timer: 1500
-    });
+    try {
+        await navigator.clipboard.writeText(el.value);
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Teks disalin!',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    } catch (err) {
+        el.select();
+        document.execCommand("copy");
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: 'Teks disalin!',
+            showConfirmButton: false,
+            timer: 1500
+        });
+    }
 };
 
 window.pasteInputText = async (id) => {
