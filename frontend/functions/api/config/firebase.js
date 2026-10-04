@@ -220,7 +220,17 @@ class FirestoreDocument {
         }
     }
 
-    async set(data) {
+    async set(data, options = {}) {
+        if (options.merge) {
+            try {
+                return await this.client.updateDocument(this.colName, this.id, data);
+            } catch (err) {
+                if (err.status === 404) {
+                    return await this.client.setDocument(this.colName, this.id, data);
+                }
+                throw err;
+            }
+        }
         return await this.client.setDocument(this.colName, this.id, data);
     }
 
