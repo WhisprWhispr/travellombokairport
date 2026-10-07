@@ -2,6 +2,7 @@ const API_URL = window.location.hostname === 'localhost' || window.location.host
 
 document.addEventListener('DOMContentLoaded', async () => {
     const container = document.getElementById('blog-container');
+    const searchInput = document.getElementById('search-input');
     if (!container) return;
 
     try {
@@ -15,9 +16,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         let displayCount = 3;
+        let currentFilteredBlogs = [...blogs];
 
         const renderBlogs = () => {
-            const currentBlogs = blogs.slice(0, displayCount);
+            if (currentFilteredBlogs.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px;"><p style="color: var(--text-gray);">Artikel tidak ditemukan.</p></div>';
+                return;
+            }
+
+            const currentBlogs = currentFilteredBlogs.slice(0, displayCount);
             container.innerHTML = `
                 <div style="grid-column: 1/-1; margin-bottom: 30px; text-align: center; padding: 15px; background: #f8fafc; border: 1px dashed #cbd5e1; border-radius: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
                     <span style="font-size: 0.7rem; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;"><i class="fa-solid fa-ad"></i> Advertisement / Iklan</span>
@@ -62,7 +69,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 `;
             }).join('');
             
-            if (displayCount < blogs.length) {
+            if (displayCount < currentFilteredBlogs.length) {
                 const btnWrapper = document.createElement('div');
                 btnWrapper.style.gridColumn = '1/-1';
                 btnWrapper.style.textAlign = 'center';
@@ -78,6 +85,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         };
 
         renderBlogs();
+
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                currentFilteredBlogs = blogs.filter(b => 
+                    (b.title && b.title.toLowerCase().includes(term)) || 
+                    (b.summary && b.summary.toLowerCase().includes(term)) ||
+                    (b.author && b.author.toLowerCase().includes(term))
+                );
+                displayCount = 3;
+                renderBlogs();
+            });
+        }
     } catch (e) {
         console.error(e);
         container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px;"><p style="color: #ef4444;">Gagal memuat artikel.</p></div>';
