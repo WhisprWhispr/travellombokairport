@@ -5585,6 +5585,34 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
             } else {
                 const data = await response.json();
                 if (data.success) {
+                    if (data.reply.trim() === 'REQUEST_REALTIME_LOCATION') {
+                        const msgId = 'sys-msg-' + Date.now();
+                        messagesContainer.insertAdjacentHTML('beforeend', `
+                            <div id="${msgId}" class="message ai-message" style="background:#e0f2fe; border:1px solid #bae6fd; color:#0369a1;">
+                                <i class="fa-solid fa-location-dot fa-bounce"></i> Meminta izin akses lokasi Anda untuk memberikan hasil yang akurat...
+                            </div>
+                        `);
+                        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                        
+                        if (navigator.geolocation) {
+                            navigator.geolocation.getCurrentPosition(
+                                (pos) => {
+                                    document.getElementById(msgId).innerHTML = '<i class="fa-solid fa-check-circle"></i> Lokasi berhasil didapatkan. Sedang mencari...';
+                                    window.sendChatMessage(`[SYSTEM GPS DATA] Lokasi Realtime User: Latitude ${pos.coords.latitude}, Longitude ${pos.coords.longitude}, Akurasi ${pos.coords.accuracy} meter.`);
+                                },
+                                (err) => {
+                                    document.getElementById(msgId).innerHTML = '<i class="fa-solid fa-circle-xmark"></i> Izin lokasi ditolak atau gagal didapatkan.';
+                                    window.sendChatMessage(`[SYSTEM GPS DATA] Gagal: User menolak akses lokasi atau perangkat tidak mendeteksi (Error Code: ${err.code}).`);
+                                },
+                                { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+                            );
+                        } else {
+                            document.getElementById(msgId).innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Browser tidak mendukung GPS.';
+                            window.sendChatMessage(`[SYSTEM GPS DATA] Gagal: Browser tidak mendukung Geolocation.`);
+                        }
+                        return;
+                    }
+
                     chatHistory.push({ role: "user", parts: [{ text: message }] });
                     chatHistory.push({ role: "model", parts: [{ text: data.reply }] });
                     localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));

@@ -294,6 +294,7 @@ aiRoutes.post('/chat', async (c) => {
             snapshot.forEach(doc => rules.push(doc.data().rule));
             if (rules.length > 0) {
                 knowledgeBaseContext = `\nINSTRUKSI KHUSUS DARI ADMIN (KNOWLEDGE BASE):\n` + rules.map((r, i) => `${i+1}. ${r}`).join('\n');
+                knowledgeBaseContext += `\n\n[ATURAN SISTEM MUTLAK]: Jika Anda harus mengeksekusi perintah REQUEST_REALTIME_LOCATION berdasarkan aturan di atas, MAKA ANDA WAJIB MENJAWAB HANYA DENGAN TEKS BERIKUT:\nREQUEST_REALTIME_LOCATION\n\nTIDAK BOLEH ADA KATA LAIN. JANGAN DITAMBAHKAN BASA-BASI. JANGAN DIBUNGKUS DALAM KALIMAT SOPAN! Sistem butuh teks mentah ini untuk memunculkan popup GPS ke pengguna.`;
             }
         } catch (e) {
             console.error("Gagal menarik data knowledge base", e);
