@@ -46,7 +46,26 @@ document.addEventListener('DOMContentLoaded', async () => {
                         <span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-eye" style="color: var(--primary-green);"></i> ${blog.views || 0} kali dibaca</span>
                     </div>
                     <div class="article-content" style="line-height: 1.8; color: #334155; font-size: 1.05rem; min-height: 200px;">
-                        ${(blog.content || '').split('\n').filter(p => p.trim() !== '').map(p => `<p style="margin-bottom: 1.5em; text-align: left;">${p.trim()}</p>`).join('')}
+                        ${(blog.content || '').split('\n').filter(p => p.trim() !== '').map(p => {
+                            let text = p.trim();
+                            if (!text.includes('<a ')) {
+                                const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
+                                text = text.replace(urlRegex, function(url) {
+                                    let punctuation = '';
+                                    const lastChar = url.slice(-1);
+                                    if (['.', ',', ':', ';', '?', '!', ')'].includes(lastChar)) {
+                                        punctuation = lastChar;
+                                        url = url.slice(0, -1);
+                                    }
+                                    let href = url;
+                                    if (!href.toLowerCase().startsWith('http://') && !href.toLowerCase().startsWith('https://')) {
+                                        href = 'https://' + href;
+                                    }
+                                    return `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color: var(--primary-blue); text-decoration: underline; font-weight: 600;">${url}</a>${punctuation}`;
+                                });
+                            }
+                            return `<p style="margin-bottom: 1.5em; text-align: left;">${text}</p>`;
+                        }).join('')}
                     </div>
                     
                     <!-- Advertisement / Iklan -->
