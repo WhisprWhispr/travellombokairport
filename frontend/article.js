@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.title = `${blog.title} - Travel Lombok`;
         
         const dateStr = blog.createdAt ? new Date(blog.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'long', year: 'numeric'}) : '';
-        const tagsHtml = (blog.tags || []).map(t => `<span style="background: #e2e8f0; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-right: 5px;">#${t}</span>`).join('');
+        const tagsHtml = (blog.tags || []).map(t => `<a href="/blog.html?search=${encodeURIComponent(t)}" style="background: #e2e8f0; color: #475569; padding: 4px 10px; border-radius: 20px; font-size: 0.8rem; margin-right: 5px; text-decoration: none; display: inline-block; margin-bottom: 5px; transition: background 0.3s;" onmouseover="this.style.background='#cbd5e1'" onmouseout="this.style.background='#e2e8f0'">#${t}</a>`).join('');
 
         container.innerHTML = `
             <style>
@@ -49,19 +49,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                         ${(blog.content || '').split('\n').filter(p => p.trim() !== '').map(p => {
                             let text = p.trim();
                             if (!text.includes('<a ')) {
-                                const urlRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)/gi;
-                                text = text.replace(urlRegex, function(url) {
-                                    let punctuation = '';
-                                    const lastChar = url.slice(-1);
-                                    if (['.', ',', ':', ';', '?', '!', ')'].includes(lastChar)) {
-                                        punctuation = lastChar;
-                                        url = url.slice(0, -1);
+                                const combinedRegex = /(https?:\/\/[^\s]+|www\.[^\s]+)|#([\w]+)/gi;
+                                text = text.replace(combinedRegex, function(match, url, hashtag) {
+                                    if (url) {
+                                        let punctuation = '';
+                                        const lastChar = url.slice(-1);
+                                        if (['.', ',', ':', ';', '?', '!', ')'].includes(lastChar)) {
+                                            punctuation = lastChar;
+                                            url = url.slice(0, -1);
+                                        }
+                                        let href = url;
+                                        if (!href.toLowerCase().startsWith('http://') && !href.toLowerCase().startsWith('https://')) {
+                                            href = 'https://' + href;
+                                        }
+                                        return `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color: var(--primary-blue); text-decoration: underline; font-weight: 600;">${url}</a>${punctuation}`;
+                                    } else if (hashtag) {
+                                        return `<a href="/blog.html?search=${encodeURIComponent(hashtag)}" style="color: var(--primary-green); text-decoration: none; font-weight: 600;">#${hashtag}</a>`;
                                     }
-                                    let href = url;
-                                    if (!href.toLowerCase().startsWith('http://') && !href.toLowerCase().startsWith('https://')) {
-                                        href = 'https://' + href;
-                                    }
-                                    return `<a href="${href}" target="_blank" rel="noopener noreferrer" style="color: var(--primary-blue); text-decoration: underline; font-weight: 600;">${url}</a>${punctuation}`;
+                                    return match;
                                 });
                             }
                             return `<p style="margin-bottom: 1.5em; text-align: left;">${text}</p>`;

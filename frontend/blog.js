@@ -18,6 +18,19 @@ document.addEventListener('DOMContentLoaded', async () => {
         let displayCount = 3;
         let currentFilteredBlogs = [...blogs];
 
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialSearch = urlParams.get('search');
+        if (initialSearch) {
+            if (searchInput) searchInput.value = initialSearch;
+            const term = initialSearch.toLowerCase();
+            currentFilteredBlogs = blogs.filter(b => 
+                (b.title && b.title.toLowerCase().includes(term)) || 
+                (b.summary && b.summary.toLowerCase().includes(term)) ||
+                (b.author && b.author.toLowerCase().includes(term)) ||
+                (b.tags && b.tags.some(t => t.toLowerCase().includes(term)))
+            );
+        }
+
         const renderBlogs = () => {
             if (currentFilteredBlogs.length === 0) {
                 container.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 50px;"><p style="color: var(--text-gray);">Artikel tidak ditemukan.</p></div>';
@@ -92,7 +105,8 @@ document.addEventListener('DOMContentLoaded', async () => {
                 currentFilteredBlogs = blogs.filter(b => 
                     (b.title && b.title.toLowerCase().includes(term)) || 
                     (b.summary && b.summary.toLowerCase().includes(term)) ||
-                    (b.author && b.author.toLowerCase().includes(term))
+                    (b.author && b.author.toLowerCase().includes(term)) ||
+                    (b.tags && b.tags.some(t => t.toLowerCase().includes(term)))
                 );
                 displayCount = 3;
                 renderBlogs();
