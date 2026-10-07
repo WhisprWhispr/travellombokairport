@@ -25,8 +25,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         container.innerHTML = `
             <style>
-                .article-cover { width: 100%; height: 250px; object-fit: cover; }
-                @media(min-width: 768px) { .article-cover { height: 400px; } }
+                .article-cover { width: 100%; height: auto; max-height: 400px; object-fit: contain; background: #f8fafc; display: block; }
+                @media(min-width: 768px) { .article-cover { max-height: 600px; } }
             </style>
             <div style="margin-bottom: 20px;">
                 <a href="/blog.html" style="display: inline-flex; align-items: center; gap: 8px; color: var(--primary-blue); font-weight: 700; text-decoration: none; padding: 8px 16px; background: white; border-radius: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: all 0.3s ease;" onmouseover="this.style.transform='translateX(-5px)'; this.style.boxShadow='0 6px 15px rgba(0,0,0,0.1)';" onmouseout="this.style.transform='translateX(0)'; this.style.boxShadow='0 4px 10px rgba(0,0,0,0.05)';">
