@@ -3298,6 +3298,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     const durationCustomEl = document.getElementById('co-duration-custom');
 
     const updateEndDateAndPrice = () => {
+        if (window.updateRentalDisplayPrice) window.updateRentalDisplayPrice();
         if (!startDateEl || !startDateEl.value || !endDateEl) return;
         const sDate = new Date(startDateEl.value);
         let currentDuration = durationDays;
@@ -3342,6 +3343,29 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     if (durationCustomEl) durationCustomEl.addEventListener('input', updateEndDateAndPrice);
 };
 
+window.updateRentalDisplayPrice = () => {
+    const basePriceEl = document.getElementById("co-display-price");
+    if (basePriceEl && window._currentDurationDays === 0) {
+        const basePrice = parseInt(basePriceEl.getAttribute("data-base-price") || 0);
+        if (basePrice > 0) {
+            let diffDays = 1;
+            const durationSelect = document.getElementById('co-duration-select');
+            if (durationSelect) {
+                if (durationSelect.value === 'custom') {
+                    const customInput = document.getElementById('co-duration-custom');
+                    diffDays = customInput && customInput.value ? parseInt(customInput.value) : 1;
+                    if (diffDays > 60) diffDays = 60;
+                    if (diffDays < 1) diffDays = 1;
+                } else {
+                    diffDays = parseInt(durationSelect.value);
+                }
+            }
+            const total = basePrice * diffDays;
+            basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
+        }
+    }
+};
+
 window.checkDateOverlap = () => {
     const startDate = document.getElementById("co-start-date").value;
     const endDate = document.getElementById("co-end-date").value;
@@ -3376,27 +3400,7 @@ window.checkDateOverlap = () => {
         warningDiv.style.display = 'none';
         if (submitBtn) submitBtn.disabled = false;
 
-        // Dynamic pricing for rentals (items without fixed duration "H" in name)
-        const basePriceEl = document.getElementById("co-display-price");
-        if (basePriceEl && window._currentDurationDays === 0) {
-            const basePrice = parseInt(basePriceEl.getAttribute("data-base-price") || 0);
-            if (basePrice > 0) {
-                let diffDays = 1;
-                const durationSelect = document.getElementById('co-duration-select');
-                if (durationSelect) {
-                    if (durationSelect.value === 'custom') {
-                        const customInput = document.getElementById('co-duration-custom');
-                        diffDays = customInput && customInput.value ? parseInt(customInput.value) : 1;
-                        if (diffDays > 60) diffDays = 60;
-                        if (diffDays < 1) diffDays = 1;
-                    } else {
-                        diffDays = parseInt(durationSelect.value);
-                    }
-                }
-                const total = basePrice * diffDays;
-                basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
-            }
-        }
+        if (window.updateRentalDisplayPrice) window.updateRentalDisplayPrice();
     }
 };
 
