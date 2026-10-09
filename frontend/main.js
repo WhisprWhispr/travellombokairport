@@ -2094,7 +2094,14 @@ window.generateEtiketPDF = (data) => {
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Jam Penjemputan</div>
-                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.time}</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.pickupTime || data.details.time}</div>
+                </div>
+                ` : ''}
+                ${data.details?.dropoffTime ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Jam Pengembalian</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.dropoffTime}</div>
                 </div>
                 ` : ''}
                 ${data.details?.pax ? `
@@ -3650,6 +3657,8 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             pickup: pickupLoc,
             dropoff: dropoffLoc,
             time: pickupTime || dropoffTime,
+            pickupTime: pickupTime,
+            dropoffTime: dropoffTime,
             pax: pax,
             flightNumber: flightNum,
             vehicle: tourVehicle,
@@ -4684,7 +4693,9 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone);
             detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date);
             if (item.endDate) detailsHtml += showRow('Tgl Selesai', item.endDate);
-            if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
+            if (item.details?.pickupTime) detailsHtml += showRow('Waktu Penjemputan', item.details.pickupTime);
+            else if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
+            if (item.details?.dropoffTime) detailsHtml += showRow('Waktu Pengembalian', item.details.dropoffTime);
             if (item.details?.pax) detailsHtml += showRow('Jumlah Peserta', item.details.pax + ' Orang');
             if (item.details?.pickup) detailsHtml += showRow('Lokasi Jemput', item.details.pickup);
             if (item.details?.dropoff) detailsHtml += showRow('Tujuan', item.details.dropoff);
