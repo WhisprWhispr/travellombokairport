@@ -5359,11 +5359,11 @@ window.showEmergencyCenter = () => {
                     </li>
                     <li style="display:flex; align-items:center; gap:10px;">
                         <span style="background:#8b5cf6; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(139,92,246,0.3);"><i class="fa-solid fa-building-flag"></i></span>
-                        <div><strong>Pusat Krisis Kemenpar:</strong> <br><a href="tel:08118956767" style="font-weight:bold; color:#8b5cf6;">0811-8956-767</a></div>
+                        <div><strong>Pusat Krisis Kemenpar:</strong> <br><a href="https://wa.me/628118956767" target="_blank" style="font-weight:bold; color:#8b5cf6;">0811-8956-767 (WA)</a></div>
                     </li>
                     <li style="display:flex; align-items:center; gap:10px;">
                         <span style="background:#10b981; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(16,185,129,0.3);"><i class="fa-brands fa-whatsapp"></i></span>
-                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6289676963255" target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS</a></div>
+                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6289676963255?text=Halo%20Tim%20Travel%20Lombok%20Airport,%20saya%20membutuhkan%20bantuan%20darurat%20sekarang." target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS (WA)</a></div>
                     </li>
                 </ul>
 
