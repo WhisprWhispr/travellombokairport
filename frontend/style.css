@@ -2156,17 +2156,24 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 .close-chat-btn {
-    background: transparent;
+    background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
-    opacity: 0.8;
-    transition: opacity 0.2s;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(4px);
 }
 
 .close-chat-btn:hover {
-    opacity: 1;
+    background: rgba(255, 255, 255, 0.35);
+    transform: scale(1.1) rotate(90deg);
 }
 
 .chat-messages {
