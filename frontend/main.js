@@ -3995,183 +3995,21 @@ window.simulateQrisSuccess = async (isBookingOnly, transactionId) => {
     `;
 };
 
-window.downloadPdfInvoice = (id) => {
-    // Buat wrapper off-screen agar html2pdf bisa merender HTML dengan sempurna (tidak display: none)
-    const wrapper = document.createElement('div');
-    // Tambahkan style position absolute agar tetap berada di DOM dan punya height, tapi tidak terlihat
-    wrapper.style.cssText = 'position:absolute; left:0; top:0; z-index:-9999; visibility:hidden; overflow:hidden; width:800px; padding:0; margin:0;';
-
-    // Cari data di raw history data yang baru diambil
-    const historyData = window._lastHistoryData || [];
-    const item = historyData.find(x => x.id === id || x.transactionId === id) || window.currentCheckoutData;
-    if (!item) {
-        alert('Data transaksi tidak ditemukan.');
-        return;
+window.downloadPdfInvoice = async (id) => {
+    try {
+        const response = await fetch(`${API_URL}/bookings/check/${id}?_t=${new Date().getTime()}`, { cache: 'no-store' });
+        if (response.ok) {
+            const data = await response.json();
+            if (typeof window.generateEtiketPDF === 'function') {
+                window.generateEtiketPDF(data);
+            }
+        } else {
+            alert('Gagal mengambil detail lengkap transaksi untuk PDF.');
+        }
+    } catch (e) {
+        console.error('PDF generation error:', e);
+        alert('Terjadi kesalahan saat mengunduh PDF.');
     }
-
-    const {
-        transactionId,
-        itemName,
-        customerName,
-        customerEmail,
-        phone,
-        startDate,
-        endDate,
-        status,
-        itemPrice,
-        createdAt,
-        type
-    } = item;
-
-    // Formatting tanggal
-    const fmtDate = (d) => d ? new Date(d).toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' }) : '-';
-    const dateStr = fmtDate(startDate) + (endDate ? ' - ' + fmtDate(endDate) : '');
-    const issueDate = fmtDate(createdAt || new Date());
-    const total = 'Rp ' + parseInt(itemPrice || 0).toLocaleString('id-ID');
-
-    const nameLower = (itemName || '').toLowerCase();
-    let depositAmount = 0;
-    const matchedItemInv2 = window.globalItems ? window.globalItems.find(i => i.title === (itemName || '')) : null;
-    let isMobilInv = nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner");
-    let isMotorInv = nameLower.includes("motor");
-    if (matchedItemInv2 && matchedItemInv2.category) {
-        if (matchedItemInv2.category === 'car') isMobilInv = true;
-        if (matchedItemInv2.category === 'motorcycle') isMotorInv = true;
-    }
-
-    if (isMotorInv) depositAmount = 500000;
-    else if (isMobilInv) depositAmount = 1000000;
-    
-    // Deposit tidak berlaku jika include driver/supir
-    let isWithDriverInv = nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
-    const matchedItemInv = window.globalItems ? window.globalItems.find(i => i.title === (itemName || '')) : null;
-    if (matchedItemInv && matchedItemInv.driverOptions && matchedItemInv.driverOptions !== 'Tidak Include Driver') {
-        isWithDriverInv = true;
-    }
-    if (isWithDriverInv) {
-        depositAmount = 0;
-    }
-    
-    let depositNote = '';
-    if (depositAmount > 0) {
-        depositNote = `
-            <div style="background:#e0f2fe;border-left:4px solid #38bdf8;padding:12px 16px;margin-top:20px;border-radius:4px;">
-                <div style="font-size:12px;font-weight:700;color:#0369a1;margin-bottom:2px;">&#8505; Catatan Deposit</div>
-                <div style="font-size:12px;color:#0c4a6e;line-height:1.4;">Total pembayaran di atas <b>sudah termasuk uang deposit</b> sebesar <strong>Rp ${depositAmount.toLocaleString('id-ID')}</strong>. Deposit akan dikembalikan 100% setelah masa sewa berakhir jika kendaraan dalam kondisi baik.</div>
-            </div>`;
-    }
-
-    wrapper.innerHTML = `
-        <div id="pdf-content" style="width: 800px; padding: 50px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #1e293b; background: white; box-sizing: border-box;">
-            
-            <!-- Header -->
-            <div style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #0284c7; padding-bottom: 25px; margin-bottom: 35px;">
-                <div>
-                    <h1 style="color: #0284c7; margin: 0; font-size: 32px; font-weight: 800; letter-spacing: -0.5px;">TRAVEL LOMBOK AIRPORT</h1>
-                    <p style="margin: 8px 0 0 0; font-size: 15px; color: #64748b;">Layanan Transportasi & Wisata Profesional</p>
-                    <p style="margin: 4px 0 0 0; font-size: 13px; color: #94a3b8;">📞 +62 878-7555-5203 | 🌐 travellombokairport.com</p>
-                </div>
-                <div style="text-align: right;">
-                    <div style="background: #dcfce7; color: #10b981; padding: 8px 20px; border-radius: 30px; font-weight: bold; font-size: 16px; display: inline-block; margin-bottom: 10px;">
-                        ${status || 'PAID'}
-                    </div>
-                    <h2 style="margin: 0; color: #1e293b; font-size: 24px; font-weight: 700;">E-TIKET / INVOICE</h2>
-                    <p style="margin: 5px 0 0 0; font-size: 14px; color: #64748b; font-family: monospace;">Ref: ${transactionId || id}</p>
-                </div>
-            </div>
-            
-            ${item.details?.isEvent ? `
-            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:15px 20px;margin-bottom:25px;display:flex;align-items:center;gap:15px;">
-                <div style="width:40px;height:40px;background:#f97316;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">
-                    🔥
-                </div>
-                <div>
-                    <div style="font-size:12px;color:#c2410c;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Periode Event (High Season)</div>
-                    <div style="font-size:14px;color:#c2410c;line-height:1.4;">Dipesan saat periode Event dengan penyesuaian harga dan minimal sewa 4 hari.</div>
-                </div>
-            </div>
-            ` : ''}
-
-            <!-- Guest Info -->
-            <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 35px; border: 1px solid #e2e8f0;">
-                <h3 style="margin: 0 0 15px 0; color: #0284c7; font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px;">DETAIL PEMESAN (GUEST INFO)</h3>
-                <div style="display: flex; flex-wrap: wrap;">
-                    <div style="width: 50%; margin-bottom: 15px;">
-                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Nama Tamu</p>
-                        <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600;">${customerName}</p>
-                    </div>
-                    <div style="width: 50%; margin-bottom: 15px;">
-                        <p style="margin: 0; font-size: 12px; color: #64748b; text-transform: uppercase; letter-spacing: 1px;">Tanggal Pelaksanaan</p>
-                        <p style="margin: 4px 0 0 0; font-size: 16px; font-weight: 600;">${dateStr}</p>
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Order Details -->
-            <h3 style="margin: 0 0 15px 0; color: #0284c7; font-size: 16px;">DETAIL LAYANAN (ORDER DETAILS)</h3>
-            <table style="width: 100%; border-collapse: collapse; margin-bottom: 40px;">
-                <thead>
-                    <tr style="background: #0f172a; color: white;">
-                        <th style="padding: 15px; text-align: left; font-size: 14px; border-top-left-radius: 8px;">Deskripsi Layanan</th>
-                        <th style="padding: 15px; text-align: right; font-size: 14px; border-top-right-radius: 8px; width: 30%;">Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td style="padding: 20px 15px; border-bottom: 1px solid #e2e8f0; font-size: 16px; font-weight: 500;">
-                            ${itemName}
-                            ${item.details?.pickup ? `<br><small style="color: #64748b; font-size: 13px; margin-top: 5px; display: inline-block;"><b>Pickup:</b> ${item.details.pickup}</small>` : ''}
-                            ${item.details?.dropoff ? `<br><small style="color: #64748b; font-size: 13px;"><b>Drop-off:</b> ${item.details.dropoff}</small>` : ''}
-                            ${item.details?.flightNumber ? `<br><small style="color: #64748b; font-size: 13px;"><b>Flight:</b> ${item.details.flightNumber}</small>` : ''}
-                            ${item.details?.pax ? `<br><small style="color: #64748b; font-size: 13px;"><b>Pax:</b> ${item.details.pax}</small>` : ''}
-                            ${item.details?.vehicle ? `<br><small style="color: #64748b; font-size: 13px;"><b>Vehicle:</b> ${item.details.vehicle}</small>` : ''}
-                            ${item.details?.notes ? `<br><small style="color: #64748b; font-size: 13px;"><b>Notes:</b> ${item.details.notes}</small>` : ''}
-                        </td>
-                        <td style="padding: 20px 15px; border-bottom: 1px solid #e2e8f0; text-align: right; font-size: 16px; font-weight: 700; color: #0284c7;">
-                            ${total}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            
-            ${depositNote}
-            
-            <!-- Footer -->
-            <div style="margin-top: 50px; text-align: center; color: #64748b;">
-                <div style="width: 60px; height: 60px; background: #f1f5f9; border-radius: 50%; display: inline-flex; justify-content: center; align-items: center; margin-bottom: 15px;">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                </div>
-                <p style="margin: 0 0 5px 0; font-size: 16px; color: #1e293b; font-weight: 600;">Terima kasih atas pesanan Anda!</p>
-                <p style="margin: 0; font-size: 13px;">Harap simpan e-Tiket ini dan tunjukkan kepada pengemudi atau petugas kami saat hari keberangkatan.</p>
-                <p style="margin: 15px 0 0 0; font-size: 11px; opacity: 0.7;">Dokumen ini diterbitkan secara otomatis oleh sistem Travel Lombok Airport dan sah tanpa tanda tangan.</p>
-                <div style="margin-top: 12px; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(135deg, #1d4ed8, #0891b2); border-radius: 20px; padding: 5px 14px;">
-                    <span style="font-size: 11px; color: #fff; font-weight: 700; letter-spacing: 0.5px;">&#127760; Dipesan melalui website travellombokairport.com</span>
-                </div>
-            </div>
-            
-        </div>
-    `;
-
-    document.body.appendChild(wrapper);
-
-    const element = wrapper.querySelector('#pdf-content');
-
-    const opt = {
-        margin: [0, 0, 0, 0], // nol margin agar background penuh
-        filename: `e-Tiket_${id}.pdf`,
-        image: { type: 'jpeg', quality: 1.0 },
-        html2canvas: { scale: 2, useCORS: true, logging: false },
-        jsPDF: { unit: 'px', format: [800, element.offsetHeight + 100], orientation: 'portrait', hotfixes: ['px_scaling'] },
-        pagebreak: { mode: 'avoid-all' }
-    };
-
-    html2pdf().set(opt).from(element).save().then(() => {
-        document.body.removeChild(wrapper);
-    }).catch(err => {
-        document.body.removeChild(wrapper);
-        console.error('PDF generation error:', err);
-        alert('Gagal mendownload PDF: ' + err.message);
-    });
 };
 
 // Load dynamic stats
