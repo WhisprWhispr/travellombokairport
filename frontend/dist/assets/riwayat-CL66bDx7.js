@@ -1372,6 +1372,18 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                 </div>
             </div>
             
+            ${n.details?.isEvent?`
+            <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:15px 20px;margin-bottom:25px;display:flex;align-items:center;gap:15px;">
+                <div style="width:40px;height:40px;background:#f97316;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:20px;">
+                    🔥
+                </div>
+                <div>
+                    <div style="font-size:12px;color:#c2410c;font-weight:800;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Periode Event (High Season)</div>
+                    <div style="font-size:14px;color:#c2410c;line-height:1.4;">Dipesan saat periode Event dengan penyesuaian harga dan minimal sewa 4 hari.</div>
+                </div>
+            </div>
+            `:``}
+
             <!-- Guest Info -->
             <div style="background: #f8fafc; padding: 25px; border-radius: 12px; margin-bottom: 35px; border: 1px solid #e2e8f0;">
                 <h3 style="margin: 0 0 15px 0; color: #0284c7; font-size: 16px; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px;">DETAIL PEMESAN (GUEST INFO)</h3>

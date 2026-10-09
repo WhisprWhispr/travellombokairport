@@ -301,6 +301,9 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
                 vaBank: d.vaBank || null,
                 vaNumber: d.vaNumber || null,
                 expiredAt: d.expiredAt || null,
+                details: d.details || null,
+                duration: d.duration || null,
+                category: d.category || null,
             });
         });
 
@@ -327,6 +330,9 @@ bookingsRoutes.get('/my-history', verifyToken, async (c) => {
                 vaBank: d.vaBank || null,
                 vaNumber: d.vaNumber || null,
                 expiredAt: d.expiredAt || null,
+                details: d.details || null,
+                duration: d.duration || null,
+                category: d.category || null,
             });
         });
 
