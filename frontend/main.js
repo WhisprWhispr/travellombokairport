@@ -603,22 +603,9 @@ window.openTourModal = (id) => {
             return `<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
         })()}
                     ${(() => {
-            const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
-            const isRental = item.category === 'car' || item.category === 'motorcycle';
-            if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                const EVENT_MIN_DAYS = 4;
-                const baseEventPrice = parseInt(item.price) * EVENT_MIN_DAYS;
-                return `
-                    <div style="margin-top: 10px;">
-                        <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 0; vertical-align: middle;">🔥 EVENT (Min. ${EVENT_MIN_DAYS} Hari)</span>
-                    </div>
-                    <h3 style="color: #ef4444; margin-top: 5px; font-size: 2.2rem; font-weight: 900;">${formatPrice(baseEventPrice)}</h3>
-                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.85rem;">*Belum termasuk tambahan biaya event saat checkout</p>
-                `;
-            }
-            return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
-                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>`;
-        })()}
+                        return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
+                                <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>`;
+                    })()}
                 </div>
 
             </div>
@@ -1079,23 +1066,6 @@ const createPackageCard = (item, index = 0) => {
             <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
                       ${(() => {
-                          const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
-                          const isRental = item.category === 'car' || item.category === 'motorcycle';
-                          if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                              const EVENT_MIN_DAYS = 4;
-                              const baseEventPrice = parseInt(item.price) * EVENT_MIN_DAYS;
-                              return `
-                                  <div style="display: flex; flex-direction: column; gap: 2px;">
-                                      <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
-                                          Event (Min. ${EVENT_MIN_DAYS} Hari)
-                                      </div>
-                                      <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
-                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(baseEventPrice)}</span>
-                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
-                                      </div>
-                                  </div>
-                              `;
-                          }
                           return `
                                   <div style="display: flex; flex-direction: column;">
                                       <span style="font-size: 0.7rem; color: #64748b;">Mulai dari</span>
@@ -1258,29 +1228,9 @@ const createFleetCard = (item, index = 0) => {
             <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
                       <div style="display: flex; flex-direction: column; gap: 2px;">
-                          ${(() => {
-                              const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
-                              const isRental = item.category === 'car' || item.category === 'motorcycle';
-                              if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                                  const EVENT_MIN_DAYS = 4;
-                                  const baseEventPrice = parseInt(item.price) * EVENT_MIN_DAYS;
-                                  return `
-                                      <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
-                                          Event (Min. ${EVENT_MIN_DAYS} Hari)
-                                      </div>
-                                      <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
-                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(baseEventPrice)}</span>
-                                          <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
-                                      </div>
-                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${EVENT_MIN_DAYS} hari</div>
-                                  `;
-                              }
-                              return `
                                   <div style="font-size: 0.7rem; color: #64748b;">Mulai dari</div>
                                   <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(item.price)}</div>
                                   <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</div>
-                              `;
-                          })()}
                       </div>
                   </div>
                 <div class="action-buttons">
