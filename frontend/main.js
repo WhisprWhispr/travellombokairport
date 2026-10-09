@@ -517,6 +517,11 @@ window.openTourModal = (id) => {
     const item = globalItems.find(i => i.id === id);
     if (!item) return;
 
+    if (item.title && item.title.toLowerCase().includes('honeymoon')) {
+        const chatWidget = document.getElementById('ai-chat-widget');
+        if (chatWidget) chatWidget.style.display = 'none';
+    }
+
     const modalBody = document.getElementById('tour-modal-body');
 
     // Parse itineraries
@@ -760,6 +765,8 @@ window.closeTourModal = () => {
         if (!subModal || subModal.style.display === 'none') {
             document.body.style.overflow = ''; // Restore scroll only if sub-package is closed
         }
+        const chatWidget = document.getElementById('ai-chat-widget');
+        if (chatWidget) chatWidget.style.display = '';
     }
 };
 
@@ -1106,6 +1113,11 @@ window.openSubPackageModal = (parentId) => {
     const parentItem = globalItems.find(i => i.id === parentId);
     if (!parentItem) return;
 
+    if (parentItem.title && parentItem.title.toLowerCase().includes('honeymoon')) {
+        const chatWidget = document.getElementById('ai-chat-widget');
+        if (chatWidget) chatWidget.style.display = 'none';
+    }
+
     const children = globalItems.filter(i => i.parentId === parentId);
 
     const titleEl = document.getElementById('sub-modal-title');
@@ -1207,6 +1219,8 @@ window.closeSubPackageModal = () => {
     const modal = document.getElementById('sub-package-modal');
     if (modal) modal.style.display = 'none';
     document.body.style.overflow = '';
+    const chatWidget = document.getElementById('ai-chat-widget');
+    if (chatWidget) chatWidget.style.display = '';
 };
 
 
