@@ -2833,9 +2833,10 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             ${isOrder ? `
                 ${(isEventActive && isRentalItem) ? `
                 <div style="margin-bottom: 6px;">
-                    <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 0;">Biaya Tambahan Event +${formatPrice(evtSettings.eventPriceIncrease)}</span>
+                    <span id="co-crossed-price" style="text-decoration: line-through; color: #94a3b8; font-size: 0.9rem;">${formatPrice(price * EVENT_MIN_DAYS)}</span>
+                    <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px;">EVENT +${formatPrice(evtSettings.eventPriceIncrease)}</span>
                 </div>
-                <p id="co-display-price" data-base-price="${price}" data-event-increase="${eventPriceIncrease}" style="font-weight: bold; color: #ef4444; font-size: 1.25rem;">${formatPrice(price)}</p>
+                <p id="co-display-price" data-base-price="${price}" data-event-increase="${eventPriceIncrease}" style="font-weight: bold; color: #ef4444; font-size: 1.25rem;">${formatPrice((price * EVENT_MIN_DAYS) + eventPriceIncrease)} <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${EVENT_MIN_DAYS} Hari)</span></p>
                 ` : `<p id="co-display-price" data-base-price="${price}" data-event-increase="0" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${formatPrice(price)}</p>`}
             ` : ""}
         </div>
@@ -3357,7 +3358,14 @@ window.updateRentalDisplayPrice = () => {
                     diffDays = parseInt(durationSelect.value);
                 }
             }
-            const total = (basePrice * diffDays) + eventIncrease;
+            const baseTotal = basePrice * diffDays;
+            const total = baseTotal + eventIncrease;
+            
+            const crossedPriceEl = document.getElementById("co-crossed-price");
+            if (crossedPriceEl) {
+                crossedPriceEl.innerHTML = formatPrice(baseTotal);
+            }
+            
             basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
         }
     }
