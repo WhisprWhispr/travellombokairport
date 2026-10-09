@@ -606,14 +606,14 @@ window.openTourModal = (id) => {
             const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
             const isRental = item.category === 'car' || item.category === 'motorcycle';
             if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                const eventPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                const EVENT_MIN_DAYS = 4;
+                const baseEventPrice = parseInt(item.price) * EVENT_MIN_DAYS;
                 return `
                     <div style="margin-top: 10px;">
-                        <span style="text-decoration: line-through; color: #94a3b8; font-size: 1rem;">${formatPrice(item.price)}</span>
-                        <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">🔥 EVENT</span>
+                        <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 0; vertical-align: middle;">🔥 EVENT (Min. ${EVENT_MIN_DAYS} Hari)</span>
                     </div>
-                    <h3 style="color: #ef4444; margin-top: 5px; font-size: 2.2rem; font-weight: 900;">${formatPrice(eventPrice)}</h3>
-                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.85rem;">+Rp ${parseInt(evtS.eventPriceIncrease).toLocaleString('id-ID')} (event) · Min. 4 hari</p>
+                    <h3 style="color: #ef4444; margin-top: 5px; font-size: 2.2rem; font-weight: 900;">${formatPrice(baseEventPrice)}</h3>
+                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.85rem;">*Belum termasuk tambahan biaya event saat checkout</p>
                 `;
             }
             return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
@@ -1082,14 +1082,15 @@ const createPackageCard = (item, index = 0) => {
                           const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
                           const isRental = item.category === 'car' || item.category === 'motorcycle';
                           if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                              const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                              const EVENT_MIN_DAYS = 4;
+                              const baseEventPrice = parseInt(item.price) * EVENT_MIN_DAYS;
                               return `
                                   <div style="display: flex; flex-direction: column; gap: 2px;">
                                       <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
-                                          Mulai dari <span style="text-decoration:line-through; margin-left: 2px;">${formatPrice(item.price)}</span>
+                                          Event (Min. ${EVENT_MIN_DAYS} Hari)
                                       </div>
                                       <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
-                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(baseEventPrice)}</span>
                                           <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
                                       </div>
                                   </div>
@@ -1261,16 +1262,17 @@ const createFleetCard = (item, index = 0) => {
                               const evtS = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
                               const isRental = item.category === 'car' || item.category === 'motorcycle';
                               if (evtS.eventMode && evtS.eventPriceIncrease > 0 && isRental) {
-                                  const evtPrice = parseInt(item.price) + parseInt(evtS.eventPriceIncrease);
+                                  const EVENT_MIN_DAYS = 4;
+                                  const baseEventPrice = parseInt(item.price) * EVENT_MIN_DAYS;
                                   return `
                                       <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
-                                          Mulai dari <span style="text-decoration:line-through; margin-left: 2px;">${formatPrice(item.price)}</span>
+                                          Event (Min. ${EVENT_MIN_DAYS} Hari)
                                       </div>
                                       <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
-                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(evtPrice)}</span>
+                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(baseEventPrice)}</span>
                                           <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
                                       </div>
-                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</div>
+                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${EVENT_MIN_DAYS} hari</div>
                                   `;
                               }
                               return `

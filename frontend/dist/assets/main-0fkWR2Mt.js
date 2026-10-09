@@ -70,14 +70,13 @@
                 </div>
                 <div class="tm-price-box premium-price-box">
                     ${(()=>{let e=`HARGA PAKET`;return(n.category===`car`||n.category===`motorcycle`||n.category===`drone`)&&(e=`HARGA SEWA`),`<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${e}</span>`})()}
-                    ${(()=>{let e=window.globalEventSettings||{eventMode:!1,eventPriceIncrease:0},t=n.category===`car`||n.category===`motorcycle`;if(e.eventMode&&e.eventPriceIncrease>0&&t){let t=parseInt(n.price)+parseInt(e.eventPriceIncrease);return`
+                    ${(()=>{let e=window.globalEventSettings||{eventMode:!1,eventPriceIncrease:0},t=n.category===`car`||n.category===`motorcycle`;return e.eventMode&&e.eventPriceIncrease>0&&t?`
                     <div style="margin-top: 10px;">
-                        <span style="text-decoration: line-through; color: #94a3b8; font-size: 1rem;">${r(n.price)}</span>
-                        <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle;">🔥 EVENT</span>
+                        <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.65rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 0; vertical-align: middle;">🔥 EVENT (Min. 4 Hari)</span>
                     </div>
-                    <h3 style="color: #ef4444; margin-top: 5px; font-size: 2.2rem; font-weight: 900;">${r(t)}</h3>
-                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.85rem;">+Rp ${parseInt(e.eventPriceIncrease).toLocaleString(`id-ID`)} (event) · Min. 4 hari</p>
-                `}return`<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${r(n.price)}</h3>
+                    <h3 style="color: #ef4444; margin-top: 5px; font-size: 2.2rem; font-weight: 900;">${r(parseInt(n.price)*4)}</h3>
+                    <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.85rem;">*Belum termasuk tambahan biaya event saat checkout</p>
+                `:`<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${r(n.price)}</h3>
                     <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>`})()}
                 </div>
 
@@ -287,17 +286,17 @@
             </ul>
             <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
-                      ${(()=>{let t=window.globalEventSettings||{eventMode:!1,eventPriceIncrease:0},n=e.category===`car`||e.category===`motorcycle`;if(t.eventMode&&t.eventPriceIncrease>0&&n){let n=parseInt(e.price)+parseInt(t.eventPriceIncrease);return`
+                      ${(()=>{let t=window.globalEventSettings||{eventMode:!1,eventPriceIncrease:0},n=e.category===`car`||e.category===`motorcycle`;return t.eventMode&&t.eventPriceIncrease>0&&n?`
                                   <div style="display: flex; flex-direction: column; gap: 2px;">
                                       <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
-                                          Mulai dari <span style="text-decoration:line-through; margin-left: 2px;">${r(e.price)}</span>
+                                          Event (Min. 4 Hari)
                                       </div>
                                       <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
-                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${r(n)}</span>
+                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${r(parseInt(e.price)*4)}</span>
                                           <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
                                       </div>
                                   </div>
-                              `}return`
+                              `:`
                                   <div style="display: flex; flex-direction: column;">
                                       <span style="font-size: 0.7rem; color: #64748b;">Mulai dari</span>
                                       <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem;">${r(e.price)}</span>
@@ -362,16 +361,16 @@
             <div class="price-row">
                   <div class="price" style="flex: 1; min-width: 0;">
                       <div style="display: flex; flex-direction: column; gap: 2px;">
-                          ${(()=>{let t=window.globalEventSettings||{eventMode:!1,eventPriceIncrease:0},n=e.category===`car`||e.category===`motorcycle`;if(t.eventMode&&t.eventPriceIncrease>0&&n){let n=parseInt(e.price)+parseInt(t.eventPriceIncrease);return`
+                          ${(()=>{let t=window.globalEventSettings||{eventMode:!1,eventPriceIncrease:0},n=e.category===`car`||e.category===`motorcycle`;return t.eventMode&&t.eventPriceIncrease>0&&n?`
                                       <div style="font-size: 0.7rem; color: #64748b; white-space: nowrap;">
-                                          Mulai dari <span style="text-decoration:line-through; margin-left: 2px;">${r(e.price)}</span>
+                                          Event (Min. 4 Hari)
                                       </div>
                                       <div style="display: flex; align-items: center; gap: 4px; line-height: 1;">
-                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${r(n)}</span>
+                                          <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${r(parseInt(e.price)*4)}</span>
                                           <span style="background:linear-gradient(135deg,#f59e0b,#ef4444);color:white;font-size:0.5rem;padding:2px 4px;border-radius:4px; display:inline-block;">🔥</span>
                                       </div>
-                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${e.duration||`hari`}</div>
-                                  `}return`
+                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ 4 hari</div>
+                                  `:`
                                   <div style="font-size: 0.7rem; color: #64748b;">Mulai dari</div>
                                   <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${r(e.price)}</div>
                                   <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${e.duration||`hari`}</div>
