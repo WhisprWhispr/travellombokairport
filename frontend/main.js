@@ -5068,10 +5068,79 @@ window.clearChatHistory = () => {
     if (sendBtn) sendBtn.disabled = false;
 };
 
+let airaRatingTimer = null;
+
+function startAiraRatingTimer() {
+    if (airaRatingTimer) clearInterval(airaRatingTimer);
+    airaRatingTimer = setInterval(() => {
+        const blockUntil = localStorage.getItem('aira_rating_block');
+        if (blockUntil && new Date().getTime() < parseInt(blockUntil)) return;
+        
+        const chatHistory = document.getElementById('chat-messages');
+        const chatWindow = document.getElementById('ai-chat-window');
+        if (!chatHistory || !chatWindow || chatWindow.classList.contains('hidden')) return;
+        
+        if (document.querySelector('.aira-rating-bubble')) return;
+        
+        const div = document.createElement('div');
+        div.className = 'chat-message bot aira-rating-bubble';
+        div.style.marginBottom = '15px';
+        div.innerHTML = `
+            <div class="chat-bubble" style="background:var(--bg-light); border:1px solid #e2e8f0; text-align:center; padding:15px; border-radius:15px;">
+                <p style="margin:0 0 10px; font-weight:600; font-size:0.9rem; color:var(--text-dark);">Beri rating untuk AIRA ⭐</p>
+                <div class="stars-container" style="display:flex; justify-content:center; gap:8px; margin-bottom:12px;">
+                    <i class="fa-solid fa-star star-btn" data-val="1" style="color:#cbd5e1; font-size:1.5rem; cursor:pointer; transition:0.2s;"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="2" style="color:#cbd5e1; font-size:1.5rem; cursor:pointer; transition:0.2s;"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="3" style="color:#cbd5e1; font-size:1.5rem; cursor:pointer; transition:0.2s;"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="4" style="color:#cbd5e1; font-size:1.5rem; cursor:pointer; transition:0.2s;"></i>
+                    <i class="fa-solid fa-star star-btn" data-val="5" style="color:#cbd5e1; font-size:1.5rem; cursor:pointer; transition:0.2s;"></i>
+                </div>
+                <button onclick="window.blockAiraRating(this)" style="background:none; border:none; color:#ef4444; font-size:0.75rem; text-decoration:underline; cursor:pointer;">Mengganggu (Blokir 1 Hari)</button>
+            </div>
+        `;
+        chatHistory.appendChild(div);
+        chatHistory.scrollTop = chatHistory.scrollHeight;
+        
+        const stars = div.querySelectorAll('.star-btn');
+        stars.forEach(s => {
+            s.addEventListener('click', async (e) => {
+                const rating = e.target.getAttribute('data-val');
+                div.innerHTML = `<div class="chat-bubble" style="background:#dcfce3; color:#166534; padding:10px; border-radius:10px; text-align:center; font-size:0.85rem;"><i class="fa-solid fa-check-circle" style="margin-right:5px;"></i>Terima kasih atas rating ${rating} bintang Anda!</div>`;
+                try {
+                    await fetch('/api/ai/rating', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ rating: parseInt(rating), sessionId: window.currentChatSessionId || 'unknown' })
+                    });
+                } catch(err) { console.error(err); }
+                setTimeout(() => { div.remove(); }, 3000);
+            });
+            s.addEventListener('mouseover', (e) => {
+                const val = parseInt(e.target.getAttribute('data-val'));
+                stars.forEach(st => {
+                    st.style.color = parseInt(st.getAttribute('data-val')) <= val ? '#fbbf24' : '#cbd5e1';
+                });
+            });
+            s.addEventListener('mouseout', () => {
+                stars.forEach(st => st.style.color = '#cbd5e1');
+            });
+        });
+    }, 5 * 60 * 1000);
+}
+
+window.blockAiraRating = (btn) => {
+    const oneDay = new Date().getTime() + (24 * 60 * 60 * 1000);
+    localStorage.setItem('aira_rating_block', oneDay.toString());
+    const bubble = btn.closest('.chat-message');
+    bubble.innerHTML = `<div class="chat-bubble" style="background:#fee2e2; color:#991b1b; padding:10px; border-radius:10px; text-align:center; font-size:0.85rem;"><i class="fa-solid fa-bell-slash" style="margin-right:5px;"></i>Rating dinonaktifkan selama 1 hari.</div>`;
+    setTimeout(() => { bubble.remove(); }, 3000);
+};
+
 window.toggleChat = async () => {
     const chatWindow = document.getElementById('ai-chat-window');
     chatWindow.classList.toggle('hidden');
     if (!chatWindow.classList.contains('hidden')) {
+        startAiraRatingTimer();
         const inputArea = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-chat-btn');
         const micBtn = document.getElementById('mic-chat-btn');
@@ -5114,6 +5183,8 @@ window.toggleChat = async () => {
         window.checkGuestLimit();
         // Scroll to bottom
         if (msgs) msgs.scrollTop = msgs.scrollHeight;
+    } else {
+        if (airaRatingTimer) clearInterval(airaRatingTimer);
     }
 };
 

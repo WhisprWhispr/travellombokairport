@@ -3201,6 +3201,48 @@ window.fetchAdminAiChats = async () => {
         console.error('Error fetching AI chats:', error);
         document.getElementById('admin-ai-chats-table').innerHTML = '<tr><td colspan="5" class="text-center text-danger">Gagal memuat riwayat.</td></tr>';
     }
+    window.fetchAdminAiRatings();
+};
+
+window.fetchAdminAiRatings = async () => {
+    try {
+        const token = localStorage.getItem('adminToken');
+        const response = await fetch(`${API_URL}/ai/ratings`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+        
+        const tbody = document.getElementById('admin-ai-ratings-table');
+        tbody.innerHTML = '';
+        
+        if (!data.success) {
+            tbody.innerHTML = `<tr><td colspan="3" class="text-center text-danger">API Error: ${data.message}</td></tr>`;
+            return;
+        }
+
+        if (data.data.length > 0) {
+            data.data.forEach(rating => {
+                const tr = document.createElement('tr');
+                const lastUpdate = new Date(rating.createdAt).toLocaleString('id-ID');
+                let starsHtml = '';
+                for(let i=0; i<5; i++) {
+                    starsHtml += `<i class="fa-solid fa-star" style="color: ${i < rating.rating ? '#fbbf24' : '#cbd5e1'};"></i>`;
+                }
+                
+                tr.innerHTML = `
+                    <td>${lastUpdate}</td>
+                    <td>${rating.sessionId}</td>
+                    <td>${starsHtml} (${rating.rating}/5)</td>
+                `;
+                tbody.appendChild(tr);
+            });
+        } else {
+            tbody.innerHTML = '<tr><td colspan="3" class="text-center">Belum ada rating.</td></tr>';
+        }
+    } catch (error) {
+        console.error('Error fetching AI ratings:', error);
+        document.getElementById('admin-ai-ratings-table').innerHTML = '<tr><td colspan="3" class="text-center text-danger">Gagal memuat rating.</td></tr>';
+    }
 };
 
 window.viewChatHistory = (history) => {

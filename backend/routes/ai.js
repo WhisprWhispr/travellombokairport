@@ -433,4 +433,41 @@ router.delete('/knowledge-base/:id', async (req, res) => {
     }
 });
 
+// POST AI Rating
+router.post('/rating', async (req, res) => {
+    try {
+        const { rating, sessionId } = req.body;
+        if (!rating) {
+            return res.status(400).json({ success: false, message: 'Rating tidak boleh kosong' });
+        }
+        
+        const newRating = {
+            rating: parseInt(rating),
+            sessionId: sessionId || 'unknown',
+            createdAt: new Date().toISOString()
+        };
+        
+        const docRef = await db.collection('aira_ratings').add(newRating);
+        res.json({ success: true, message: 'Rating berhasil disimpan', data: { id: docRef.id, ...newRating } });
+    } catch (error) {
+        console.error('Error saving rating:', error);
+        res.status(500).json({ success: false, message: 'Gagal menyimpan rating' });
+    }
+});
+
+// GET AI Ratings (for Admin Panel)
+router.get('/ratings', async (req, res) => {
+    try {
+        const snapshot = await db.collection('aira_ratings').orderBy('createdAt', 'desc').get();
+        const ratings = [];
+        snapshot.forEach(doc => {
+            ratings.push({ id: doc.id, ...doc.data() });
+        });
+        res.json({ success: true, data: ratings });
+    } catch (error) {
+        console.error('Error fetching ratings:', error);
+        res.status(500).json({ success: false, message: 'Gagal mengambil ratings' });
+    }
+});
+
 module.exports = router;
