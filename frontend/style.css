@@ -2188,6 +2188,46 @@ input:checked + .slider:before { transform: translateX(22px); }
     background-size: 20px 20px;
 }
 
+.ai-quick-reply-btn {
+    text-align: left;
+    padding: 12px 16px;
+    border-radius: 14px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ai-quick-reply-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.08);
+}
+
+.ai-btn-blue {
+    background: #f0f9ff;
+    color: var(--primary-blue);
+    border: 1px solid #bae6fd;
+}
+
+.ai-btn-blue:hover {
+    background: var(--primary-blue);
+    color: white;
+    border-color: var(--primary-blue);
+}
+
+.ai-btn-red {
+    background: #fef2f2;
+    color: #ef4444;
+    border: 1px solid #fecaca;
+}
+
+.ai-btn-red:hover {
+    background: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
 .message {
     max-width: 85%;
     padding: 14px 18px;
