@@ -1052,20 +1052,30 @@ const createTransferCard = (item, index = 0) => {
 // Render Package Card (Paket Tour)
 const createPackageCard = (item, index = 0) => {
     const isParent = item.isParent === true;
+    const isHoneymoon = item.title && item.title.toLowerCase().includes('honeymoon');
+    
+    const parentBorder = isHoneymoon ? 'border:2px solid #ec4899; box-shadow:0 10px 20px rgba(236,72,153,0.15);' : (isParent ? 'border:2px solid #fbbf24;' : '');
+    const gradientBtn = isHoneymoon ? 'linear-gradient(135deg, #ec4899, #be185d)' : 'linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af)';
     const btnHtml = isParent
-        ? `<button onclick="window.openSubPackageModal('${item.id}')" class="btn" style="background:linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af); color:white; border:none; font-size:0.85rem; padding:8px 16px; border-radius:20px; font-weight:700;"><i class="fa-solid fa-layer-group" style="margin-right:5px;"></i>LIHAT PAKET</button>`
-        : `<button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>`;
-    const parentBadge = isParent
-        ? `<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#78350f;font-size:0.65rem;font-weight:800;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;z-index:2;"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i>Paket Pilihan</span>` : '';
+        ? `<button onclick="window.openSubPackageModal('${item.id}')" class="btn" style="background:${gradientBtn}; color:white; border:none; font-size:0.85rem; padding:8px 16px; border-radius:20px; font-weight:700;"><i class="fa-solid fa-layer-group" style="margin-right:5px;"></i>LIHAT PAKET</button>`
+        : `<button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: ${isHoneymoon ? '#ec4899' : 'var(--primary-blue)'}; border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>`;
+    
+    let badgeHtml = '';
+    if (isHoneymoon) {
+        badgeHtml = `<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#ec4899,#be185d);color:white;font-size:0.65rem;font-weight:800;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;z-index:2;box-shadow:0 4px 10px rgba(236,72,153,0.3);"><i class="fa-solid fa-heart" style="margin-right:4px;"></i>Honeymoon Special</span>`;
+    } else if (isParent) {
+        badgeHtml = `<span style="position:absolute;top:10px;left:10px;background:linear-gradient(135deg,#f59e0b,#d97706);color:#78350f;font-size:0.65rem;font-weight:800;padding:4px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:1px;z-index:2;"><i class="fa-solid fa-layer-group" style="margin-right:4px;"></i>Paket Pilihan</span>`;
+    }
+    
     const ratingBadge = item.rating 
-        ? `<span style="position:absolute; ${isParent ? 'top:45px;' : 'top:10px;'} left:10px; background:rgba(255,255,255,0.95); color:#f59e0b; font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:20px; z-index:2; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa-solid fa-star" style="margin-right:4px;"></i>${item.rating}</span>` : '';
+        ? `<span style="position:absolute; ${(isParent || isHoneymoon) ? 'top:45px;' : 'top:10px;'} left:10px; background:rgba(255,255,255,0.95); color:#f59e0b; font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:20px; z-index:2; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa-solid fa-star" style="margin-right:4px;"></i>${item.rating}</span>` : '';
     return `
-    <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}" style="${isParent ? 'border:2px solid #fbbf24;' : ''}">
+    <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}" style="${parentBorder} ${isHoneymoon ? 'background: linear-gradient(to bottom, #fff, #fdf2f8);' : ''}">
         <div class="img-wrapper" style="position:relative;">
             <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
-            <span class="tag"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
-            ${parentBadge}
+            <span class="tag" style="${isHoneymoon ? 'background:#fce7f3; color:#db2777;' : ''}"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
+            ${badgeHtml}
             ${ratingBadge}
             <img src="${item.imageUrl}" alt="${item.title}" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=800'">
         </div>
@@ -1080,7 +1090,7 @@ const createPackageCard = (item, index = 0) => {
                           return `
                                   <div style="display: flex; flex-direction: column;">
                                       <span style="font-size: 0.7rem; color: #64748b;">Mulai dari</span>
-                                      <span style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem;">${formatPrice(item.price)}</span>
+                                      <span style="color: ${isHoneymoon ? '#db2777' : 'var(--primary-blue)'}; font-weight: 800; font-size: 1.05rem;">${formatPrice(item.price)}</span>
                                   </div>
                           `;
                       })()}
@@ -1142,14 +1152,23 @@ window.openSubPackageModal = (parentId) => {
                 return (a.title || '').localeCompare(b.title || '', 'id', { sensitivity: 'base' });
             })
             .map((child) => {
+            const isHoneymoon = child.title && child.title.toLowerCase().includes('honeymoon');
             const formattedPrice = child.price ? formatPrice(child.price) : '';
+            const borderStyle = isHoneymoon ? 'border: 1px solid #fbcfe8;' : 'border:none;';
+            const bgStyle = isHoneymoon ? 'background: linear-gradient(to bottom, #ffffff, #fdf2f8);' : 'background:white;';
+            const shadowStyle = isHoneymoon ? 'box-shadow: 0 10px 25px -5px rgba(236,72,153,0.15), 0 8px 10px -6px rgba(236,72,153,0.05);' : 'box-shadow:0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04);';
+            const hoverShadow = isHoneymoon ? "this.style.boxShadow='0 20px 25px -5px rgba(236,72,153,0.25), 0 10px 10px -5px rgba(236,72,153,0.1)'" : "this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'";
+            const normalShadow = isHoneymoon ? "this.style.boxShadow='0 10px 25px -5px rgba(236,72,153,0.15), 0 8px 10px -6px rgba(236,72,153,0.05)'" : "this.style.boxShadow='0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04)'";
+            const honeymoonBadge = isHoneymoon ? `<span style="position:absolute; top:10px; left:10px; background:linear-gradient(135deg, #ec4899, #be185d); color:white; font-size:0.65rem; font-weight:800; padding:4px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:1px; z-index:2; box-shadow:0 4px 10px rgba(236,72,153,0.3);"><i class="fa-solid fa-heart" style="margin-right:4px;"></i>Honeymoon Special</span>` : '';
+            
             return `
-            <div style="background:white; border:none; border-radius:16px; overflow:hidden; box-shadow:0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04); cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
-                 onmouseover="this.style.transform='translateY(-5px)'; this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)';"
-                 onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04)';"
+            <div style="${bgStyle} ${borderStyle} border-radius:16px; overflow:hidden; ${shadowStyle} cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+                 onmouseover="this.style.transform='translateY(-5px)'; ${hoverShadow};"
+                 onmouseout="this.style.transform='translateY(0)'; ${normalShadow};"
                  onclick="openTourModal('${child.id}');">
                 <!-- Image -->
                 <div style="position:relative; height:180px; overflow:hidden;">
+                    ${honeymoonBadge}
                     <button onclick="event.stopPropagation(); window.shareItem('${child.id}', '${child.title.replace(/'/g, "\\'")}', '${formatPrice(child.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
                     <button id="btn-wishlist-${child.id}" onclick="event.stopPropagation(); window.toggleWishlist('${child.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(child.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(child.id) ? 'style="color:#ef4444;"' : ''}></i></button>
                     <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}"
@@ -1170,8 +1189,8 @@ window.openSubPackageModal = (parentId) => {
                         <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
                         <span style="font-size:0.7rem; color:#64748b; margin-left:6px; font-weight:500; white-space:nowrap;">(Top Rated)</span>
                     </div>
-                    <div style="margin-top:auto; padding-top:12px; border-top:1px dashed #e2e8f0; text-align:center;">
-                        <span style="color:#0ea5e9; font-size:0.85rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition: color 0.2s ease;">
+                    <div style="margin-top:auto; padding-top:12px; border-top:1px dashed ${isHoneymoon ? '#fbcfe8' : '#e2e8f0'}; text-align:center;">
+                        <span style="color:${isHoneymoon ? '#db2777' : '#0ea5e9'}; font-size:0.85rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition: color 0.2s ease;">
                             Lihat Detail Paket <i class="fa-solid fa-arrow-right" style="font-size:0.8rem;"></i>
                         </span>
                     </div>
