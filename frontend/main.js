@@ -2203,6 +2203,17 @@ window.generateEtiketPDF = (data) => {
                     </div>
                     `;
         })() : ''}
+                ${data.details?.isEvent ? `
+                <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:8px 12px;grid-column:1/-1;display:flex;align-items:center;gap:10px;">
+                    <div style="width:28px;height:28px;background:#f97316;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">
+                        🔥
+                    </div>
+                    <div>
+                        <div style="font-size:10px;color:#c2410c;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:2px;">Periode Event (High Season)</div>
+                        <div style="font-size:12px;color:#c2410c;">Dipesan saat periode Event dengan penyesuaian harga dan minimal sewa 4 hari.</div>
+                    </div>
+                </div>
+                ` : ''}
             </div>
 
             <!-- Divider -->
@@ -3673,7 +3684,8 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             pax: pax,
             flightNumber: flightNum,
             vehicle: tourVehicle,
-            notes: notes
+            notes: notes,
+            isEvent: (window.globalEventSettings?.eventMode && window.globalEventSettings?.eventPriceIncrease > 0 && (category === 'motor' || category === 'mobil'))
         }
     };
 
