@@ -2882,7 +2882,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                             <option value="14">2 Minggu (14 Hari)</option>
                             <option value="custom">Custom (Ketik Sendiri)</option>
                         </select>
-                        <input type="number" id="co-duration-custom" class="form-control" min="${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1}" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1} && this.value!==''){this.value=${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1};">
+                        <input type="number" id="co-duration-custom" class="form-control" min="${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1}" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1} && this.value!==''){this.value=${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1};}">
                     </div>
                 </div>
                 <input type="hidden" id="co-end-date" required>
