@@ -5312,6 +5312,178 @@ window.sendDeterministicReply = (userText, aiText) => {
     }, 800);
 };
 
+window.showEmergencyCenter = () => {
+    const qrContainer = document.getElementById('ai-quick-replies');
+    if (qrContainer) qrContainer.remove();
+
+    const messagesContainer = document.getElementById('chat-messages');
+    if (!messagesContainer) return;
+    
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div class="message user-message" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:white; box-shadow:0 4px 15px rgba(239, 68, 68, 0.3);">
+            <i class="fa-solid fa-truck-medical"></i> Saya butuh bantuan darurat! (SOS)
+        </div>
+    `);
+    
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    
+    setTimeout(() => {
+        const t = document.getElementById(typingId);
+        if (t) t.remove();
+        
+        let html = `
+            <div class="message ai-message" style="border: 2px solid #fecaca; background: #fffaf7;">
+                <h4 style="color:#ef4444; margin:0 0 12px 0; display:flex; align-items:center; gap:8px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i> Pusat Bantuan Darurat
+                </h4>
+                <p style="font-size:0.85rem; margin-bottom:12px;">Berikut adalah daftar layanan darurat penting di Lombok:</p>
+                
+                <ul style="list-style:none; padding:0; margin:0; font-size:0.85rem; display:flex; flex-direction:column; gap:10px;">
+                    <li style="display:flex; align-items:center; gap:10px;">
+                        <span style="background:#ef4444; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(239,68,68,0.3);"><i class="fa-solid fa-truck-medical"></i></span>
+                        <div><strong>Ambulans / Gawat Darurat:</strong> <br><a href="tel:118" style="font-weight:bold; color:#ef4444;">118</a> / <a href="tel:119" style="font-weight:bold; color:#ef4444;">119</a></div>
+                    </li>
+                    <li style="display:flex; align-items:center; gap:10px;">
+                        <span style="background:#3b82f6; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(59,130,246,0.3);"><i class="fa-solid fa-shield-halved"></i></span>
+                        <div><strong>Polisi:</strong> <br><a href="tel:110" style="font-weight:bold; color:#3b82f6;">110</a></div>
+                    </li>
+                    <li style="display:flex; align-items:center; gap:10px;">
+                        <span style="background:#f97316; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(249,115,22,0.3);"><i class="fa-solid fa-fire"></i></span>
+                        <div><strong>Pemadam Kebakaran:</strong> <br><a href="tel:113" style="font-weight:bold; color:#f97316;">113</a></div>
+                    </li>
+                    <li style="display:flex; align-items:center; gap:10px;">
+                        <span style="background:#8b5cf6; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(139,92,246,0.3);"><i class="fa-solid fa-building-flag"></i></span>
+                        <div><strong>Pusat Krisis Kemenpar:</strong> <br><a href="tel:08118956767" style="font-weight:bold; color:#8b5cf6;">0811-8956-767</a></div>
+                    </li>
+                    <li style="display:flex; align-items:center; gap:10px;">
+                        <span style="background:#10b981; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(16,185,129,0.3);"><i class="fa-brands fa-whatsapp"></i></span>
+                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6281234567890" target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS</a></div>
+                    </li>
+                </ul>
+
+                <div style="margin-top:15px; border-top:1px dashed #fca5a5; padding-top:12px; display:flex; flex-direction:column; gap:8px;">
+                    <button onclick="window.findNearestEmergency()" style="width:100%; background:linear-gradient(135deg, #ef4444, #dc2626); color:white; border:none; padding:10px; border-radius:10px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px; box-shadow:0 4px 10px rgba(239, 68, 68, 0.3); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <i class="fa-solid fa-location-dot"></i> Cari RS / Klinik Terdekat
+                    </button>
+                    <button onclick="window.shareLiveLocation()" style="width:100%; background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:10px; border-radius:10px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px; box-shadow:0 4px 10px rgba(59, 130, 246, 0.3); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+                        <i class="fa-regular fa-share-from-square"></i> Bagikan Live Location
+                    </button>
+                </div>
+            </div>
+        `;
+        messagesContainer.insertAdjacentHTML('beforeend', html);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }, 800);
+};
+
+window.findNearestEmergency = () => {
+    const messagesContainer = document.getElementById('chat-messages');
+    
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div class="message user-message" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:white; box-shadow:0 4px 15px rgba(239, 68, 68, 0.3);">
+            <i class="fa-solid fa-location-dot"></i> Cari RS / Klinik Terdekat
+        </div>
+    `);
+    
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const mapsUrl = `https://www.google.com/maps/search/Rumah+Sakit+Atau+Klinik+Terdekat/@${lat},${lng},14z`;
+            
+            setTimeout(() => {
+                const t = document.getElementById(typingId);
+                if (t) t.remove();
+                
+                let html = `
+                    <div class="message ai-message">
+                        📍 <strong>Lokasi Anda berhasil didapatkan!</strong><br><br>
+                        Silakan klik tombol di bawah ini untuk melihat daftar Rumah Sakit & Klinik terdekat dari posisi Anda beserta panduan navigasinya di Google Maps.<br><br>
+                        <a href="${mapsUrl}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:10px; background:linear-gradient(135deg, #10b981, #059669); color:white; padding:10px; border-radius:10px; text-decoration:none; font-weight:bold; box-shadow:0 4px 10px rgba(16, 185, 129, 0.3); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-map-location-dot"></i> Buka Google Maps</a>
+                    </div>
+                `;
+                messagesContainer.insertAdjacentHTML('beforeend', html);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 800);
+        }, (error) => {
+            setTimeout(() => {
+                const t = document.getElementById(typingId);
+                if (t) t.remove();
+                messagesContainer.insertAdjacentHTML('beforeend', `<div class="message ai-message" style="border:1px solid #fca5a5; background:#fef2f2; color:#b91c1c;">Mohon maaf, AIRA tidak dapat mengakses lokasi Anda. Pastikan Anda telah mengizinkan akses lokasi (GPS) pada browser Anda, atau Anda dapat mencari "Rumah Sakit Terdekat di Lombok" secara manual di Google Maps.</div>`);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 800);
+        });
+    } else {
+        setTimeout(() => {
+            const t = document.getElementById(typingId);
+            if (t) t.remove();
+            messagesContainer.insertAdjacentHTML('beforeend', `<div class="message ai-message" style="border:1px solid #fca5a5; background:#fef2f2; color:#b91c1c;">Browser Anda tidak mendukung fitur pelacakan lokasi. Silakan buka Google Maps dan cari secara manual.</div>`);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 800);
+    }
+};
+
+window.shareLiveLocation = () => {
+    const messagesContainer = document.getElementById('chat-messages');
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div class="message user-message" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; box-shadow:0 4px 15px rgba(59, 130, 246, 0.3);">
+            <i class="fa-regular fa-share-from-square"></i> Bagikan Live Location
+        </div>
+    `);
+    
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const waUrl = `https://wa.me/6281234567890?text=DARURAT!%20Ini%20lokasi%20saya%20sekarang:%20https://www.google.com/maps?q=${lat},${lng}`;
+            
+            setTimeout(() => {
+                const t = document.getElementById(typingId);
+                if (t) t.remove();
+                
+                let html = `
+                    <div class="message ai-message">
+                        📍 <strong>Lokasi Anda Siap Dibagikan!</strong><br><br>
+                        Klik tombol di bawah ini untuk mengirimkan lokasi presisi Anda saat ini ke tim Emergency Travel Lombok Airport via WhatsApp.<br><br>
+                        <a href="${waUrl}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; margin-top:10px; background:linear-gradient(135deg, #25D366, #128C7E); color:white; padding:10px; border-radius:10px; text-decoration:none; font-weight:bold; box-shadow:0 4px 10px rgba(37, 211, 102, 0.3); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-brands fa-whatsapp"></i> Kirim via WhatsApp</a>
+                    </div>
+                `;
+                messagesContainer.insertAdjacentHTML('beforeend', html);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 800);
+        }, (error) => {
+            setTimeout(() => {
+                const t = document.getElementById(typingId);
+                if (t) t.remove();
+                messagesContainer.insertAdjacentHTML('beforeend', `<div class="message ai-message" style="border:1px solid #fca5a5; background:#fef2f2; color:#b91c1c;">Akses lokasi ditolak atau gagal didapatkan. Tidak dapat membuat link lokasi langsung. Silakan hubungi CS secara manual.</div>`);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 800);
+        });
+    }
+};
+
 window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => {
     if (window.checkGuestLimit()) return;
 
