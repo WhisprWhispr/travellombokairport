@@ -1681,7 +1681,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
                     </li>
                     <li style="display:flex; align-items:center; gap:10px;">
                         <span style="background:#10b981; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(16,185,129,0.3);"><i class="fa-brands fa-whatsapp"></i></span>
-                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6281234567890" target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS</a></div>
+                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6289676963255" target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS</a></div>
                     </li>
                 </ul>
 
@@ -1716,7 +1716,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-DYmKx9RI.js";/* empty 
         <div id="${t}" class="typing-indicator">
             <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
         </div>
-    `),e.scrollTop=e.scrollHeight,navigator.geolocation&&navigator.geolocation.getCurrentPosition(n=>{let r=`https://wa.me/6281234567890?text=DARURAT!%20Ini%20lokasi%20saya%20sekarang:%20https://www.google.com/maps?q=${n.coords.latitude},${n.coords.longitude}`;setTimeout(()=>{let n=document.getElementById(t);n&&n.remove();let i=`
+    `),e.scrollTop=e.scrollHeight,navigator.geolocation&&navigator.geolocation.getCurrentPosition(n=>{let r=`https://wa.me/6289676963255?text=DARURAT!%20Ini%20lokasi%20saya%20sekarang:%20https://www.google.com/maps?q=${n.coords.latitude},${n.coords.longitude}`;setTimeout(()=>{let n=document.getElementById(t);n&&n.remove();let i=`
                     <div class="message ai-message">
                         📍 <strong>Lokasi Anda Siap Dibagikan!</strong><br><br>
                         Klik tombol di bawah ini untuk mengirimkan lokasi presisi Anda saat ini ke tim Emergency Travel Lombok Airport via WhatsApp.<br><br>

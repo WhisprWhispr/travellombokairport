@@ -5363,7 +5363,7 @@ window.showEmergencyCenter = () => {
                     </li>
                     <li style="display:flex; align-items:center; gap:10px;">
                         <span style="background:#10b981; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(16,185,129,0.3);"><i class="fa-brands fa-whatsapp"></i></span>
-                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6281234567890" target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS</a></div>
+                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6289676963255" target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS</a></div>
                     </li>
                 </ul>
 
@@ -5457,7 +5457,7 @@ window.shareLiveLocation = () => {
         navigator.geolocation.getCurrentPosition((position) => {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            const waUrl = `https://wa.me/6281234567890?text=DARURAT!%20Ini%20lokasi%20saya%20sekarang:%20https://www.google.com/maps?q=${lat},${lng}`;
+            const waUrl = `https://wa.me/6289676963255?text=DARURAT!%20Ini%20lokasi%20saya%20sekarang:%20https://www.google.com/maps?q=${lat},${lng}`;
             
             setTimeout(() => {
                 const t = document.getElementById(typingId);
