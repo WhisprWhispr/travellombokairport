@@ -1376,7 +1376,7 @@ Salam hangat,
                         </td>
                         <td>
                             <strong style="color:var(--primary-blue); font-size: 0.9rem;">${trxId}</strong>
-                            <i class="fa-regular fa-copy" onclick="navigator.clipboard.writeText('${trxId}'); Swal.fire({toast:true, position:'top-end', icon:'success', title:'ID disalin!', showConfirmButton:false, timer:1500})" style="cursor:pointer; color:#94a3b8; transition:color 0.2s; margin-left:4px;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='#94a3b8'" title="Salin ID"></i>
+                            <i class="fa-regular fa-copy" onclick="window.copyTextToClipboard('${trxId}', 'ID disalin!')" style="cursor:pointer; color:#94a3b8; transition:color 0.2s; margin-left:4px;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='#94a3b8'" title="Salin ID"></i>
                             <br><small>${startDateStr} - ${new Date(b.endDate).toLocaleDateString('id-ID')}</small>
                         </td>
                         <td>
@@ -2420,31 +2420,44 @@ window.toggleComingSoonUI = () => {
     }
 };
 
+window.copyTextToClipboard = async (text, successMsg = 'Teks disalin!') => {
+    if (navigator.clipboard && window.isSecureContext) {
+        try {
+            await navigator.clipboard.writeText(text);
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: successMsg, showConfirmButton: false, timer: 1500 });
+            return;
+        } catch (err) {
+            console.error('Clipboard API failed', err);
+        }
+    }
+    
+    // Fallback using execCommand
+    const textArea = document.createElement("textarea");
+    textArea.value = text;
+    textArea.style.position = "fixed";
+    textArea.style.left = "-999999px";
+    textArea.style.top = "-999999px";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+            Swal.fire({ toast: true, position: 'top-end', icon: 'success', title: successMsg, showConfirmButton: false, timer: 1500 });
+        } else {
+            throw new Error('execCommand failed');
+        }
+    } catch (err) {
+        console.error('Fallback copy failed', err);
+        Swal.fire({ toast: true, position: 'top-end', icon: 'error', title: 'Gagal menyalin teks', text: 'Browser tidak mendukung salin otomatis.', showConfirmButton: false, timer: 2000 });
+    }
+    document.body.removeChild(textArea);
+};
+
 window.copyInputText = async (id) => {
     const el = document.getElementById(id);
     if (!el) return;
-    try {
-        await navigator.clipboard.writeText(el.value);
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Teks disalin!',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    } catch (err) {
-        el.select();
-        document.execCommand("copy");
-        Swal.fire({
-            toast: true,
-            position: 'top-end',
-            icon: 'success',
-            title: 'Teks disalin!',
-            showConfirmButton: false,
-            timer: 1500
-        });
-    }
+    window.copyTextToClipboard(el.value);
 };
 
 window.pasteInputText = async (id) => {
@@ -2462,13 +2475,14 @@ window.pasteInputText = async (id) => {
             timer: 1500
         });
     } catch (err) {
+        el.focus();
         Swal.fire({
             toast: true,
             position: 'top-end',
-            icon: 'error',
-            title: 'Gagal menempel teks. Izinkan akses clipboard browser.',
-            showConfirmButton: false,
-            timer: 2000
+            icon: 'warning',
+            title: 'Tempel Manual (Ctrl+V / Tahan & Paste)',
+            text: 'Browser Anda memblokir penempelan otomatis (hanya diizinkan via HTTPS / localhost).',
+            showConfirmButton: true
         });
     }
 };
@@ -3716,10 +3730,15 @@ window.fetchAdminReports = async () => {
                     : '<button onclick="window.markReportDone(\'' + r.id + '\')" style="background:#fff;color:#3b82f6;border:1.5px solid #3b82f6;padding:5px 12px;border-radius:7px;font-size:0.8rem;cursor:pointer;white-space:nowrap;font-weight:600;"><i class="fa-solid fa-check"></i> Selesai</button>';
                 const tgl = new Date(r.createdAt).toLocaleDateString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
                 const jam = new Date(r.createdAt).toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'});
+                const detailText = r.detail || '-';
+                const safeDetail = detailText.replace(/'/g, "\\'").replace(/"/g, "&quot;").replace(/\n/g, "\\n");
                 return '<tr>'
                     + '<td style="font-size:0.82rem;color:#64748b;white-space:nowrap;">' + tgl + '<br><span style="font-size:0.75rem;">' + jam + '</span></td>'
                     + '<td><strong style="font-size:0.88rem;">' + (r.category || '-') + '</strong></td>'
-                    + '<td style="max-width:220px;white-space:normal;font-size:0.88rem;">' + (r.detail || '-') + '</td>'
+                    + '<td style="max-width:220px;white-space:normal;font-size:0.88rem;">' 
+                    + detailText 
+                    + ' <i class="fa-regular fa-copy" onclick="window.copyTextToClipboard(\'' + safeDetail + '\', \'Laporan disalin!\')" style="cursor:pointer; color:#94a3b8; transition:color 0.2s; margin-left:5px;" onmouseover="this.style.color=\'var(--primary-blue)\'" onmouseout="this.style.color=\'#94a3b8\'" title="Salin Detail"></i>'
+                    + '</td>'
                     + '<td><span class="badge ' + badgeClass + '">' + badgeLabel + '</span><br><small style="color:#94a3b8;font-size:0.75rem;">' + userLabel + '</small></td>'
                     + '<td>' + actionCell + '</td>'
                     + '</tr>';
