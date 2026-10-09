@@ -130,7 +130,7 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                         🎉 ${data.eventName ? `EVENT: <strong>${data.eventName}</strong> —` : 'HIGH SEASON!'} 
                         Harga Motor & Mobil naik <strong>Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')}</strong>/unit &nbsp;|&nbsp; 
                         <i class="fa-solid fa-calendar-days"></i> Min. sewa <strong>4 Hari</strong>
-                        <button onclick="this.parentElement.parentElement.remove()" style="background: none; border: none; color: white; opacity: 0.8; cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; padding: 5px;" title="Tutup">✕</button>
+                        <button onclick="this.parentElement.parentElement.remove(); document.getElementById('event-chat-fix')?.remove();" style="background: none; border: none; color: white; opacity: 0.8; cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; padding: 5px;" title="Tutup">✕</button>
                     </div>
                 `;
                 // Insert at top of body
@@ -139,6 +139,17 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                 } else {
                     document.body.appendChild(eventBanner);
                 }
+                
+                // Fix overlay chat widget
+                const styleObj = document.createElement('style');
+                styleObj.id = 'event-chat-fix';
+                styleObj.innerHTML = `
+                    #ai-chat-widget { bottom: 65px !important; }
+                    @media (max-width: 480px) {
+                        #ai-chat-btn { bottom: 60px !important; }
+                    }
+                `;
+                document.head.appendChild(styleObj);
 
                 // Show professional popup for event
                 if (!sessionStorage.getItem('eventPopupShown')) {
