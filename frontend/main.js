@@ -5082,11 +5082,14 @@ window.clearChatHistory = () => {
     if (sendBtn) sendBtn.disabled = false;
 };
 
-let airaRatingTimer = null;
+let airaRatingInterval = null;
+let airaRatingTimeout = null;
 
 function startAiraRatingTimer() {
-    if (airaRatingTimer) clearInterval(airaRatingTimer);
-    airaRatingTimer = setInterval(() => {
+    if (airaRatingInterval) clearInterval(airaRatingInterval);
+    if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
+    
+    const triggerRating = () => {
         const blockUntil = localStorage.getItem('aira_rating_block');
         if (blockUntil && new Date().getTime() < parseInt(blockUntil)) return;
         
@@ -5100,7 +5103,7 @@ function startAiraRatingTimer() {
         div.className = 'chat-message bot aira-rating-bubble';
         div.style.marginBottom = '15px';
         div.innerHTML = `
-            <div class="chat-bubble" style="background:var(--bg-light); border:1px solid #e2e8f0; text-align:center; padding:15px; border-radius:15px;">
+            <div class="chat-bubble" style="background:var(--bg-light); border:1px solid #e2e8f0; text-align:center; padding:15px; border-radius:15px; width:85%; max-width:280px; margin:0 auto;">
                 <p style="margin:0 0 10px; font-weight:600; font-size:0.9rem; color:var(--text-dark);">Beri rating untuk AIRA ⭐</p>
                 <div class="stars-container" style="display:flex; justify-content:center; gap:8px; margin-bottom:12px;">
                     <i class="fa-solid fa-star star-btn" data-val="1" style="color:#cbd5e1; font-size:1.5rem; cursor:pointer; transition:0.2s;"></i>
@@ -5139,7 +5142,13 @@ function startAiraRatingTimer() {
                 stars.forEach(st => st.style.color = '#cbd5e1');
             });
         });
-    }, 5 * 60 * 1000);
+    };
+
+    // Tampilkan pertama kali setelah 10 detik, lalu rutin tiap 5 menit
+    airaRatingTimeout = setTimeout(() => {
+        triggerRating();
+        airaRatingInterval = setInterval(triggerRating, 5 * 60 * 1000);
+    }, 10000);
 }
 
 window.blockAiraRating = (btn) => {
@@ -5198,7 +5207,8 @@ window.toggleChat = async () => {
         // Scroll to bottom
         if (msgs) msgs.scrollTop = msgs.scrollHeight;
     } else {
-        if (airaRatingTimer) clearInterval(airaRatingTimer);
+        if (airaRatingInterval) clearInterval(airaRatingInterval);
+        if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
     }
 };
 
