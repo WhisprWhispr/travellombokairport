@@ -2816,10 +2816,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     const evtSettings = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
     const isEventActive = evtSettings.eventMode && evtSettings.eventPriceIncrease > 0;
     const isRentalItem = (category === 'motor' || category === 'mobil');
-    let eventAdjustedPrice = price;
-    if (isEventActive && isRentalItem && price > 0) {
-        eventAdjustedPrice = price + evtSettings.eventPriceIncrease;
-    }
+    const eventPriceIncrease = (isEventActive && isRentalItem) ? evtSettings.eventPriceIncrease : 0;
     const EVENT_MIN_DAYS = 4; // Minimum sewa saat event
     // ====== END EVENT MODE ======
 
@@ -2836,11 +2833,10 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             ${isOrder ? `
                 ${(isEventActive && isRentalItem) ? `
                 <div style="margin-bottom: 6px;">
-                    <span style="text-decoration: line-through; color: #94a3b8; font-size: 0.9rem;">${formatPrice(price)}</span>
-                    <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px;">EVENT +${formatPrice(evtSettings.eventPriceIncrease)}</span>
+                    <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 0;">Biaya Tambahan Event +${formatPrice(evtSettings.eventPriceIncrease)}</span>
                 </div>
-                <p id="co-display-price" data-base-price="${eventAdjustedPrice}" style="font-weight: bold; color: #ef4444; font-size: 1.25rem;">${formatPrice(eventAdjustedPrice)}</p>
-                ` : `<p id="co-display-price" data-base-price="${price}" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${formatPrice(price)}</p>`}
+                <p id="co-display-price" data-base-price="${price}" data-event-increase="${eventPriceIncrease}" style="font-weight: bold; color: #ef4444; font-size: 1.25rem;">${formatPrice(price)}</p>
+                ` : `<p id="co-display-price" data-base-price="${price}" data-event-increase="0" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${formatPrice(price)}</p>`}
             ` : ""}
         </div>
 
@@ -2855,7 +2851,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         ` : ''}
 
 
-        <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${eventAdjustedPrice || 0}, '${method}');">
+        <form id="checkout-form" onsubmit="event.preventDefault(); processCheckout('${itemName}', ${price || 0}, '${method}');">
 
             <div class="form-group mb-3">
                 <label>Nama Lengkap</label>
@@ -3347,6 +3343,7 @@ window.updateRentalDisplayPrice = () => {
     const basePriceEl = document.getElementById("co-display-price");
     if (basePriceEl && window._currentDurationDays === 0) {
         const basePrice = parseInt(basePriceEl.getAttribute("data-base-price") || 0);
+        const eventIncrease = parseInt(basePriceEl.getAttribute("data-event-increase") || 0);
         if (basePrice > 0) {
             let diffDays = 1;
             const durationSelect = document.getElementById('co-duration-select');
@@ -3360,7 +3357,7 @@ window.updateRentalDisplayPrice = () => {
                     diffDays = parseInt(durationSelect.value);
                 }
             }
-            const total = basePrice * diffDays;
+            const total = (basePrice * diffDays) + eventIncrease;
             basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
         }
     }
@@ -3578,6 +3575,14 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         finalPrice = price * diffDays;
     }
     
+    // Add event price increase to total finalPrice
+    const evtSettings = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
+    const isEventActive = evtSettings.eventMode && evtSettings.eventPriceIncrease > 0;
+    const isRentalItem = (category === 'motor' || category === 'mobil');
+    if (isEventActive && isRentalItem && finalPrice > 0) {
+        finalPrice += evtSettings.eventPriceIncrease;
+    }
+
     const getWaText = (isManual, transactionId = null, promoInfoText = "") => {
         let waText = "";
         let paymentInfo = "Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee diterima.\n💳 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda, atau sesuai instruksi Admin.";
@@ -3689,7 +3694,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             flightNumber: flightNum,
             vehicle: tourVehicle,
             notes: notes,
-            isEvent: (window.globalEventSettings?.eventMode && window.globalEventSettings?.eventPriceIncrease > 0 && (category === 'motor' || category === 'mobil'))
+            isEvent: (isEventActive && isRentalItem)
         }
     };
 
