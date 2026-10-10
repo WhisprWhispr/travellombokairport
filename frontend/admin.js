@@ -3229,7 +3229,9 @@ window.fetchAdminAiRatings = async () => {
         }
 
         if (data.data.length > 0) {
+            let totalRating = 0;
             data.data.forEach(rating => {
+                totalRating += parseInt(rating.rating) || 0;
                 const tr = document.createElement('tr');
                 const lastUpdate = new Date(rating.createdAt).toLocaleString('id-ID');
                 let starsHtml = '';
@@ -3244,8 +3246,18 @@ window.fetchAdminAiRatings = async () => {
                 `;
                 tbody.appendChild(tr);
             });
+            
+            const averageRating = (totalRating / data.data.length).toFixed(1);
+            const titleEl = document.getElementById('aira-rating-title');
+            if (titleEl) {
+                titleEl.innerHTML = `Rating & Feedback AIRA ⭐ <span style="font-size:1.2rem; color:#64748b; font-weight:normal;">(Rata-rata: ${averageRating} / 5.0)</span>`;
+            }
         } else {
             tbody.innerHTML = '<tr><td colspan="3" class="text-center">Belum ada rating.</td></tr>';
+            const titleEl = document.getElementById('aira-rating-title');
+            if (titleEl) {
+                titleEl.innerHTML = `Rating & Feedback AIRA ⭐ <span style="font-size:1.2rem; color:#64748b; font-weight:normal;">(Belum ada rating)</span>`;
+            }
         }
     } catch (error) {
         console.error('Error fetching AI ratings:', error);
