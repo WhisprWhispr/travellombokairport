@@ -456,7 +456,21 @@ Salam hangat,
                     <td>${r}</td>
                     <td>${t.sessionId}</td>
                     <td>${a} (${t.rating}/5)</td>
-                `,i.appendChild(n)});let t=(e/r.data.length).toFixed(1),n=document.getElementById(`aira-rating-title`);n&&(n.innerHTML=`Rating & Feedback AIRA ⭐ <span style="font-size:1.2rem; color:#64748b; font-weight:normal;">(Rata-rata: ${t} / 5.0)</span>`)}else{i.innerHTML=`<tr><td colspan="3" class="text-center">Belum ada rating.</td></tr>`;let e=document.getElementById(`aira-rating-title`);e&&(e.innerHTML=`Rating & Feedback AIRA ⭐ <span style="font-size:1.2rem; color:#64748b; font-weight:normal;">(Belum ada rating)</span>`)}}catch(e){console.error(`Error fetching AI ratings:`,e),document.getElementById(`admin-ai-ratings-table`).innerHTML=`<tr><td colspan="3" class="text-center text-danger">Gagal memuat rating.</td></tr>`}},window.viewChatHistory=e=>{let t=`<div style="text-align: left; max-height: 400px; overflow-y: auto; background: #f8fafc; padding: 15px; border-radius: 8px;">`;!e||e.length===0?t+=`<p>Tidak ada pesan.</p>`:e.forEach(e=>{let n=e.role===`user`?`User`:`AI`,r=e.role===`user`?`#1d4ed8`:`#ca8a04`,i=e.role===`user`?`#dbeafe`:`#fef3c7`,a=e.parts[0].text;t+=`
+                `,i.appendChild(n)});let t=(e/r.data.length).toFixed(1),n=document.getElementById(`aira-rating-title`);n&&(n.innerHTML=`
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                        <span>Rating & Feedback AIRA ⭐</span>
+                        <span style="font-size:0.9rem; background:#fef3c7; color:#b45309; padding:4px 12px; border-radius:20px; font-weight:600; white-space:nowrap; border:1px solid #fde68a;">
+                            Rata-rata: ${t} / 5.0
+                        </span>
+                    </div>
+                `)}else{i.innerHTML=`<tr><td colspan="3" class="text-center">Belum ada rating.</td></tr>`;let e=document.getElementById(`aira-rating-title`);e&&(e.innerHTML=`
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                        <span>Rating & Feedback AIRA ⭐</span>
+                        <span style="font-size:0.9rem; background:#f1f5f9; color:#64748b; padding:4px 12px; border-radius:20px; font-weight:600; white-space:nowrap; border:1px solid #e2e8f0;">
+                            Belum ada rating
+                        </span>
+                    </div>
+                `)}}catch(e){console.error(`Error fetching AI ratings:`,e),document.getElementById(`admin-ai-ratings-table`).innerHTML=`<tr><td colspan="3" class="text-center text-danger">Gagal memuat rating.</td></tr>`}},window.viewChatHistory=e=>{let t=`<div style="text-align: left; max-height: 400px; overflow-y: auto; background: #f8fafc; padding: 15px; border-radius: 8px;">`;!e||e.length===0?t+=`<p>Tidak ada pesan.</p>`:e.forEach(e=>{let n=e.role===`user`?`User`:`AI`,r=e.role===`user`?`#1d4ed8`:`#ca8a04`,i=e.role===`user`?`#dbeafe`:`#fef3c7`,a=e.parts[0].text;t+=`
                 <div style="margin-bottom: 10px; padding: 10px; border-radius: 6px; background: ${i}; border-left: 4px solid ${r};">
                     <strong>${n}:</strong><br>
                     <span style="font-size: 0.9rem; white-space: pre-wrap;">${a}</span>

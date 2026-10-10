@@ -3250,13 +3250,27 @@ window.fetchAdminAiRatings = async () => {
             const averageRating = (totalRating / data.data.length).toFixed(1);
             const titleEl = document.getElementById('aira-rating-title');
             if (titleEl) {
-                titleEl.innerHTML = `Rating & Feedback AIRA ⭐ <span style="font-size:1.2rem; color:#64748b; font-weight:normal;">(Rata-rata: ${averageRating} / 5.0)</span>`;
+                titleEl.innerHTML = `
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                        <span>Rating & Feedback AIRA ⭐</span>
+                        <span style="font-size:0.9rem; background:#fef3c7; color:#b45309; padding:4px 12px; border-radius:20px; font-weight:600; white-space:nowrap; border:1px solid #fde68a;">
+                            Rata-rata: ${averageRating} / 5.0
+                        </span>
+                    </div>
+                `;
             }
         } else {
             tbody.innerHTML = '<tr><td colspan="3" class="text-center">Belum ada rating.</td></tr>';
             const titleEl = document.getElementById('aira-rating-title');
             if (titleEl) {
-                titleEl.innerHTML = `Rating & Feedback AIRA ⭐ <span style="font-size:1.2rem; color:#64748b; font-weight:normal;">(Belum ada rating)</span>`;
+                titleEl.innerHTML = `
+                    <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px;">
+                        <span>Rating & Feedback AIRA ⭐</span>
+                        <span style="font-size:0.9rem; background:#f1f5f9; color:#64748b; padding:4px 12px; border-radius:20px; font-weight:600; white-space:nowrap; border:1px solid #e2e8f0;">
+                            Belum ada rating
+                        </span>
+                    </div>
+                `;
             }
         }
     } catch (error) {
