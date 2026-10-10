@@ -648,4 +648,43 @@ aiRoutes.delete('/knowledge-base/:id', verifyToken, async (c) => {
     }
 });
 
+// POST AI Rating
+aiRoutes.post('/rating', async (c) => {
+    try {
+        const { rating, sessionId } = await c.req.json();
+        if (!rating) {
+            return c.json({ success: false, message: 'Rating diperlukan' }, 400);
+        }
+        
+        const newRating = {
+            rating: parseInt(rating),
+            sessionId: sessionId || 'unknown',
+            createdAt: new Date().toISOString()
+        };
+        
+        const db = getDb(c);
+        await db.collection('aira_ratings').add(newRating);
+        return c.json({ success: true, message: 'Rating berhasil disimpan' });
+    } catch (error) {
+        console.error('Error saving rating:', error);
+        return c.json({ success: false, message: 'Gagal menyimpan rating' }, 500);
+    }
+});
+
+// GET AI Ratings (for Admin Panel)
+aiRoutes.get('/ratings', verifyToken, async (c) => {
+    try {
+        const db = getDb(c);
+        const snapshot = await db.collection('aira_ratings').orderBy('createdAt', 'desc').get();
+        const ratings = [];
+        snapshot.forEach(doc => {
+            ratings.push({ id: doc.id, ...doc.data() });
+        });
+        return c.json({ success: true, data: ratings });
+    } catch (error) {
+        console.error('Error fetching ratings:', error);
+        return c.json({ success: false, message: 'Gagal mengambil ratings' }, 500);
+    }
+});
+
 export default aiRoutes;
