@@ -2321,7 +2321,7 @@ input:checked + .slider:before { transform: translateX(22px); }
     align-self: flex-start;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     align-items: center;
-    height: 40px;
+    min-height: 40px;
 }
 
 .typing-dot {
