@@ -5639,13 +5639,13 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
     // Add Typing Indicator
     const typingId = 'typing-' + Date.now();
     messagesContainer.insertAdjacentHTML('beforeend', `
-        <div id="${typingId}" class="typing-indicator" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px 16px; height: auto !important; min-height: 40px;">
+        <div id="${typingId}" class="typing-indicator" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px 16px; height: auto !important; min-height: 40px; max-width: 85%; box-sizing: border-box;">
             <div style="display: flex; gap: 4px;">
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
             </div>
-            <div id="${typingId}-text" style="display: none; font-size: 0.75rem; color: #64748b; font-style: italic; max-width: 200px; line-height: 1.4;">Mohon tunggu sebentar, sistem sedang melayani banyak antrean chat...</div>
+            <div id="${typingId}-text" style="display: none; font-size: 0.75rem; color: #64748b; font-style: italic; width: 100%; white-space: normal; word-wrap: break-word; line-height: 1.4;">Mohon tunggu sebentar, sistem sedang melayani banyak antrean chat...</div>
         </div>
     `);
     
