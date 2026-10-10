@@ -615,30 +615,36 @@
                     .license-grid-responsive { 
                       display: grid !important; 
                       grid-template-columns: 1fr 1fr;
-                      gap: 12px;
+                      gap: 8px;
                       margin-bottom: 12px;
                     }
                     .license-grid-responsive > div {
-                      padding: 12px !important;
+                      padding: 10px !important;
+                      min-width: 0;
+                    }
+                    .license-grid-responsive > div > div {
+                      white-space: normal !important;
+                      flex-wrap: wrap;
+                      word-break: break-word;
                     }
                     .license-grid-responsive > div > div:first-child {
-                      font-size: 0.65rem !important;
+                      font-size: 0.6rem !important;
                     }
                     .license-grid-responsive > div > div:last-child {
-                      font-size: 0.85rem !important;
+                      font-size: 0.8rem !important;
                     }
                     .license-id-card-responsive { 
                       grid-column: span 2 !important; 
-                      padding: 12px !important;
+                      padding: 10px !important;
                     }
                     .license-rights-grid { 
                       display: grid !important;
                       grid-template-columns: 1fr;
-                      gap: 12px;
+                      gap: 10px;
                       margin-bottom: 15px;
                     }
                     .license-rights-grid > div {
-                      padding: 14px !important;
+                      padding: 12px !important;
                     }
                     .license-rights-grid > div > div:last-child {
                       display: grid;
