@@ -3210,7 +3210,15 @@ window.fetchAdminAiRatings = async () => {
         const response = await fetch(`${API_URL}/ai/ratings`, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const data = await response.json();
+        
+        let data;
+        try {
+            data = await response.json();
+        } catch (err) {
+            console.error('Backend returned non-JSON response (possibly not restarted):', err);
+            document.getElementById('admin-ai-ratings-table').innerHTML = '<tr><td colspan="3" class="text-center text-danger">Gagal memuat rating (Server belum di-restart / API tidak ditemukan).</td></tr>';
+            return;
+        }
         
         const tbody = document.getElementById('admin-ai-ratings-table');
         tbody.innerHTML = '';
