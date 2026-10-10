@@ -5639,7 +5639,7 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
     // Add Typing Indicator
     const typingId = 'typing-' + Date.now();
     messagesContainer.insertAdjacentHTML('beforeend', `
-        <div id="${typingId}" class="typing-indicator" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px 16px;">
+        <div id="${typingId}" class="typing-indicator" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px 16px; height: auto !important; min-height: 40px;">
             <div style="display: flex; gap: 4px;">
                 <div class="typing-dot"></div>
                 <div class="typing-dot"></div>
