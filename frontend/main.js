@@ -5090,6 +5090,13 @@ function startAiraRatingTimer() {
     if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
     
     const triggerRating = () => {
+        const existingRating = localStorage.getItem('aira_user_rating');
+        if (existingRating) {
+            if (airaRatingInterval) clearInterval(airaRatingInterval);
+            if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
+            return;
+        }
+
         const blockUntil = localStorage.getItem('aira_rating_block');
         if (blockUntil && new Date().getTime() < parseInt(blockUntil)) return;
         
@@ -5122,7 +5129,12 @@ function startAiraRatingTimer() {
         stars.forEach(s => {
             s.addEventListener('click', async (e) => {
                 const rating = e.target.getAttribute('data-val');
-                div.innerHTML = `<div class="chat-bubble" style="background:#dcfce3; color:#166534; padding:10px; border-radius:10px; text-align:center; font-size:0.85rem;"><i class="fa-solid fa-check-circle" style="margin-right:5px;"></i>Terima kasih atas rating ${rating} bintang Anda!</div>`;
+                div.innerHTML = `<div class="chat-bubble" style="background:#dcfce3; color:#166534; padding:10px; border-radius:10px; text-align:center; font-size:0.85rem;"><i class="fa-solid fa-check-circle" style="margin-right:5px;"></i>Terima kasih atas rating ${rating} bintang Anda! ⭐</div>`;
+                
+                localStorage.setItem('aira_user_rating', rating);
+                if (airaRatingInterval) clearInterval(airaRatingInterval);
+                if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
+                
                 try {
                     await fetch('/api/ai/rating', {
                         method: 'POST',
@@ -5130,7 +5142,6 @@ function startAiraRatingTimer() {
                         body: JSON.stringify({ rating: parseInt(rating), sessionId: window.currentChatSessionId || 'unknown' })
                     });
                 } catch(err) { console.error(err); }
-                setTimeout(() => { div.remove(); }, 3000);
             });
             s.addEventListener('mouseover', (e) => {
                 const val = parseInt(e.target.getAttribute('data-val'));
