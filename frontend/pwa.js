@@ -32,12 +32,59 @@ window.installPWA = async (event) => {
             confirmButtonText: 'Mengerti'
         });
     } else {
-        Swal.fire({
-            icon: 'info',
-            title: 'Unduh Aplikasi',
-            text: 'Aplikasi sudah terinstal di perangkat Anda atau browser yang Anda gunakan saat ini tidak mendukung instalasi langsung.',
-            confirmButtonColor: '#22c55e'
-        });
+        // Check if it's a mobile device
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+        
+        if (isIOS) {
+            Swal.fire({
+                icon: 'info',
+                title: '📲 Cara Install di iPhone/iPad',
+                html: `
+                    <div style="text-align:left; font-size: 0.9rem; line-height: 1.8;">
+                        <b>Langkah-langkah install:</b><br>
+                        1. Ketuk tombol <b>Share</b> (kotak dengan panah ↑) di bawah layar<br>
+                        2. Gulir ke bawah, pilih <b>"Add to Home Screen"</b><br>
+                        3. Ketuk <b>"Add"</b> di pojok kanan atas<br><br>
+                        ✅ Aplikasi Travel Lombok Airport akan muncul di layar utama Anda!
+                    </div>
+                `,
+                confirmButtonColor: '#22c55e',
+                confirmButtonText: 'Mengerti'
+            });
+        } else if (isMobile) {
+            Swal.fire({
+                icon: 'info',
+                title: '📲 Cara Install Aplikasi',
+                html: `
+                    <div style="text-align:left; font-size: 0.9rem; line-height: 1.8;">
+                        <b>Langkah-langkah install di Android:</b><br>
+                        1. Ketuk menu <b>⋮</b> (tiga titik) di pojok kanan atas Chrome<br>
+                        2. Pilih <b>"Add to Home screen"</b> atau <b>"Install app"</b><br>
+                        3. Ketuk <b>"Install"</b><br><br>
+                        ✅ Aplikasi Travel Lombok Airport siap digunakan!
+                    </div>
+                `,
+                confirmButtonColor: '#22c55e',
+                confirmButtonText: 'Mengerti'
+            });
+        } else {
+            Swal.fire({
+                icon: 'info',
+                title: '💻 Cara Install Aplikasi',
+                html: `
+                    <div style="text-align:left; font-size: 0.9rem; line-height: 1.8;">
+                        <b>Install di Chrome (Desktop):</b><br>
+                        1. Klik ikon <b>⊕</b> di pojok kanan address bar<br>
+                        2. Pilih <b>"Install Travel Lombok Airport"</b><br><br>
+                        <b>Atau:</b> Menu ⋮ → <b>"Cast, save, and share"</b> → <b>"Install page as app"</b><br><br>
+                        ✅ Aplikasi akan muncul di desktop Anda!
+                    </div>
+                `,
+                confirmButtonColor: '#22c55e',
+                confirmButtonText: 'Mengerti'
+            });
+        }
     }
   }
 };
