@@ -614,40 +614,36 @@
                   @media (max-width: 600px) {
                     .license-grid-responsive { 
                       display: grid !important; 
-                      grid-template-rows: 1fr 1fr; /* 2 Rows */
-                      grid-auto-columns: 240px; /* Card width */
-                      grid-auto-flow: column; /* Flow horizontally */
-                      overflow-x: auto; 
+                      grid-template-columns: 1fr 1fr;
                       gap: 12px;
-                      padding-bottom: 15px; 
-                      -webkit-overflow-scrolling: touch; 
-                      scroll-snap-type: x mandatory;
-                      margin-right: -30px; /* Break out of parent padding */
-                      padding-right: 30px;
+                      margin-bottom: 12px;
                     }
                     .license-grid-responsive > div {
-                      scroll-snap-align: start;
-                      padding: 12px 14px !important;
+                      padding: 12px !important;
+                    }
+                    .license-grid-responsive > div > div:first-child {
+                      font-size: 0.65rem !important;
+                    }
+                    .license-grid-responsive > div > div:last-child {
+                      font-size: 0.85rem !important;
                     }
                     .license-id-card-responsive { 
-                      grid-column: auto !important; /* Reset span 2 */
-                      grid-row: span 2; /* Make it a tall card taking 2 rows */
+                      grid-column: span 2 !important; 
+                      padding: 12px !important;
                     }
                     .license-rights-grid { 
-                      display: flex !important;
-                      flex-wrap: nowrap;
-                      overflow-x: auto;
+                      display: grid !important;
+                      grid-template-columns: 1fr;
                       gap: 12px;
-                      padding-bottom: 15px;
-                      -webkit-overflow-scrolling: touch;
-                      scroll-snap-type: x mandatory;
-                      margin-right: -30px;
-                      padding-right: 30px;
+                      margin-bottom: 15px;
                     }
                     .license-rights-grid > div {
-                      min-width: 280px;
-                      flex-shrink: 0;
-                      scroll-snap-align: start;
+                      padding: 14px !important;
+                    }
+                    .license-rights-grid > div > div:last-child {
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 4px 12px;
                     }
                   }
                 </style>
