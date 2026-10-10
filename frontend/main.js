@@ -5638,24 +5638,31 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
     
     // Add Typing Indicator
     const typingId = 'typing-' + Date.now();
+    const waitBubbleId = 'wait-bubble-' + Date.now();
     messagesContainer.insertAdjacentHTML('beforeend', `
-        <div id="${typingId}" class="typing-indicator" style="display: flex; flex-direction: column; gap: 6px; align-items: flex-start; padding: 12px 16px; height: auto !important; min-height: 40px; max-width: 85%; box-sizing: border-box; width: fit-content;">
-            <div style="display: flex; gap: 4px;">
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-                <div class="typing-dot"></div>
-            </div>
-            <div id="${typingId}-text" style="display: none; font-size: 0.75rem; color: #64748b; font-style: italic; white-space: normal; word-wrap: break-word; line-height: 1.4;">Mohon tunggu sebentar, sistem sedang melayani banyak antrean chat...</div>
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
+            <div class="typing-dot"></div>
         </div>
     `);
     
-    setTimeout(() => {
-        const waitMsg = document.getElementById(`${typingId}-text`);
-        if (waitMsg) {
-            waitMsg.style.display = 'block';
+    // Show a separate "please wait" bubble after 4.5 seconds if still loading
+    const waitTimer = setTimeout(() => {
+        const typingEl = document.getElementById(typingId);
+        if (typingEl) { // Only show if still loading
+            messagesContainer.insertAdjacentHTML('beforeend', `
+                <div id="${waitBubbleId}" class="message ai-message" style="font-size: 0.78rem; color: #64748b; font-style: italic; background: #f8fafc; border: 1px solid #e2e8f0; padding: 8px 14px; max-width: 85%;">
+                    ⏳ Mohon tunggu sebentar, sistem sedang melayani banyak antrean chat...
+                </div>
+            `);
             if (messagesContainer) messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     }, 4500);
+    
+    // Store timer so we can cancel it if response comes back fast
+    window[`_waitTimer_${typingId}`] = waitTimer;
+    window[`_waitBubbleId_${typingId}`] = waitBubbleId;
     
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
 
@@ -5694,6 +5701,10 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
 
         const typingIndicator = document.getElementById(typingId);
         if (typingIndicator) typingIndicator.remove();
+        // Clean up wait bubble and cancel its pending timer
+        clearTimeout(window[`_waitTimer_${typingId}`]);
+        const waitBubble = document.getElementById(window[`_waitBubbleId_${typingId}`]);
+        if (waitBubble) waitBubble.remove();
 
         if (response.ok) {
             if (response.headers.get('content-type')?.includes('text/event-stream')) {
@@ -5794,6 +5805,9 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
         console.error("Chat Error:", error);
         const typingIndicator = document.getElementById(typingId);
         if (typingIndicator) typingIndicator.remove();
+        clearTimeout(window[`_waitTimer_${typingId}`]);
+        const waitBubbleErr = document.getElementById(window[`_waitBubbleId_${typingId}`]);
+        if (waitBubbleErr) waitBubbleErr.remove();
         
         const encodedMsg = encodeURIComponent(message).replace(/'/g, "\\'");
         
