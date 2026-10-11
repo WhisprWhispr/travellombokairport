@@ -266,7 +266,8 @@ const DEFAULT_ITEMS_FALLBACK = [
     { id: "Egwn14A72dGJ2gPY7OUb", title: "Hiace Premio", category: "car", price: 1500000, imageUrl: "https://pdftourl.net/images/1787666454044-9eb1ffae-e7da-449e-ab9f-ac00d9739dc0.jpg" },
     { id: "i8vdprFaGGLPY33wm5A5", title: "Alphard", category: "car", price: 3600000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-790c32ad-1aa6-433f-8742-32a8994e63f3.jpg" },
     { id: "u24hdfCU7XWQ7kZpgAI2", title: "Paket Private Trip Lombok 3H 2M (Paket C)", category: "package", price: 2600000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791629985/scuwan3qaepi5zick1e7.jpg" },
-    { id: "ddhjmbLp6we7QAOfWHzI", title: "PAKET PRIVATE HONEYMOON TRIP LOMBOK 3H 2M", category: "honeymoon", price: 3100000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791629875/cmmbc6x9bu9lib4sckjt.png" }
+    { id: "yPiSiYL5WawMkbZ7zUtw", title: "Paket C Private Honeymoon Lombok 3H 2M", category: "honeymoon", price: 2600000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1787939859/ilvig5w6gimlkpqirqeg.jpg" },
+    { id: "CPme14FRrFmi1hmjkTSr", title: "Paket B Private Honeymoon Lombok 3H 2M", category: "honeymoon", price: 3100000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791630120/qjawxa9umiqrs9bijhjt.jpg" }
 ];
 let globalItems = [...DEFAULT_ITEMS_FALLBACK];
 window.globalItems = globalItems;
@@ -1791,7 +1792,8 @@ const init = async () => {
 
     // Fetch all data
     globalItems = await fetchItems();
-    window.globalItems = (globalItems && globalItems.length > 0) ? globalItems : DEFAULT_ITEMS_FALLBACK;
+    const validFetched = (globalItems && Array.isArray(globalItems)) ? globalItems.filter(i => Number(i.price || 0) > 0 && !i.isParent) : [];
+    window.globalItems = validFetched.length > 0 ? validFetched : DEFAULT_ITEMS_FALLBACK;
     // Re-render chat history if chat was initialized before fetch completed
     if (document.getElementById('chat-messages') && typeof chatHistory !== 'undefined' && chatHistory.length > 0) {
         window.renderChatHistory();
@@ -5347,10 +5349,17 @@ window.handleChatKeyPress = (event) => {
 // --- AIRA INTERACTIVE PRODUCT & TOUR CARDS ---
 function detectRecommendedItems(markdown) {
     if (!markdown) return [];
-    const itemsPool = (window.globalItems && window.globalItems.length > 0) 
+    const rawPool = (window.globalItems && window.globalItems.length > 0) 
         ? window.globalItems 
         : (typeof DEFAULT_ITEMS_FALLBACK !== 'undefined' ? DEFAULT_ITEMS_FALLBACK : []);
-    if (!itemsPool || itemsPool.length === 0) return [];
+    if (!rawPool || rawPool.length === 0) return [];
+    
+    // Filter KETAT: Abaikan SEMUA item yang harganya 0, kosong, atau folder induk (parent)
+    const itemsPool = rawPool.filter(i => {
+        const p = Number(i.price || 0);
+        return p > 0 && !i.isParent;
+    });
+    if (itemsPool.length === 0) return [];
     
     const found = [];
     const seenIds = new Set();
@@ -5471,12 +5480,17 @@ function detectRecommendedItems(markdown) {
 function renderAiraMiniCards(items) {
     if (!items || items.length === 0) return '';
     
-    const cardsHtml = items.map(item => {
+    // Filter KETAT: jangan pernah render kartu yang harganya 0 atau kosong atau folder parent
+    const validItems = items.filter(i => Number(i.price || 0) > 0 && !i.isParent);
+    if (validItems.length === 0) return '';
+
+    const cardsHtml = validItems.map(item => {
         let catIcon = 'fa-car';
         let catLabel = 'Rental Mobil';
         const cat = (item.category || '').toLowerCase();
         if (cat === 'motorcycle') { catIcon = 'fa-motorcycle'; catLabel = 'Rental Motor'; }
-        else if (cat === 'package') { catIcon = 'fa-umbrella-beach'; catLabel = 'Paket Wisata'; }
+        else if (cat === 'package' || cat === 'tour') { catIcon = 'fa-umbrella-beach'; catLabel = 'Paket Wisata'; }
+        else if (cat === 'honeymoon') { catIcon = 'fa-heart'; catLabel = 'Paket Honeymoon'; }
         else if (cat === 'drone') { catIcon = 'fa-plane-up'; catLabel = 'Sewa Drone'; }
         else if (cat === 'transfer' || cat === 'airport') { catIcon = 'fa-plane-departure'; catLabel = 'Antar Jemput'; }
         
@@ -5892,17 +5906,18 @@ window.handleAiraBookingLinkClick = (text, url) => {
     let matchedItem = null;
 
     if (window.globalItems && Array.isArray(window.globalItems)) {
-        // Cek nama item persis atau terkandung
-        matchedItem = window.globalItems.find(item => {
+        // Hanya cari item yang berharga valid (> 0) dan bukan folder parent
+        const validPool = window.globalItems.filter(i => Number(i.price || 0) > 0 && !i.isParent);
+        matchedItem = validPool.find(item => {
             const title = (item.title || '').toLowerCase();
             return combined.includes(title) || title.includes(combined.replace(/(form|pemesanan|sewa|rental|booking|order)/g, '').trim());
         });
 
         if (!matchedItem) {
-            const keywords = ['beat', 'scoopy', 'nmax', 'pcx', 'vario', 'aerox', 'fazzio', 'avanza', 'innova', 'hiace', 'brio', 'xpander', 'alphard', 'fortuner'];
+            const keywords = ['beat', 'scoopy', 'nmax', 'pcx', 'vario', 'aerox', 'fazzio', 'avanza', 'innova', 'hiace', 'brio', 'xpander', 'alphard', 'fortuner', 'honeymoon'];
             for (const kw of keywords) {
                 if (combined.includes(kw)) {
-                    matchedItem = window.globalItems.find(item => (item.title || '').toLowerCase().includes(kw));
+                    matchedItem = validPool.find(item => (item.title || '').toLowerCase().includes(kw));
                     if (matchedItem) break;
                 }
             }
