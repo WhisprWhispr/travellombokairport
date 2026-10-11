@@ -1,4 +1,4 @@
-const CACHE_NAME = 'travel-lombok-v12-offline';
+const CACHE_NAME = 'travel-lombok-v13-offline';
 const PRECACHE_URLS = [
   '/',
   '/index.html',

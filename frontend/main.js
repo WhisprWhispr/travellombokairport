@@ -5572,10 +5572,14 @@ function detectRecommendedItems(markdown) {
         : (typeof DEFAULT_ITEMS_FALLBACK !== 'undefined' ? DEFAULT_ITEMS_FALLBACK : []);
     if (!rawPool || rawPool.length === 0) return [];
     
-    // Filter KETAT: Abaikan SEMUA item yang harganya 0, kosong, atau folder induk (parent)
+    // Filter KETAT: Abaikan SEMUA item yang harganya 0, kosong, folder induk (parent), atau pricelist transfer bandara
     const itemsPool = rawPool.filter(i => {
         const p = Number(i.price || 0);
-        return p > 0 && !i.isParent;
+        const titleLower = (i.title || '').toLowerCase();
+        const catLower = (i.category || '').toLowerCase();
+        if (p <= 0 || i.isParent) return false;
+        if (titleLower.includes('pricelist') || catLower === 'transfer' || catLower === 'airport' || (i.transferMatrix && i.transferMatrix.length > 0)) return false;
+        return true;
     });
     if (itemsPool.length === 0) return [];
     
@@ -5651,9 +5655,6 @@ function detectRecommendedItems(markdown) {
             { keywords: ['raize', 'rize'], matchTitle: 'rize' },
             { keywords: ['wrv', 'wr-v'], matchTitle: 'wrv' },
             
-            // Transfer Bandara
-            { keywords: ['airport transfer', 'antar jemput', 'transfer bandara', 'jemput bandara', 'drop bandara'], matchCat: 'transfer' },
-            
             // Tour & Honeymoon
             { keywords: ['honeymoon'], matchCat: 'honeymoon' },
             { keywords: ['gili', 'mandalika', 'sembalun', 'sasak', 'snorkeling', 'trip', 'paket wisata', 'paket tour'], matchCat: 'package' }
@@ -5698,8 +5699,15 @@ function detectRecommendedItems(markdown) {
 function renderAiraMiniCards(items) {
     if (!items || items.length === 0) return '';
     
-    // Filter KETAT: jangan pernah render kartu yang harganya 0 atau kosong atau folder parent
-    const validItems = items.filter(i => Number(i.price || 0) > 0 && !i.isParent);
+    // Filter KETAT: jangan pernah render kartu yang harganya 0, kosong, folder parent, atau pricelist airport transfer
+    const validItems = items.filter(i => {
+        const p = Number(i.price || 0);
+        const titleLower = (i.title || '').toLowerCase();
+        const catLower = (i.category || '').toLowerCase();
+        if (p <= 0 || i.isParent) return false;
+        if (titleLower.includes('pricelist') || catLower === 'transfer' || catLower === 'airport' || (i.transferMatrix && i.transferMatrix.length > 0)) return false;
+        return true;
+    });
     if (validItems.length === 0) return '';
 
     const cardsHtml = validItems.map(item => {

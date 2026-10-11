@@ -101,8 +101,10 @@ router.post('/chat', async (req, res) => {
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const numPrice = Number(data.price || 0);
-                // DILARANG mengirim item dengan harga 0, kosong, atau folder induk (parent) ke AI
-                if (numPrice <= 0 || data.isParent === true) return;
+                const titleLower = (data.title || '').toLowerCase();
+                const catLower = (data.category || '').toLowerCase();
+                // DILARANG mengirim item dengan harga 0, kosong, folder induk (parent), dokumen pricelist, atau jasa transfer matrix ke AI
+                if (numPrice <= 0 || data.isParent === true || titleLower.includes('pricelist') || catLower === 'transfer' || (data.transferMatrix && data.transferMatrix.length > 0)) return;
 
                 let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${numPrice} | Kategori: ${data.category}`;
                 if (data.description) itemInfo += ` | Deskripsi: ${data.description}`;
@@ -205,6 +207,7 @@ Aturan Penting:
 3. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
    Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
    DILARANG KERAS merekomendasikan item yang berharga Rp 0 atau yang belum memiliki harga resmi! Hanya rekomendasikan unit/paket spesifik yang memiliki tarif harga riil (> Rp 0).
+   DILARANG KERAS merekomendasikan atau menaruh link untuk "Pricelist Airport Transfer" sebagai kartu produk! Layanan antar-jemput bandara dijelaskan secara teks informatif jika ditanya.
    DILARANG KERAS mengarang link/tautan URL fiktif seperti [Form Pemesanan](...) atau link form karangan karena halaman tersebut TIDAK ADA dan akan menyebabkan error 404! Sistem website SUDAH OTOMATIS memunculkan kartu layanan interaktif dengan tombol [Detail Lengkap], [via WA], dan [via Web] tepat di bawah jawaban Anda.
 4. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
 5. Gunakan emoji secukupnya agar percakapan lebih ramah.
