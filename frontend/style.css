@@ -2219,8 +2219,23 @@ input:checked + .slider:before { transform: translateX(22px); }
     flex-direction: column;
     gap: 16px;
     background-color: #f8fafc;
-    background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-    background-size: 20px 20px;
+    background-image: 
+        radial-gradient(circle, rgba(2, 132, 199, 0.42) 1.5px, transparent 1.5px),
+        radial-gradient(circle, rgba(56, 189, 248, 0.35) 1.2px, transparent 1.2px),
+        radial-gradient(circle, rgba(148, 163, 184, 0.3) 1px, transparent 1px);
+    background-size: 24px 24px, 32px 32px, 16px 16px;
+    background-position: 0 0, 0 0, 0 0;
+    animation: airaLiveDots 24s linear infinite;
+    will-change: background-position;
+}
+
+@keyframes airaLiveDots {
+    0% {
+        background-position: 0px 0px, 0px 0px, 0px 0px;
+    }
+    100% {
+        background-position: 96px -96px, -96px 96px, 96px 96px;
+    }
 }
 
 .ai-quick-reply-btn {
