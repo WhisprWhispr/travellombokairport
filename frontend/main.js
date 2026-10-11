@@ -244,7 +244,33 @@ if (!window.location.pathname.includes("admin") && !window.location.pathname.inc
     // Run after a short delay so it doesn't block main render
     setTimeout(trackVisitor, 2000);
 }
-let globalItems = [];
+// Pre-populated fallback catalog so AIRA and checkout have item data available instantly from millisecond 0
+const DEFAULT_ITEMS_FALLBACK = [
+    { id: "LvfuiPmrQtrnNHfNwm41", title: "Beat Streat", category: "motorcycle", price: 100000, imageUrl: "https://pdftourl.net/images/1787666229953-31797ace-36c3-4ac6-b353-02a4256b218c.jpg" },
+    { id: "971yg94u5mOOkP69GuIc", title: "Vario 125cc", category: "motorcycle", price: 125000, imageUrl: "https://pdftourl.net/images/1787666283472-9c2b6ec1-f1df-49f1-9ecf-82b70101908b.png" },
+    { id: "r1KZVYC4Mzflorog0wCw", title: "Nmax", category: "motorcycle", price: 150000, imageUrl: "https://pdftourl.net/images/1787666283472-9c2b6ec1-f1df-49f1-9ecf-82b70101908b.png" },
+    { id: "CFEX6jKm1VEQEnNKYb4z", title: "Pcx", category: "motorcycle", price: 150000, imageUrl: "https://pdftourl.net/images/1787666336366-952b61ef-3795-4d17-814b-6485282e5954.jpg" },
+    { id: "UklBI5U9PjfqV3W1AJTA", title: "Adv", category: "motorcycle", price: 200000, imageUrl: "https://pdftourl.net/images/1787666384358-67e0ac79-97b0-42ea-9849-f1e230d8468c.jpg" },
+    { id: "alF6YcOxeGy7X3eM2m9l", title: "Pricelist Airport Transfer | Travel Lombok Airport", category: "transfer", price: 180000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791628291/du5jt1ufpwakypfhbplg.png" },
+    { id: "9AePXs8BuY9TMuxhonNF", title: "Agya", category: "car", price: 350000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790903895/ageeuoal2iijfchxg1n3.jpg" },
+    { id: "0gbR6thtAobaUckQROR7", title: "Honda Brio", category: "car", price: 350000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790903796/oyrisbvzwrgeeihzmjfq.webp" },
+    { id: "1zLiCgu9QdlmrLBM9XRo", title: "Avanza fl", category: "car", price: 400000, imageUrl: "https://pdftourl.net/images/1787667131060-f9567cf8-e0c6-4538-9f35-a96b4b5a3969.jpg" },
+    { id: "l4VmQB0wOvORB7q59hhV", title: "Xpander", category: "car", price: 450000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898576/t3lw5gcgxyglbmga6763.jpg" },
+    { id: "ok86nCsbfCfg2oKHxylW", title: "New Avanza", category: "car", price: 450000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898806/k76ir1sgjezdp6lzh204.jpg" },
+    { id: "L3f5b2E7afIh2OXB0hJ1", title: "Rize", category: "car", price: 500000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898703/wgylkctz4pran9vi8xgd.jpg" },
+    { id: "gkRMusGXBBrdiFk8x5JN", title: "WRV", category: "car", price: 500000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-7a447edb-0644-48f0-8f40-e73dd097a8c0.jpg" },
+    { id: "kNMm9aaYG5zrznB3mLvE", title: "Innova Reborn", category: "car", price: 600000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-4bda7fe9-8dc4-40b9-8454-2ea59a5acb3e.jpg" },
+    { id: "WRRBiBx73GZsxS7w8BDS", title: "Innova Zenix", category: "car", price: 850000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-b241e068-085c-4fa9-8db4-632a54dba214.jpg" },
+    { id: "qK4z4XVgCpyUckkZwtDQ", title: "Fortuner", category: "car", price: 1300000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-bcb238f0-9388-4982-937e-a69c11a4cf43.jpg" },
+    { id: "wHBwON7FyLVavUciRARk", title: "Hiace Commuter", category: "car", price: 1350000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898388/sms6mx4ccouyzbsdugb6.jpg" },
+    { id: "Egwn14A72dGJ2gPY7OUb", title: "Hiace Premio", category: "car", price: 1500000, imageUrl: "https://pdftourl.net/images/1787666454044-9eb1ffae-e7da-449e-ab9f-ac00d9739dc0.jpg" },
+    { id: "i8vdprFaGGLPY33wm5A5", title: "Alphard", category: "car", price: 3600000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-790c32ad-1aa6-433f-8742-32a8994e63f3.jpg" },
+    { id: "u24hdfCU7XWQ7kZpgAI2", title: "Paket Private Trip Lombok 3H 2M (Paket C)", category: "package", price: 2600000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791629985/scuwan3qaepi5zick1e7.jpg" },
+    { id: "ddhjmbLp6we7QAOfWHzI", title: "PAKET PRIVATE HONEYMOON TRIP LOMBOK 3H 2M", category: "honeymoon", price: 3100000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791629875/cmmbc6x9bu9lib4sckjt.png" }
+];
+let globalItems = [...DEFAULT_ITEMS_FALLBACK];
+window.globalItems = globalItems;
+
 
 // ====== WISHLIST SYSTEM ======
 window.getWishlist = () => {
@@ -1765,7 +1791,11 @@ const init = async () => {
 
     // Fetch all data
     globalItems = await fetchItems();
-    window.globalItems = globalItems;
+    window.globalItems = (globalItems && globalItems.length > 0) ? globalItems : DEFAULT_ITEMS_FALLBACK;
+    // Re-render chat history if chat was initialized before fetch completed
+    if (document.getElementById('chat-messages') && typeof chatHistory !== 'undefined' && chatHistory.length > 0) {
+        window.renderChatHistory();
+    }
 
     try {
         const bReq = await fetch(`${API_URL}/bookings?public=true`);
@@ -5316,10 +5346,25 @@ window.handleChatKeyPress = (event) => {
 
 // --- AIRA INTERACTIVE PRODUCT & TOUR CARDS ---
 function detectRecommendedItems(markdown) {
-    if (!markdown || !window.globalItems || window.globalItems.length === 0) return [];
+    if (!markdown) return [];
+    const itemsPool = (window.globalItems && window.globalItems.length > 0) 
+        ? window.globalItems 
+        : (typeof DEFAULT_ITEMS_FALLBACK !== 'undefined' ? DEFAULT_ITEMS_FALLBACK : []);
+    if (!itemsPool || itemsPool.length === 0) return [];
     
     const found = [];
     const seenIds = new Set();
+    const mdLower = markdown.toLowerCase();
+    
+    // Normalisasi teks untuk toleransi typo / ejaan umum:
+    // Contoh: "Beat Street" <-> "Beat Streat"
+    const normalizedMd = mdLower
+        .replace(/beat\s+street/g, 'beat streat beat street')
+        .replace(/beat\s+streat/g, 'beat streat beat street')
+        .replace(/inova/g, 'innova')
+        .replace(/zenik/g, 'zenix')
+        .replace(/all\s+new\s+/g, '')
+        .replace(/grand\s+new\s+/g, '');
     
     // 1. Explicit item parameter: /?item=ID or ?item=ID
     const linkRegex = /(?:\?|&)item=([a-zA-Z0-9_\-]+)/gi;
@@ -5327,7 +5372,7 @@ function detectRecommendedItems(markdown) {
     while ((match = linkRegex.exec(markdown)) !== null) {
         const id = match[1];
         if (!seenIds.has(id)) {
-            const item = window.globalItems.find(i => i.id === id);
+            const item = itemsPool.find(i => i.id === id);
             if (item) {
                 seenIds.add(id);
                 found.push(item);
@@ -5335,23 +5380,88 @@ function detectRecommendedItems(markdown) {
         }
     }
     
-    // 2. Exact or key title match in text
-    if (found.length < 3) {
-        // Sort items by title length descending to match specific models first (e.g. "Innova Zenix" before "Innova")
-        const sortedItems = [...window.globalItems].sort((a, b) => (b.title?.length || 0) - (a.title?.length || 0));
+    // 2. Exact or clean title match (case-insensitive & typo-tolerant)
+    const sortedItems = [...itemsPool].sort((a, b) => (b.title?.length || 0) - (a.title?.length || 0));
+    for (const item of sortedItems) {
+        if (!item.title || seenIds.has(item.id)) continue;
+        const titleLower = item.title.toLowerCase();
         
-        for (const item of sortedItems) {
-            if (!item.title || item.title.trim().length < 4 || seenIds.has(item.id)) continue;
+        if (normalizedMd.includes(titleLower) || 
+            (titleLower.includes('streat') && normalizedMd.includes(titleLower.replace('streat', 'street'))) ||
+            (titleLower.includes('street') && normalizedMd.includes(titleLower.replace('street', 'streat')))) {
+            seenIds.add(item.id);
+            found.push(item);
+            if (found.length >= 3) break;
+        }
+    }
+    
+    // 3. Keyword / Alias Matcher jika belum ketemu atau masih kurang
+    if (found.length < 3) {
+        const keywordMap = [
+            // Motor
+            { keywords: ['beat street', 'beat streat', 'beat'], matchTitle: 'beat streat' },
+            { keywords: ['vario 125', 'vario 160', 'vario'], matchTitle: 'vario' },
+            { keywords: ['nmax', 'n-max'], matchTitle: 'nmax' },
+            { keywords: ['pcx'], matchTitle: 'pcx' },
+            { keywords: ['adv'], matchTitle: 'adv' },
+            { keywords: ['scoopy'], matchTitle: 'scoopy' },
             
-            const cleanTitle = item.title.trim();
-            const escaped = cleanTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            // Check word boundary or clean phrase
-            const regex = new RegExp(`(^|\\b|\\s)${escaped}(\\b|\\s|$)`, 'i');
-            if (regex.test(markdown)) {
-                seenIds.add(item.id);
-                found.push(item);
-                if (found.length >= 3) break;
+            // Mobil
+            { keywords: ['innova zenix', 'zenix'], matchTitle: 'innova zenix' },
+            { keywords: ['innova reborn', 'reborn'], matchTitle: 'innova reborn' },
+            { keywords: ['innova'], matchTitle: 'innova' },
+            { keywords: ['avanza fl', 'avanza facelift'], matchTitle: 'avanza fl' },
+            { keywords: ['new avanza', 'all new avanza'], matchTitle: 'new avanza' },
+            { keywords: ['avanza'], matchTitle: 'avanza' },
+            { keywords: ['brio', 'honda brio'], matchTitle: 'brio' },
+            { keywords: ['agya'], matchTitle: 'agya' },
+            { keywords: ['xpander', 'mitsubishi xpander'], matchTitle: 'xpander' },
+            { keywords: ['hiace premio', 'premio'], matchTitle: 'hiace premio' },
+            { keywords: ['hiace commuter', 'commuter'], matchTitle: 'hiace commuter' },
+            { keywords: ['hiace'], matchTitle: 'hiace' },
+            { keywords: ['fortuner'], matchTitle: 'fortuner' },
+            { keywords: ['alphard'], matchTitle: 'alphard' },
+            { keywords: ['raize', 'rize'], matchTitle: 'rize' },
+            { keywords: ['wrv', 'wr-v'], matchTitle: 'wrv' },
+            
+            // Transfer Bandara
+            { keywords: ['airport transfer', 'antar jemput', 'transfer bandara', 'jemput bandara', 'drop bandara'], matchCat: 'transfer' },
+            
+            // Tour & Honeymoon
+            { keywords: ['honeymoon'], matchCat: 'honeymoon' },
+            { keywords: ['gili', 'mandalika', 'sembalun', 'sasak', 'snorkeling', 'trip', 'paket wisata', 'paket tour'], matchCat: 'package' }
+        ];
+        
+        for (const entry of keywordMap) {
+            if (found.length >= 3) break;
+            const hasKw = entry.keywords.some(kw => normalizedMd.includes(kw));
+            if (!hasKw) continue;
+            
+            let matched = null;
+            if (entry.matchTitle) {
+                matched = itemsPool.find(i => !seenIds.has(i.id) && (i.title || '').toLowerCase().includes(entry.matchTitle));
+            } else if (entry.matchCat) {
+                matched = itemsPool.find(i => !seenIds.has(i.id) && ((i.category || '').toLowerCase() === entry.matchCat || (i.category || '').toLowerCase().includes(entry.matchCat)));
             }
+            
+            if (matched && !seenIds.has(matched.id)) {
+                seenIds.add(matched.id);
+                found.push(matched);
+            }
+        }
+    }
+    
+    // 4. Kategori Umum Fallback: Jika membicarakan sewa motor/mobil/paket tapi belum ada spesifik
+    if (found.length === 0) {
+        if (/\b(motor|motorcycle|sewa motor|rental motor)\b/i.test(normalizedMd)) {
+            const motors = itemsPool.filter(i => (i.category || '').toLowerCase() === 'motorcycle');
+            if (motors.length > 0) found.push(motors[0]);
+        } else if (/\b(mobil|car|rental mobil|sewa mobil|lepas kunci)\b/i.test(normalizedMd)) {
+            const cars = itemsPool.filter(i => (i.category || '').toLowerCase() === 'car');
+            if (cars.length > 0) found.push(cars[0]);
+        } else if (/\b(tour|paket|wisata|trip|liburan|pantai|gili)\b/i.test(normalizedMd)) {
+            const pkgs = itemsPool.filter(i => ['package', 'tour', 'honeymoon'].includes((i.category || '').toLowerCase()));
+            if (pkgs.length > 0) found.push(pkgs[0]);
         }
     }
     
