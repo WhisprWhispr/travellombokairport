@@ -90,6 +90,92 @@
     transform: translateX(2px) scale(1.08);
 }
 
+/* --- WHATSAPP-STYLE SCROLL TO BOTTOM BUTTON --- */
+.chat-scroll-bottom-btn {
+    position: absolute;
+    right: 18px;
+    bottom: 84px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 1px solid rgba(226, 232, 240, 0.95);
+    color: #0284c7;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.9rem;
+    cursor: pointer;
+    z-index: 95;
+    box-shadow: 0 4px 14px rgba(15, 23, 42, 0.16), 0 2px 6px rgba(0, 0, 0, 0.08);
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(12px) scale(0.8);
+    transition: opacity 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                background 0.2s ease,
+                box-shadow 0.2s ease,
+                color 0.2s ease;
+}
+
+.chat-scroll-bottom-btn.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0) scale(1);
+}
+
+.chat-scroll-bottom-btn:hover {
+    background: #f8fafc;
+    color: #0369a1;
+    transform: translateY(-2px) scale(1.08);
+    box-shadow: 0 6px 20px rgba(2, 132, 199, 0.25), 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.chat-scroll-bottom-btn:active {
+    transform: translateY(1px) scale(0.94);
+}
+
+.chat-scroll-bottom-btn i {
+    transition: transform 0.2s ease;
+}
+
+.chat-scroll-bottom-btn:hover i {
+    transform: translateY(2px);
+}
+
+.chat-unread-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: #ffffff;
+    border-radius: 12px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    font-size: 0.68rem;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    border: 2px solid #ffffff;
+    animation: bounceBadge 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes bounceBadge {
+    0% { transform: scale(0); }
+    70% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+@media (max-width: 480px) {
+    .chat-scroll-bottom-btn {
+        bottom: 80px;
+        right: 16px;
+    }
+}
+
 .chat-messages {
     flex: 1;
     padding: 20px;

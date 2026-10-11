@@ -5181,11 +5181,82 @@ window.blockAiraRating = (btn) => {
     setTimeout(() => { bubble.remove(); }, 3000);
 };
 
+// --- WHATSAPP-STYLE SCROLL TO BOTTOM LOGIC ---
+let unreadAiraCount = 0;
+
+window.scrollChatToBottom = (smooth = true) => {
+    const msgs = document.getElementById('chat-messages');
+    if (msgs) {
+        msgs.scrollTo({
+            top: msgs.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
+    }
+    window.resetChatScrollBadge();
+};
+
+window.resetChatScrollBadge = () => {
+    unreadAiraCount = 0;
+    const badge = document.getElementById('chat-unread-badge');
+    if (badge) {
+        badge.style.display = 'none';
+        badge.textContent = '0';
+    }
+    const btn = document.getElementById('chat-scroll-bottom-btn');
+    if (btn) {
+        btn.classList.remove('visible');
+    }
+};
+
+window.updateChatScrollBtnVisibility = () => {
+    const msgs = document.getElementById('chat-messages');
+    const btn = document.getElementById('chat-scroll-bottom-btn');
+    if (!msgs || !btn) return;
+
+    // Distance from the bottom of chat
+    const distFromBottom = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight;
+    if (distFromBottom > 75) {
+        btn.classList.add('visible');
+    } else {
+        btn.classList.remove('visible');
+        window.resetChatScrollBadge();
+    }
+};
+
+window.handleNewIncomingAiraMessage = () => {
+    const msgs = document.getElementById('chat-messages');
+    const btn = document.getElementById('chat-scroll-bottom-btn');
+    const badge = document.getElementById('chat-unread-badge');
+    if (!msgs) return;
+
+    const distFromBottom = msgs.scrollHeight - msgs.scrollTop - msgs.clientHeight;
+    if (distFromBottom > 90) {
+        unreadAiraCount++;
+        if (badge) {
+            badge.textContent = unreadAiraCount > 9 ? '9+' : unreadAiraCount;
+            badge.style.display = 'flex';
+        }
+        if (btn) btn.classList.add('visible');
+    } else {
+        msgs.scrollTop = msgs.scrollHeight;
+        if (btn) btn.classList.remove('visible');
+    }
+};
+
+window.initChatScrollListener = () => {
+    const msgs = document.getElementById('chat-messages');
+    if (msgs && !msgs.dataset.scrollBound) {
+        msgs.dataset.scrollBound = 'true';
+        msgs.addEventListener('scroll', window.updateChatScrollBtnVisibility, { passive: true });
+    }
+};
+
 window.toggleChat = async () => {
     const chatWindow = document.getElementById('ai-chat-window');
     chatWindow.classList.toggle('hidden');
     if (!chatWindow.classList.contains('hidden')) {
         startAiraRatingTimer();
+        window.initChatScrollListener();
         const inputArea = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-chat-btn');
         const micBtn = document.getElementById('mic-chat-btn');
@@ -5227,7 +5298,10 @@ window.toggleChat = async () => {
         // Check and show guest limit card if needed
         window.checkGuestLimit();
         // Scroll to bottom
-        if (msgs) msgs.scrollTop = msgs.scrollHeight;
+        if (msgs) {
+            msgs.scrollTop = msgs.scrollHeight;
+            window.resetChatScrollBadge();
+        }
     } else {
         if (airaRatingInterval) clearInterval(airaRatingInterval);
         if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
@@ -6707,6 +6781,9 @@ window.submitBugReport = async (category, formId) => {
 };
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Inisialisasi listener scroll chat WhatsApp-style
+    if (window.initChatScrollListener) window.initChatScrollListener();
+
     // Munculkan tombol Laporkan Masalah di chat setiap 5 menit
     setInterval(() => {
         const msgs = document.getElementById('chat-messages');
