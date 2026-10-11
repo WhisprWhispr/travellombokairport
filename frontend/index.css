@@ -93,8 +93,8 @@
 /* --- WHATSAPP-STYLE SCROLL TO BOTTOM BUTTON --- */
 .chat-scroll-bottom-btn {
     position: absolute;
-    right: 18px;
-    bottom: 84px;
+    right: 20px;
+    bottom: 96px;
     width: 38px;
     height: 38px;
     border-radius: 50%;
@@ -169,10 +169,10 @@
     100% { transform: scale(1); }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
     .chat-scroll-bottom-btn {
-        bottom: 80px;
-        right: 16px;
+        bottom: 135px;
+        right: 18px;
     }
 }
 
