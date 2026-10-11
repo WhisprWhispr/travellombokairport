@@ -1050,6 +1050,22 @@ window.loadItemReviews = async (itemId) => {
                 if (it) {
                     it.rating = avgFormatted;
                     it.reviewCount = uniqueReviews.length;
+
+                    if (it.parentId) {
+                        const parent = window.globalItems.find(p => p.id === it.parentId);
+                        if (parent) {
+                            const siblings = window.globalItems.filter(s => s.parentId === parent.id);
+                            const siblingIds = siblings.map(s => s.id);
+                            if (window.allReviewsData) {
+                                const parentReviews = window.allReviewsData.filter(r => (r.itemId === parent.id || siblingIds.includes(r.itemId)) && r.status === 'approved');
+                                if (parentReviews.length > 0) {
+                                    const pAvg = parentReviews.reduce((sum, r) => sum + r.rating, 0) / parentReviews.length;
+                                    parent.rating = pAvg.toFixed(1).replace('.0', '');
+                                    parent.reviewCount = parentReviews.length;
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -1322,6 +1338,27 @@ window.openSubPackageModal = (parentId) => {
 
     const children = globalItems.filter(i => i.parentId === parentId);
 
+    // Sync ratings for each child item from allReviewsData
+    if (window.allReviewsData) {
+        children.forEach(child => {
+            const childReviews = window.allReviewsData.filter(r => r.itemId === child.id && r.status === 'approved');
+            const seenKeys = new Set();
+            const uniqueReviews = [];
+            childReviews.forEach(r => {
+                const key = r.userId ? ('u_' + r.userId) : (r.name && r.name.trim().toLowerCase() !== 'pelanggan terverifikasi' ? ('n_' + r.name.trim().toLowerCase()) : ('id_' + r.id));
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key);
+                    uniqueReviews.push(r);
+                }
+            });
+            if (uniqueReviews.length > 0) {
+                const avg = uniqueReviews.reduce((sum, r) => sum + r.rating, 0) / uniqueReviews.length;
+                child.rating = avg.toFixed(1).replace('.0', '');
+                child.reviewCount = uniqueReviews.length;
+            }
+        });
+    }
+
     const titleEl = document.getElementById('sub-modal-title');
     const descEl = document.getElementById('sub-modal-desc');
     const bodyEl = document.getElementById('sub-modal-body');
@@ -1374,6 +1411,7 @@ window.openSubPackageModal = (parentId) => {
             const hoverShadow = isHoneymoon ? "this.style.boxShadow='0 20px 25px -5px rgba(236,72,153,0.25), 0 10px 10px -5px rgba(236,72,153,0.1)'" : "this.style.boxShadow='0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04)'";
             const normalShadow = isHoneymoon ? "this.style.boxShadow='0 10px 25px -5px rgba(236,72,153,0.15), 0 8px 10px -6px rgba(236,72,153,0.05)'" : "this.style.boxShadow='0 10px 25px -5px rgba(0,0,0,0.08), 0 8px 10px -6px rgba(0,0,0,0.04)'";
             const honeymoonBadge = isHoneymoon ? `<span style="position:absolute; top:10px; left:10px; background:linear-gradient(135deg, #ec4899, #be185d); color:white; font-size:0.65rem; font-weight:800; padding:4px 10px; border-radius:20px; text-transform:uppercase; letter-spacing:1px; z-index:2; box-shadow:0 4px 10px rgba(236,72,153,0.3);"><i class="fa-solid fa-heart" style="margin-right:4px;"></i>Honeymoon Special</span>` : '';
+            const childRatingBadge = child.rating ? `<span style="position:absolute; ${isHoneymoon ? 'top:45px;' : 'top:10px;'} left:10px; background:rgba(255,255,255,0.95); color:#f59e0b; font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:20px; z-index:2; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa-solid fa-star" style="margin-right:4px;"></i>${child.rating}</span>` : '';
             
             return `
             <div style="${bgStyle} ${borderStyle} border-radius:16px; overflow:hidden; ${shadowStyle} cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
@@ -1383,6 +1421,7 @@ window.openSubPackageModal = (parentId) => {
                 <!-- Image -->
                 <div style="position:relative; height:180px; overflow:hidden;">
                     ${honeymoonBadge}
+                    ${childRatingBadge}
                     <button onclick="event.stopPropagation(); window.shareItem('${child.id}', '${child.title.replace(/'/g, "\\'")}', '${formatPrice(child.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
                     <button id="btn-wishlist-${child.id}" onclick="event.stopPropagation(); window.toggleWishlist('${child.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(child.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(child.id) ? 'style="color:#ef4444;"' : ''}></i></button>
                     <img src="${child.imageUrl || parentItem.imageUrl}" alt="${child.title}"
@@ -1396,12 +1435,16 @@ window.openSubPackageModal = (parentId) => {
                 <div style="padding:16px 20px; display:flex; flex-direction:column; flex:1;">
                     <h4 style="margin:0 0 8px; font-size:0.95rem; font-weight:800; color:#0f172a; line-height:1.4;">${child.title}</h4>
                     <div style="display:flex; gap:3px; margin-bottom:16px; align-items:center; flex-wrap:wrap;">
-                        <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
-                        <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
-                        <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
-                        <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
-                        <i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>
-                        <span style="font-size:0.7rem; color:#64748b; margin-left:6px; font-weight:500; white-space:nowrap;">(Top Rated)</span>
+                        ${(() => {
+                            const rVal = parseFloat(child.rating) || 5.0;
+                            let starsHtml = '';
+                            for (let s = 0; s < 5; s++) {
+                                if (s < Math.round(rVal)) starsHtml += '<i class="fa-solid fa-star" style="color:#fbbf24; font-size:0.75rem;"></i>';
+                                else starsHtml += '<i class="fa-regular fa-star" style="color:#cbd5e1; font-size:0.75rem;"></i>';
+                            }
+                            const reviewText = child.reviewCount ? `(${child.reviewCount} ulasan)` : '(Top Rated)';
+                            return `${starsHtml} <span style="font-size:0.78rem; font-weight:700; color:#d97706; margin-left:4px;">${child.rating || '5.0'}</span> <span style="font-size:0.7rem; color:#64748b; margin-left:4px; font-weight:500; white-space:nowrap;">${reviewText}</span>`;
+                        })()}
                     </div>
                     <div style="margin-top:auto; padding-top:12px; border-top:1px dashed ${isHoneymoon ? '#fbcfe8' : '#e2e8f0'}; text-align:center;">
                         <span style="color:${isHoneymoon ? '#db2777' : '#0ea5e9'}; font-size:0.85rem; font-weight:700; display:flex; align-items:center; justify-content:center; gap:8px; transition: color 0.2s ease;">
@@ -1980,7 +2023,13 @@ const init = async () => {
         }
         if (window.allReviewsData) {
             globalItems.forEach(item => {
-                const itemReviews = window.allReviewsData.filter(r => r.itemId === item.id && r.status === 'approved');
+                const childrenIds = globalItems.filter(c => c.parentId === item.id).map(c => c.id);
+                const itemReviews = window.allReviewsData.filter(r => {
+                    if (r.status !== 'approved') return false;
+                    if (r.itemId === item.id) return true;
+                    if (childrenIds.length > 0 && childrenIds.includes(r.itemId)) return true;
+                    return false;
+                });
                 const seenKeys = new Set();
                 const uniqueReviews = [];
                 itemReviews.forEach(r => {
