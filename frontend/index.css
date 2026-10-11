@@ -87,7 +87,7 @@
 
 .close-chat-btn:hover {
     background: rgba(255, 255, 255, 0.38);
-    transform: translateY(2px) scale(1.08);
+    transform: translateX(2px) scale(1.08);
 }
 
 .chat-messages {

@@ -5,7 +5,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty 
                         Harga Motor & Mobil naik <strong>Rp ${parseInt(t.eventPriceIncrease).toLocaleString(`id-ID`)}</strong>/unit &nbsp;|&nbsp; 
                         <i class="fa-solid fa-calendar-days"></i> Min. sewa <strong>4 Hari</strong>
                         <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman">
-                            <i class="fa-solid fa-chevron-down"></i>
+                            <i class="fa-solid fa-chevron-right"></i>
                         </button>
                     </div>
                 `,document.body.firstChild?document.body.insertBefore(e,document.body.firstChild):document.body.appendChild(e);let n=document.createElement(`style`);n.id=`event-chat-fix`,n.innerHTML=`
@@ -13,7 +13,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty 
                     @media (max-width: 480px) {
                         #ai-chat-btn { bottom: 60px !important; }
                     }
-                `,document.head.appendChild(n),window.dismissEventBanner=()=>{let e=document.getElementById(`event-mode-banner`);e&&(e.style.transition=`all 0.35s cubic-bezier(0.4, 0, 0.2, 1)`,e.style.transform=`translateY(100%)`,e.style.opacity=`0`,setTimeout(()=>{e.remove(),document.getElementById(`event-chat-fix`)?.remove()},350))},sessionStorage.getItem(`eventPopupShown`)||(sessionStorage.setItem(`eventPopupShown`,`true`),setTimeout(()=>{let e=t.eventName||`High Season`;Swal.fire({title:`🔥 Info Event: ${e}`,html:`
+                `,document.head.appendChild(n),window.dismissEventBanner=()=>{let e=document.getElementById(`event-mode-banner`);e&&(e.style.transition=`all 0.35s cubic-bezier(0.4, 0, 0.2, 1)`,e.style.transform=`translateX(100%)`,e.style.opacity=`0`,setTimeout(()=>{e.remove(),document.getElementById(`event-chat-fix`)?.remove()},350))},sessionStorage.getItem(`eventPopupShown`)||(sessionStorage.setItem(`eventPopupShown`,`true`),setTimeout(()=>{let e=t.eventName||`High Season`;Swal.fire({title:`🔥 Info Event: ${e}`,html:`
                                 <div style="text-align: left; color: #334155; margin-top: 10px;">
                                     <div style="display: flex; align-items: center; gap: 15px; background: #fffbeb; padding: 15px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #fde68a;">
                                         <div style="background: #f59e0b; color: white; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.3rem;">

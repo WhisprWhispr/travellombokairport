@@ -131,7 +131,7 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                         Harga Motor & Mobil naik <strong>Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')}</strong>/unit &nbsp;|&nbsp; 
                         <i class="fa-solid fa-calendar-days"></i> Min. sewa <strong>4 Hari</strong>
                         <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman">
-                            <i class="fa-solid fa-chevron-down"></i>
+                            <i class="fa-solid fa-chevron-right"></i>
                         </button>
                     </div>
                 `;
@@ -157,7 +157,7 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     const banner = document.getElementById('event-mode-banner');
                     if (banner) {
                         banner.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-                        banner.style.transform = 'translateY(100%)';
+                        banner.style.transform = 'translateX(100%)';
                         banner.style.opacity = '0';
                         setTimeout(() => {
                             banner.remove();

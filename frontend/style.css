@@ -2209,20 +2209,21 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 .close-chat-btn:hover {
     background: rgba(255, 255, 255, 0.38);
-    transform: translateY(2px) scale(1.08);
+    transform: translateX(2px) scale(1.08);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .close-chat-btn:active {
-    transform: translateY(3px) scale(0.96);
+    transform: translateX(4px) scale(0.96);
 }
 
 .close-chat-btn i {
     transition: transform 0.2s ease;
+    margin-left: 1px;
 }
 
 .close-chat-btn:hover i {
-    transform: translateY(1.5px);
+    transform: translateX(2px);
 }
 
 /* --- EVENT BANNER DISMISS BUTTON --- */
@@ -2249,20 +2250,21 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 .event-banner-close-btn:hover {
     background: rgba(255, 255, 255, 0.42);
-    transform: translateY(-50%) translateY(2px) scale(1.1);
+    transform: translateY(-50%) translateX(2px) scale(1.1);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .event-banner-close-btn:active {
-    transform: translateY(-50%) translateY(3px) scale(0.95);
+    transform: translateY(-50%) translateX(3px) scale(0.95);
 }
 
 .event-banner-close-btn i {
     transition: transform 0.2s ease;
+    margin-left: 1px;
 }
 
 .event-banner-close-btn:hover i {
-    transform: translateY(1.5px);
+    transform: translateX(2px);
 }
 
 .chat-messages {
