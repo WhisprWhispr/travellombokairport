@@ -5387,13 +5387,18 @@ function renderAiraMiniCards(items) {
                     <span class="aira-card-price-start">Mulai dari</span>
                     <div class="aira-card-price-val">${priceFormatted} <small>${unit}</small></div>
                 </div>
-                <div class="aira-card-actions-row">
-                    <button onclick="window.openTourModal('${item.id}')" class="aira-card-btn-info" title="Lihat Detail Lengkap">
-                        <i class="fa-solid fa-circle-info"></i> Detail
+                <div class="aira-card-actions">
+                    <button type="button" onclick="window.openTourModal('${item.id}')" class="aira-card-btn-detail" title="Lihat Detail & Fasilitas">
+                        <i class="fa-solid fa-circle-info"></i> Detail Lengkap
                     </button>
-                    <button onclick="window.openCheckoutModal('${safeTitle}', ${item.price}, 'wa')" class="aira-card-btn-order" title="Pesan via WhatsApp">
-                        <i class="fa-brands fa-whatsapp"></i> Pesan
-                    </button>
+                    <div class="aira-card-actions-row">
+                        <button type="button" onclick="window.openCheckoutModal('${safeTitle}', ${item.price}, 'wa')" class="aira-card-btn-wa" title="Pesan via WhatsApp">
+                            <i class="fa-brands fa-whatsapp"></i> via WA
+                        </button>
+                        <button type="button" onclick="window.openCheckoutModal('${safeTitle}', ${item.price}, 'web')" class="aira-card-btn-web" title="Pesan Form via Website Langsung">
+                            <i class="fa-solid fa-desktop"></i> via Web
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -5569,16 +5574,26 @@ function renderAiraWaLeadCard(markdown, recommendedItems) {
     <div class="aira-wa-lead-card">
         <div class="aira-wa-lead-header">
             <span class="aira-wa-lead-pill"><i class="fa-solid fa-bolt"></i> Auto-Summary Lead</span>
-            <span class="aira-wa-lead-sub">Teruskan chat ke CS & konfirmasi DP</span>
+            <span class="aira-wa-lead-sub">Pesan instan via WhatsApp atau Web</span>
         </div>
-        <button type="button" onclick="window.orderViaWhatsAppFromAira(this, '${encodedText}')" class="aira-wa-lead-action-btn" title="Lanjut Booking via WhatsApp CS">
-            <span class="aira-wa-lead-btn-icon"><i class="fa-brands fa-whatsapp"></i></span>
-            <div class="aira-wa-lead-btn-content">
-                <span class="aira-wa-lead-btn-title">📲 Booking Ini via WhatsApp CS</span>
-                <span class="aira-wa-lead-btn-desc">Buka WA dengan rangkuman detail pesanan otomatis</span>
-            </div>
-            <i class="fa-solid fa-arrow-right aira-wa-lead-arrow"></i>
-        </button>
+        <div class="aira-wa-lead-buttons-group">
+            <button type="button" onclick="window.orderViaWhatsAppFromAira(this, '${encodedText}')" class="aira-wa-lead-action-btn" title="Lanjut Booking via WhatsApp CS">
+                <span class="aira-wa-lead-btn-icon"><i class="fa-brands fa-whatsapp"></i></span>
+                <div class="aira-wa-lead-btn-content">
+                    <span class="aira-wa-lead-btn-title">📲 Booking via WhatsApp CS</span>
+                    <span class="aira-wa-lead-btn-desc">Buka WA dengan rangkuman detail pesanan otomatis</span>
+                </div>
+                <i class="fa-solid fa-arrow-right aira-wa-lead-arrow"></i>
+            </button>
+            <button type="button" onclick="window.orderViaWebFromAira(this, '${encodedText}')" class="aira-web-lead-action-btn" title="Buka Form Booking Online Resmi via Web">
+                <span class="aira-wa-lead-btn-icon" style="color: #0284c7;"><i class="fa-solid fa-desktop"></i></span>
+                <div class="aira-wa-lead-btn-content">
+                    <span class="aira-wa-lead-btn-title" style="color: #0369a1; font-size: 0.9rem; font-weight: 800;">🌐 Form Booking via Web</span>
+                    <span class="aira-wa-lead-btn-desc" style="color: #64748b; font-size: 0.72rem;">Buka formulir pemesanan resmi langsung di website</span>
+                </div>
+                <i class="fa-solid fa-chevron-right aira-wa-lead-arrow" style="color: #0284c7;"></i>
+            </button>
+        </div>
         <div class="aira-wa-lead-terms-box">
             <div class="aira-wa-lead-terms-title">
                 <i class="fa-solid fa-shield-halved"></i> <strong>Ketentuan DP & Deposit Resmi:</strong>
@@ -5721,18 +5736,105 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
     window.open(targetUrl, '_blank');
 };
 
+window.orderViaWebFromAira = (btnElem, encodedMarkdown) => {
+    let md = '';
+    try {
+        md = decodeURIComponent(encodedMarkdown || '');
+    } catch(e) {
+        md = encodedMarkdown || '';
+    }
+
+    if (btnElem) {
+        btnElem.style.transform = 'scale(0.97)';
+        setTimeout(() => { if (btnElem) btnElem.style.transform = ''; }, 150);
+    }
+
+    // Ambil pesan terakhir user dari chatHistory
+    let lastUserQuery = '';
+    if (typeof chatHistory !== 'undefined' && Array.isArray(chatHistory)) {
+        for (let i = chatHistory.length - 1; i >= 0; i--) {
+            if (chatHistory[i].role === 'user' && chatHistory[i].parts && chatHistory[i].parts[0]?.text) {
+                lastUserQuery = chatHistory[i].parts[0].text.trim();
+                break;
+            }
+        }
+    }
+
+    const items = typeof detectRecommendedItems === 'function' ? detectRecommendedItems(md) : [];
+    if (items && items.length > 0) {
+        const first = items[0];
+        window.openCheckoutModal(first.title, first.price, 'web');
+        return;
+    }
+
+    // Fallback: deteksi kategori layanan
+    const category = typeof getLeadServiceClassification === 'function' ? getLeadServiceClassification([], md, lastUserQuery) : 'mobil';
+    let defaultTitle = 'Sewa Mobil';
+    if (category === 'motor') defaultTitle = 'Sewa Motor';
+    else if (category === 'tour') defaultTitle = 'Paket Tour';
+    else if (category === 'transfer') defaultTitle = 'Airport Transfer';
+
+    window.openCheckoutModal(defaultTitle, 0, 'web');
+};
+
+window.handleAiraBookingLinkClick = (text, url) => {
+    const combined = ((text || '') + ' ' + (url || '')).toLowerCase();
+    let matchedItem = null;
+
+    if (window.globalItems && Array.isArray(window.globalItems)) {
+        // Cek nama item persis atau terkandung
+        matchedItem = window.globalItems.find(item => {
+            const title = (item.title || '').toLowerCase();
+            return combined.includes(title) || title.includes(combined.replace(/(form|pemesanan|sewa|rental|booking|order)/g, '').trim());
+        });
+
+        if (!matchedItem) {
+            const keywords = ['beat', 'scoopy', 'nmax', 'pcx', 'vario', 'aerox', 'fazzio', 'avanza', 'innova', 'hiace', 'brio', 'xpander', 'alphard', 'fortuner'];
+            for (const kw of keywords) {
+                if (combined.includes(kw)) {
+                    matchedItem = window.globalItems.find(item => (item.title || '').toLowerCase().includes(kw));
+                    if (matchedItem) break;
+                }
+            }
+        }
+    }
+
+    if (matchedItem) {
+        window.openCheckoutModal(matchedItem.title, matchedItem.price, 'web');
+    } else {
+        const cleanTitle = (text || '').replace(/^(form\s+pemesanan\s+|form\s+booking\s+|form\s+|sewa\s+|rental\s+)/i, '').trim();
+        window.openCheckoutModal(cleanTitle || 'Pemesanan Layanan', 0, 'web');
+    }
+};
+
 function parseMarkdownToHTML(markdown, isTyping = false) {
     let html = markdown;
     // Bold
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     
-    // Convert item links to interactive badge links
+    // 1. Convert item links (?item=ID) to interactive modal links
     html = html.replace(/\[(.*?)\]\((.*?)(?:\?|&)item=([a-zA-Z0-9_\-]+)\)/gi, (match, text, url, id) => {
         return `<a href="javascript:void(0)" onclick="window.openTourModal('${id}')" class="aira-chat-pill-link"><i class="fa-solid fa-tag"></i> ${text}</a>`;
     });
 
-    // Links [Text](URL)
-    html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+    // 2. Cegah error 404: Intercept link booking/form/pemesanan markdown agar langsung buka popup form resmi web
+    html = html.replace(/\[(.*?(?:form|booking|pesan|order|sewa|rental).*?)\]\((.*?)\)/gi, (match, text, url) => {
+        const cleanText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const cleanUrl = url.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        return `<a href="javascript:void(0)" onclick="window.handleAiraBookingLinkClick('${cleanText}', '${cleanUrl}')" class="aira-chat-pill-link aira-chat-booking-link" title="Buka Form Booking Resmi Website"><i class="fa-solid fa-file-signature"></i> ${text} (Form Web)</a>`;
+    });
+
+    // 3. Links [Text](URL) umum - lindungi link lokal fiktif agar tidak 404
+    html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
+        const trimmedUrl = (url || '').trim();
+        if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://') && !trimmedUrl.startsWith('#') && !trimmedUrl.startsWith('mailto:') && !trimmedUrl.startsWith('tel:')) {
+            const cleanText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const cleanUrl = trimmedUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            return `<a href="javascript:void(0)" onclick="window.handleAiraBookingLinkClick('${cleanText}', '${cleanUrl}')" class="aira-chat-pill-link aira-chat-booking-link"><i class="fa-solid fa-circle-arrow-right"></i> ${text}</a>`;
+        }
+        return `<a href="${trimmedUrl}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    });
+
     // Newlines
     html = html.replace(/\n/g, '<br>');
     

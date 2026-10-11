@@ -326,3 +326,125 @@
     }
 }
 
+/* AIRA Mini-Card Multi-Buttons (Detail, via WA, via Web) */
+.aira-card-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 4px;
+}
+.aira-card-btn-detail, .aira-card-btn-info {
+  width: 100%;
+  background: #f8fafc;
+  color: #0369a1;
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  font-size: 0.73rem;
+  font-weight: 700;
+  padding: 6px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  transition: all 0.2s;
+}
+.aira-card-btn-detail:hover, .aira-card-btn-info:hover {
+  background: #f0f9ff;
+  border-color: #7dd3fc;
+  color: #0284c7;
+  transform: translateY(-1px);
+}
+.aira-card-actions-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.aira-card-btn-wa, .aira-card-btn-order {
+  flex: 1;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 7px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.aira-card-btn-wa:hover, .aira-card-btn-order:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
+  filter: brightness(1.05);
+}
+.aira-card-btn-web {
+  flex: 1;
+  background: linear-gradient(135deg, #0284c7, #0369a1);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 7px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.aira-card-btn-web:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(2, 132, 199, 0.35);
+  filter: brightness(1.05);
+}
+
+.aira-wa-lead-buttons-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.aira-web-lead-action-btn {
+  background: #ffffff;
+  border: 1.5px solid #bae6fd;
+  border-radius: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.08);
+  position: relative;
+  text-align: left;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+.aira-web-lead-action-btn:hover {
+  background: #f0f9ff;
+  border-color: #38bdf8;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.15);
+}
+.aira-web-lead-action-btn:active {
+  transform: scale(0.98);
+}
+.aira-chat-booking-link {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
+  border-color: #7dd3fc !important;
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.15);
+  cursor: pointer;
+}
+.aira-chat-booking-link:hover {
+  background: #bae6fd !important;
+  color: #0284c7 !important;
+}
+
