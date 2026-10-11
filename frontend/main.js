@@ -5225,16 +5225,123 @@ window.handleChatKeyPress = (event) => {
     }
 };
 
+// --- AIRA INTERACTIVE PRODUCT & TOUR CARDS ---
+function detectRecommendedItems(markdown) {
+    if (!markdown || !window.globalItems || window.globalItems.length === 0) return [];
+    
+    const found = [];
+    const seenIds = new Set();
+    
+    // 1. Explicit item parameter: /?item=ID or ?item=ID
+    const linkRegex = /(?:\?|&)item=([a-zA-Z0-9_\-]+)/gi;
+    let match;
+    while ((match = linkRegex.exec(markdown)) !== null) {
+        const id = match[1];
+        if (!seenIds.has(id)) {
+            const item = window.globalItems.find(i => i.id === id);
+            if (item) {
+                seenIds.add(id);
+                found.push(item);
+            }
+        }
+    }
+    
+    // 2. Exact or key title match in text
+    if (found.length < 3) {
+        // Sort items by title length descending to match specific models first (e.g. "Innova Zenix" before "Innova")
+        const sortedItems = [...window.globalItems].sort((a, b) => (b.title?.length || 0) - (a.title?.length || 0));
+        
+        for (const item of sortedItems) {
+            if (!item.title || item.title.trim().length < 4 || seenIds.has(item.id)) continue;
+            
+            const cleanTitle = item.title.trim();
+            const escaped = cleanTitle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            // Check word boundary or clean phrase
+            const regex = new RegExp(`(^|\\b|\\s)${escaped}(\\b|\\s|$)`, 'i');
+            if (regex.test(markdown)) {
+                seenIds.add(item.id);
+                found.push(item);
+                if (found.length >= 3) break;
+            }
+        }
+    }
+    
+    return found;
+}
+
+function renderAiraMiniCards(items) {
+    if (!items || items.length === 0) return '';
+    
+    const cardsHtml = items.map(item => {
+        let catIcon = 'fa-car';
+        let catLabel = 'Rental Mobil';
+        const cat = (item.category || '').toLowerCase();
+        if (cat === 'motorcycle') { catIcon = 'fa-motorcycle'; catLabel = 'Rental Motor'; }
+        else if (cat === 'package') { catIcon = 'fa-umbrella-beach'; catLabel = 'Paket Wisata'; }
+        else if (cat === 'drone') { catIcon = 'fa-plane-up'; catLabel = 'Sewa Drone'; }
+        else if (cat === 'transfer' || cat === 'airport') { catIcon = 'fa-plane-departure'; catLabel = 'Antar Jemput'; }
+        
+        const priceFormatted = typeof formatPrice === 'function' ? formatPrice(item.price) : `Rp ${Number(item.price || 0).toLocaleString('id-ID')}`;
+        const unit = item.duration ? `/ ${item.duration}` : (cat === 'package' ? '/ paket' : '/ hari');
+        const safeTitle = (item.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeImg = item.imageUrl || 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=600';
+        
+        return `
+        <div class="aira-mini-card">
+            <div class="aira-card-img-box">
+                <img src="${safeImg}" alt="${safeTitle}" onerror="this.src='/logo.png'">
+                <span class="aira-card-badge"><i class="fa-solid ${catIcon}"></i> ${catLabel}</span>
+            </div>
+            <div class="aira-card-info">
+                <h5 class="aira-card-name" title="${safeTitle}">${item.title}</h5>
+                <div class="aira-card-pricing">
+                    <span class="aira-card-price-start">Mulai dari</span>
+                    <div class="aira-card-price-val">${priceFormatted} <small>${unit}</small></div>
+                </div>
+                <div class="aira-card-actions-row">
+                    <button onclick="window.openTourModal('${item.id}')" class="aira-card-btn-info" title="Lihat Detail Lengkap">
+                        <i class="fa-solid fa-circle-info"></i> Detail
+                    </button>
+                    <button onclick="window.openCheckoutModal('${safeTitle}', ${item.price}, 'wa')" class="aira-card-btn-order" title="Pesan via WhatsApp">
+                        <i class="fa-brands fa-whatsapp"></i> Pesan
+                    </button>
+                </div>
+            </div>
+        </div>
+        `;
+    }).join('');
+
+    return `
+    <div class="aira-mini-cards-wrapper">
+        <div class="aira-mini-cards-scroll">
+            ${cardsHtml}
+        </div>
+    </div>
+    `;
+}
+
 function parseMarkdownToHTML(markdown, isTyping = false) {
     let html = markdown;
     // Bold
     html = html.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+    
+    // Convert item links to interactive badge links
+    html = html.replace(/\[(.*?)\]\((.*?)(?:\?|&)item=([a-zA-Z0-9_\-]+)\)/gi, (match, text, url, id) => {
+        return `<a href="javascript:void(0)" onclick="window.openTourModal('${id}')" class="aira-chat-pill-link"><i class="fa-solid fa-tag"></i> ${text}</a>`;
+    });
+
     // Links [Text](URL)
     html = html.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
     // Newlines
     html = html.replace(/\n/g, '<br>');
     
     if (!isTyping) {
+        // Detect recommended items and append interactive mini-cards
+        const recommendedItems = detectRecommendedItems(markdown);
+        if (recommendedItems.length > 0) {
+            html += renderAiraMiniCards(recommendedItems);
+        }
+
         // Tambahkan tombol copy pesan
         const encodedText = encodeURIComponent(markdown).replace(/'/g, "\\'");
         html += `

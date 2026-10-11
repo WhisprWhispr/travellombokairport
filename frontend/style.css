@@ -990,7 +990,7 @@ ul {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.6);
-  z-index: 10000;
+  z-index: 100002;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -2489,4 +2489,189 @@ input:checked + .slider:before { transform: translateX(22px); }
     width: 100%;
   }
 }
+
+/* ========================================= */
+/* AIRA Interactive Mini-Cards in Chat       */
+/* ========================================= */
+.aira-mini-cards-wrapper {
+  margin-top: 14px;
+  margin-bottom: 6px;
+  width: 100%;
+}
+.aira-mini-cards-scroll {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 4px 2px 10px 2px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.aira-mini-cards-scroll::-webkit-scrollbar {
+  height: 5px;
+}
+.aira-mini-cards-scroll::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+.aira-mini-cards-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.aira-mini-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  overflow: hidden;
+  flex: 0 0 215px;
+  width: 215px;
+  scroll-snap-align: start;
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.aira-mini-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.12);
+  border-color: #7dd3fc;
+}
+.aira-card-img-box {
+  position: relative;
+  width: 100%;
+  height: 110px;
+  background: #f1f5f9;
+  overflow: hidden;
+}
+.aira-card-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+.aira-mini-card:hover .aira-card-img-box img {
+  transform: scale(1.08);
+}
+.aira-card-badge {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  background: rgba(15, 23, 42, 0.8);
+  backdrop-filter: blur(6px);
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.3px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.aira-card-info {
+  padding: 10px 12px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.aira-card-name {
+  margin: 0 0 6px 0;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.2em;
+}
+.aira-card-pricing {
+  margin-top: auto;
+  margin-bottom: 10px;
+}
+.aira-card-price-start {
+  font-size: 0.65rem;
+  color: #64748b;
+  display: block;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+.aira-card-price-val {
+  font-size: 0.98rem;
+  font-weight: 800;
+  color: var(--primary-blue);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+.aira-card-price-val small {
+  font-size: 0.68rem;
+  color: #64748b;
+  font-weight: 500;
+}
+.aira-card-actions-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+.aira-card-btn-info {
+  flex: 1;
+  background: #f0f9ff;
+  color: var(--primary-blue);
+  border: 1px solid #bae6fd;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 7px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s;
+}
+.aira-card-btn-info:hover {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  transform: translateY(-1px);
+}
+.aira-card-btn-order {
+  flex: 1;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 7px 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s;
+}
+.aira-card-btn-order:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.35);
+}
+.aira-chat-pill-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #e0f2fe;
+  color: var(--primary-blue) !important;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 2px 10px;
+  border-radius: 20px;
+  text-decoration: none;
+  margin: 2px 0;
+  border: 1px solid #bae6fd;
+  transition: all 0.2s;
+}
+.aira-chat-pill-link:hover {
+  background: #bae6fd;
+  text-decoration: none !important;
+}
+
 
