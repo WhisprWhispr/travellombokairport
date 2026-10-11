@@ -771,7 +771,7 @@ window.openTourModal = (id) => {
 
                 <!-- 5 Clickable Stars (Hanya bintang aja!) -->
                 <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
-                    <div style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
+                    <div id="star-action-title-${item.id}" style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
                     <div id="star-bar-${item.id}" class="quick-item-stars" style="display: inline-flex; gap: 6px; font-size: 1.6rem; cursor: pointer; user-select: none;">
                         <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 1)" onmouseover="window.previewItemStars('${item.id}', 1)" onmouseout="window.resetItemStars('${item.id}')"></i>
                         <i class="fa-solid fa-star item-star" data-idx="2" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 2)" onmouseover="window.previewItemStars('${item.id}', 2)" onmouseout="window.resetItemStars('${item.id}')"></i>
@@ -837,6 +837,7 @@ window.closeTourModal = () => {
 };
 
 window.previewItemStars = (itemId, val) => {
+    if (localStorage.getItem('rated_item_' + itemId)) return;
     const starBar = document.getElementById(`star-bar-${itemId}`);
     if (!starBar) return;
     const stars = starBar.querySelectorAll('.item-star');
@@ -867,6 +868,7 @@ window.resetItemStars = (itemId) => {
     const saved = localStorage.getItem('rated_item_' + itemId);
     const stars = starBar.querySelectorAll('.item-star');
     const hint = document.getElementById(`star-hint-${itemId}`);
+    const actionTitle = document.getElementById(`star-action-title-${itemId}`);
     
     if (saved) {
         const val = parseInt(saved);
@@ -879,18 +881,37 @@ window.resetItemStars = (itemId) => {
                 s.style.color = '#cbd5e1';
                 s.style.transform = 'scale(1)';
             }
+            s.style.cursor = 'default';
         });
-        if (hint) hint.innerHTML = `<span style="color:#16a34a;"><i class="fa-solid fa-check"></i> Rating Anda: ${val}★ (Tersimpan)</span>`;
+        if (hint) hint.innerHTML = `<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Rating Anda: ${val}★ (Hanya 1x per item)</span>`;
+        if (actionTitle) actionTitle.innerText = 'Rating Anda (Sudah Dinilai):';
     } else {
         stars.forEach(s => {
             s.style.color = '#cbd5e1';
             s.style.transform = 'scale(1)';
+            s.style.cursor = 'pointer';
         });
         if (hint) hint.innerHTML = '';
+        if (actionTitle) actionTitle.innerText = 'Ketuk Bintang untuk Menilai:';
     }
 };
 
 window.quickRateItem = async (itemId, ratingVal) => {
+    // Cek apakah sudah pernah memberikan rating pada item ini
+    const savedRating = localStorage.getItem('rated_item_' + itemId);
+    if (savedRating) {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'info',
+            title: `Anda sudah memberi rating ${savedRating}★!`,
+            text: 'Setiap pelanggan hanya dapat memberi rating 1 kali per item.',
+            showConfirmButton: false,
+            timer: 3000
+        });
+        return;
+    }
+
     if (window._isSubmittingRating) return;
     window._isSubmittingRating = true;
 
@@ -900,19 +921,22 @@ window.quickRateItem = async (itemId, ratingVal) => {
     if (hint) hint.innerHTML = `<span style="color:#0284c7;"><i class="fa-solid fa-spinner fa-spin"></i> Menyimpan rating...</span>`;
 
     let nameValue = 'Pelanggan Terverifikasi';
+    let userId = null;
+    let photoUrl = null;
     const userStr = localStorage.getItem('auth_user');
     if (userStr) {
         try {
             const user = JSON.parse(userStr);
-            if (user && user.displayName) nameValue = user.displayName;
-            else if (user && user.name) nameValue = user.name;
+            if (user) {
+                if (user.displayName) nameValue = user.displayName;
+                else if (user.name) nameValue = user.name;
+                userId = user.uid || user.id || null;
+                photoUrl = user.photoUrl || null;
+            }
         } catch(e) {}
     }
 
     try {
-        const authUser = JSON.parse(localStorage.getItem('auth_user') || 'null');
-        const photoUrl = authUser && authUser.photoUrl ? authUser.photoUrl : null;
-
         const res = await fetch(`${API_URL}/reviews`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -921,16 +945,20 @@ window.quickRateItem = async (itemId, ratingVal) => {
                 rating: Number(ratingVal),
                 name: nameValue,
                 comment: '',
-                photoUrl
+                photoUrl,
+                userId
             })
         });
 
         if (!res.ok) throw new Error('Failed to submit rating');
 
-        // Save rating in localStorage
+        // Simpan tanda sudah rating di localStorage
         localStorage.setItem('rated_item_' + itemId, ratingVal);
 
-        if (hint) hint.innerHTML = `<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Terima kasih atas rating ${ratingVal}★!</span>`;
+        if (hint) hint.innerHTML = `<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Rating ${ratingVal}★ berhasil disimpan!</span>`;
+
+        const actionTitle = document.getElementById(`star-action-title-${itemId}`);
+        if (actionTitle) actionTitle.innerText = 'Rating Anda (Sudah Dinilai):';
 
         Swal.fire({
             toast: true,
@@ -959,9 +987,7 @@ window.quickRateItem = async (itemId, ratingVal) => {
         });
     } finally {
         window._isSubmittingRating = false;
-        setTimeout(() => {
-            window.resetItemStars(itemId);
-        }, 3000);
+        window.resetItemStars(itemId);
     }
 };
 
@@ -973,23 +999,57 @@ window.loadItemReviews = async (itemId) => {
         const res = await fetch(`${API_URL}/reviews?itemId=${itemId}`);
         if (!res.ok) throw new Error('Failed to fetch item reviews');
         const reviews = await res.json();
+
+        // Cek jika akun yang sedang login sudah pernah rating item ini di database
+        const userStr = localStorage.getItem('auth_user');
+        if (userStr && Array.isArray(reviews)) {
+            try {
+                const user = JSON.parse(userStr);
+                const uName = (user.displayName || user.name || '').trim().toLowerCase();
+                const uId = user.uid || user.id;
+                const existing = reviews.find(r => (uId && r.userId === uId) || (uName && r.name && r.name.trim().toLowerCase() === uName));
+                if (existing) {
+                    localStorage.setItem('rated_item_' + itemId, existing.rating);
+                }
+            } catch(e) {}
+        }
         
-        // Update score badge and count
+        // Deduplikasi review: Setiap user/nama unik hanya muncul 1 kali
+        const seenKeys = new Set();
+        const uniqueReviews = [];
+        if (Array.isArray(reviews)) {
+            for (const r of reviews) {
+                let key = '';
+                if (r.userId) {
+                    key = 'u_' + r.userId;
+                } else if (r.name && r.name.trim().toLowerCase() !== 'pelanggan terverifikasi') {
+                    key = 'n_' + r.name.trim().toLowerCase();
+                } else {
+                    key = 'id_' + r.id;
+                }
+                if (!seenKeys.has(key)) {
+                    seenKeys.add(key);
+                    uniqueReviews.push(r);
+                }
+            }
+        }
+
+        // Update score badge and count berdasarkan data unik
         const scoreEl = document.getElementById(`item-rating-score-${itemId}`);
         const subtitleEl = document.getElementById(`item-rating-subtitle-${itemId}`);
         
-        if (reviews.length > 0) {
-            const avg = reviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviews.length;
+        if (uniqueReviews.length > 0) {
+            const avg = uniqueReviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / uniqueReviews.length;
             const avgFormatted = avg.toFixed(1).replace('.0', '');
             if (scoreEl) scoreEl.innerText = `${avgFormatted} ★`;
-            if (subtitleEl) subtitleEl.innerText = `Berdasarkan ${reviews.length} rating penilaian`;
+            if (subtitleEl) subtitleEl.innerText = `Berdasarkan ${uniqueReviews.length} rating penilaian`;
             
             // Sync with globalItems
             if (window.globalItems) {
                 const it = window.globalItems.find(i => i.id === itemId);
                 if (it) {
                     it.rating = avgFormatted;
-                    it.reviewCount = reviews.length;
+                    it.reviewCount = uniqueReviews.length;
                 }
             }
         }
@@ -997,12 +1057,12 @@ window.loadItemReviews = async (itemId) => {
         // Initialize star display if previously rated
         window.resetItemStars(itemId);
 
-        if (reviews.length === 0) {
+        if (uniqueReviews.length === 0) {
             container.innerHTML = '<p style="font-size: 0.82rem; color: #64748b; text-align: center; padding: 8px 0; width: 100%;">Belum ada rating. Ketuk bintang di atas untuk memberi rating pertama! ⭐</p>';
             return;
         }
         
-        container.innerHTML = reviews.map(r => {
+        container.innerHTML = uniqueReviews.map(r => {
             let stars = '';
             const rVal = Number(r.rating) || 5;
             for (let i = 0; i < 5; i++) {
@@ -1921,10 +1981,19 @@ const init = async () => {
         if (window.allReviewsData) {
             globalItems.forEach(item => {
                 const itemReviews = window.allReviewsData.filter(r => r.itemId === item.id && r.status === 'approved');
-                if (itemReviews.length > 0) {
-                    const avg = itemReviews.reduce((sum, r) => sum + r.rating, 0) / itemReviews.length;
+                const seenKeys = new Set();
+                const uniqueReviews = [];
+                itemReviews.forEach(r => {
+                    const key = r.userId ? ('u_' + r.userId) : (r.name && r.name.trim().toLowerCase() !== 'pelanggan terverifikasi' ? ('n_' + r.name.trim().toLowerCase()) : ('id_' + r.id));
+                    if (!seenKeys.has(key)) {
+                        seenKeys.add(key);
+                        uniqueReviews.push(r);
+                    }
+                });
+                if (uniqueReviews.length > 0) {
+                    const avg = uniqueReviews.reduce((sum, r) => sum + r.rating, 0) / uniqueReviews.length;
                     item.rating = avg.toFixed(1).replace('.0', '');
-                    item.reviewCount = itemReviews.length;
+                    item.reviewCount = uniqueReviews.length;
                 }
             });
         }

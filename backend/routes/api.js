@@ -356,20 +356,46 @@ router.get('/reviews', async (req, res) => {
 // POST a new review (public)
 router.post('/reviews', async (req, res) => {
     try {
-        const { name, rating, comment, itemId, photoUrl } = req.body;
+        const { name, rating, comment, itemId, photoUrl, userId } = req.body;
         if (!rating) {
             return res.status(400).json({ error: 'Rating is required' });
         }
         
         const numRating = Math.max(1, Math.min(5, Number(rating) || 5));
+        const cleanName = (name && name.trim()) ? name.trim() : 'Pelanggan Terverifikasi';
+
+        // Check if review already exists for this itemId and user/name to prevent duplicate spam
+        if (itemId) {
+            const querySnapshot = await db.collection('reviews').where('itemId', '==', itemId).get();
+            let existingDoc = null;
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                if (userId && data.userId && data.userId === userId) {
+                    existingDoc = doc;
+                } else if (cleanName !== 'Pelanggan Terverifikasi' && data.name && data.name.toLowerCase() === cleanName.toLowerCase()) {
+                    existingDoc = doc;
+                }
+            });
+
+            if (existingDoc) {
+                // Update existing rating instead of duplicate
+                await existingDoc.ref.update({
+                    rating: numRating,
+                    updatedAt: new Date().toISOString()
+                });
+                return res.json({ id: existingDoc.id, ...existingDoc.data(), rating: numRating, updated: true });
+            }
+        }
+
         const newReview = {
-            name: (name && name.trim()) ? name.trim() : 'Pelanggan Terverifikasi',
+            name: cleanName,
             rating: numRating,
             comment: (comment && comment.trim()) ? comment.trim() : '',
             createdAt: new Date().toISOString(),
             status: 'approved',
             itemId: itemId || null,
-            photoUrl: photoUrl || null
+            photoUrl: photoUrl || null,
+            userId: userId || null
         };
         
         const docRef = await db.collection('reviews').add(newReview);

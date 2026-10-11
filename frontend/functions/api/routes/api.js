@@ -371,17 +371,42 @@ apiRoutes.get('/reviews', async (c) => {
 apiRoutes.post('/reviews', async (c) => {
     try {
         const db = getDb(c);
-        const { name, rating, comment, itemId, photoUrl } = await c.req.json();
+        const { name, rating, comment, itemId, photoUrl, userId } = await c.req.json();
         if (!rating) {
             return c.json({ error: 'Rating is required' }, 400);
         }
         const numRating = Math.max(1, Math.min(5, Number(rating) || 5));
+        const cleanName = (name && name.trim()) ? name.trim() : 'Pelanggan Terverifikasi';
+
+        // Check if review already exists for this itemId and user/name
+        if (itemId) {
+            const querySnapshot = await db.collection('reviews').where('itemId', '==', itemId).get();
+            let existingDoc = null;
+            querySnapshot.forEach(doc => {
+                const data = doc.data();
+                if (userId && data.userId && data.userId === userId) {
+                    existingDoc = doc;
+                } else if (cleanName !== 'Pelanggan Terverifikasi' && data.name && data.name.toLowerCase() === cleanName.toLowerCase()) {
+                    existingDoc = doc;
+                }
+            });
+
+            if (existingDoc) {
+                await existingDoc.ref.update({
+                    rating: numRating,
+                    updatedAt: new Date().toISOString()
+                });
+                return c.json({ id: existingDoc.id, ...existingDoc.data(), rating: numRating, updated: true }, 200);
+            }
+        }
+
         const newReview = {
-            name: (name && name.trim()) ? name.trim() : 'Pelanggan Terverifikasi',
+            name: cleanName,
             rating: numRating,
             comment: (comment && comment.trim()) ? comment.trim() : '',
             itemId: itemId || null,
             photoUrl: photoUrl || null,
+            userId: userId || null,
             createdAt: new Date().toISOString(),
             status: 'approved'
         };
