@@ -4,170 +4,18 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/png" href="/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
-  <!-- SEO Meta Tags -->
-  <title>Travel Lombok Airport</title>
-  <meta name="description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil lepas kunci/dengan supir murah terpercaya di Lombok.">
-  <meta name="keywords" content="sewa mobil lombok, rental mobil lombok murah, sewa avanza lombok, antar jemput bandara lombok, travel lombok airport, paket wisata lombok, travel agent lombok, sewa mobil mandalika, jemput bandara bil, jasa transport lombok, sewa innova lombok, sewa hiace lombok, wisata gili trawangan, sewa drone lombok, fotografer liburan lombok, tour guide lombok, travel lombok terpercaya, antar jemput hotel senggigi, liburan keluarga lombok">
-  <meta name="author" content="Travel Lombok Airport">
-  <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://travellombokairport.com/">
-
-  <!-- Open Graph / Facebook / WhatsApp -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://travellombokairport.com/">
-  <meta property="og:title" content="Travel Lombok Airport">
-  <meta property="og:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
-  <meta property="og:image" content="https://travellombokairport.com/logo.png">
-
-  <!-- Twitter -->
-  <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://travellombokairport.com/">
-  <meta property="twitter:title" content="Travel Lombok Airport">
-  <meta property="twitter:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
-  <meta property="twitter:image" content="https://travellombokairport.com/logo.png">
-
+  <title>Syarat & Ketentuan | Travel Lombok Airport</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link rel="stylesheet" href="./style.css?v=4">
-
-  <script>
-    // INSTANT MAINTENANCE CHECK (Anti-Flash for PWA)
-    // If maintenance was true last time, hide the body immediately to prevent flashing old cached content.
-    if (localStorage.getItem('maintenanceMode') === 'true' && !localStorage.getItem('adminToken')) {
-      document.write('<style id="anti-flash">body { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }</style>');
-    }
-  </script>
-
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  
-  <!-- Coming Soon Modal -->
-
-  <!-- Review Modal -->
-  <div id="review-modal" class="modal-overlay" style="z-index: 10000; position: fixed; inset: 0; background: rgba(15,23,42,0.7); display: none; justify-content: center; align-items: center; backdrop-filter: blur(6px); padding: 20px;">
-    <div style="background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: reviewPopIn 0.25s cubic-bezier(0.34,1.56,0.64,1);">
-      
-      <!-- Header -->
-      <div style="background: linear-gradient(135deg, #1d4ed8, #0284c7); padding: 20px 24px 18px; border-radius: 20px 20px 0 0; position: relative;">
-        <button onclick="document.getElementById('review-modal').classList.remove('active')" style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-times"></i></button>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="background: rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-star" style="color: #fbbf24; font-size: 1.2rem;"></i>
-          </div>
-          <div>
-            <h3 style="color: white; margin: 0; font-size: 1.15rem; font-weight: 700;">Berikan Ulasan</h3>
-            <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.8rem;">Bagikan pengalaman perjalanan Anda</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div style="padding: 20px 24px 24px;">
-        <form id="review-form" onsubmit="submitReview(event)">
-
-          <!-- Nama -->
-          <div style="margin-bottom: 14px;">
-            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Nama Anda</label>
-            <input type="text" id="review-name" required placeholder="Contoh: Ridho Sandhika" style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 14px; width: 100%; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
-          </div>
-
-          <!-- Bintang -->
-          <div style="margin-bottom: 14px;">
-            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 8px;">Penilaian Anda</label>
-            <div class="star-rating" style="display: flex; gap: 6px; flex-direction: row-reverse; justify-content: flex-end;">
-              <input type="radio" id="star5" name="rating" value="5" required style="display: none;" /><label for="star5" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star4" name="rating" value="4" style="display: none;" /><label for="star4" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star3" name="rating" value="3" style="display: none;" /><label for="star3" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star2" name="rating" value="2" style="display: none;" /><label for="star2" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star1" name="rating" value="1" style="display: none;" /><label for="star1" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-            </div>
-          </div>
-
-          <!-- Komentar -->
-          <div style="margin-bottom: 18px;">
-            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Cerita Perjalanan</label>
-            <textarea id="review-comment" required rows="3" placeholder="Ceritakan pengalaman Anda..." style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 14px; width: 100%; font-size: 0.9rem; resize: none; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
-          </div>
-
-          <button type="submit" id="btn-submit-review" style="width: 100%; background: linear-gradient(135deg, #1d4ed8, #0284c7); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.3px;">
-            <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i>Kirim Ulasan
-          </button>
-        </form>
-      </div>
-
-    </div>
-  </div>
-
-  <style>
-    @keyframes reviewPopIn {
-      from { opacity: 0; transform: scale(0.85); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .star-rating label:hover,
-    .star-rating label:hover ~ label,
-    .star-rating input:checked ~ label {
-      color: #f59e0b !important;
-    }
-    #review-modal.active {
-      display: flex !important;
-    }
-  </style>
-
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="./style.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="manifest" href="/manifest.json">
-  <meta name="theme-color" content="#2563eb">
-<script src="/protect.js"></script>
-  <!-- Structured Data (JSON-LD) for Local SEO -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "name": "Travel Lombok Airport",
-    "image": "https://travellombokairport.com/logo.png",
-    "@id": "https://travellombokairport.com/",
-    "url": "https://travellombokairport.com/",
-    "telephone": "+6289676963255",
-    "address": {
-      "@type": "PostalAddress",
-      "streetAddress": "Bandara Internasional Lombok (BIL)",
-      "addressLocality": "Lombok Tengah",
-      "addressRegion": "NTB",
-      "postalCode": "83573",
-      "addressCountry": "ID"
-    },
-    "geo": {
-      "@type": "GeoCoordinates",
-      "latitude": -8.7612,
-      "longitude": 116.2754
-    },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
-      ],
-      "opens": "00:00",
-      "closes": "23:59"
-    },
-    "sameAs": [
-      "https://instagram.com/travellombokairport"
-    ],
-    "priceRange": "$$"
-  }
-  </script>
+    <meta name="theme-color" content="#2563eb">
+  <script src="/protect.js"></script>
 </head>
 <body>
-  <!-- Tsunami Alert Banner (Hidden by default) -->
-  <div id="tsunami-alert-banner" style="display: none; background: #dc2626; color: white; text-align: center; padding: 12px 20px; font-weight: 700; font-size: 0.9rem; z-index: 10000; position: relative;">
-    <i class="fa-solid fa-triangle-exclamation fa-beat" style="margin-right: 8px;"></i>
-    <span id="tsunami-alert-text">PERINGATAN DINI TSUNAMI - Segera Jauhi Pantai!</span>
-    <button onclick="this.parentElement.style.display='none'" style="position: absolute; right: 15px; top: 10px; background: transparent; border: none; color: white; cursor: pointer; font-size: 1rem;"><i class="fa-solid fa-xmark"></i></button>
-  </div>
-
   <!-- Navbar -->
   <nav class="navbar">
     <div class="container nav-content">
@@ -180,7 +28,7 @@
           </span>
         </div>
       </a>
-      <ul class="nav-links" onclick="if(window.innerWidth <= 1250) this.classList.remove('active')">
+      <ul class="nav-links">
         <li><a href="/#home">Home</a></li>
         <li><a href="/#services">Layanan</a></li>
         <li><a href="/#packages">Paket Tour</a></li>
@@ -242,7 +90,7 @@
             <div style="background: white; padding: 8px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center;">
               <img src="/logo.png" alt="Travel Lombok Airport" style="height: 45px; object-fit: contain;">
             </div>
-            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; white-space: nowrap;">
+            <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
               <span style="color: var(--primary-green); font-weight: 800; font-size: 1.3rem; letter-spacing: 0.5px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);">Travel Lombok</span><span style="color: var(--primary-blue); font-weight: 800; font-size: 1.3rem; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.3);"> Airport</span>
             </div>
           </a>
@@ -270,13 +118,13 @@
             <li><a href="/galeri.html">Galeri</a></li>
             <li><a href="/tentang-kami.html">Tentang Kami</a></li>
             <li><a href="/kontak.html">Kontak</a></li>
-
+            <li><a href="/#cek-booking">Cek Booking</a></li>
           </ul>
         </div>
         
         <div class="footer-links">
-          <h4 style="margin-bottom: 20px;">LAYANAN KAMI</h4>
-          <ul style="margin-bottom: 30px;">
+          <h4>LAYANAN KAMI</h4>
+          <ul>
             <li><a href="/#booking">Antar Jemput Airport</a></li>
             <li><a href="/#cars">Sewa Mobil</a></li>
             <li><a href="/#motorcycles">Sewa Motor</a></li>
@@ -286,48 +134,14 @@
               <li><a href="/wishlist.html">Wishlist</a></li>
               <li><a href="/jadwal-sholat.html">Jadwal Sholat</a></li>
           </ul>
-
-          <h4 style="margin-bottom: 15px;"><i class="fa-solid fa-user-circle" style="color: var(--primary-green);"></i> AKUN & MEMBER</h4>
-          <div id="footer-auth-container" style="display: flex; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.05); padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-            <button onclick="window.openAuthModal('login');" style="width: 100%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; border: none; padding: 12px; border-radius: 10px; font-weight: 800; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);" onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 20px rgba(59, 130, 246, 0.6)';" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(59, 130, 246, 0.4)';">
-              <i class="fa-solid fa-right-to-bracket"></i> Masuk / Login
-            </button>
-            <button onclick="window.openAuthModal('register');" style="width: 100%; background: transparent; color: white; border: 2px solid #22c55e; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(34, 197, 94, 0.1)'; this.style.transform='translateY(-2px)';" onmouseout="this.style.background='transparent'; this.style.transform='translateY(0)';">
-              <i class="fa-solid fa-user-plus"></i> Daftar Akun Baru
-            </button>
-          </div>
-          <div id="footer-user-container" style="display: none; flex-direction: column; gap: 12px; background: rgba(255,255,255,0.05); padding: 18px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
-             <a href="/profile.html" style="display: flex; align-items: center; gap: 12px; margin-bottom: 5px; text-decoration: none; padding: 5px; border-radius: 10px; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.background='transparent'">
-               <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #22c55e, #16a34a); display: flex; justify-content: center; align-items: center; font-size: 1.2rem; color: white; font-weight: bold; overflow: hidden;"><i class="fa-solid fa-user"></i></div>
-               <div>
-                 <p style="margin: 0; font-size: 0.75rem; color: #cbd5e1;">Selamat Datang,</p>
-                 <p id="footer-user-name" style="margin: 0; font-size: 1rem; color: white; font-weight: 800;">User</p>
-               </div>
-             </a>
-             <button onclick="window.location.href='/profile.html'" style="width: 100%; background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px; position: relative;" onmouseover="this.style.background='rgba(16, 185, 129, 0.25)';" onmouseout="this.style.background='rgba(16, 185, 129, 0.15)';">
-               <i class="fa-solid fa-user-pen"></i> Pengaturan Profil
-               <span id="footer-profile-badge" style="display:none; position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; border-radius:50%; width:22px; height:22px; font-size:0.75rem; font-weight:bold; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(239,68,68,0.4);">0</span>
-             </button>
-             <button onclick="window.location.href='/riwayat.html'" style="width: 100%; background: rgba(59, 130, 246, 0.15); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.3); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px; position: relative;" onmouseover="this.style.background='rgba(59, 130, 246, 0.25)';" onmouseout="this.style.background='rgba(59, 130, 246, 0.15)';">
-               <i class="fa-solid fa-clock-rotate-left"></i> Riwayat Transaksi
-               <span id="footer-notif-badge" style="display:none; position:absolute; top:-6px; right:-6px; background:#ef4444; color:white; border-radius:50%; width:22px; height:22px; font-size:0.75rem; font-weight:bold; align-items:center; justify-content:center; box-shadow:0 2px 5px rgba(239,68,68,0.4);">0</span>
-             </button>
-             <button onclick="window.logoutUser()" style="width: 100%; background: rgba(239, 68, 68, 0.1); color: #f87171; border: 1px solid rgba(239, 68, 68, 0.3); padding: 10px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.3s ease; display: flex; justify-content: center; align-items: center; gap: 8px;" onmouseover="this.style.background='rgba(239, 68, 68, 0.2)';" onmouseout="this.style.background='rgba(239, 68, 68, 0.1)';">
-               <i class="fa-solid fa-right-from-bracket"></i> Keluar / Logout
-             </button>
-          </div>
-
         </div>
         
         <div class="footer-social">
           <h4>IKUTI KAMI</h4>
-          <a href="https://www.instagram.com/travellombokairport?igsh=N3RwYTB1eGJpd2Jx&utm_source=qr" target="_blank" style="transition: all 0.3s;"><i class="fa-brands fa-instagram" style="color: #E1306C; font-size: 1.2rem;"></i> Instagram</a>
-          <a href="https://www.tiktok.com/@trevellombokairport" target="_blank" style="transition: all 0.3s;"><i class="fa-brands fa-tiktok" style="color: #00f2fe; text-shadow: 1px 1px 0px #fe0979; font-size: 1.2rem;"></i> TikTok</a>
-          <a href="https://www.facebook.com/share/1F6ViaTuBh/?mibextid=wwXIfr" target="_blank" style="transition: all 0.3s;"><i class="fa-brands fa-facebook" style="color: #1877F2; font-size: 1.2rem;"></i> Facebook</a>
-          <a href="https://www.youtube.com/@Travellombokairport" target="_blank" style="transition: all 0.3s;"><i class="fa-brands fa-youtube" style="color: #FF0000; font-size: 1.2rem;"></i> YouTube</a>
-          
-          <h4 style="margin-top: 25px; margin-bottom: 15px;">APLIKASI KAMI</h4>
-          <a href="#" onclick="installPWA(event)" class="btn" style="background: linear-gradient(135deg, #10b981, #059669) !important; color: white !important; padding: 10px 15px; border-radius: 8px; font-weight: bold; width: fit-content; display: inline-flex; align-items: center; gap: 8px; text-decoration: none; border: none; box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3);"><i class="fa-brands fa-google-play" style="font-size: 1.2rem;"></i> Install Aplikasi</a>
+          <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram" style="color: #E1306C; font-size: 1.2rem;"></i> Instagram</a>
+          <a href="https://tiktok.com" target="_blank"><i class="fa-brands fa-tiktok" style="color: #00f2fe; text-shadow: 1px 1px 0px #fe0979; font-size: 1.2rem;"></i> TikTok</a>
+          <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook" style="color: #1877F2; font-size: 1.2rem;"></i> Facebook</a>
+          <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube" style="color: #FF0000; font-size: 1.2rem;"></i> YouTube</a>
         </div>
         
         <div class="footer-map">
@@ -406,9 +220,7 @@
             setTimeout(function() { doGTranslate(langPair) }, 500);
         } else {
             teCombo.value = lang;
-            if (typeof Event === 'function') {
-                teCombo.dispatchEvent(new Event('change', { bubbles: true }));
-            } else if (document.createEvent) {
+            if (document.createEvent) {
                 var evt = document.createEvent('HTMLEvents');
                 evt.initEvent('change', true, true);
                 teCombo.dispatchEvent(evt);
@@ -424,167 +236,12 @@
     }
   </script>
   <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit2"></script>
-  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-  <script>
-    AOS.init({
-      once: true,
-      offset: 100,
-      duration: 800
-    });
-  </script>
-  <script type="module" src="./main.js?v=7"></script>
 
-    <!-- AI Chatbot UI -->
-    <div id="ai-chat-widget">
-        <!-- Floating Action Button -->
-        <button id="ai-chat-btn" onclick="toggleChat()" title="Tanya AIRA">
-            <img src="/aira-avatar.jpg" alt="AIRA" class="chat-btn-avatar">
-            <span class="chat-btn-text">Tanya AIRA</span>
-        </button>
-
-        <!-- Chat Window -->
-        <div id="ai-chat-window" class="hidden">
-            <div class="chat-header">
-                <div class="chat-header-info">
-                    <div class="chat-header-avatar-box">
-                        <img src="/aira-avatar.jpg" alt="AIRA" class="chat-header-avatar">
-                    </div>
-                    <div>
-                        <h4 style="margin: 0; font-size: 1rem; font-weight: 800;">AIRA</h4>
-                        <span style="font-size: 0.75rem; opacity: 0.9;">Online 24 Jam</span>
-                    </div>
-                </div>
-                <div style="display: flex; align-items: center; gap: 10px;">
-                    <button onclick="window.showEmergencyCenter()" style="background:rgba(255,255,255,0.2); color:white; border:1px solid rgba(255,255,255,0.4); padding:6px 12px; border-radius:20px; font-weight:700; font-size:0.8rem; cursor:pointer; display:flex; align-items:center; gap:5px; transition:all 0.2s; backdrop-filter:blur(4px);" onmouseover="this.style.background='#ef4444'; this.style.borderColor='#ef4444'; this.style.transform='scale(1.05)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.borderColor='rgba(255,255,255,0.4)'; this.style.transform='scale(1)';">
-                        <i class="fa-solid fa-truck-medical"></i> SOS
-                    </button>
-                    <button onclick="toggleChat()" class="close-chat-btn" title="Tutup Chat"><i class="fa-solid fa-xmark"></i></button>
-                </div>
-            </div>
-            
-            <div id="chat-messages" class="chat-messages">
-                <div class="message ai-message">
-                    Halo Kak! 👋 Saya AIRA, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
-                </div>
-                <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
-                    <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami. 🙏<br><br>Sehubungan dengan peningkatan infrastruktur keamanan data Travel Lombok Airport, sistem otentikasi kami saat ini sedang dalam masa transisi. Hal tersebut menyebabkan fitur **Masuk (Login)** maupun **Pengaturan Ulang Kata Sandi (Reset Password)** belum dapat beroperasi secara optimal untuk beberapa akun.<br><br>Sebagai solusi alternatif yang cepat dan aman, **kami merekomendasikan Anda untuk melakukan Registrasi ulang menggunakan alamat email yang sama**.<br><br>Anda tidak perlu khawatir, seluruh riwayat dan data akun Anda akan secara otomatis tersinkronisasi kembali dengan sistem keamanan kami yang terbaru sesaat setelah pendaftaran berhasil dilakukan.<br><br>Terima kasih atas pengertian serta kepercayaan Anda dalam menggunakan layanan kami.')" class="ai-quick-reply-btn ai-btn-blue">
-                        <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Bantuan Akses Akun (Gagal Login / Reset Sandi)
-                    </button>
-                    <button onclick="window.showBugReportOptions()" class="ai-quick-reply-btn ai-btn-red">
-                        <i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px;"></i> Laporkan Masalah / Bug
-                    </button>
-                </div>
-            </div>
-
-            <!-- Guest limit banner - shown above input when limit reached -->
-            <div id="guest-limit-banner" style="display:none; padding: 0;">
-                <div style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #06b6d4 100%); padding: 14px 16px; text-align: center;">
-                    <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:6px;">
-                        <div style="width:30px;height:30px;background:rgba(255,255,255,0.2);border-radius:50%;display:flex;align-items:center;justify-content:center;">
-                            <i class="fa-solid fa-crown" style="color:#fbbf24;font-size:0.9rem;"></i>
-                        </div>
-                        <h4 style="margin:0;color:white;font-size:0.9rem;font-weight:700;">Batas Percakapan Tercapai</h4>
-                    </div>
-                    <p style="margin:0 0 10px;color:rgba(255,255,255,0.9);font-size:0.75rem;">Anda telah menggunakan 3 pertanyaan gratis. Login untuk bertanya <strong>tanpa batas!</strong></p>
-                    <button onclick="window.openAuthModal('login')" style="width:100%;background:white;color:#1e40af;border:none;padding:9px;border-radius:8px;cursor:pointer;font-weight:700;font-size:0.83rem;box-shadow:0 2px 8px rgba(0,0,0,0.15);">
-                        <i class="fa-solid fa-right-to-bracket" style="margin-right:5px;"></i> Masuk / Daftar Sekarang
-                    </button>
-                </div>
-            </div>
-
-            <div class="chat-footer-area" style="background: #ffffff; border-top: 1px solid #e2e8f0; flex-shrink: 0;">
-                <div class="chat-input-area" style="display: flex; gap: 5px; align-items: center; border-top: none; padding: 12px 14px 4px;">
-                    <input type="text" id="chat-input" placeholder="Tanya rekomendasi paket..." onkeypress="handleChatKeyPress(event)" style="flex: 1;">
-                    <button onclick="window.toggleVoiceInput()" id="mic-chat-btn" title="Gunakan Suara" style="background:transparent; color:#64748b; border:none; padding:10px; cursor:pointer; font-size:1.1rem; transition:color 0.3s;"><i class="fa-solid fa-microphone"></i></button>
-                    <button onclick="sendChatMessage()" id="send-chat-btn"><i class="fa-solid fa-paper-plane"></i></button>
-                </div>
-                <div class="chat-disclaimer" style="text-align: center; font-size: 0.68rem; color: #94a3b8; padding: 0 14px 8px; line-height: 1.25; user-select: none;">
-                    AIRA dapat membuat kesalahan. Harap periksa kembali informasi penting.
-                </div>
-            </div>
-        </div>
-    </div>
-
-  <!-- Gempa Modal -->
-  <div id="gempa-modal" class="tour-modal-overlay" style="z-index: 100000; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px);">
-    <div class="tour-modal-content" style="max-width: 450px; border-radius: 20px; overflow: hidden; padding: 0; max-height: 90vh; display: flex; flex-direction: column;">
-      <div id="gempa-header" style="background: linear-gradient(135deg, #f59e0b, #d97706); padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0;">
-        <h3 style="color: white; margin: 0; font-size: 1.1rem; display: flex; align-items: center; gap: 8px;"><i class="fa-solid fa-house-crack"></i> Info Gempa BMKG</h3>
-        <button onclick="document.getElementById('gempa-modal').classList.remove('active')" style="background: rgba(255,255,255,0.2); border: none; width: 30px; height: 30px; border-radius: 50%; color: white; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
-      </div>
-      <div style="padding: 20px; text-align: center; overflow-y: auto; flex-grow: 1;">
-        <div id="gempa-loading">
-          <i class="fa-solid fa-spinner fa-spin" style="font-size: 2rem; color: #dc2626; margin-bottom: 10px;"></i>
-          <p>Memuat data dari BMKG...</p>
-        </div>
-        <div id="gempa-content" style="display: none;">
-          <h2 id="gempa-mag" style="color: #dc2626; font-size: 2.5rem; font-weight: 900; margin: 0;"></h2>
-          <p style="color: #64748b; font-weight: 700; margin: 0 0 15px 0;">Skala Richter</p>
-          
-          <div style="background: #f8fafc; border-radius: 12px; padding: 15px; text-align: left; margin-bottom: 15px; border: 1px solid #e2e8f0;">
-            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-solid fa-location-dot" style="color: #dc2626; width: 20px;"></i> <strong id="gempa-wilayah"></strong></p>
-            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-regular fa-clock" style="color: #0284c7; width: 20px;"></i> <span id="gempa-waktu"></span></p>
-            <p style="margin: 0 0 8px 0; font-size: 0.85rem;"><i class="fa-solid fa-arrow-down-up-across-line" style="color: #16a34a; width: 20px;"></i> Kedalaman: <strong id="gempa-dalam"></strong></p>
-            <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-wave-square" style="color: #f59e0b; width: 20px;"></i> Potensi: <strong id="gempa-potensi"></strong></p>
-          </div>
-          
-          <img id="gempa-map" src="" alt="Peta Gempa BMKG" style="width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; min-height: 150px; background: #f1f5f9;">
-          
-          <p style="font-size: 0.7rem; color: #94a3b8; margin: 15px 0 0 0;">Sumber Data Terbuka: API BMKG Resmi</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // Fetch Gempa BMKG
-    document.addEventListener("DOMContentLoaded", function() {
-      fetch('https://data.bmkg.go.id/DataMKG/TEWS/autogempa.json')
-        .then(response => response.json())
-        .then(data => {
-          if (data && data.Infogempa && data.Infogempa.gempa) {
-            const gempa = data.Infogempa.gempa;
-            
-            // Tampilkan tombol Info Gempa di widget cuaca
-            const btnGempa = document.getElementById('btn-gempa');
-            if(btnGempa) {
-                btnGempa.style.display = 'inline-flex';
-                // Jika gempa > 5.0, tombol dibuat kedap-kedip untuk menarik perhatian
-                if(parseFloat(gempa.Magnitude) > 5.0) {
-                    btnGempa.style.animation = 'fa-beat 2s infinite';
-                }
-            }
-            
-            // Cek Potensi Tsunami
-            if (gempa.Potensi.toLowerCase().includes("tsunami")) {
-                const alertBanner = document.getElementById('tsunami-alert-banner');
-                if(alertBanner) {
-                    alertBanner.style.display = 'block';
-                    document.getElementById('tsunami-alert-text').innerText = "PERINGATAN DINI TSUNAMI: " + gempa.Wilayah + " (" + gempa.Magnitude + " SR)";
-                }
-                const gempaHeader = document.getElementById('gempa-header');
-                if(gempaHeader) {
-                    gempaHeader.style.background = 'linear-gradient(135deg, #dc2626, #991b1b)';
-                }
-            }
-
-            // Isi isi Modal Gempa
-            document.getElementById('gempa-mag').innerText = gempa.Magnitude;
-            document.getElementById('gempa-wilayah').innerText = gempa.Wilayah;
-            document.getElementById('gempa-waktu').innerText = gempa.Tanggal + " | " + gempa.Jam;
-            document.getElementById('gempa-dalam').innerText = gempa.Kedalaman;
-            document.getElementById('gempa-potensi').innerText = gempa.Potensi;
-            document.getElementById('gempa-map').src = "https://data.bmkg.go.id/DataMKG/TEWS/" + gempa.Shakemap;
-            
-            document.getElementById('gempa-loading').style.display = 'none';
-            document.getElementById('gempa-content').style.display = 'block';
-          }
-        })
-        .catch(err => console.error("Gagal memuat data BMKG:", err));
-    });
-  </script>
-
+  <script type="module" src="./main.js"></script>
 <script type="module" src="/pwa.js"></script>
 </body>
 </html>
+
+
+
+
