@@ -372,13 +372,14 @@ apiRoutes.post('/reviews', async (c) => {
     try {
         const db = getDb(c);
         const { name, rating, comment, itemId, photoUrl } = await c.req.json();
-        if (!name || !rating || !comment) {
-            return c.json({ error: 'Name, rating, and comment are required' }, 400);
+        if (!rating) {
+            return c.json({ error: 'Rating is required' }, 400);
         }
+        const numRating = Math.max(1, Math.min(5, Number(rating) || 5));
         const newReview = {
-            name,
-            rating: Number(rating),
-            comment,
+            name: (name && name.trim()) ? name.trim() : 'Pelanggan Terverifikasi',
+            rating: numRating,
+            comment: (comment && comment.trim()) ? comment.trim() : '',
             itemId: itemId || null,
             photoUrl: photoUrl || null,
             createdAt: new Date().toISOString(),

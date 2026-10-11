@@ -752,16 +752,40 @@ window.openTourModal = (id) => {
             </div>
         </div>
 
-        <div style="padding: 20px; background: white; border-top: 1px solid #e2e8f0;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <h3 style="font-size: 1.1rem; color: var(--text-dark); margin: 0;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Ulasan Pelanggan</h3>
-                <button onclick="window.toggleInlineReviewForm('${item.id}', '${item.title.replace(/'/g, "\\'")}')" class="btn btn-outline" style="border: 2px solid var(--primary-blue); color: var(--primary-blue); padding: 5px 12px; font-size: 0.8rem; border-radius: 6px;"><i class="fa-solid fa-pen"></i> Tulis Ulasan</button>
+        <div style="padding: 22px 20px; background: white; border-top: 1px solid #e2e8f0;">
+            <!-- Rating Box Header & Quick Interactive Stars -->
+            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 14px; padding: 16px 20px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
+                <div style="flex: 1; min-width: 180px;">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                        <h3 style="font-size: 1.05rem; color: #78350f; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Rating Pelanggan
+                        </h3>
+                        <span id="item-rating-score-${item.id}" style="background: #f59e0b; color: white; font-weight: 800; font-size: 0.8rem; padding: 2px 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);">
+                            ${item.rating ? item.rating : '5.0'} ★
+                        </span>
+                    </div>
+                    <div id="item-rating-subtitle-${item.id}" style="font-size: 0.8rem; color: #92400e;">
+                        Berdasarkan ${item.reviewCount || 0} rating penilaian
+                    </div>
+                </div>
+
+                <!-- 5 Clickable Stars (Hanya bintang aja!) -->
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
+                    <div style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
+                    <div id="star-bar-${item.id}" class="quick-item-stars" style="display: inline-flex; gap: 6px; font-size: 1.6rem; cursor: pointer; user-select: none;">
+                        <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 1)" onmouseover="window.previewItemStars('${item.id}', 1)" onmouseout="window.resetItemStars('${item.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="2" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 2)" onmouseover="window.previewItemStars('${item.id}', 2)" onmouseout="window.resetItemStars('${item.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="3" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 3)" onmouseover="window.previewItemStars('${item.id}', 3)" onmouseout="window.resetItemStars('${item.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="4" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 4)" onmouseover="window.previewItemStars('${item.id}', 4)" onmouseout="window.resetItemStars('${item.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="5" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 5)" onmouseover="window.previewItemStars('${item.id}', 5)" onmouseout="window.resetItemStars('${item.id}')"></i>
+                    </div>
+                    <div id="star-hint-${item.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px; text-align: right;"></div>
+                </div>
             </div>
-            <div id="inline-review-form-container-${item.id}" style="display: none; background: #f8fafc; padding: 15px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #e2e8f0;">
-                <!-- Form content will be injected here -->
-            </div>
-            <div id="item-reviews-container-${item.id}" style="display: flex; gap: 12px; overflow-x: auto; padding: 10px 5px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 10px;">
-                <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 20px 0; width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat ulasan...</p>
+
+            <!-- List of Ratings given -->
+            <div id="item-reviews-container-${item.id}" style="display: flex; gap: 10px; overflow-x: auto; padding: 8px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 5px;">
+                <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 12px 0; width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat rating...</p>
             </div>
             <style>
                 #item-reviews-container-${item.id}::-webkit-scrollbar { display: none; }
@@ -812,55 +836,70 @@ window.closeTourModal = () => {
     }
 };
 
-window.loadItemReviews = async (itemId) => {
-    const container = document.getElementById(`item-reviews-container-${itemId}`);
-    if (!container) return;
-    
-    try {
-        const res = await fetch(`${API_URL}/reviews?itemId=${itemId}`);
-        if (!res.ok) throw new Error('Failed to fetch item reviews');
-        const reviews = await res.json();
-        
-        if (reviews.length === 0) {
-            container.innerHTML = '<p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 10px 0;">Belum ada ulasan untuk paket ini. Jadilah yang pertama!</p>';
-            return;
+window.previewItemStars = (itemId, val) => {
+    const starBar = document.getElementById(`star-bar-${itemId}`);
+    if (!starBar) return;
+    const stars = starBar.querySelectorAll('.item-star');
+    stars.forEach(s => {
+        const idx = parseInt(s.getAttribute('data-idx'));
+        if (idx <= val) {
+            s.style.color = '#f59e0b';
+            s.style.transform = 'scale(1.15)';
+        } else {
+            s.style.color = '#cbd5e1';
+            s.style.transform = 'scale(1)';
         }
-        
-        container.innerHTML = reviews.map(r => {
-            let stars = '';
-            for (let i = 0; i < 5; i++) {
-                if (i < r.rating) stars += '<i class="fa-solid fa-star" style="color: #f59e0b; font-size:0.7rem;"></i>';
-                else stars += '<i class="fa-regular fa-star" style="color: #cbd5e1; font-size:0.7rem;"></i>';
+    });
+    const labels = [
+        '★ Kurang',
+        '★★ Cukup',
+        '★★★ Bagus',
+        '★★★★ Sangat Bagus',
+        '★★★★★ Luar Biasa!'
+    ];
+    const hint = document.getElementById(`star-hint-${itemId}`);
+    if (hint) hint.innerHTML = `<span style="color:#d97706; font-weight:700;">${labels[val - 1]}</span>`;
+};
+
+window.resetItemStars = (itemId) => {
+    const starBar = document.getElementById(`star-bar-${itemId}`);
+    if (!starBar) return;
+    const saved = localStorage.getItem('rated_item_' + itemId);
+    const stars = starBar.querySelectorAll('.item-star');
+    const hint = document.getElementById(`star-hint-${itemId}`);
+    
+    if (saved) {
+        const val = parseInt(saved);
+        stars.forEach(s => {
+            const idx = parseInt(s.getAttribute('data-idx'));
+            if (idx <= val) {
+                s.style.color = '#f59e0b';
+                s.style.transform = 'scale(1)';
+            } else {
+                s.style.color = '#cbd5e1';
+                s.style.transform = 'scale(1)';
             }
-            const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
-            return `
-            <div style="flex: 0 0 85%; max-width: 320px; scroll-snap-align: start; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 8px;">
-                    <div>
-                        <div style="font-weight: 700; font-size: 0.9rem; color: var(--text-dark);">${r.name}</div>
-                        <div style="display: flex; gap: 2px; margin-top: 2px;">${stars}</div>
-                    </div>
-                    <div style="font-size: 0.75rem; color: #94a3b8;">${dateStr}</div>
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-gray); margin: 0; line-height: 1.4;">${r.comment}</p>
-            </div>`;
-        }).join('');
-    } catch (e) {
-        console.error("Failed to load item reviews:", e);
-        container.innerHTML = '<p style="font-size: 0.85rem; color: #ef4444; text-align: center; padding: 10px 0;">Gagal memuat ulasan.</p>';
+        });
+        if (hint) hint.innerHTML = `<span style="color:#16a34a;"><i class="fa-solid fa-check"></i> Rating Anda: ${val}★ (Tersimpan)</span>`;
+    } else {
+        stars.forEach(s => {
+            s.style.color = '#cbd5e1';
+            s.style.transform = 'scale(1)';
+        });
+        if (hint) hint.innerHTML = '';
     }
 };
 
-window.toggleInlineReviewForm = (itemId, itemName) => {
-    const container = document.getElementById(`inline-review-form-container-${itemId}`);
-    if (!container) return;
+window.quickRateItem = async (itemId, ratingVal) => {
+    if (window._isSubmittingRating) return;
+    window._isSubmittingRating = true;
 
-    if (container.style.display === 'block') {
-        container.style.display = 'none';
-        return;
-    }
+    // Highlight stars immediately
+    window.previewItemStars(itemId, ratingVal);
+    const hint = document.getElementById(`star-hint-${itemId}`);
+    if (hint) hint.innerHTML = `<span style="color:#0284c7;"><i class="fa-solid fa-spinner fa-spin"></i> Menyimpan rating...</span>`;
 
-    let nameValue = '';
+    let nameValue = 'Pelanggan Terverifikasi';
     const userStr = localStorage.getItem('auth_user');
     if (userStr) {
         try {
@@ -870,50 +909,6 @@ window.toggleInlineReviewForm = (itemId, itemName) => {
         } catch(e) {}
     }
 
-    container.innerHTML = `
-        <div style="text-align: left;">
-            <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 15px;">Merekam ulasan untuk: <strong>${itemName}</strong></p>
-            <div class="form-group mb-2">
-                <label style="font-size:0.8rem; font-weight:600;">Nama Anda</label>
-                <input type="text" id="inline-review-name-${itemId}" class="form-control" style="font-size:0.85rem; padding: 6px 10px;" placeholder="Nama lengkap" value="${nameValue}">
-            </div>
-            <div class="form-group mb-2">
-                <label style="font-size:0.8rem; font-weight:600;">Rating (1-5)</label>
-                <select id="inline-review-rating-${itemId}" class="form-control" style="font-size:0.85rem; padding: 6px 10px;">
-                    <option value="5">⭐⭐⭐⭐⭐ (Sangat Bagus)</option>
-                    <option value="4">⭐⭐⭐⭐ (Bagus)</option>
-                    <option value="3">⭐⭐⭐ (Cukup)</option>
-                    <option value="2">⭐⭐ (Kurang)</option>
-                    <option value="1">⭐ (Sangat Kurang)</option>
-                </select>
-            </div>
-            <div class="form-group mb-3">
-                <label style="font-size:0.8rem; font-weight:600;">Ulasan Anda</label>
-                <textarea id="inline-review-comment-${itemId}" class="form-control" rows="3" style="font-size:0.85rem; padding: 6px 10px;" placeholder="Bagaimana pengalaman Anda?"></textarea>
-            </div>
-            <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                <button onclick="document.getElementById('inline-review-form-container-${itemId}').style.display = 'none'" class="btn btn-outline" style="border: 1px solid #cbd5e1; color: #64748b; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px;">Batal</button>
-                <button onclick="window.submitInlineReview('${itemId}')" id="btn-submit-inline-review-${itemId}" class="btn" style="background: var(--primary-green); color: white; padding: 6px 12px; font-size: 0.8rem; font-weight: 600; border-radius: 6px; border: none;">Kirim Ulasan</button>
-            </div>
-        </div>
-    `;
-    container.style.display = 'block';
-};
-
-window.submitInlineReview = async (itemId) => {
-    const btn = document.getElementById(`btn-submit-inline-review-${itemId}`);
-    const name = document.getElementById(`inline-review-name-${itemId}`).value.trim();
-    const rating = document.getElementById(`inline-review-rating-${itemId}`).value;
-    const comment = document.getElementById(`inline-review-comment-${itemId}`).value.trim();
-
-    if (!name || !comment) {
-        Swal.fire({ icon: 'warning', title: 'Oops...', text: 'Nama dan ulasan harus diisi!' });
-        return;
-    }
-
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengirim...';
-
     try {
         const authUser = JSON.parse(localStorage.getItem('auth_user') || 'null');
         const photoUrl = authUser && authUser.photoUrl ? authUser.photoUrl : null;
@@ -921,20 +916,125 @@ window.submitInlineReview = async (itemId) => {
         const res = await fetch(`${API_URL}/reviews`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ name, rating, comment, itemId, photoUrl })
+            body: JSON.stringify({
+                itemId,
+                rating: Number(ratingVal),
+                name: nameValue,
+                comment: '',
+                photoUrl
+            })
         });
 
-        if (!res.ok) throw new Error('Failed to submit');
+        if (!res.ok) throw new Error('Failed to submit rating');
 
-        document.getElementById(`inline-review-form-container-${itemId}`).style.display = 'none';
-        Swal.fire({ icon: 'success', title: 'Terima Kasih!', text: 'Ulasan Anda berhasil dikirim.', timer: 2000, showConfirmButton: false });
-        window.loadItemReviews(itemId);
+        // Save rating in localStorage
+        localStorage.setItem('rated_item_' + itemId, ratingVal);
+
+        if (hint) hint.innerHTML = `<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Terima kasih atas rating ${ratingVal}★!</span>`;
+
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'success',
+            title: `Rating ${ratingVal} Bintang Berhasil! ⭐`,
+            text: 'Terima kasih atas penilaian Anda!',
+            showConfirmButton: false,
+            timer: 2500,
+            timerProgressBar: true
+        });
+
+        // Reload reviews & update average score
+        await window.loadItemReviews(itemId);
     } catch (error) {
-        console.error("Submit review error:", error);
-        Swal.fire({ icon: 'error', title: 'Gagal', text: 'Terjadi kesalahan. Silakan coba lagi.' });
-        btn.disabled = false;
-        btn.innerHTML = 'Kirim Ulasan';
+        console.error("Quick rate error:", error);
+        if (hint) hint.innerHTML = `<span style="color:#ef4444;"><i class="fa-solid fa-circle-exclamation"></i> Gagal menyimpan rating.</span>`;
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: 'error',
+            title: 'Gagal mengirim rating',
+            text: 'Silakan coba lagi.',
+            showConfirmButton: false,
+            timer: 3000
+        });
+    } finally {
+        window._isSubmittingRating = false;
+        setTimeout(() => {
+            window.resetItemStars(itemId);
+        }, 3000);
     }
+};
+
+window.loadItemReviews = async (itemId) => {
+    const container = document.getElementById(`item-reviews-container-${itemId}`);
+    if (!container) return;
+    
+    try {
+        const res = await fetch(`${API_URL}/reviews?itemId=${itemId}`);
+        if (!res.ok) throw new Error('Failed to fetch item reviews');
+        const reviews = await res.json();
+        
+        // Update score badge and count
+        const scoreEl = document.getElementById(`item-rating-score-${itemId}`);
+        const subtitleEl = document.getElementById(`item-rating-subtitle-${itemId}`);
+        
+        if (reviews.length > 0) {
+            const avg = reviews.reduce((acc, r) => acc + (Number(r.rating) || 5), 0) / reviews.length;
+            const avgFormatted = avg.toFixed(1).replace('.0', '');
+            if (scoreEl) scoreEl.innerText = `${avgFormatted} ★`;
+            if (subtitleEl) subtitleEl.innerText = `Berdasarkan ${reviews.length} rating penilaian`;
+            
+            // Sync with globalItems
+            if (window.globalItems) {
+                const it = window.globalItems.find(i => i.id === itemId);
+                if (it) {
+                    it.rating = avgFormatted;
+                    it.reviewCount = reviews.length;
+                }
+            }
+        }
+        
+        // Initialize star display if previously rated
+        window.resetItemStars(itemId);
+
+        if (reviews.length === 0) {
+            container.innerHTML = '<p style="font-size: 0.82rem; color: #64748b; text-align: center; padding: 8px 0; width: 100%;">Belum ada rating. Ketuk bintang di atas untuk memberi rating pertama! ⭐</p>';
+            return;
+        }
+        
+        container.innerHTML = reviews.map(r => {
+            let stars = '';
+            const rVal = Number(r.rating) || 5;
+            for (let i = 0; i < 5; i++) {
+                if (i < rVal) stars += '<i class="fa-solid fa-star" style="color: #f59e0b; font-size:0.75rem;"></i>';
+                else stars += '<i class="fa-regular fa-star" style="color: #cbd5e1; font-size:0.75rem;"></i>';
+            }
+            const dateStr = r.createdAt ? new Date(r.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short', year: 'numeric'}) : '';
+            return `
+            <div style="flex: 0 0 auto; min-width: 140px; background: white; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 4px;">
+                    <span style="font-weight: 700; font-size: 0.8rem; color: #1e293b; max-width: 95px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r.name || 'Pelanggan'}</span>
+                    <span style="font-size: 0.68rem; color: #94a3b8;">${dateStr}</span>
+                </div>
+                <div style="display: flex; gap: 2px; align-items: center;">
+                    ${stars}
+                    <span style="font-size: 0.75rem; font-weight: 700; color: #d97706; margin-left: 4px;">${rVal}.0</span>
+                </div>
+                ${r.comment ? `<p style="font-size: 0.78rem; color: #64748b; margin: 4px 0 0; line-height: 1.3;">${r.comment}</p>` : ''}
+            </div>`;
+        }).join('');
+    } catch (e) {
+        console.error("Failed to load item reviews:", e);
+        container.innerHTML = '<p style="font-size: 0.82rem; color: #ef4444; text-align: center; padding: 8px 0; width: 100%;">Gagal memuat rating.</p>';
+    }
+};
+
+window.toggleInlineReviewForm = (itemId, itemName) => {
+    window.quickRateItem(itemId, 5);
+};
+
+window.submitInlineReview = async (itemId) => {
+    window.quickRateItem(itemId, 5);
 };
 
 window.applyPromo = async () => {

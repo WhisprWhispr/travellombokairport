@@ -356,18 +356,20 @@ router.get('/reviews', async (req, res) => {
 // POST a new review (public)
 router.post('/reviews', async (req, res) => {
     try {
-        const { name, rating, comment, itemId } = req.body;
-        if (!name || !rating || !comment) {
-            return res.status(400).json({ error: 'Name, rating, and comment are required' });
+        const { name, rating, comment, itemId, photoUrl } = req.body;
+        if (!rating) {
+            return res.status(400).json({ error: 'Rating is required' });
         }
         
+        const numRating = Math.max(1, Math.min(5, Number(rating) || 5));
         const newReview = {
-            name,
-            rating: Number(rating),
-            comment,
+            name: (name && name.trim()) ? name.trim() : 'Pelanggan Terverifikasi',
+            rating: numRating,
+            comment: (comment && comment.trim()) ? comment.trim() : '',
             createdAt: new Date().toISOString(),
             status: 'approved',
-            itemId: itemId || null
+            itemId: itemId || null,
+            photoUrl: photoUrl || null
         };
         
         const docRef = await db.collection('reviews').add(newReview);
