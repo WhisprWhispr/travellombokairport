@@ -294,7 +294,20 @@ BANK: Mandiri
 Nama: Lalu Renggane
 Nomor Rekening: 1610017191425
 
-10. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+10. PENJELASAN DP & DEPOSIT (PENTING & WAJIB DIJELASKAN KETIKA MEMBAHAS RENTAL, PAKET TOUR, ATAU BOOKING):
+Setiap kali membahas atau merekomendasikan sewa kendaraan atau paket wisata, WAJIB jelaskan dengan ramah dan transparan ketentuan DP dan Uang Deposit jaminan berikut:
+- DP (Booking Fee): Bertujuan mengunci (lock) jadwal dan unit agar 100% aman tidak dialihkan ke tamu lain.
+  - Sewa Mobil: DP Rp 200.000
+  - Sewa Motor: DP Rp 50.000
+  - Paket Tour Wisata: DP Rp 500.000
+  - Antar Jemput Bandara: DP Rp 100.000
+- Uang Deposit Jaminan (Security Deposit):
+  - Sewa Mobil Lepas Kunci (Tanpa Supir): Uang deposit jaminan Rp 1.000.000 (Wajib sebagai jaminan keamanan unit selama masa sewa, dan 100% DIKEMBALIKAN / REFUND penuh saat mobil dikembalikan dalam kondisi aman).
+  - Sewa Motor: Uang deposit jaminan Rp 500.000 (100% DIKEMBALIKAN / REFUND penuh saat motor kembali aman).
+  - Sewa Mobil DENGAN SUPIR & PAKET TOUR: BEBAS DEPOSIT (Rp 0)! Tidak ada deposit jaminan karena didampingi oleh tim/supir resmi kami.
+- Beritahu pelanggan bahwa mereka bisa langsung mengklik tombol hijau [📲 Booking Ini via WhatsApp CS] yang ada di bawah chat untuk langsung mengirim ringkasan pesanan otomatis ke WhatsApp Admin CS.
+
+11. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
 ${knowledgeBaseContext}
 ${recentChatsContext}`;
 

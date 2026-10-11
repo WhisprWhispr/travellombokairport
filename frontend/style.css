@@ -2674,4 +2674,190 @@ input:checked + .slider:before { transform: translateX(22px); }
   text-decoration: none !important;
 }
 
+/* --- AIRA WA AUTO-SUMMARY LEAD CTA & DP/DEPOSIT CARD --- */
+.aira-wa-lead-card {
+  margin-top: 14px;
+  background: linear-gradient(135deg, rgba(240, 253, 244, 0.98), rgba(236, 253, 245, 0.92));
+  border: 1.5px solid #86efac;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  position: relative;
+  overflow: hidden;
+  animation: airaFadeSlideUp 0.3s ease-out;
+  text-align: left;
+}
 
+@keyframes airaFadeSlideUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.aira-wa-lead-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.aira-wa-lead-pill {
+  background: #10b981;
+  color: #ffffff;
+  font-size: 0.68rem;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  box-shadow: 0 2px 6px rgba(16, 185, 129, 0.3);
+}
+
+.aira-wa-lead-sub {
+  font-size: 0.72rem;
+  color: #047857;
+  font-weight: 600;
+}
+
+.aira-wa-lead-action-btn {
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 6px 18px rgba(37, 211, 102, 0.35);
+  position: relative;
+  overflow: hidden;
+  text-align: left;
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  width: 100%;
+}
+
+.aira-wa-lead-action-btn::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 60%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transform: skewX(-20deg);
+  animation: airaShimmerLead 3.5s infinite;
+}
+
+@keyframes airaShimmerLead {
+  0% { left: -100%; }
+  25% { left: 160%; }
+  100% { left: 160%; }
+}
+
+.aira-wa-lead-action-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.45);
+  filter: brightness(1.04);
+}
+
+.aira-wa-lead-action-btn:active {
+  transform: scale(0.98);
+}
+
+.aira-wa-lead-btn-icon {
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.15));
+  animation: airaPulseScale 2s infinite ease-in-out;
+}
+
+@keyframes airaPulseScale {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
+
+.aira-wa-lead-btn-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.aira-wa-lead-btn-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: 0.2px;
+  line-height: 1.2;
+}
+
+.aira-wa-lead-btn-desc {
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.92);
+  font-weight: 500;
+  margin-top: 2px;
+}
+
+.aira-wa-lead-arrow {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+  transition: transform 0.2s;
+}
+
+.aira-wa-lead-action-btn:hover .aira-wa-lead-arrow {
+  transform: translateX(4px);
+  color: #ffffff;
+}
+
+.aira-wa-lead-terms-box {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(134, 239, 172, 0.8);
+  border-radius: 10px;
+  padding: 8px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.aira-wa-lead-terms-title {
+  font-size: 0.73rem;
+  font-weight: 800;
+  color: #065f46;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.aira-lead-terms-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 0.73rem;
+  color: #1e293b;
+  line-height: 1.35;
+}
+
+.aira-lead-badge-item {
+  display: inline-block;
+}
+
+.aira-wa-lead-terms-note {
+  font-size: 0.68rem;
+  color: #475569;
+  border-top: 1px dashed #cbd5e1;
+  padding-top: 5px;
+  margin-top: 2px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 600;
+}

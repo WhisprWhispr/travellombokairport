@@ -5320,6 +5320,192 @@ function renderAiraMiniCards(items) {
     `;
 }
 
+function shouldShowAiraWaLead(markdown, recommendedItems) {
+    if (recommendedItems && recommendedItems.length > 0) return true;
+    if (!markdown) return false;
+    const re = /(booking|pesan|sewa|rental|paket|tour|avanza|innova|hiace|brio|xpander|alphard|fortuner|motor|mobil|lepas kunci|driver|supir|sopir|jemput|antar jemput|transfer|bandara|dp|deposit|harga|tarif|biaya|tersedia|rekening|kunci jadwal)/i;
+    return re.test(markdown);
+}
+
+function renderAiraWaLeadCard(markdown, recommendedItems) {
+    const encodedText = encodeURIComponent(markdown || '').replace(/'/g, "\\'");
+    const lower = (markdown || '').toLowerCase();
+    
+    const isTour = (recommendedItems && recommendedItems.some(i => (i.category || '').toLowerCase() === 'package')) || lower.includes('tour') || lower.includes('paket');
+    const isMotor = (recommendedItems && recommendedItems.some(i => (i.category || '').toLowerCase() === 'motorcycle')) || lower.includes('motor') || lower.includes('nmax') || lower.includes('scoopy') || lower.includes('pcx');
+    const isWithDriver = lower.includes('dengan supir') || lower.includes('include supir') || lower.includes('dengan driver') || lower.includes('include driver');
+    
+    let highlightBadges = '';
+    if (isTour) {
+        highlightBadges = `
+            <div class="aira-lead-terms-row">
+                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 500rb (Kunci Armada & Guide)</span>
+                <span class="aira-lead-badge-item" style="color:#059669;"><strong>Deposit:</strong> Bebas Deposit (Rp 0)</span>
+            </div>
+        `;
+    } else if (isMotor) {
+        highlightBadges = `
+            <div class="aira-lead-terms-row">
+                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 50rb (Kunci Unit)</span>
+                <span class="aira-lead-badge-item"><strong>Deposit:</strong> Rp 500rb <em style="color:#059669;">(100% Refundable)</em></span>
+            </div>
+        `;
+    } else if (isWithDriver) {
+        highlightBadges = `
+            <div class="aira-lead-terms-row">
+                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 200rb (Kunci Mobil & Supir)</span>
+                <span class="aira-lead-badge-item" style="color:#059669;"><strong>Deposit:</strong> Bebas Deposit (Rp 0 include supir)</span>
+            </div>
+        `;
+    } else {
+        highlightBadges = `
+            <div class="aira-lead-terms-row">
+                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 200rb (Kunci Jadwal & Unit)</span>
+                <span class="aira-lead-badge-item"><strong>Deposit Lepas Kunci:</strong> Rp 1jt <em style="color:#059669;">(100% Refundable)</em></span>
+            </div>
+        `;
+    }
+
+    return `
+    <div class="aira-wa-lead-card">
+        <div class="aira-wa-lead-header">
+            <span class="aira-wa-lead-pill"><i class="fa-solid fa-bolt"></i> Auto-Summary Lead</span>
+            <span class="aira-wa-lead-sub">Teruskan chat ke CS & konfirmasi DP</span>
+        </div>
+        <button type="button" onclick="window.orderViaWhatsAppFromAira(this, '${encodedText}')" class="aira-wa-lead-action-btn" title="Lanjut Booking via WhatsApp CS">
+            <span class="aira-wa-lead-btn-icon"><i class="fa-brands fa-whatsapp"></i></span>
+            <div class="aira-wa-lead-btn-content">
+                <span class="aira-wa-lead-btn-title">📲 Booking Ini via WhatsApp CS</span>
+                <span class="aira-wa-lead-btn-desc">Buka WA dengan rangkuman detail pesanan otomatis</span>
+            </div>
+            <i class="fa-solid fa-arrow-right aira-wa-lead-arrow"></i>
+        </button>
+        <div class="aira-wa-lead-terms-box">
+            <div class="aira-wa-lead-terms-title">
+                <i class="fa-solid fa-shield-halved"></i> <strong>Ketentuan DP & Deposit Resmi:</strong>
+            </div>
+            ${highlightBadges}
+            <div class="aira-wa-lead-terms-note">
+                <i class="fa-solid fa-circle-check" style="color:#10b981;"></i> DP mengunci jadwal agar aman &bull; Deposit jaminan 100% kembali setelah sewa
+            </div>
+        </div>
+    </div>
+    `;
+}
+
+window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
+    let md = '';
+    try {
+        md = decodeURIComponent(encodedMarkdown || '');
+    } catch(e) {
+        md = encodedMarkdown || '';
+    }
+
+    // 1. Ambil pesan terakhir user dari chatHistory
+    let lastUserQuery = '';
+    if (typeof chatHistory !== 'undefined' && Array.isArray(chatHistory)) {
+        for (let i = chatHistory.length - 1; i >= 0; i--) {
+            if (chatHistory[i].role === 'user' && chatHistory[i].parts && chatHistory[i].parts[0]?.text) {
+                lastUserQuery = chatHistory[i].parts[0].text.trim();
+                break;
+            }
+        }
+    }
+
+    // 2. Deteksi item rekomendasi
+    const items = typeof detectRecommendedItems === 'function' ? detectRecommendedItems(md) : [];
+    let itemTitle = '';
+    let itemPrice = '';
+    let category = '';
+
+    if (items && items.length > 0) {
+        itemTitle = items.map(i => i.title).join(', ');
+        itemPrice = items.map(i => (typeof formatPrice === 'function' ? formatPrice(i.price) : `Rp ${Number(i.price || 0).toLocaleString('id-ID')}`)).join(', ');
+        category = (items[0].category || '').toLowerCase();
+    } else {
+        // Deteksi dari teks bila tidak ada ID eksplisit
+        const combined = (md + ' ' + lastUserQuery).toLowerCase();
+        if (combined.includes('avanza')) itemTitle = 'Toyota Avanza';
+        else if (combined.includes('innova zenix')) itemTitle = 'Toyota Innova Zenix';
+        else if (combined.includes('innova reborn')) itemTitle = 'Toyota Innova Reborn';
+        else if (combined.includes('innova')) itemTitle = 'Toyota Innova';
+        else if (combined.includes('hiace')) itemTitle = 'Toyota Hiace Commuter / Premio';
+        else if (combined.includes('brio')) itemTitle = 'Honda Brio';
+        else if (combined.includes('xpander')) itemTitle = 'Mitsubishi Xpander';
+        else if (combined.includes('fortuner')) itemTitle = 'Toyota Fortuner';
+        else if (combined.includes('alphard')) itemTitle = 'Toyota Alphard';
+        else if (combined.includes('nmax') || combined.includes('scoopy') || combined.includes('sewa motor') || combined.includes('rental motor')) itemTitle = 'Sewa Motor Lombok';
+        else if (combined.includes('tour') || combined.includes('paket')) itemTitle = 'Paket Tour Wisata Lombok';
+        else if (combined.includes('antar jemput') || combined.includes('bandara') || combined.includes('transfer')) itemTitle = 'Antar Jemput Bandara BIL (Airport Transfer)';
+        else itemTitle = 'Layanan Rekomendasi AIRA';
+    }
+
+    // Ekstraksi estimasi harga dari teks jika itemPrice belum terdeteksi
+    if (!itemPrice) {
+        const priceMatch = md.match(/Rp\s?[\d.,]+(?:\/\s?[a-zA-Z]+)?/i);
+        if (priceMatch) {
+            itemPrice = priceMatch[0];
+        }
+    }
+
+    const fullText = (md + ' ' + lastUserQuery).toLowerCase();
+    const isLepasKunci = fullText.includes('lepas kunci') || fullText.includes('tanpa driver') || fullText.includes('tanpa supir') || fullText.includes('tanpa sopir') || (!fullText.includes('dengan supir') && !fullText.includes('dengan driver') && !fullText.includes('include supir') && !fullText.includes('include driver'));
+    const isTour = category === 'package' || fullText.includes('tour') || fullText.includes('paket');
+    const isMotor = category === 'motorcycle' || fullText.includes('motor') || fullText.includes('nmax') || fullText.includes('scoopy') || fullText.includes('pcx');
+    const isTransfer = category === 'transfer' || category === 'airport' || fullText.includes('antar jemput') || fullText.includes('transfer bandara') || fullText.includes('drop bandara');
+
+    // Tentukan Rincian DP dan Deposit Jaminan
+    let dpDetail = 'Rp 200.000 (Kunci jadwal & unit mobil)';
+    let depositDetail = 'Rp 1.000.000 (100% Refund dikembalikan penuh saat unit kembali aman)';
+
+    if (isTour) {
+        dpDetail = 'Rp 500.000 (Kunci armada, jadwal & guide)';
+        depositDetail = 'Rp 0 (BEBAS DEPOSIT untuk Paket Tour)';
+    } else if (isMotor) {
+        dpDetail = 'Rp 50.000 (Kunci unit motor)';
+        depositDetail = 'Rp 500.000 (100% Refund dikembalikan penuh saat motor kembali aman)';
+    } else if (isTransfer) {
+        dpDetail = 'Rp 100.000 / Pelunasan langsung saat tiba';
+        depositDetail = 'Rp 0 (BEBAS DEPOSIT untuk Antar Jemput)';
+    } else if (!isLepasKunci) {
+        // Dengan Supir
+        dpDetail = 'Rp 200.000 (Kunci mobil & supir resmi)';
+        depositDetail = 'Rp 0 (BEBAS DEPOSIT karena didampingi supir resmi)';
+    }
+
+    // Susun pesan WhatsApp yang rapi dan profesional
+    let waMsg = `Halo CS Travel Lombok Airport, 👋\n` +
+                 `Saya mau booking sesuai rekomendasi AIRA:\n\n` +
+                 `📌 *Layanan:* ${itemTitle}\n`;
+
+    if (itemPrice) {
+        waMsg += `💰 *Estimasi Tarif:* ${itemPrice}\n`;
+    }
+
+    if (lastUserQuery) {
+        const cleanQuery = lastUserQuery.replace(/[\r\n]+/g, ' ').trim();
+        const displayQuery = cleanQuery.length > 140 ? cleanQuery.substring(0, 137) + '...' : cleanQuery;
+        waMsg += `📝 *Kebutuhan Saya:* "${displayQuery}"\n`;
+    }
+
+    waMsg += `\nℹ️ *Ketentuan Pembayaran (DP & Deposit):*\n` +
+             `• *DP (Booking Fee):* ${dpDetail}\n` +
+             `• *Deposit Jaminan:* ${depositDetail}\n\n` +
+             `Apakah unit dan jadwal tersebut masih tersedia? Mohon info nomor rekening resmi admin untuk konfirmasi pembayaran DP. Terima kasih! 🙏`;
+
+    const adminWa = '6289676963255';
+    const targetUrl = `https://wa.me/${adminWa}?text=${encodeURIComponent(waMsg)}`;
+    
+    if (btnElem) {
+        btnElem.style.transform = 'scale(0.97)';
+        setTimeout(() => {
+            if (btnElem) btnElem.style.transform = '';
+        }, 150);
+    }
+
+    window.open(targetUrl, '_blank');
+};
+
 function parseMarkdownToHTML(markdown, isTyping = false) {
     let html = markdown;
     // Bold
@@ -5340,6 +5526,11 @@ function parseMarkdownToHTML(markdown, isTyping = false) {
         const recommendedItems = detectRecommendedItems(markdown);
         if (recommendedItems.length > 0) {
             html += renderAiraMiniCards(recommendedItems);
+        }
+
+        // WhatsApp Auto-Summary Lead Button & DP/Deposit Note
+        if (shouldShowAiraWaLead(markdown, recommendedItems)) {
+            html += renderAiraWaLeadCard(markdown, recommendedItems);
         }
 
         // Tambahkan tombol copy pesan
