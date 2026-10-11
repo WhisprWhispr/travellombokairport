@@ -2191,10 +2191,10 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 .close-chat-btn {
-    background: rgba(255, 255, 255, 0.2);
-    border: none;
+    background: rgba(255, 255, 255, 0.22);
+    border: 1px solid rgba(255, 255, 255, 0.35);
     color: white;
-    font-size: 1rem;
+    font-size: 0.95rem;
     cursor: pointer;
     width: 32px;
     height: 32px;
@@ -2202,13 +2202,67 @@ input:checked + .slider:before { transform: translateX(22px); }
     display: flex;
     justify-content: center;
     align-items: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    backdrop-filter: blur(4px);
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
 
 .close-chat-btn:hover {
-    background: rgba(255, 255, 255, 0.35);
-    transform: scale(1.1) rotate(90deg);
+    background: rgba(255, 255, 255, 0.38);
+    transform: translateY(2px) scale(1.08);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.close-chat-btn:active {
+    transform: translateY(3px) scale(0.96);
+}
+
+.close-chat-btn i {
+    transition: transform 0.2s ease;
+}
+
+.close-chat-btn:hover i {
+    transform: translateY(1.5px);
+}
+
+/* --- EVENT BANNER DISMISS BUTTON --- */
+.event-banner-close-btn {
+    background: rgba(255, 255, 255, 0.24);
+    border: 1px solid rgba(255, 255, 255, 0.45);
+    color: #ffffff;
+    cursor: pointer;
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.82rem;
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    backdrop-filter: blur(6px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.event-banner-close-btn:hover {
+    background: rgba(255, 255, 255, 0.42);
+    transform: translateY(-50%) translateY(2px) scale(1.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.event-banner-close-btn:active {
+    transform: translateY(-50%) translateY(3px) scale(0.95);
+}
+
+.event-banner-close-btn i {
+    transition: transform 0.2s ease;
+}
+
+.event-banner-close-btn:hover i {
+    transform: translateY(1.5px);
 }
 
 .chat-messages {

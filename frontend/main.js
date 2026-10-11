@@ -125,12 +125,14 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                 const eventBanner = document.createElement('div');
                 eventBanner.id = 'event-mode-banner';
                 eventBanner.innerHTML = `
-                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 40px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2);">
+                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${data.eventName ? `EVENT: <strong>${data.eventName}</strong> —` : 'HIGH SEASON!'} 
                         Harga Motor & Mobil naik <strong>Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')}</strong>/unit &nbsp;|&nbsp; 
                         <i class="fa-solid fa-calendar-days"></i> Min. sewa <strong>4 Hari</strong>
-                        <button onclick="this.parentElement.parentElement.remove(); document.getElementById('event-chat-fix')?.remove();" style="background: none; border: none; color: white; opacity: 0.8; cursor: pointer; position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; padding: 5px;" title="Tutup">✕</button>
+                        <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
                     </div>
                 `;
                 // Insert at top of body
@@ -150,6 +152,19 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     }
                 `;
                 document.head.appendChild(styleObj);
+
+                window.dismissEventBanner = () => {
+                    const banner = document.getElementById('event-mode-banner');
+                    if (banner) {
+                        banner.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
+                        banner.style.transform = 'translateY(100%)';
+                        banner.style.opacity = '0';
+                        setTimeout(() => {
+                            banner.remove();
+                            document.getElementById('event-chat-fix')?.remove();
+                        }, 350);
+                    }
+                };
 
                 // Show professional popup for event
                 if (!sessionStorage.getItem('eventPopupShown')) {
