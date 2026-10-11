@@ -5327,44 +5327,154 @@ function shouldShowAiraWaLead(markdown, recommendedItems) {
     return re.test(markdown);
 }
 
+// Helper cerdas: Klasifikasi kategori layanan (Mobil, Motor, Tour, Transfer) secara akurat
+function getLeadServiceClassification(items, markdown, userQuery) {
+    const uq = (userQuery || '').toLowerCase();
+    const md = (markdown || '').toLowerCase();
+
+    // 1. Cek dari items rekomendasi jika ada (prioritas tertinggi)
+    if (items && items.length > 0) {
+        const itemCategories = items.map(i => (i.category || '').toLowerCase());
+        const itemTitles = items.map(i => (i.title || '').toLowerCase()).join(' ');
+
+        if (itemCategories.includes('car') || itemCategories.includes('mobil') ||
+            /(avanza|innova|hiace|brio|xpander|alphard|fortuner|calya|sigra|raize|rocky|agya|ayla|ertiga|xl7|mobil)/i.test(itemTitles)) {
+            return 'mobil';
+        }
+        if (itemCategories.includes('motorcycle') || itemCategories.includes('motor') ||
+            /(nmax|scoopy|pcx|vario|beat|aerox|vespa|fazzio|motor)/i.test(itemTitles)) {
+            return 'motor';
+        }
+        if (itemCategories.includes('package') || itemCategories.includes('tour') ||
+            /(tour|paket wisata|honeymoon|private trip|snorkeling)/i.test(itemTitles)) {
+            return 'tour';
+        }
+        if (itemCategories.includes('transfer') || itemCategories.includes('airport')) {
+            return 'transfer';
+        }
+    }
+
+    // 2. Cek dari pertanyaan user langsung
+    if (/(avanza|innova|hiace|brio|xpander|alphard|fortuner|calya|sigra|raize|rocky|agya|ayla|ertiga|xl7|mobil|sewa mobil|rental mobil)/i.test(uq)) {
+        return 'mobil';
+    }
+    if (/(nmax|scoopy|pcx|vario|beat|aerox|vespa|fazzio|motor|sewa motor|rental motor)/i.test(uq)) {
+        return 'motor';
+    }
+    if (/(antar jemput|drop off|pick up|jemput bandara|antar bandara|transfer bandara)/i.test(uq)) {
+        return 'transfer';
+    }
+    if (/(paket tour|paket wisata|private trip|honeymoon|tour lombok)/i.test(uq)) {
+        return 'tour';
+    }
+
+    // 3. Cek spesifik dari markdown AI
+    if (/(avanza|innova|hiace|brio|xpander|alphard|fortuner|calya|sigra|sewa mobil|rental mobil)/i.test(md)) {
+        return 'mobil';
+    }
+    if (/(sewa motor|rental motor|nmax|scoopy|pcx|vario|beat)/i.test(md)) {
+        return 'motor';
+    }
+    if (/(antar jemput bandara|transfer bandara)/i.test(md)) {
+        return 'transfer';
+    }
+    if (/(paket tour|paket wisata|private trip|honeymoon trip)/i.test(md)) {
+        return 'tour';
+    }
+
+    return 'mobil';
+}
+
+function getIsWithDriver(items, markdown, userQuery) {
+    const text = ((userQuery || '') + ' ' + (markdown || '')).toLowerCase();
+    if (/(lepas kunci|tanpa supir|tanpa driver|tanpa sopir|self drive|self-drive)/i.test(text)) {
+        return false;
+    }
+    if (/(dengan supir|dengan driver|dengan sopir|include supir|include driver|all in|all-in|plus supir|plus driver)/i.test(text)) {
+        return true;
+    }
+    if (items && items.length > 0) {
+        if (items.some(i => i.driverOptions && i.driverOptions !== 'Tidak Include Driver')) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function getServicePaymentTerms(category, withDriver) {
+    if (category === 'mobil') {
+        if (withDriver) {
+            return {
+                dp: 'Rp 200.000 (Kunci mobil & supir resmi)',
+                deposit: 'Rp 0 (BEBAS DEPOSIT karena didampingi supir resmi)',
+                badgeDp: 'Rp 200rb (Kunci Mobil & Supir)',
+                badgeDeposit: 'Bebas Deposit (Rp 0 include driver)'
+            };
+        } else {
+            return {
+                dp: 'Rp 200.000 (Kunci jadwal & unit mobil)',
+                deposit: 'Rp 1.000.000 (100% Refund dikembalikan penuh saat mobil kembali aman)',
+                badgeDp: 'Rp 200rb (Kunci Jadwal & Unit)',
+                badgeDeposit: 'Rp 1jt (100% Refundable)'
+            };
+        }
+    } else if (category === 'motor') {
+        return {
+            dp: 'Rp 50.000 (Kunci unit motor)',
+            deposit: 'Rp 500.000 (100% Refund dikembalikan penuh saat motor kembali aman)',
+            badgeDp: 'Rp 50rb (Kunci Unit)',
+            badgeDeposit: 'Rp 500rb (100% Refundable)'
+        };
+    } else if (category === 'tour') {
+        return {
+            dp: 'Rp 500.000 (Kunci armada, jadwal & guide)',
+            deposit: 'Rp 0 (BEBAS DEPOSIT untuk Paket Tour)',
+            badgeDp: 'Rp 500rb (Kunci Armada & Guide)',
+            badgeDeposit: 'Bebas Deposit (Rp 0)'
+        };
+    } else if (category === 'transfer') {
+        return {
+            dp: 'Rp 100.000 / Pelunasan saat tiba',
+            deposit: 'Rp 0 (BEBAS DEPOSIT untuk Antar Jemput)',
+            badgeDp: 'Rp 100rb / Pelunasan Tiba',
+            badgeDeposit: 'Bebas Deposit (Rp 0)'
+        };
+    }
+    return {
+        dp: 'Rp 200.000 (Kunci jadwal & unit mobil)',
+        deposit: 'Rp 1.000.000 (100% Refund dikembalikan penuh saat mobil kembali aman)',
+        badgeDp: 'Rp 200rb (Kunci Jadwal & Unit)',
+        badgeDeposit: 'Rp 1jt (100% Refundable)'
+    };
+}
+
 function renderAiraWaLeadCard(markdown, recommendedItems) {
     const encodedText = encodeURIComponent(markdown || '').replace(/'/g, "\\'");
-    const lower = (markdown || '').toLowerCase();
     
-    const isTour = (recommendedItems && recommendedItems.some(i => (i.category || '').toLowerCase() === 'package')) || lower.includes('tour') || lower.includes('paket');
-    const isMotor = (recommendedItems && recommendedItems.some(i => (i.category || '').toLowerCase() === 'motorcycle')) || lower.includes('motor') || lower.includes('nmax') || lower.includes('scoopy') || lower.includes('pcx');
-    const isWithDriver = lower.includes('dengan supir') || lower.includes('include supir') || lower.includes('dengan driver') || lower.includes('include driver');
-    
-    let highlightBadges = '';
-    if (isTour) {
-        highlightBadges = `
-            <div class="aira-lead-terms-row">
-                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 500rb (Kunci Armada & Guide)</span>
-                <span class="aira-lead-badge-item" style="color:#059669;"><strong>Deposit:</strong> Bebas Deposit (Rp 0)</span>
-            </div>
-        `;
-    } else if (isMotor) {
-        highlightBadges = `
-            <div class="aira-lead-terms-row">
-                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 50rb (Kunci Unit)</span>
-                <span class="aira-lead-badge-item"><strong>Deposit:</strong> Rp 500rb <em style="color:#059669;">(100% Refundable)</em></span>
-            </div>
-        `;
-    } else if (isWithDriver) {
-        highlightBadges = `
-            <div class="aira-lead-terms-row">
-                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 200rb (Kunci Mobil & Supir)</span>
-                <span class="aira-lead-badge-item" style="color:#059669;"><strong>Deposit:</strong> Bebas Deposit (Rp 0 include supir)</span>
-            </div>
-        `;
-    } else {
-        highlightBadges = `
-            <div class="aira-lead-terms-row">
-                <span class="aira-lead-badge-item"><strong>DP:</strong> Rp 200rb (Kunci Jadwal & Unit)</span>
-                <span class="aira-lead-badge-item"><strong>Deposit Lepas Kunci:</strong> Rp 1jt <em style="color:#059669;">(100% Refundable)</em></span>
-            </div>
-        `;
+    // Ambil lastUserQuery jika ada
+    let lastUserQuery = '';
+    if (typeof chatHistory !== 'undefined' && Array.isArray(chatHistory)) {
+        for (let i = chatHistory.length - 1; i >= 0; i--) {
+            if (chatHistory[i].role === 'user' && chatHistory[i].parts && chatHistory[i].parts[0]?.text) {
+                lastUserQuery = chatHistory[i].parts[0].text.trim();
+                break;
+            }
+        }
     }
+
+    const category = getLeadServiceClassification(recommendedItems, markdown, lastUserQuery);
+    const withDriver = getIsWithDriver(recommendedItems, markdown, lastUserQuery);
+    const terms = getServicePaymentTerms(category, withDriver);
+
+    const isFreeDeposit = terms.deposit.includes('BEBAS DEPOSIT');
+    const depositClass = isFreeDeposit ? 'style="color:#059669;"' : '';
+
+    const highlightBadges = `
+        <div class="aira-lead-terms-row">
+            <span class="aira-lead-badge-item"><strong>DP:</strong> ${terms.badgeDp}</span>
+            <span class="aira-lead-badge-item" ${depositClass}><strong>Deposit Jaminan:</strong> ${terms.badgeDeposit}</span>
+        </div>
+    `;
 
     return `
     <div class="aira-wa-lead-card">
@@ -5416,15 +5526,48 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
     const items = typeof detectRecommendedItems === 'function' ? detectRecommendedItems(md) : [];
     let itemTitle = '';
     let itemPrice = '';
-    let category = '';
+
+    // Deteksi durasi hari
+    let durationDays = 0;
+    const durMatch = ((lastUserQuery || '') + ' ' + (md || '')).match(/(\d+)\s*(?:hari|day|h\b)/i);
+    if (durMatch) {
+        durationDays = parseInt(durMatch[1], 10);
+    }
 
     if (items && items.length > 0) {
-        itemTitle = items.map(i => i.title).join(', ');
-        itemPrice = items.map(i => (typeof formatPrice === 'function' ? formatPrice(i.price) : `Rp ${Number(i.price || 0).toLocaleString('id-ID')}`)).join(', ');
-        category = (items[0].category || '').toLowerCase();
+        itemTitle = items.map(i => i.title).join(' / ');
+        const prices = items.map(i => Number(i.price || 0)).filter(p => p > 0);
+        
+        if (prices.length === 1) {
+            const p = prices[0];
+            const pFmt = typeof formatPrice === 'function' ? formatPrice(p) : `Rp ${p.toLocaleString('id-ID')}`;
+            if (durationDays > 1) {
+                const totalP = p * durationDays;
+                const totalFmt = typeof formatPrice === 'function' ? formatPrice(totalP) : `Rp ${totalP.toLocaleString('id-ID')}`;
+                itemPrice = `${pFmt} / hari (Total ${durationDays} Hari: ${totalFmt})`;
+            } else {
+                itemPrice = `${pFmt} / hari`;
+            }
+        } else if (prices.length > 1) {
+            const minP = Math.min(...prices);
+            const maxP = Math.max(...prices);
+            const minFmt = typeof formatPrice === 'function' ? formatPrice(minP) : `Rp ${minP.toLocaleString('id-ID')}`;
+            const maxFmt = typeof formatPrice === 'function' ? formatPrice(maxP) : `Rp ${maxP.toLocaleString('id-ID')}`;
+            if (durationDays > 1) {
+                const totalMin = minP * durationDays;
+                const totalMax = maxP * durationDays;
+                const totalMinFmt = typeof formatPrice === 'function' ? formatPrice(totalMin) : `Rp ${totalMin.toLocaleString('id-ID')}`;
+                const totalMaxFmt = typeof formatPrice === 'function' ? formatPrice(totalMax) : `Rp ${totalMax.toLocaleString('id-ID')}`;
+                itemPrice = `${minFmt} - ${maxFmt} / hari (Total ${durationDays} Hari: ${totalMinFmt} - ${totalMaxFmt})`;
+            } else {
+                itemPrice = `${minFmt} - ${maxFmt} / hari`;
+            }
+        } else {
+            itemPrice = items.map(i => (typeof formatPrice === 'function' ? formatPrice(i.price) : `Rp ${Number(i.price || 0).toLocaleString('id-ID')}`)).join(', ');
+        }
     } else {
         // Deteksi dari teks bila tidak ada ID eksplisit
-        const combined = (md + ' ' + lastUserQuery).toLowerCase();
+        const combined = (lastUserQuery + ' ' + md).toLowerCase();
         if (combined.includes('avanza')) itemTitle = 'Toyota Avanza';
         else if (combined.includes('innova zenix')) itemTitle = 'Toyota Innova Zenix';
         else if (combined.includes('innova reborn')) itemTitle = 'Toyota Innova Reborn';
@@ -5445,33 +5588,16 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
         const priceMatch = md.match(/Rp\s?[\d.,]+(?:\/\s?[a-zA-Z]+)?/i);
         if (priceMatch) {
             itemPrice = priceMatch[0];
+            if (durationDays > 1 && !itemPrice.includes('Total')) {
+                itemPrice += ` (Durasi ${durationDays} Hari)`;
+            }
         }
     }
 
-    const fullText = (md + ' ' + lastUserQuery).toLowerCase();
-    const isLepasKunci = fullText.includes('lepas kunci') || fullText.includes('tanpa driver') || fullText.includes('tanpa supir') || fullText.includes('tanpa sopir') || (!fullText.includes('dengan supir') && !fullText.includes('dengan driver') && !fullText.includes('include supir') && !fullText.includes('include driver'));
-    const isTour = category === 'package' || fullText.includes('tour') || fullText.includes('paket');
-    const isMotor = category === 'motorcycle' || fullText.includes('motor') || fullText.includes('nmax') || fullText.includes('scoopy') || fullText.includes('pcx');
-    const isTransfer = category === 'transfer' || category === 'airport' || fullText.includes('antar jemput') || fullText.includes('transfer bandara') || fullText.includes('drop bandara');
-
-    // Tentukan Rincian DP dan Deposit Jaminan
-    let dpDetail = 'Rp 200.000 (Kunci jadwal & unit mobil)';
-    let depositDetail = 'Rp 1.000.000 (100% Refund dikembalikan penuh saat unit kembali aman)';
-
-    if (isTour) {
-        dpDetail = 'Rp 500.000 (Kunci armada, jadwal & guide)';
-        depositDetail = 'Rp 0 (BEBAS DEPOSIT untuk Paket Tour)';
-    } else if (isMotor) {
-        dpDetail = 'Rp 50.000 (Kunci unit motor)';
-        depositDetail = 'Rp 500.000 (100% Refund dikembalikan penuh saat motor kembali aman)';
-    } else if (isTransfer) {
-        dpDetail = 'Rp 100.000 / Pelunasan langsung saat tiba';
-        depositDetail = 'Rp 0 (BEBAS DEPOSIT untuk Antar Jemput)';
-    } else if (!isLepasKunci) {
-        // Dengan Supir
-        dpDetail = 'Rp 200.000 (Kunci mobil & supir resmi)';
-        depositDetail = 'Rp 0 (BEBAS DEPOSIT karena didampingi supir resmi)';
-    }
+    // Klasifikasi kategori yang akurat
+    const category = getLeadServiceClassification(items, md, lastUserQuery);
+    const withDriver = getIsWithDriver(items, md, lastUserQuery);
+    const terms = getServicePaymentTerms(category, withDriver);
 
     // Susun pesan WhatsApp yang rapi dan profesional
     let waMsg = `Halo CS Travel Lombok Airport, 👋\n` +
@@ -5489,8 +5615,8 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
     }
 
     waMsg += `\nℹ️ *Ketentuan Pembayaran (DP & Deposit):*\n` +
-             `• *DP (Booking Fee):* ${dpDetail}\n` +
-             `• *Deposit Jaminan:* ${depositDetail}\n\n` +
+             `• *DP (Booking Fee):* ${terms.dp}\n` +
+             `• *Deposit Jaminan:* ${terms.deposit}\n\n` +
              `Apakah unit dan jadwal tersebut masih tersedia? Mohon info nomor rekening resmi admin untuk konfirmasi pembayaran DP. Terima kasih! 🙏`;
 
     const adminWa = '6289676963255';
