@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-Bzkf6sd0.js"></script>
+  <script type="module" crossorigin src="/assets/admin-uOoeiInR.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
-  <link rel="modulepreload" crossorigin href="/assets/pwa-DYmKx9RI.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-DnYVAvpH.css">
+  <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-C0UTB2JG.css">
 </head>
   <body class="admin-body bg-light">
     
@@ -617,40 +617,42 @@
                   @media (max-width: 600px) {
                     .license-grid-responsive { 
                       display: grid !important; 
-                      grid-template-rows: 1fr 1fr; /* 2 Rows */
-                      grid-auto-columns: 240px; /* Card width */
-                      grid-auto-flow: column; /* Flow horizontally */
-                      overflow-x: auto; 
-                      gap: 12px;
-                      padding-bottom: 15px; 
-                      -webkit-overflow-scrolling: touch; 
-                      scroll-snap-type: x mandatory;
-                      margin-right: -30px; /* Break out of parent padding */
-                      padding-right: 30px;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 8px;
+                      margin-bottom: 12px;
                     }
                     .license-grid-responsive > div {
-                      scroll-snap-align: start;
-                      padding: 12px 14px !important;
+                      padding: 10px !important;
+                      min-width: 0;
+                    }
+                    .license-grid-responsive > div > div {
+                      white-space: normal !important;
+                      flex-wrap: wrap;
+                      word-break: break-word;
+                    }
+                    .license-grid-responsive > div > div:first-child {
+                      font-size: 0.6rem !important;
+                    }
+                    .license-grid-responsive > div > div:last-child {
+                      font-size: 0.8rem !important;
                     }
                     .license-id-card-responsive { 
-                      grid-column: auto !important; /* Reset span 2 */
-                      grid-row: span 2; /* Make it a tall card taking 2 rows */
+                      grid-column: span 2 !important; 
+                      padding: 10px !important;
                     }
                     .license-rights-grid { 
-                      display: flex !important;
-                      flex-wrap: nowrap;
-                      overflow-x: auto;
-                      gap: 12px;
-                      padding-bottom: 15px;
-                      -webkit-overflow-scrolling: touch;
-                      scroll-snap-type: x mandatory;
-                      margin-right: -30px;
-                      padding-right: 30px;
+                      display: grid !important;
+                      grid-template-columns: 1fr;
+                      gap: 10px;
+                      margin-bottom: 15px;
                     }
                     .license-rights-grid > div {
-                      min-width: 280px;
-                      flex-shrink: 0;
-                      scroll-snap-align: start;
+                      padding: 12px !important;
+                    }
+                    .license-rights-grid > div > div:last-child {
+                      display: grid;
+                      grid-template-columns: 1fr 1fr;
+                      gap: 4px 12px;
                     }
                   }
                 </style>
@@ -699,7 +701,7 @@
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Developed By</div>
                     <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px; white-space: nowrap;">
-                      <i class="fa-solid fa-user-astronaut" style="color: #a855f7; font-size: 0.85rem;"></i> Ridho Sandhika
+                      <i class="fa-solid fa-user-astronaut" style="color: #a855f7; font-size: 0.85rem;"></i> Ridho Sandhika & Suppandi
                     </div>
                   </div>
                   <div class="license-id-card-responsive">
@@ -742,7 +744,7 @@
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Expiration Date</div>
                     <div style="font-size: 1rem; font-weight: 800; color: #ef4444; display: flex; align-items: center; gap: 6px;">
-                      20-08-2027
+                      09-07-2027
                     </div>
                   </div>
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
@@ -754,7 +756,7 @@
                   <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 14px 16px;">
                     <div style="font-size: 0.7rem; color: #94a3b8; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px;">Verification Method</div>
                     <div style="font-size: 1rem; font-weight: 800; color: #f1f5f9; display: flex; align-items: center; gap: 6px;">
-                      Server-Side Validation*
+                      Server-Side Validation
                     </div>
                   </div>
                 </div>
@@ -767,8 +769,8 @@
                       <div style="color: #6ee7b7;">✓ Authorized Domain Usage</div>
                       <div style="color: #6ee7b7;">✓ Commercial Operation</div>
                       <div style="color: #6ee7b7;">✓ Authorized User Access</div>
-                      <div style="color: #6ee7b7;">✓ Software Updates*</div>
-                      <div style="color: #6ee7b7;">✓ Technical Support*</div>
+                      <div style="color: #6ee7b7;">✓ Software Updates</div>
+                      <div style="color: #6ee7b7;">✓ Technical Support</div>
                     </div>
                   </div>
                   <div style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); border-radius: 12px; padding: 16px;">
