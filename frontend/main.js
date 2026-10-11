@@ -2620,11 +2620,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 window.history.replaceState({}, document.title, window.location.pathname);
                 
-                if (isFleet) {
-                    openCheckoutModal(item.title, item.price);
-                } else {
-                    openTourModal(item.id);
-                }
+                openTourModal(item.id);
             }
         }
     });
