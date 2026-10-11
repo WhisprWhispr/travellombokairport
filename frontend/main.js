@@ -5211,11 +5211,14 @@ window.toggleChat = async () => {
         document.getElementById('chat-input').focus();
         // Check and show guest limit card if needed
         window.checkGuestLimit();
+        // Update Voice TTS button UI
+        window.updateAiraTTSButtonUI();
         // Scroll to bottom
         if (msgs) msgs.scrollTop = msgs.scrollHeight;
     } else {
         if (airaRatingInterval) clearInterval(airaRatingInterval);
         if (airaRatingTimeout) clearTimeout(airaRatingTimeout);
+        window.stopAiraSpeech();
     }
 };
 
@@ -5224,6 +5227,139 @@ window.handleChatKeyPress = (event) => {
         window.sendChatMessage();
     }
 };
+
+// --- AIRA VOICE RESPONSE (TTS - TEXT TO SPEECH) ---
+let currentSpeakingBtn = null;
+
+function cleanTextForSpeech(text) {
+    if (!text) return '';
+    return text
+        .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1') // [link](url) -> link
+        .replace(/https?:\/\/\S+/gi, '') // remove urls
+        .replace(/[*_#`~>]/g, '') // remove markdown symbols
+        .replace(/[\u{1F600}-\u{1F64F}\u{1F300}-\u{1F5FF}\u{1F680}-\u{1F6FF}\u{1F1E0}-\u{1F1FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '') // remove emojis
+        .replace(/[-•]\s+/g, ', ') // convert bullet points to natural pauses
+        .replace(/\n+/g, '. ') // convert line breaks to periods
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
+window.isAiraTTSEnabled = () => {
+    // Default enabled unless explicitly turned off
+    return localStorage.getItem('aira_tts_enabled') !== 'false';
+};
+
+window.updateAiraTTSButtonUI = () => {
+    const btn = document.getElementById('aira-voice-toggle-btn');
+    if (!btn) return;
+    const isEnabled = window.isAiraTTSEnabled();
+    if (isEnabled) {
+        btn.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+        btn.style.background = 'rgba(16, 185, 129, 0.4)';
+        btn.style.borderColor = '#10b981';
+        btn.style.color = '#ffffff';
+        btn.title = 'Suara AIRA: Aktif (Klik untuk mematikan)';
+    } else {
+        btn.innerHTML = '<i class="fa-solid fa-volume-xmark"></i>';
+        btn.style.background = 'rgba(255, 255, 255, 0.15)';
+        btn.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+        btn.style.color = 'rgba(255, 255, 255, 0.6)';
+        btn.title = 'Suara AIRA: Nonaktif (Klik untuk mengaktifkan)';
+    }
+};
+
+window.toggleAiraTTS = () => {
+    const currentState = window.isAiraTTSEnabled();
+    const newState = !currentState;
+    localStorage.setItem('aira_tts_enabled', newState ? 'true' : 'false');
+    window.updateAiraTTSButtonUI();
+    
+    if (!newState) {
+        window.stopAiraSpeech();
+    }
+    
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon: newState ? 'success' : 'info',
+            title: newState ? 'Suara AIRA Diaktifkan 🔊' : 'Suara AIRA Dinonaktifkan 🔇',
+            showConfirmButton: false,
+            timer: 1600
+        });
+    }
+};
+
+window.stopAiraSpeech = () => {
+    if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+    }
+    if (currentSpeakingBtn) {
+        currentSpeakingBtn.innerHTML = '<i class="fa-solid fa-volume-high"></i> <span>Dengar</span>';
+        currentSpeakingBtn.style.background = 'rgba(240, 249, 255, 0.9)';
+        currentSpeakingBtn.style.color = '#0284c7';
+        currentSpeakingBtn.style.borderColor = '#bae6fd';
+        currentSpeakingBtn = null;
+    }
+    const headerBtn = document.getElementById('aira-voice-toggle-btn');
+    if (headerBtn) headerBtn.classList.remove('speaking-wave');
+};
+
+window.speakAiMessage = (rawText, btnElem = null) => {
+    if (!('speechSynthesis' in window)) {
+        alert('Browser Anda belum mendukung Web Speech Synthesis.');
+        return;
+    }
+
+    // If currently speaking this exact message, toggle stop
+    if (window.speechSynthesis.speaking && currentSpeakingBtn === btnElem && btnElem !== null) {
+        window.stopAiraSpeech();
+        return;
+    }
+
+    window.stopAiraSpeech();
+
+    const cleanText = cleanTextForSpeech(rawText);
+    if (!cleanText) return;
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.lang = 'id-ID';
+    utterance.rate = 1.05; // natural lively speed
+    utterance.pitch = 1.05; // friendly, cheerful pitch
+
+    // Try to find the best Indonesian voice
+    const voices = window.speechSynthesis.getVoices();
+    const idVoice = voices.find(v => v.lang === 'id-ID' || v.lang === 'id_ID' || v.lang?.toLowerCase().startsWith('id'));
+    if (idVoice) utterance.voice = idVoice;
+
+    utterance.onstart = () => {
+        if (btnElem) {
+            currentSpeakingBtn = btnElem;
+            btnElem.innerHTML = '<i class="fa-solid fa-volume-xmark" style="color:#ef4444;"></i> <span style="color:#ef4444;">Stop</span>';
+            btnElem.style.background = '#fef2f2';
+            btnElem.style.borderColor = '#fca5a5';
+        }
+        const headerBtn = document.getElementById('aira-voice-toggle-btn');
+        if (headerBtn) headerBtn.classList.add('speaking-wave');
+    };
+
+    utterance.onend = () => {
+        window.stopAiraSpeech();
+    };
+
+    utterance.onerror = (e) => {
+        console.warn('Speech synthesis error:', e);
+        window.stopAiraSpeech();
+    };
+
+    window.speechSynthesis.speak(utterance);
+};
+
+if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+        window.speechSynthesis.getVoices();
+    };
+}
 
 function parseMarkdownToHTML(markdown, isTyping = false) {
     let html = markdown;
@@ -5235,12 +5371,15 @@ function parseMarkdownToHTML(markdown, isTyping = false) {
     html = html.replace(/\n/g, '<br>');
     
     if (!isTyping) {
-        // Tambahkan tombol copy pesan
+        // Tambahkan tombol dengarkan & copy pesan
         const encodedText = encodeURIComponent(markdown).replace(/'/g, "\\'");
         html += `
-        <div style="text-align: right; margin-top: 8px;">
-            <button onclick="window.copyAiMessage(this, decodeURIComponent('${encodedText}'))" class="copy-ai-msg-btn" title="Salin Pesan" style="background: rgba(255,255,255,0.5); border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; cursor: pointer; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;">
-                <i class="fa-regular fa-copy"></i> Salin
+        <div style="text-align: right; margin-top: 8px; display: flex; justify-content: flex-end; align-items: center; gap: 6px;">
+            <button onclick="window.speakAiMessage(decodeURIComponent('${encodedText}'), this)" class="speak-ai-msg-btn" title="Dengarkan Suara" style="background: rgba(240, 249, 255, 0.9); border: 1px solid #bae6fd; border-radius: 6px; color: #0284c7; cursor: pointer; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;">
+                <i class="fa-solid fa-volume-high"></i> <span>Dengar</span>
+            </button>
+            <button onclick="window.copyAiMessage(this, decodeURIComponent('${encodedText}'))" class="copy-ai-msg-btn" title="Salin Pesan" style="background: rgba(255,255,255,0.7); border: 1px solid #cbd5e1; border-radius: 6px; color: #475569; cursor: pointer; font-size: 0.75rem; font-weight: 600; padding: 4px 8px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 5px;">
+                <i class="fa-regular fa-copy"></i> <span>Salin</span>
             </button>
         </div>`;
     }
@@ -5271,6 +5410,10 @@ window._simulateTyping = (containerId, markdownText, onComplete) => {
             const msgs = document.getElementById('chat-messages');
             if (msgs) msgs.scrollTop = msgs.scrollHeight;
             if (onComplete) onComplete();
+            // Auto-speak if enabled
+            if (window.isAiraTTSEnabled()) {
+                window.speakAiMessage(markdownText, container.querySelector('.speak-ai-msg-btn'));
+            }
         }
     }
     setTimeout(type, 50);
@@ -5732,6 +5875,9 @@ window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => 
                                 chatHistory.push({ role: "model", parts: [{ text: fullReply }] });
                                 localStorage.setItem('aiChatHistory', JSON.stringify(chatHistory));
                                 window.checkGuestLimit();
+                                if (window.isAiraTTSEnabled()) {
+                                    window.speakAiMessage(fullReply, msgContainer.querySelector('.speak-ai-msg-btn'));
+                                }
                                 break;
                             }
                             
