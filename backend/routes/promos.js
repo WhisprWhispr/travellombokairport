@@ -19,12 +19,44 @@ const verifyAdminToken = async (req, res, next) => {
     }
 };
 
-// GET /api/promos - Admin get all promos
-router.get('/', verifyAdminToken, async (req, res) => {
+// GET /api/promos - Admin get all, Public get active only
+router.get('/', async (req, res) => {
     try {
-        const snapshot = await db.collection('promos').orderBy('createdAt', 'desc').get();
+        const isPublic = req.query.public === 'true';
+        if (!isPublic) {
+            const authHeader = req.headers.authorization;
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                return res.status(401).json({ message: 'Unauthorized' });
+            }
+            const token = authHeader.split('Bearer ')[1];
+            try {
+                if (admin.auth) {
+                    const decodedToken = await admin.auth.verifyIdToken(token);
+                    req.user = decodedToken;
+                }
+            } catch (error) {
+                return res.status(403).json({ message: 'Unauthorized' });
+            }
+        }
+
+        let query = db.collection('promos');
+        if (isPublic) {
+            query = query.where('isActive', '==', true);
+        } else {
+            query = query.orderBy('createdAt', 'desc');
+        }
+
+        const snapshot = await query.get();
         let promos = [];
-        snapshot.forEach(doc => promos.push({ id: doc.id, ...doc.data() }));
+        const now = new Date();
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (isPublic && data.validUntil) {
+                const validDate = new Date(data.validUntil);
+                if (now > validDate) return;
+            }
+            promos.push({ id: doc.id, ...data });
+        });
         res.json(promos);
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -22,13 +22,42 @@ const verifyToken = async (c, next) => {
     }
 };
 
-// GET all promos (Admin)
-promosRoutes.get('/', verifyToken, async (c) => {
+// GET all promos (Admin: all, Public: active only)
+promosRoutes.get('/', async (c) => {
     try {
+        const isPublic = c.req.query('public') === 'true';
+        if (!isPublic) {
+            // Check admin token if not public
+            const authHeader = c.req.header('authorization');
+            if (!authHeader || !authHeader.startsWith('Bearer ')) {
+                return c.json({ message: 'Unauthorized: No token provided' }, 401);
+            }
+            const token = authHeader.split('Bearer ')[1];
+            try {
+                const secret = c.env.JWT_SECRET || 'rahasia-default-lokal-123';
+                const decodedToken = await verify(token, secret, 'HS256');
+                c.set('user', decodedToken);
+            } catch (err) {
+                return c.json({ message: 'Unauthorized: Invalid token' }, 403);
+            }
+        }
+
         const db = getDb(c);
-        const snapshot = await db.collection('promos').get();
+        let query = db.collection('promos');
+        if (isPublic) {
+            query = query.where('isActive', '==', true);
+        }
+        const snapshot = await query.get();
         let promos = [];
-        snapshot.forEach(doc => promos.push({ id: doc.id, ...doc.data() }));
+        const now = new Date();
+        snapshot.forEach(doc => {
+            const data = doc.data();
+            if (isPublic && data.validUntil) {
+                const validDate = new Date(data.validUntil);
+                if (now > validDate) return; // Skip expired in public
+            }
+            promos.push({ id: doc.id, ...data });
+        });
         return c.json(promos);
     } catch (error) {
         return c.json({ error: error.message }, 500);

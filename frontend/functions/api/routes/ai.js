@@ -291,6 +291,30 @@ aiRoutes.post('/chat', async (c) => {
             console.error("Gagal menarik data untuk konteks chatbot", e);
         }
 
+        // Fetch Real Database Promos (HANYA PROMO AKTIF DARI DATABASE)
+        let activePromosContext = '';
+        try {
+            const db = getDb(c);
+            const promoSnap = await db.collection('promos').where('isActive', '==', true).get();
+            const validPromos = [];
+            const now = new Date();
+            promoSnap.forEach(doc => {
+                const p = doc.data();
+                if (p.validUntil && now > new Date(p.validUntil)) return;
+                const discStr = p.discountType === 'percent' 
+                    ? `${p.discountValue}% (maksimal potongan Rp ${p.maxDiscount || 'tanpa batas'})` 
+                    : `Rp ${p.discountValue}`;
+                validPromos.push(`- Kode: "${p.code}" | Judul: ${p.title || p.code} | Diskon: ${discStr} | Keterangan: ${p.description || 'Diskon pemesanan'}`);
+            });
+            if (validPromos.length > 0) {
+                activePromosContext = `\nDATA RESMI KODE PROMO AKTIF DI DATABASE SAAT INI (HANYA gunakan kode yang tercantum di sini):\n` + validPromos.join('\n');
+            } else {
+                activePromosContext = `\nDATA RESMI KODE PROMO AKTIF DI DATABASE: Saat ini TIDAK ADA kode promo aktif di database. Jika tamu bertanya promo, sampaikan dengan jujur bahwa belum ada kode kupon baru aktif, namun harga di website kami sudah merupakan harga terbaik/termurah langsung tanpa biaya tersembunyi.\n`;
+            }
+        } catch(e) {
+            console.error("Gagal menarik data promo untuk konteks chatbot", e);
+        }
+
         // Fetch Knowledge Base
         let knowledgeBaseContext = '';
         try {
@@ -566,12 +590,12 @@ Di akhir jawaban, selalu sampaikan bahwa driver Travel Lombok Airport adalah war
 
 13. PANDUAN PROMO DISKON & KLAIM KODE VOUCHER (AIRA FLASH DEALS & CLOSING RECOMMENDER):
 Jika pengguna bertanya tentang promo, diskon, potongan harga, kupon, atau jika pengguna tampak ragu memesan karena harga/anggaran:
-- Beritahukan dengan antusias bahwa saat ini sedang ada promo spesial aktif di Travel Lombok Airport!
-- Sebutkan kode promo aktif yang tersedia:
-  1. "LOMBOKHEMAT" : Potongan langsung Rp 25.000 untuk sewa mobil dan paket tour.
-  2. "AVANZASERU" : Diskon 10% (hemat hingga Rp 50.000) untuk rental armada keluarga (Avanza / Xpander).
-- Beritahukan tamu bahwa mereka cukup memasukkan kode tersebut pada kolom "Kode Promo" saat checkout/booking, atau cukup klik tombol voucher di obrolan AIRA untuk otomatis terpasang!
+- DILARANG KERAS MENGARANG ATAU MEMBUAT KODE PROMO SENDIRI! HANYA sebutkan kode promo yang benar-benar tercantum pada bagian "DATA RESMI KODE PROMO AKTIF DI DATABASE" di bawah ini.
+- Jika ada kode promo aktif di database, sebutkan kode promo tersebut beserta detail potongannya dan instruksikan tamu untuk memasukkannya ke kolom "Kode Promo" saat checkout atau klik tombol kupon di chat.
+- Jika di database tertulis TIDAK ADA kode promo aktif, sampaikan dengan jujur dan ramah bahwa saat ini belum ada voucher promo yang berlaku, namun tarif yang tertera di website sudah merupakan tarif resmi terbaik tanpa biaya tersembunyi.
 - Dorong tamu untuk segera mengunci tanggal booking dengan DP ringan Rp 500.000 (bebas biaya deposit untuk sewa dengan supir dan tour).
+
+${activePromosContext}
 
 14. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
 ${knowledgeBaseContext}

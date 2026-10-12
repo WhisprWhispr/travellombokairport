@@ -7547,33 +7547,41 @@ window.checkAiraPromoDeals = async () => {
                 }
             }
         } catch (err) {
-            console.warn("Fetch promos fallback to default deals:", err);
-        }
-
-        // Default flash deals jika belum ada promo di database
-        if (!promos || promos.length === 0) {
-            promos = [
-                {
-                    code: 'LOMBOKHEMAT',
-                    title: 'Diskon Spesial Tamu AIRA',
-                    discountType: 'fixed',
-                    discountValue: 25000,
-                    description: 'Potongan langsung Rp 25.000 untuk semua sewa mobil & paket tour.'
-                },
-                {
-                    code: 'AVANZASERU',
-                    title: 'Flash Sale Avanza & Xpander',
-                    discountType: 'percent',
-                    discountValue: 10,
-                    maxDiscount: 50000,
-                    description: 'Diskon 10% (hemat hingga Rp 50.000) khusus armada MPV keluarga.'
-                }
-            ];
+            console.error("Fetch promos error:", err);
         }
 
         setTimeout(() => {
             const t = document.getElementById(typingId);
             if (t) t.remove();
+
+            if (!promos || promos.length === 0) {
+                // JIKA TIDAK ADA PROMO AKTIF DI DATABASE: JANGAN MENGARANG!
+                messagesContainer.insertAdjacentHTML('beforeend', `
+                    <div class="message ai-message" style="border:1.5px solid #e2e8f0; background:#f8fafc;">
+                        <h4 style="margin:0 0 6px 0; color:#0284c7; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-tags"></i> Informasi Promo & Diskon
+                        </h4>
+                        <p style="font-size:0.85rem; color:#475569; margin:0 0 8px 0; line-height:1.5;">
+                            Saat ini belum ada kode kupon diskon baru yang aktif di sistem kami.
+                        </p>
+                        <p style="font-size:0.83rem; color:#64748b; margin:0; line-height:1.5;">
+                            Namun tidak perlu khawatir, seluruh tarif rental armada dan paket wisata yang tertera di website kami sudah merupakan <strong>harga resmi terbaik dan termurah langsung</strong> tanpa biaya tersembunyi!
+                        </p>
+                        <div style="margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:10px;">
+                            <button type="button" class="btn btn-blue" onclick="
+                                const cw = document.getElementById('ai-chat-window');
+                                if (cw) cw.classList.add('hidden');
+                                const sec = document.getElementById('armada') || document.getElementById('paket');
+                                if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            " style="width:100%; justify-content:center; padding:8px 14px; font-size:0.82rem; border-radius:8px;">
+                                <i class="fa-solid fa-car"></i> Lihat Pilihan Armada & Paket Tour
+                            </button>
+                        </div>
+                    </div>
+                `);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                return;
+            }
 
             let voucherHtml = promos.map(p => {
                 const discountText = p.discountType === 'percent' 
@@ -7582,8 +7590,8 @@ window.checkAiraPromoDeals = async () => {
                 return `
                     <div class="aira-voucher-card">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <span class="aira-voucher-badge"><i class="fa-solid fa-ticket"></i> ${p.title || 'Voucher Aktif'}</span>
-                            <span style="font-size:0.75rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Siap Pakai</span>
+                            <span class="aira-voucher-badge"><i class="fa-solid fa-ticket"></i> ${p.title || 'Voucher Resmi'}</span>
+                            <span style="font-size:0.75rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Aktif</span>
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin: 4px 0;">
                             <div>
@@ -7604,10 +7612,10 @@ window.checkAiraPromoDeals = async () => {
             messagesContainer.insertAdjacentHTML('beforeend', `
                 <div class="message ai-message" style="border:1.5px solid #fed7aa; background:#fffbf7;">
                     <h4 style="margin:0 0 6px 0; color:#ea580c; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-gift"></i> Promo Spesial Hari Ini Untuk Anda!
+                        <i class="fa-solid fa-gift"></i> Promo Resmi Hari Ini di Database!
                     </h4>
                     <p style="font-size:0.85rem; color:#475569; margin:0 0 10px 0;">
-                        Kabar gembira! Berikut kode voucher aktif hari ini yang bisa langsung Kakak klaim untuk menghemat biaya perjalanan:
+                        Berikut daftar kode voucher resmi yang aktif di sistem kami saat ini:
                     </p>
                     ${voucherHtml}
                     <div style="margin-top:10px; font-size:0.78rem; color:#94a3b8; text-align:center;">
