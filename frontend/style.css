@@ -3107,6 +3107,28 @@ input:checked + .slider:before { transform: translateX(22px); }
   color: #065f46;
 }
 
+.aira-chip-promo {
+  color: #b91c1c;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+.aira-chip-promo:hover {
+  background: #fee2e2;
+  border-color: #fca5a5;
+  color: #991b1b;
+}
+
+.aira-chip-masjid {
+  color: #0f766e;
+  border-color: #99f6e4;
+  background: #f0fdfa;
+}
+.aira-chip-masjid:hover {
+  background: #ccfbf1;
+  border-color: #5eead4;
+  color: #115e59;
+}
+
 .ai-btn-emerald-sasak {
   color: #047857;
   background: #f0fdf4;
@@ -3116,6 +3138,80 @@ input:checked + .slider:before { transform: translateX(22px); }
   color: #ffffff;
   background: linear-gradient(135deg, #10b981, #059669);
   border-color: #059669;
+}
+
+.ai-btn-rose-promo {
+  color: #b91c1c;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+}
+.ai-btn-rose-promo:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, #f43f5e, #e11d48);
+  border-color: #e11d48;
+}
+
+.ai-btn-teal-masjid {
+  color: #0f766e;
+  background: #f0fdfa;
+  border: 1px solid #99f6e4;
+}
+.ai-btn-teal-masjid:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, #14b8a6, #0d9488);
+  border-color: #0d9488;
+}
+
+/* Promo Voucher Card in AIRA Chat */
+.aira-voucher-card {
+  margin-top: 10px;
+  background: linear-gradient(135deg, #fff7ed 0%, #fff 100%);
+  border: 1.5px dashed #f97316;
+  border-radius: 14px;
+  padding: 12px 14px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.aira-voucher-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #ea580c;
+  background: #ffedd5;
+  padding: 3px 8px;
+  border-radius: 6px;
+  width: fit-content;
+}
+.aira-voucher-code {
+  font-family: monospace;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #c2410c;
+  letter-spacing: 1px;
+}
+.aira-use-voucher-btn {
+  background: linear-gradient(135deg, #ea580c, #c2410c);
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.25);
+}
+.aira-use-voucher-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(234, 88, 12, 0.35);
 }
 
 /* --- AIRA WA AUTO-SUMMARY LEAD CTA & DP/DEPOSIT CARD --- */

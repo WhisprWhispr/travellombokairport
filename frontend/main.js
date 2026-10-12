@@ -3494,6 +3494,17 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
 
+    // Auto-pasang promo jika ada yang dipilih dari AIRA
+    if (window.savedAiraPromo) {
+        setTimeout(() => {
+            const pi = document.getElementById('co-promo-input');
+            if (pi) {
+                pi.value = window.savedAiraPromo;
+                if (typeof window.applyPromo === 'function') window.applyPromo();
+            }
+        }, 300);
+    }
+
     if (method !== 'wa') {
         window.initCheckoutTurnstile();
     }
@@ -5332,6 +5343,9 @@ window.clearChatHistory = () => {
                 Halo Kak! 👋 Saya AIRA, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
             </div>
             <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
+                <button onclick="window.checkAiraPromoDeals()" class="ai-quick-reply-btn ai-btn-rose-promo">
+                    <i class="fa-solid fa-ticket" style="margin-right: 6px; color:#e11d48;"></i> 🎟️ Cek Promo Hari Ini & Klaim Kupon Diskon
+                </button>
                 <button onclick="window.askAiraQuick('Ajarkan saya sapaan ramah bahasa Sasak Lombok sehari-hari dan tips menawar oleh-oleh di Sade atau Sukarara!')" class="ai-quick-reply-btn ai-btn-emerald-sasak">
                     <i class="fa-solid fa-comments" style="margin-right: 6px; color:#10b981;"></i> 🗣️ Kamus Bahasa Sasak (Sapaan Lokal & Tips Belanja)
                 </button>
@@ -7494,6 +7508,171 @@ window.submitBugReport = async (category, formId) => {
             btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Coba Kirim Ulang';
         }
     }
+};
+
+// --- AIRA FLASH DEALS & PROMO CHECKER (FITUR 6) ---
+window.checkAiraPromoDeals = async () => {
+    if (window.checkGuestLimit()) {
+        if (typeof window.openAuthModal === 'function') window.openAuthModal('login');
+        return;
+    }
+    const qrContainer = document.getElementById('ai-quick-replies');
+    if (qrContainer) qrContainer.remove();
+
+    const messagesContainer = document.getElementById('chat-messages');
+    if (!messagesContainer) return;
+
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div class="message user-message" style="background: linear-gradient(135deg, #e11d48, #be123c); color: white;">
+            <i class="fa-solid fa-ticket"></i> Cek Promo & Kupon Diskon Hari Ini
+        </div>
+    `);
+
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    try {
+        let promos = [];
+        try {
+            const res = await fetch(`${API_URL}/promos?public=true&_t=${Date.now()}`);
+            if (res.ok) {
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    promos = data.filter(p => p.isActive !== false);
+                }
+            }
+        } catch (err) {
+            console.warn("Fetch promos fallback to default deals:", err);
+        }
+
+        // Default flash deals jika belum ada promo di database
+        if (!promos || promos.length === 0) {
+            promos = [
+                {
+                    code: 'LOMBOKHEMAT',
+                    title: 'Diskon Spesial Tamu AIRA',
+                    discountType: 'fixed',
+                    discountValue: 25000,
+                    description: 'Potongan langsung Rp 25.000 untuk semua sewa mobil & paket tour.'
+                },
+                {
+                    code: 'AVANZASERU',
+                    title: 'Flash Sale Avanza & Xpander',
+                    discountType: 'percent',
+                    discountValue: 10,
+                    maxDiscount: 50000,
+                    description: 'Diskon 10% (hemat hingga Rp 50.000) khusus armada MPV keluarga.'
+                }
+            ];
+        }
+
+        setTimeout(() => {
+            const t = document.getElementById(typingId);
+            if (t) t.remove();
+
+            let voucherHtml = promos.map(p => {
+                const discountText = p.discountType === 'percent' 
+                    ? `Diskon ${p.discountValue}% ${p.maxDiscount ? `(Maks ${formatPrice(p.maxDiscount)})` : ''}` 
+                    : `Potongan Langsung ${formatPrice(p.discountValue)}`;
+                return `
+                    <div class="aira-voucher-card">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <span class="aira-voucher-badge"><i class="fa-solid fa-ticket"></i> ${p.title || 'Voucher Aktif'}</span>
+                            <span style="font-size:0.75rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Siap Pakai</span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin: 4px 0;">
+                            <div>
+                                <div class="aira-voucher-code">${p.code}</div>
+                                <div style="font-size:0.78rem; color:#475569; margin-top:2px;">${discountText}</div>
+                            </div>
+                            <button type="button" class="aira-use-voucher-btn" onclick="window.applyPromoCodeFromAira('${p.code}')">
+                                <i class="fa-solid fa-check-double"></i> Gunakan Kupon
+                            </button>
+                        </div>
+                        <div style="font-size:0.73rem; color:#64748b; line-height:1.3;">
+                            ${p.description || 'Gunakan saat pemesanan armada atau paket tour.'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            messagesContainer.insertAdjacentHTML('beforeend', `
+                <div class="message ai-message" style="border:1.5px solid #fed7aa; background:#fffbf7;">
+                    <h4 style="margin:0 0 6px 0; color:#ea580c; display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-gift"></i> Promo Spesial Hari Ini Untuk Anda!
+                    </h4>
+                    <p style="font-size:0.85rem; color:#475569; margin:0 0 10px 0;">
+                        Kabar gembira! Berikut kode voucher aktif hari ini yang bisa langsung Kakak klaim untuk menghemat biaya perjalanan:
+                    </p>
+                    ${voucherHtml}
+                    <div style="margin-top:10px; font-size:0.78rem; color:#94a3b8; text-align:center;">
+                        💡 Klik <strong>"Gunakan Kupon"</strong> pada salah satu voucher di atas untuk memasang otomatis kode diskon.
+                    </div>
+                </div>
+            `);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 700);
+
+    } catch (e) {
+        console.error("Error checking promos:", e);
+    }
+};
+
+window.applyPromoCodeFromAira = (code) => {
+    if (!code) return;
+    
+    // 1. Simpan kode promo ke memory/storage agar otomatis terpasang saat buka checkout
+    window.savedAiraPromo = code;
+    
+    // 2. Jika modal checkout sedang terbuka, langsung pasang ke input
+    const promoInput = document.getElementById('co-promo-input');
+    if (promoInput) {
+        promoInput.value = code;
+        if (typeof window.applyPromo === 'function') {
+            window.applyPromo();
+        }
+    }
+
+    // 3. Beri notifikasi di chat dan tutup jendela chat
+    const messagesContainer = document.getElementById('chat-messages');
+    if (messagesContainer) {
+        messagesContainer.insertAdjacentHTML('beforeend', `
+            <div class="message ai-message" style="background:#f0fdf4; border:1px solid #86efac; color:#166534;">
+                <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> Kupon <strong>${code}</strong> berhasil dipilih! Mengarahkan Anda ke pilihan armada & form pemesanan...
+            </div>
+        `);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    setTimeout(() => {
+        // Tutup chat window
+        const chatWindow = document.getElementById('ai-chat-window');
+        if (chatWindow && !chatWindow.classList.contains('hidden')) {
+            chatWindow.classList.add('hidden');
+        }
+
+        // Scroll halus ke daftar paket / booking section
+        const targetSection = document.getElementById('armada') || document.getElementById('paket') || document.querySelector('.hero');
+        if (targetSection) {
+            targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Tampilkan info Toast / alert ramah
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'success',
+                title: `Kupon ${code} Tersalin!`,
+                text: 'Silakan pilih armada atau paket tour yang Kakak inginkan. Kode promo akan otomatis terpasang saat checkout.',
+                confirmButtonColor: '#0284c7',
+                timer: 3500
+            });
+        }
+    }, 600);
 };
 
 document.addEventListener('DOMContentLoaded', () => {

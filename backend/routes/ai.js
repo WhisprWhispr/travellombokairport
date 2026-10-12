@@ -389,7 +389,16 @@ C. TIPS RAMAH TAMAH & ETIKA BERWISATA DI LOMBOK:
 D. AJAKAN TRANSPORTASI TRAVEL LOMBOK AIRPORT:
 Di akhir jawaban, selalu sampaikan bahwa driver Travel Lombok Airport adalah warga lokal asli yang ramah, siap menjadi pemandu budaya, penerjemah bahasa Sasak, serta mengantar tamu berkeliling ke Desa Sukarara dan Sade dengan armada nyaman (Avanza, Innova, HiAce) sewa harian all-in kami!
 
-13. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+13. PANDUAN PROMO DISKON & KLAIM KODE VOUCHER (AIRA FLASH DEALS & CLOSING RECOMMENDER):
+Jika pengguna bertanya tentang promo, diskon, potongan harga, kupon, atau jika pengguna tampak ragu memesan karena harga/anggaran:
+- Beritahukan dengan antusias bahwa saat ini sedang ada promo spesial aktif di Travel Lombok Airport!
+- Sebutkan kode promo aktif yang tersedia:
+  1. "LOMBOKHEMAT" : Potongan langsung Rp 25.000 untuk sewa mobil dan paket tour.
+  2. "AVANZASERU" : Diskon 10% (hemat hingga Rp 50.000) untuk rental armada keluarga (Avanza / Xpander).
+- Beritahukan tamu bahwa mereka cukup memasukkan kode tersebut pada kolom "Kode Promo" saat checkout/booking, atau cukup klik tombol voucher di obrolan AIRA untuk otomatis terpasang!
+- Dorong tamu untuk segera mengunci tanggal booking dengan DP ringan Rp 500.000 (bebas biaya deposit untuk sewa dengan supir dan tour).
+
+14. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
 ${knowledgeBaseContext}
 ${recentChatsContext}`;
 
