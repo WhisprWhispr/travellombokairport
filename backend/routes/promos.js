@@ -81,6 +81,11 @@ router.get('/verify/:code', async (req, res) => {
             return res.status(400).json({ valid: false, message: 'Kode promo tidak berlaku untuk paket/item ini' });
         }
         
+        // Check usage limit
+        if (promo.usageLimit && (promo.usedCount || 0) >= promo.usageLimit) {
+            return res.status(400).json({ valid: false, message: 'Maaf, kuota kupon promo ini sudah habis digunakan' });
+        }
+
         // Check date validity
         const now = new Date();
         if (promo.validUntil) {
@@ -99,7 +104,7 @@ router.get('/verify/:code', async (req, res) => {
 // POST /api/promos - Admin create promo
 router.post('/', verifyAdminToken, async (req, res) => {
     try {
-        const { code, discountType, discountValue, maxDiscount, validUntil, isActive, itemId } = req.body;
+        const { code, discountType, discountValue, maxDiscount, validUntil, isActive, itemId, usageLimit } = req.body;
         const newPromo = {
             code: code.toUpperCase(),
             discountType, // 'percent' or 'nominal'
@@ -108,6 +113,8 @@ router.post('/', verifyAdminToken, async (req, res) => {
             validUntil: validUntil || null,
             isActive: isActive !== undefined ? isActive : true,
             itemId: itemId || null, // null means applies to all
+            usageLimit: usageLimit ? Number(usageLimit) : null,
+            usedCount: 0,
             createdAt: new Date().toISOString()
         };
         const docRef = await db.collection('promos').add(newPromo);

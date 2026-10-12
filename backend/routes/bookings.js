@@ -85,6 +85,22 @@ router.post('/', async (req, res) => {
             createdAt: new Date().toISOString()
         };
         const docRef = await db.collection('bookings').add(newBooking);
+
+        if (req.body.promoCode) {
+            try {
+                const promoSnap = await db.collection('promos').where('code', '==', req.body.promoCode.toUpperCase()).get();
+                if (!promoSnap.empty) {
+                    promoSnap.forEach(async (pDoc) => {
+                        const pData = pDoc.data();
+                        const newUsed = (pData.usedCount || 0) + 1;
+                        await db.collection('promos').doc(pDoc.id).set({ usedCount: newUsed }, { merge: true });
+                    });
+                }
+            } catch (pErr) {
+                console.warn('Gagal menambah usedCount promo:', pErr);
+            }
+        }
+
         res.status(201).json({ id: docRef.id, ...newBooking });
     } catch (error) {
         res.status(500).json({ error: error.message });

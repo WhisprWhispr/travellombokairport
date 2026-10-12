@@ -2860,7 +2860,12 @@ function renderPromos() {
     tbody.innerHTML = promosData.map(p => {
         const discountStr = p.discountType === 'percent' ? `${p.discountValue}% ${p.maxDiscount ? '(Max: Rp ' + p.maxDiscount.toLocaleString('id-ID') + ')' : ''}` : `Rp ${p.discountValue.toLocaleString('id-ID')}`;
         const validStr = p.validUntil ? new Date(p.validUntil).toLocaleDateString('id-ID') : 'Tanpa Batas';
-        const statusBadge = p.isActive ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Tidak Aktif</span>';
+        const used = p.usedCount || 0;
+        const limitStr = p.usageLimit ? `${used}/${p.usageLimit} dipakai` : 'Tanpa Batas';
+        const isExhausted = p.usageLimit && used >= p.usageLimit;
+        const statusBadge = isExhausted 
+            ? `<span class="badge bg-danger">Habis (${used}/${p.usageLimit})</span>` 
+            : (p.isActive ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Tidak Aktif</span>');
         
         let itemName = 'Semua Paket';
         if (p.itemId) {
@@ -2871,7 +2876,7 @@ function renderPromos() {
         return `
         <tr>
             <td style="font-weight: bold; color: var(--primary-blue);">${p.code}<br><span style="font-size:0.75rem; color:#64748b; font-weight:normal;">${itemName}</span></td>
-            <td>${discountStr}</td>
+            <td>${discountStr}<br><span style="font-size:0.75rem; color:#0284c7; font-weight:600;"><i class="fa-solid fa-users"></i> Kuota: ${limitStr}</span></td>
             <td>${validStr}</td>
             <td>${statusBadge}</td>
             <td>
@@ -2918,11 +2923,13 @@ async function populatePromoItems() {
         document.getElementById('promo-value').value = promo.discountValue;
         document.getElementById('promo-max').value = promo.maxDiscount || '';
         document.getElementById('promo-valid').value = promo.validUntil || '';
+        document.getElementById('promo-limit').value = promo.usageLimit || '';
         document.getElementById('promo-active').checked = promo.isActive;
     } else {
         document.getElementById('promo-modal-title').innerText = 'Tambah Promo';
         document.getElementById('promo-id').value = '';
         document.getElementById('promo-item').value = '';
+        document.getElementById('promo-limit').value = '';
     }
     document.getElementById('promo-modal').style.display = 'block';
 };
@@ -2943,6 +2950,7 @@ if (document.getElementById('promo-form')) {
             discountValue: Number(document.getElementById('promo-value').value),
             maxDiscount: document.getElementById('promo-max').value ? Number(document.getElementById('promo-max').value) : null,
             validUntil: document.getElementById('promo-valid').value || null,
+            usageLimit: document.getElementById('promo-limit').value ? Number(document.getElementById('promo-limit').value) : null,
             isActive: document.getElementById('promo-active').checked
         };
         

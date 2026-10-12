@@ -7596,7 +7596,44 @@ window.checkAiraPromoDeals = async () => {
                 return;
             }
 
+            // Cek apakah semua promo kuotanya sudah habis
+            const availablePromos = promos.filter(p => !(p.usageLimit && (p.usedCount || 0) >= p.usageLimit));
+            const hasExhaustedPromos = promos.some(p => p.usageLimit && (p.usedCount || 0) >= p.usageLimit);
+
+            if (availablePromos.length === 0 && hasExhaustedPromos) {
+                // SEMUA PROMO SUDAH HABIS KUOTANYA
+                messagesContainer.insertAdjacentHTML('beforeend', `
+                    <div class="message ai-message" style="border:1.5px solid #fed7aa; background:#fffbf7;">
+                        <h4 style="margin:0 0 6px 0; color:#ea580c; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-ticket-simple"></i> Kuota Promo Spesial Telah Habis
+                        </h4>
+                        <p style="font-size:0.85rem; color:#475569; margin:0 0 8px 0; line-height:1.5;">
+                            Mohon maaf Kak, seluruh kuota kupon promo spesial dari kami hari ini sudah habis terpakai oleh pelanggan lain.
+                        </p>
+                        <p style="font-size:0.83rem; color:#64748b; margin:0; line-height:1.5;">
+                            Namun jangan berkecil hati! Seluruh tarif yang tertera di website Travel Lombok Airport sudah merupakan <strong>harga termurah & terbaik langsung</strong> tanpa biaya tersembunyi.
+                        </p>
+                        <div style="margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:10px;">
+                            <button type="button" class="btn btn-blue" onclick="
+                                const cw = document.getElementById('ai-chat-window');
+                                if (cw) cw.classList.add('hidden');
+                                const sec = document.getElementById('armada') || document.getElementById('paket');
+                                if (sec) sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            " style="width:100%; justify-content:center; padding:8px 14px; font-size:0.82rem; border-radius:8px;">
+                                <i class="fa-solid fa-car"></i> Pesan Langsung dengan Harga Terbaik
+                            </button>
+                        </div>
+                    </div>
+                `);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                return;
+            }
+
             let voucherHtml = promos.map(p => {
+                const isHabis = p.usageLimit && (p.usedCount || 0) >= p.usageLimit;
+                const used = p.usedCount || 0;
+                const sisaKuota = p.usageLimit ? Math.max(0, p.usageLimit - used) : null;
+
                 const discountText = p.discountType === 'percent' 
                     ? `Diskon ${p.discountValue}% ${p.maxDiscount ? `(Maks ${formatPrice(p.maxDiscount)})` : ''}` 
                     : `Potongan Langsung ${formatPrice(p.discountValue)}`;
@@ -7611,30 +7648,44 @@ window.checkAiraPromoDeals = async () => {
                     ? `<div style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#b45309; background:#fef3c7; border:1px solid #fde68a; padding:3px 8px; border-radius:6px; font-weight:700;"><i class="fa-solid fa-car-side"></i> Khusus: ${targetItem ? targetItem.title : 'Paket/Armada Tertentu'}</div>`
                     : `<div style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#15803d; background:#dcfce7; border:1px solid #bbf7d0; padding:3px 8px; border-radius:6px; font-weight:700;"><i class="fa-solid fa-check-double"></i> Berlaku Untuk Semua Paket & Armada</div>`;
 
-                const btnText = p.itemId && targetItem
-                    ? `<i class="fa-solid fa-bolt"></i> Gunakan & Pesan`
-                    : `<i class="fa-solid fa-check-double"></i> Gunakan Kupon`;
+                let statusBadge = '';
+                let actionBtn = '';
+
+                if (isHabis) {
+                    statusBadge = `<span style="font-size:0.75rem; color:#dc2626; font-weight:700; background:#fee2e2; border:1px solid #fecaca; padding:2px 8px; border-radius:6px;"><i class="fa-solid fa-ban"></i> Kuota Habis</span>`;
+                    actionBtn = `<button type="button" class="btn" disabled style="background:#e2e8f0; color:#94a3b8; border:none; border-radius:8px; padding:6px 12px; font-size:0.8rem; font-weight:700; cursor:not-allowed;"><i class="fa-solid fa-lock"></i> Habis</button>`;
+                } else {
+                    if (p.usageLimit) {
+                        statusBadge = `<span style="font-size:0.75rem; color:#ea580c; font-weight:700; background:#ffedd5; border:1px solid #fed7aa; padding:2px 8px; border-radius:6px;"><i class="fa-solid fa-fire"></i> Sisa ${sisaKuota} Kupon</span>`;
+                    } else {
+                        statusBadge = `<span style="font-size:0.75rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Aktif</span>`;
+                    }
+                    const btnText = p.itemId && targetItem
+                        ? `<i class="fa-solid fa-bolt"></i> Gunakan & Pesan`
+                        : `<i class="fa-solid fa-check-double"></i> Gunakan Kupon`;
+                    actionBtn = `<button type="button" class="aira-use-voucher-btn" onclick="window.applyPromoCodeFromAira('${p.code}', '${p.itemId || ''}')">${btnText}</button>`;
+                }
 
                 return `
-                    <div class="aira-voucher-card">
+                    <div class="aira-voucher-card" style="${isHabis ? 'opacity:0.7; border-color:#cbd5e1; background:#f8fafc;' : ''}">
                         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
                             <span class="aira-voucher-badge"><i class="fa-solid fa-ticket"></i> ${p.title || 'Voucher Resmi'}</span>
-                            <span style="font-size:0.75rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Aktif</span>
+                            ${statusBadge}
                         </div>
                         <div style="margin: 3px 0;">
                             ${scopeBadge}
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin: 4px 0;">
                             <div>
-                                <div class="aira-voucher-code">${p.code}</div>
+                                <div class="aira-voucher-code" style="${isHabis ? 'color:#64748b; text-decoration:line-through;' : ''}">${p.code}</div>
                                 <div style="font-size:0.78rem; color:#475569; margin-top:2px;">${discountText}</div>
                             </div>
-                            <button type="button" class="aira-use-voucher-btn" onclick="window.applyPromoCodeFromAira('${p.code}', '${p.itemId || ''}')">
-                                ${btnText}
-                            </button>
+                            ${actionBtn}
                         </div>
                         <div style="font-size:0.73rem; color:#64748b; line-height:1.3;">
-                            ${p.description || (p.itemId ? `Khusus untuk pemesanan ${targetItem ? targetItem.title : 'item ini'}.` : 'Gunakan saat pemesanan armada atau paket tour mana pun.')}
+                            ${isHabis 
+                                ? `<span style="color:#dc2626; font-weight:600;"><i class="fa-solid fa-circle-exclamation"></i> Kuota promo ini (${p.usageLimit} penggunaan) sudah habis terpakai.</span>` 
+                                : (p.description || (p.itemId ? `Khusus untuk pemesanan ${targetItem ? targetItem.title : 'item ini'}.` : 'Gunakan saat pemesanan armada atau paket tour mana pun.'))}
                         </div>
                     </div>
                 `;
@@ -7643,14 +7694,14 @@ window.checkAiraPromoDeals = async () => {
             messagesContainer.insertAdjacentHTML('beforeend', `
                 <div class="message ai-message" style="border:1.5px solid #fed7aa; background:#fffbf7;">
                     <h4 style="margin:0 0 6px 0; color:#ea580c; display:flex; align-items:center; gap:8px;">
-                        <i class="fa-solid fa-gift"></i> Promo Resmi Hari Ini di Database!
+                        <i class="fa-solid fa-gift"></i> Promo Resmi Hari Ini dari Kami Travel Lombok Airport
                     </h4>
                     <p style="font-size:0.85rem; color:#475569; margin:0 0 10px 0;">
-                        Berikut daftar kode voucher resmi yang aktif di sistem kami saat ini:
+                        Berikut daftar kode voucher resmi dari Travel Lombok Airport saat ini:
                     </p>
                     ${voucherHtml}
                     <div style="margin-top:10px; font-size:0.78rem; color:#94a3b8; text-align:center;">
-                        💡 Klik <strong>"Gunakan Kupon"</strong> pada voucher di atas untuk memasang otomatis diskon ke pesanan.
+                        💡 Klik <strong>"Gunakan Kupon"</strong> pada voucher aktif di atas untuk memasang otomatis diskon ke pesanan.
                     </div>
                 </div>
             `);

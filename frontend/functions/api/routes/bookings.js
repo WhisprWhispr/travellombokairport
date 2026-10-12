@@ -134,6 +134,22 @@ bookingsRoutes.post('/', async (c) => {
         const docRef = await db.collection('bookings').add(newBooking);
         const transactionId = body.transactionId || docRef.id;
 
+        // Auto increment promo usedCount jika promoCode digunakan
+        if (body.promoCode) {
+            try {
+                const promoSnap = await db.collection('promos').where('code', '==', body.promoCode.toUpperCase()).get();
+                if (!promoSnap.empty) {
+                    promoSnap.forEach(async (pDoc) => {
+                        const pData = pDoc.data();
+                        const newUsed = (pData.usedCount || 0) + 1;
+                        await db.collection('promos').doc(pDoc.id).set({ usedCount: newUsed }, { merge: true });
+                    });
+                }
+            } catch (pErr) {
+                console.warn('Gagal menambah usedCount promo:', pErr);
+            }
+        }
+
         // --- Kirim Email Invoice Otomatis via Resend ---
         if (body.customerEmail) {
             const resendApiKey = c.env.RESEND_API_KEY;

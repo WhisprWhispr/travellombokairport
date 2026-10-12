@@ -304,12 +304,19 @@ aiRoutes.post('/chat', async (c) => {
                 const discStr = p.discountType === 'percent' 
                     ? `${p.discountValue}% (maksimal potongan Rp ${p.maxDiscount || 'tanpa batas'})` 
                     : `Rp ${p.discountValue}`;
-                validPromos.push(`- Kode: "${p.code}" | Judul: ${p.title || p.code} | Diskon: ${discStr} | Keterangan: ${p.description || 'Diskon pemesanan'}`);
+                
+                const isExhausted = p.usageLimit && (p.usedCount || 0) >= p.usageLimit;
+                if (isExhausted) {
+                    validPromos.push(`- Kode: "${p.code}" | STATUS: KUOTA TELAH HABIS (${p.usedCount || 0} dari batas ${p.usageLimit} sudah terpakai). JANGAN berikan kupon ini untuk diskon baru! Beritahukan tamu bahwa kuota kupon ${p.code} sudah habis terpakai.`);
+                } else {
+                    const quotaInfo = p.usageLimit ? ` | Sisa Kuota: ${p.usageLimit - (p.usedCount || 0)} kupon` : ' | Kuota: Tanpa Batas';
+                    validPromos.push(`- Kode: "${p.code}" | Judul: ${p.title || p.code} | Diskon: ${discStr}${quotaInfo} | Keterangan: ${p.description || 'Diskon pemesanan'}`);
+                }
             });
             if (validPromos.length > 0) {
-                activePromosContext = `\nDATA RESMI KODE PROMO AKTIF DI DATABASE SAAT INI (HANYA gunakan kode yang tercantum di sini):\n` + validPromos.join('\n');
+                activePromosContext = `\nDATA RESMI KODE PROMO DARI KAMI TRAVEL LOMBOK AIRPORT (HANYA gunakan info yang tercantum di sini):\n` + validPromos.join('\n');
             } else {
-                activePromosContext = `\nDATA RESMI KODE PROMO AKTIF DI DATABASE: Saat ini TIDAK ADA kode promo aktif di database. Jika tamu bertanya promo, sampaikan dengan jujur bahwa belum ada kode kupon baru aktif, namun harga di website kami sudah merupakan harga terbaik/termurah langsung tanpa biaya tersembunyi.\n`;
+                activePromosContext = `\nDATA RESMI KODE PROMO: Saat ini TIDAK ADA kode promo aktif (atau semua kuota promo sudah habis terpakai). Jika tamu bertanya promo/diskon, sampaikan dengan jujur bahwa kuota kupon promo saat ini sudah habis/belum ada yang baru, namun harga di website kami sudah merupakan harga resmi termurah & terbaik langsung tanpa biaya tersembunyi.\n`;
             }
         } catch(e) {
             console.error("Gagal menarik data promo untuk konteks chatbot", e);

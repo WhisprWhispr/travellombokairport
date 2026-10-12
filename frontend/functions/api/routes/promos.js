@@ -84,6 +84,11 @@ promosRoutes.get('/verify/:code', async (c) => {
             return c.json({ valid: false, message: 'Kode promo tidak berlaku untuk paket/item ini' }, 400);
         }
         
+        // Check usage limit
+        if (promo.usageLimit && (promo.usedCount || 0) >= promo.usageLimit) {
+            return c.json({ valid: false, message: 'Maaf, kuota kupon promo ini sudah habis digunakan' }, 400);
+        }
+
         // Check date validity
         const now = new Date();
         if (promo.validUntil) {
@@ -104,7 +109,7 @@ promosRoutes.post('/', verifyToken, async (c) => {
     try {
         const db = getDb(c);
         const body = await c.req.json();
-        const { code, discountType, discountValue, maxDiscount, validUntil, isActive, itemId } = body;
+        const { code, discountType, discountValue, maxDiscount, validUntil, isActive, itemId, usageLimit } = body;
         
         const newPromo = {
             code: code.toUpperCase(),
@@ -114,6 +119,8 @@ promosRoutes.post('/', verifyToken, async (c) => {
             validUntil: validUntil || null,
             isActive: isActive !== undefined ? isActive : true,
             itemId: itemId || null,
+            usageLimit: usageLimit ? Number(usageLimit) : null,
+            usedCount: 0,
             createdAt: new Date().toISOString()
         };
         
