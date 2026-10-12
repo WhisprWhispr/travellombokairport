@@ -256,6 +256,28 @@ paymentRoutes.post('/webhook', async (c) => {
                 .limit(1).get();
             if (!bookingSnap.empty) {
                 const oldData = bookingSnap.docs[0].data();
+
+                // Kurangi kuota promo jika pesanan menggunakan kupon dan baru lunas sekarang
+                if (oldData.promoCode && !oldData.promoQuotaDeducted && oldData.status !== 'confirmed' && oldData.status !== 'PAID') {
+                    try {
+                        const promoSnap = await db.collection('promos').where('code', '==', oldData.promoCode.toUpperCase()).get();
+                        if (!promoSnap.empty) {
+                            for (const pDoc of promoSnap.docs) {
+                                const pData = pDoc.data();
+                                const newUsed = (pData.usedCount || 0) + 1;
+                                const pUpdate = { usedCount: newUsed };
+                                if (pData.usageLimit && newUsed >= pData.usageLimit) {
+                                    pUpdate.isActive = false;
+                                }
+                                await db.collection('promos').doc(pDoc.id).set(pUpdate, { merge: true });
+                            }
+                            updatePayload.promoQuotaDeducted = true;
+                        }
+                    } catch (pErr) {
+                        console.warn('Gagal potong kuota promo di webhook payment:', pErr);
+                    }
+                }
+
                 await bookingSnap.docs[0].ref.update(updatePayload);
                 console.log(`✅ Booking Lunas: ${transactionId}`);
                 

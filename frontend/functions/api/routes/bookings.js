@@ -127,22 +127,28 @@ bookingsRoutes.post('/', async (c) => {
             }
         }
 
+        const isAlreadyPaid = body.status === 'PAID';
         const newBooking = {
             ...body,
+            promoQuotaDeducted: isAlreadyPaid && !!body.promoCode,
             createdAt: new Date().toISOString()
         };
         const docRef = await db.collection('bookings').add(newBooking);
         const transactionId = body.transactionId || docRef.id;
 
-        // Auto increment promo usedCount jika promoCode digunakan
-        if (body.promoCode) {
+        // Kurangi kuota promo HANYA jika status booking langsung PAID saat dibuat (misal manual admin)
+        if (body.promoCode && isAlreadyPaid) {
             try {
                 const promoSnap = await db.collection('promos').where('code', '==', body.promoCode.toUpperCase()).get();
                 if (!promoSnap.empty) {
                     promoSnap.forEach(async (pDoc) => {
                         const pData = pDoc.data();
                         const newUsed = (pData.usedCount || 0) + 1;
-                        await db.collection('promos').doc(pDoc.id).set({ usedCount: newUsed }, { merge: true });
+                        const updatePayload = { usedCount: newUsed };
+                        if (pData.usageLimit && newUsed >= pData.usageLimit) {
+                            updatePayload.isActive = false;
+                        }
+                        await db.collection('promos').doc(pDoc.id).set(updatePayload, { merge: true });
                     });
                 }
             } catch (pErr) {
@@ -457,6 +463,54 @@ async function updateBalanceOnStatusChange(db, bookingData, oldStatus, newStatus
     }
 }
 
+// Helper: update promo usage quota HANYA ketika status pembayaran berubah jadi LUNAS (PAID)
+async function updatePromoUsageOnStatusChange(db, docId, bookingData, oldStatus, newStatus) {
+    if (!bookingData || !bookingData.promoCode) return;
+    try {
+        const paidStatuses = ['PAID', 'confirmed', 'COMPLETED'];
+        const wasPaid = paidStatuses.includes(oldStatus);
+        const isPaid = paidStatuses.includes(newStatus);
+        if (wasPaid === isPaid) return;
+
+        const promoCode = bookingData.promoCode.toUpperCase();
+        const promoSnap = await db.collection('promos').where('code', '==', promoCode).get();
+        if (promoSnap.empty) return;
+
+        for (const pDoc of promoSnap.docs) {
+            const data = pDoc.data();
+            let newUsed = data.usedCount || 0;
+
+            if (isPaid && !wasPaid && !bookingData.promoQuotaDeducted) {
+                // PEMBAYARAN BERHASIL: Potong kuota promo (usedCount bertambah 1)
+                newUsed += 1;
+                const updatePayload = { usedCount: newUsed };
+                if (data.usageLimit && newUsed >= data.usageLimit) {
+                    updatePayload.isActive = false;
+                }
+                await db.collection('promos').doc(pDoc.id).set(updatePayload, { merge: true });
+                if (docId) {
+                    await db.collection('bookings').doc(docId).set({ promoQuotaDeducted: true }, { merge: true });
+                }
+                console.log(`[PROMO] Kuota kupon ${promoCode} berkurang (terpakai: ${newUsed}/${data.usageLimit || '∞'}) karena status pembayaran ${newStatus}.`);
+            } else if (!isPaid && wasPaid && bookingData.promoQuotaDeducted) {
+                // PEMBAYARAN BATAL / REFUND / PENDING KEMBALI: Kembalikan kuota promo
+                newUsed = Math.max(0, newUsed - 1);
+                const updatePayload = { usedCount: newUsed };
+                if (data.usageLimit && newUsed < data.usageLimit && data.isActive === false) {
+                    updatePayload.isActive = true;
+                }
+                await db.collection('promos').doc(pDoc.id).set(updatePayload, { merge: true });
+                if (docId) {
+                    await db.collection('bookings').doc(docId).set({ promoQuotaDeducted: false }, { merge: true });
+                }
+                console.log(`[PROMO] Kuota kupon ${promoCode} dikembalikan (terpakai: ${newUsed}/${data.usageLimit || '∞'}) karena status berubah ke ${newStatus}.`);
+            }
+        }
+    } catch (e) {
+        console.warn('Gagal update kuota promo saat perubahan status booking:', e);
+    }
+}
+
 // PUT update booking status by transactionId (for QRIS payment callback - no auth required)
 bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
     try {
@@ -478,8 +532,9 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
         const oldStatus = oldData.status || 'PENDING';
         await db.collection('bookings').doc(docId).update({ status });
         
-        // Update persistent balance
+        // Update persistent balance & kuota promo hanya jika pembayaran berhasil
         await updateBalanceOnStatusChange(db, oldData, oldStatus, status);
+        await updatePromoUsageOnStatusChange(db, docId, oldData, oldStatus, status);
         await db.collection('bookings').doc(docId).update({ status });
         
         // --- Kirim Email jika status berubah jadi PAID ---
@@ -639,8 +694,9 @@ bookingsRoutes.put('/:id/status', verifyToken, async (c) => {
 
         await db.collection('bookings').doc(id).update({ status });
         
-        // Update persistent balance
+        // Update persistent balance & kuota promo
         await updateBalanceOnStatusChange(db, bookingData, oldStatus, status);
+        await updatePromoUsageOnStatusChange(db, id, bookingData, oldStatus, status);
 
         return c.json({ message: 'Booking status updated successfully', status });
     } catch (error) {
