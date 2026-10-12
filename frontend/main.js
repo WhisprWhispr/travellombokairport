@@ -5316,6 +5316,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('chat-messages')) {
         window.renderChatHistory();
     }
+    if (typeof window.initChipsScroll === 'function') {
+        window.initChipsScroll();
+    }
 });
 
 window.clearChatHistory = () => {
@@ -5520,6 +5523,9 @@ window.toggleChat = async () => {
     if (!chatWindow.classList.contains('hidden')) {
         startAiraRatingTimer();
         window.initChatScrollListener();
+        if (typeof window.initChipsScroll === 'function') {
+            window.initChipsScroll();
+        }
         const inputArea = document.getElementById('chat-input');
         const sendBtn = document.getElementById('send-chat-btn');
         const micBtn = document.getElementById('mic-chat-btn');
@@ -6286,6 +6292,7 @@ window.checkGuestLimit = () => {
     const sendBtn = document.getElementById('send-chat-btn');
     const micBtn = document.getElementById('mic-chat-btn');
     const banner = document.getElementById('guest-limit-banner');
+    const chipsWrapper = document.getElementById('aira-chips-wrapper');
     const chipsBar = document.getElementById('aira-quick-chips-bar');
     const qrContainer = document.getElementById('ai-quick-replies');
     
@@ -6308,7 +6315,8 @@ window.checkGuestLimit = () => {
                 micBtn.style.opacity = '0.5';
                 micBtn.style.cursor = 'not-allowed';
             }
-            if (chipsBar) chipsBar.style.display = 'none';
+            if (chipsWrapper) chipsWrapper.style.display = 'none';
+            else if (chipsBar) chipsBar.style.display = 'none';
             if (qrContainer) qrContainer.style.display = 'none';
             if (banner) banner.style.display = 'block';
             return true;
@@ -6316,7 +6324,8 @@ window.checkGuestLimit = () => {
     }
     // Hide banner if logged in or under limit
     if (banner) banner.style.display = 'none';
-    if (chipsBar) chipsBar.style.display = 'flex';
+    if (chipsWrapper) chipsWrapper.style.display = 'flex';
+    else if (chipsBar) chipsBar.style.display = 'flex';
     if (qrContainer) qrContainer.style.display = 'flex';
     if (inputArea) { 
         inputArea.disabled = false; 
@@ -6333,6 +6342,72 @@ window.checkGuestLimit = () => {
         micBtn.style.cursor = 'pointer';
     }
     return false;
+};
+
+// --- AIRA QUICK CHIPS LAPTOP & DESKTOP SCROLL SUPPORT ---
+window.scrollAiraChips = (offset) => {
+    const bar = document.getElementById('aira-quick-chips-bar');
+    if (bar) {
+        bar.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+};
+
+window.initChipsScroll = () => {
+    const bar = document.getElementById('aira-quick-chips-bar');
+    if (!bar || bar.dataset.scrollInited) return;
+    bar.dataset.scrollInited = 'true';
+
+    // 1. Mouse wheel horizontal scrolling on laptop/desktop
+    bar.addEventListener('wheel', (e) => {
+        if (e.deltaY !== 0) {
+            e.preventDefault();
+            bar.scrollLeft += e.deltaY * 0.9;
+        }
+    }, { passive: false });
+
+    // 2. Click and drag (grab & slide) on laptop/desktop
+    let isDown = false;
+    let startX = 0;
+    let scrollStart = 0;
+    let moved = false;
+
+    bar.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return; // Only primary mouse button
+        isDown = true;
+        moved = false;
+        bar.classList.add('is-dragging');
+        startX = e.pageX - bar.offsetLeft;
+        scrollStart = bar.scrollLeft;
+    });
+
+    window.addEventListener('mouseup', () => {
+        if (!isDown) return;
+        isDown = false;
+        bar.classList.remove('is-dragging');
+        if (moved) {
+            bar.dataset.preventClick = 'true';
+            setTimeout(() => { delete bar.dataset.preventClick; }, 100);
+        }
+    });
+
+    bar.addEventListener('mousemove', (e) => {
+        if (!isDown) return;
+        const x = e.pageX - bar.offsetLeft;
+        const walk = x - startX;
+        if (Math.abs(walk) > 4) {
+            moved = true;
+            e.preventDefault();
+            bar.scrollLeft = scrollStart - (walk * 1.2);
+        }
+    });
+
+    // Intercept click when user was dragging
+    bar.addEventListener('click', (e) => {
+        if (bar.dataset.preventClick) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, true);
 };
 
 let aiSpeechRecognition = null;

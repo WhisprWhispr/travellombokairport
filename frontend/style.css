@@ -2959,21 +2959,80 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 /* --- PERSISTENT QUICK CHIPS SCROLLBAR ABOVE CHAT INPUT --- */
+.aira-chips-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  padding: 4px 6px;
+  gap: 4px;
+}
+
+.aira-chips-nav-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  transition: all 0.2s ease;
+  z-index: 2;
+  user-select: none;
+}
+
+.aira-chips-nav-btn:hover {
+  background: #0284c7;
+  color: #ffffff;
+  border-color: #0284c7;
+  transform: scale(1.1);
+  box-shadow: 0 2px 6px rgba(2, 132, 199, 0.25);
+}
+
+.aira-chips-nav-btn:active {
+  transform: scale(0.92);
+}
+
 .aira-quick-chips-bar {
   display: flex;
   align-items: center;
   gap: 6px;
   overflow-x: auto;
   white-space: nowrap;
-  padding: 8px 12px 6px;
-  background: #f8fafc;
-  border-top: 1px solid #f1f5f9;
+  padding: 4px 2px;
+  background: transparent;
+  flex: 1;
   -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
+  scroll-behavior: smooth;
+  cursor: grab;
+  user-select: none;
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+.aira-quick-chips-bar.is-dragging {
+  cursor: grabbing !important;
+  scroll-behavior: auto !important;
 }
 
 .aira-quick-chips-bar::-webkit-scrollbar {
-  display: none;
+  height: 4px;
+}
+
+.aira-quick-chips-bar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.aira-quick-chips-bar::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 .aira-chip-btn {

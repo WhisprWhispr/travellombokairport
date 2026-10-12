@@ -158,10 +158,10 @@
     "priceRange": "$$"
   }
   </script>
-  <script type="module" crossorigin src="/assets/main-CRAEfU4M.js"></script>
+  <script type="module" crossorigin src="/assets/main-CJeXAmNT.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-DA_hreXa.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-CM86JN_u.css">
 </head>
 <body>
   <!-- Tsunami Alert Banner (Hidden by default) -->
@@ -1147,21 +1147,29 @@
 
             <div class="chat-footer-area" style="background: #ffffff; border-top: 1px solid #e2e8f0; flex-shrink: 0;">
                 <!-- Persistent Quick Chips Suggestion Bar -->
-                <div class="aira-quick-chips-bar" id="aira-quick-chips-bar">
-                    <button type="button" class="aira-chip-btn aira-chip-food" onclick="window.askAiraQuick('Rekomendasikan kuliner legendaris khas Lombok yang paling enak dan rute lokasinya')">
-                        <i class="fa-solid fa-pepper-hot"></i> Kuliner Lombok
+                <div class="aira-chips-wrapper" id="aira-chips-wrapper">
+                    <button type="button" class="aira-chips-nav-btn aira-chips-prev" id="aira-chips-prev" onclick="window.scrollAiraChips(-140)" title="Geser ke kiri" aria-label="Geser ke kiri">
+                        <i class="fa-solid fa-chevron-left"></i>
                     </button>
-                    <button type="button" class="aira-chip-btn aira-chip-gem" onclick="window.askAiraQuick('Rekomendasikan pusat oleh-oleh dan kerajinan tenun/mutiara khas Lombok')">
-                        <i class="fa-solid fa-gem"></i> Hidden Gems
-                    </button>
-                    <button type="button" class="aira-chip-btn aira-chip-maps" onclick="window.findNearestLombokFood()">
-                        <i class="fa-solid fa-location-crosshairs"></i> Kuliner Dekat Sini
-                    </button>
-                    <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif rental mobil lepas kunci dan all-in dengan supir di Lombok?')">
-                        <i class="fa-solid fa-car" style="color:#0284c7;"></i> Sewa Mobil
-                    </button>
-                    <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif layanan antar jemput Bandara Lombok ke Senggigi dan Kuta?')">
-                        <i class="fa-solid fa-plane-arrival" style="color:#10b981;"></i> Antar Jemput
+                    <div class="aira-quick-chips-bar" id="aira-quick-chips-bar">
+                        <button type="button" class="aira-chip-btn aira-chip-food" onclick="window.askAiraQuick('Rekomendasikan kuliner legendaris khas Lombok yang paling enak dan rute lokasinya')">
+                            <i class="fa-solid fa-pepper-hot"></i> Kuliner Lombok
+                        </button>
+                        <button type="button" class="aira-chip-btn aira-chip-gem" onclick="window.askAiraQuick('Rekomendasikan pusat oleh-oleh dan kerajinan tenun/mutiara khas Lombok')">
+                            <i class="fa-solid fa-gem"></i> Hidden Gems
+                        </button>
+                        <button type="button" class="aira-chip-btn aira-chip-maps" onclick="window.findNearestLombokFood()">
+                            <i class="fa-solid fa-location-crosshairs"></i> Kuliner Dekat Sini
+                        </button>
+                        <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif rental mobil lepas kunci dan all-in dengan supir di Lombok?')">
+                            <i class="fa-solid fa-car" style="color:#0284c7;"></i> Sewa Mobil
+                        </button>
+                        <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif layanan antar jemput Bandara Lombok ke Senggigi dan Kuta?')">
+                            <i class="fa-solid fa-plane-arrival" style="color:#10b981;"></i> Antar Jemput
+                        </button>
+                    </div>
+                    <button type="button" class="aira-chips-nav-btn aira-chips-next" id="aira-chips-next" onclick="window.scrollAiraChips(140)" title="Geser ke kanan" aria-label="Geser ke kanan">
+                        <i class="fa-solid fa-chevron-right"></i>
                     </button>
                 </div>
                 <div class="chat-input-area" style="display: flex; gap: 5px; align-items: center; border-top: none; padding: 10px 14px 4px;">
