@@ -3494,13 +3494,26 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     modalBody.innerHTML = html;
     document.getElementById("checkout-modal").classList.add("active");
 
-    // Auto-pasang promo jika ada yang dipilih dari AIRA
+    // Auto-pasang promo jika ada yang dipilih dari AIRA (khusus item terkait atau promo universal semua paket)
     if (window.savedAiraPromo) {
         setTimeout(() => {
-            const pi = document.getElementById('co-promo-input');
-            if (pi) {
-                pi.value = window.savedAiraPromo;
-                if (typeof window.applyPromo === 'function') window.applyPromo();
+            const promoObj = typeof window.savedAiraPromo === 'object'
+                ? window.savedAiraPromo
+                : { code: window.savedAiraPromo, itemId: null };
+
+            // Cek kecocokan kupon:
+            // 1. Promo universal (!promoObj.itemId) -> berlaku untuk SEMUA paket/armada
+            // 2. Promo khusus -> hanya dipasang jika promoObj.itemId cocok dengan window.currentCheckoutItemId
+            const isMatch = !promoObj.itemId || (window.currentCheckoutItemId && promoObj.itemId === window.currentCheckoutItemId);
+
+            if (isMatch) {
+                const pi = document.getElementById('co-promo-input');
+                if (pi) {
+                    pi.value = promoObj.code;
+                    if (typeof window.applyPromo === 'function') window.applyPromo();
+                }
+            } else {
+                console.log(`[AIRA] Kupon ${promoObj.code} disimpan untuk item lain (target: ${promoObj.itemId}), tidak otomatis dipasang pada item saat ini.`);
             }
         }, 300);
     }
@@ -7587,23 +7600,41 @@ window.checkAiraPromoDeals = async () => {
                 const discountText = p.discountType === 'percent' 
                     ? `Diskon ${p.discountValue}% ${p.maxDiscount ? `(Maks ${formatPrice(p.maxDiscount)})` : ''}` 
                     : `Potongan Langsung ${formatPrice(p.discountValue)}`;
+
+                // Deteksi apakah promo berlaku untuk item spesifik atau semua item
+                let targetItem = null;
+                if (p.itemId && window.globalItems && Array.isArray(window.globalItems)) {
+                    targetItem = window.globalItems.find(item => item.id === p.itemId);
+                }
+
+                const scopeBadge = p.itemId
+                    ? `<div style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#b45309; background:#fef3c7; border:1px solid #fde68a; padding:3px 8px; border-radius:6px; font-weight:700;"><i class="fa-solid fa-car-side"></i> Khusus: ${targetItem ? targetItem.title : 'Paket/Armada Tertentu'}</div>`
+                    : `<div style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; color:#15803d; background:#dcfce7; border:1px solid #bbf7d0; padding:3px 8px; border-radius:6px; font-weight:700;"><i class="fa-solid fa-check-double"></i> Berlaku Untuk Semua Paket & Armada</div>`;
+
+                const btnText = p.itemId && targetItem
+                    ? `<i class="fa-solid fa-bolt"></i> Gunakan & Pesan`
+                    : `<i class="fa-solid fa-check-double"></i> Gunakan Kupon`;
+
                 return `
                     <div class="aira-voucher-card">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
                             <span class="aira-voucher-badge"><i class="fa-solid fa-ticket"></i> ${p.title || 'Voucher Resmi'}</span>
                             <span style="font-size:0.75rem; color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Aktif</span>
+                        </div>
+                        <div style="margin: 3px 0;">
+                            ${scopeBadge}
                         </div>
                         <div style="display:flex; justify-content:space-between; align-items:center; margin: 4px 0;">
                             <div>
                                 <div class="aira-voucher-code">${p.code}</div>
                                 <div style="font-size:0.78rem; color:#475569; margin-top:2px;">${discountText}</div>
                             </div>
-                            <button type="button" class="aira-use-voucher-btn" onclick="window.applyPromoCodeFromAira('${p.code}')">
-                                <i class="fa-solid fa-check-double"></i> Gunakan Kupon
+                            <button type="button" class="aira-use-voucher-btn" onclick="window.applyPromoCodeFromAira('${p.code}', '${p.itemId || ''}')">
+                                ${btnText}
                             </button>
                         </div>
                         <div style="font-size:0.73rem; color:#64748b; line-height:1.3;">
-                            ${p.description || 'Gunakan saat pemesanan armada atau paket tour.'}
+                            ${p.description || (p.itemId ? `Khusus untuk pemesanan ${targetItem ? targetItem.title : 'item ini'}.` : 'Gunakan saat pemesanan armada atau paket tour mana pun.')}
                         </div>
                     </div>
                 `;
@@ -7619,7 +7650,7 @@ window.checkAiraPromoDeals = async () => {
                     </p>
                     ${voucherHtml}
                     <div style="margin-top:10px; font-size:0.78rem; color:#94a3b8; text-align:center;">
-                        💡 Klik <strong>"Gunakan Kupon"</strong> pada salah satu voucher di atas untuk memasang otomatis kode diskon.
+                        💡 Klik <strong>"Gunakan Kupon"</strong> pada voucher di atas untuk memasang otomatis diskon ke pesanan.
                     </div>
                 </div>
             `);
@@ -7631,30 +7662,77 @@ window.checkAiraPromoDeals = async () => {
     }
 };
 
-window.applyPromoCodeFromAira = (code) => {
+window.applyPromoCodeFromAira = (code, itemId = '') => {
     if (!code) return;
     
-    // 1. Simpan kode promo ke memory/storage agar otomatis terpasang saat buka checkout
-    window.savedAiraPromo = code;
-    
-    // 2. Jika modal checkout sedang terbuka, langsung pasang ke input
+    // 1. Simpan data kupon ke memori
+    window.savedAiraPromo = {
+        code: code,
+        itemId: itemId || null
+    };
+
+    // Cari info target item jika kupon khusus
+    let targetItem = null;
+    if (itemId && window.globalItems && Array.isArray(window.globalItems)) {
+        targetItem = window.globalItems.find(item => item.id === itemId);
+    }
+
+    const messagesContainer = document.getElementById('chat-messages');
+
+    // SKENARIO A: Promo KHUSUS item / armada / paket tertentu
+    if (itemId && targetItem) {
+        if (messagesContainer) {
+            messagesContainer.insertAdjacentHTML('beforeend', `
+                <div class="message ai-message" style="background:#f0fdf4; border:1px solid #86efac; color:#166534;">
+                    <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> Kupon <strong>${code}</strong> khusus untuk <strong>${targetItem.title}</strong> dipilih! Membuka formulir pemesanan...
+                </div>
+            `);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        setTimeout(() => {
+            // Tutup chat window
+            const chatWindow = document.getElementById('ai-chat-window');
+            if (chatWindow && !chatWindow.classList.contains('hidden')) {
+                chatWindow.classList.add('hidden');
+            }
+
+            // Buka langsung checkout modal untuk item terkait!
+            if (typeof window.openCheckoutModal === 'function') {
+                window.openCheckoutModal(targetItem.title, targetItem.price || 0, 'web');
+            }
+
+            // Info popup ramah
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({
+                    icon: 'success',
+                    title: `Kupon ${code} Terpasang!`,
+                    text: `Kupon khusus "${targetItem.title}" telah otomatis terpasang pada formulir booking.`,
+                    confirmButtonColor: '#0284c7',
+                    timer: 3500
+                });
+            }
+        }, 600);
+        return;
+    }
+
+    // SKENARIO B: Promo BERLAKU UNTUK SEMUA PAKET / ARMADA (Universal)
+    if (messagesContainer) {
+        messagesContainer.insertAdjacentHTML('beforeend', `
+            <div class="message ai-message" style="background:#f0fdf4; border:1px solid #86efac; color:#166534;">
+                <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> Kupon <strong>${code}</strong> berlaku untuk <strong>SEMUA armada & paket tour</strong>! Kode promo otomatis terisi saat memilih armada/paket mana saja.
+            </div>
+        `);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+    }
+
+    // Jika modal checkout sedang terbuka saat klik:
     const promoInput = document.getElementById('co-promo-input');
-    if (promoInput) {
+    if (promoInput && document.getElementById('checkout-modal')?.classList.contains('active')) {
         promoInput.value = code;
         if (typeof window.applyPromo === 'function') {
             window.applyPromo();
         }
-    }
-
-    // 3. Beri notifikasi di chat dan tutup jendela chat
-    const messagesContainer = document.getElementById('chat-messages');
-    if (messagesContainer) {
-        messagesContainer.insertAdjacentHTML('beforeend', `
-            <div class="message ai-message" style="background:#f0fdf4; border:1px solid #86efac; color:#166534;">
-                <i class="fa-solid fa-circle-check" style="color:#16a34a;"></i> Kupon <strong>${code}</strong> berhasil dipilih! Mengarahkan Anda ke pilihan armada & form pemesanan...
-            </div>
-        `);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     setTimeout(() => {
@@ -7675,7 +7753,7 @@ window.applyPromoCodeFromAira = (code) => {
             Swal.fire({
                 icon: 'success',
                 title: `Kupon ${code} Tersalin!`,
-                text: 'Silakan pilih armada atau paket tour yang Kakak inginkan. Kode promo akan otomatis terpasang saat checkout.',
+                text: 'Kupon ini berlaku untuk SEMUA paket tour dan rental armada. Silakan pilih paket apa saja yang Kakak inginkan, kupon akan otomatis terpasang saat checkout.',
                 confirmButtonColor: '#0284c7',
                 timer: 3500
             });
