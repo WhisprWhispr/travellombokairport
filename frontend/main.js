@@ -5351,8 +5351,9 @@ window.clearChatHistory = () => {
     if (banner) banner.style.display = 'none';
     const inputArea = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-chat-btn');
-    if (inputArea) { inputArea.disabled = false; inputArea.placeholder = 'Tanya rekomendasi paket...'; }
+    if (inputArea) { inputArea.disabled = false; inputArea.placeholder = 'Tanya rekomendasi paket...'; inputArea.value = ''; }
     if (sendBtn) sendBtn.disabled = false;
+    window.checkGuestLimit();
 };
 
 let airaRatingInterval = null;
@@ -6283,22 +6284,54 @@ window.checkGuestLimit = () => {
     const isLogged = !!localStorage.getItem('auth_token') || !!localStorage.getItem('auth_user');
     const inputArea = document.getElementById('chat-input');
     const sendBtn = document.getElementById('send-chat-btn');
+    const micBtn = document.getElementById('mic-chat-btn');
     const banner = document.getElementById('guest-limit-banner');
+    const chipsBar = document.getElementById('aira-quick-chips-bar');
+    const qrContainer = document.getElementById('ai-quick-replies');
     
     if (!isLogged) {
         // count user messages
         const userMessagesCount = chatHistory.filter(msg => msg.role === 'user').length;
         if (userMessagesCount >= 3) {
-            if (inputArea) { inputArea.disabled = true; inputArea.placeholder = 'Login untuk bertanya lebih banyak...'; }
-            if (sendBtn) sendBtn.disabled = true;
+            if (inputArea) { 
+                inputArea.disabled = true; 
+                inputArea.placeholder = 'Login untuk bertanya lebih banyak...'; 
+                inputArea.value = ''; 
+            }
+            if (sendBtn) {
+                sendBtn.disabled = true;
+                sendBtn.style.opacity = '0.5';
+                sendBtn.style.cursor = 'not-allowed';
+            }
+            if (micBtn) {
+                micBtn.disabled = true;
+                micBtn.style.opacity = '0.5';
+                micBtn.style.cursor = 'not-allowed';
+            }
+            if (chipsBar) chipsBar.style.display = 'none';
+            if (qrContainer) qrContainer.style.display = 'none';
             if (banner) banner.style.display = 'block';
             return true;
         }
     }
     // Hide banner if logged in or under limit
     if (banner) banner.style.display = 'none';
-    if (inputArea) { inputArea.disabled = false; inputArea.placeholder = 'Tanya rekomendasi paket...'; }
-    if (sendBtn) sendBtn.disabled = false;
+    if (chipsBar) chipsBar.style.display = 'flex';
+    if (qrContainer) qrContainer.style.display = 'flex';
+    if (inputArea) { 
+        inputArea.disabled = false; 
+        inputArea.placeholder = 'Tanya rekomendasi paket...'; 
+    }
+    if (sendBtn) {
+        sendBtn.disabled = false;
+        sendBtn.style.opacity = '1';
+        sendBtn.style.cursor = 'pointer';
+    }
+    if (micBtn) {
+        micBtn.disabled = false;
+        micBtn.style.opacity = '1';
+        micBtn.style.cursor = 'pointer';
+    }
     return false;
 };
 
@@ -6306,6 +6339,12 @@ let aiSpeechRecognition = null;
 let isAiRecording = false;
 
 window.toggleVoiceInput = () => {
+    if (window.checkGuestLimit()) {
+        if (typeof window.openAuthModal === 'function') {
+            window.openAuthModal('login');
+        }
+        return;
+    }
     const micBtn = document.getElementById('mic-chat-btn');
     const input = document.getElementById('chat-input');
     
@@ -6380,6 +6419,12 @@ window.toggleVoiceInput = () => {
 };
 
 window.askAiraQuick = (query) => {
+    if (window.checkGuestLimit()) {
+        if (typeof window.openAuthModal === 'function') {
+            window.openAuthModal('login');
+        }
+        return;
+    }
     if (!query) return;
     const qrContainer = document.getElementById('ai-quick-replies');
     if (qrContainer) qrContainer.remove();
@@ -6394,6 +6439,12 @@ window.askAiraQuick = (query) => {
 };
 
 window.findNearestLombokFood = () => {
+    if (window.checkGuestLimit()) {
+        if (typeof window.openAuthModal === 'function') {
+            window.openAuthModal('login');
+        }
+        return;
+    }
     const qrContainer = document.getElementById('ai-quick-replies');
     if (qrContainer) qrContainer.remove();
 
@@ -6481,6 +6532,12 @@ window.findNearestLombokFood = () => {
 };
 
 window.sendDeterministicReply = (userText, aiText) => {
+    if (window.checkGuestLimit()) {
+        if (typeof window.openAuthModal === 'function') {
+            window.openAuthModal('login');
+        }
+        return;
+    }
     const qrContainer = document.getElementById('ai-quick-replies');
     if (qrContainer) qrContainer.remove();
 
@@ -6693,7 +6750,14 @@ window.shareLiveLocation = () => {
 };
 
 window.sendChatMessage = async (retryMessage = null, errorBubbleElem = null) => {
-    if (window.checkGuestLimit()) return;
+    if (window.checkGuestLimit()) {
+        const inputArea = document.getElementById('chat-input');
+        if (inputArea) inputArea.value = '';
+        if (typeof window.openAuthModal === 'function') {
+            window.openAuthModal('login');
+        }
+        return;
+    }
 
     const input = document.getElementById('chat-input');
     const message = retryMessage || input.value.trim();

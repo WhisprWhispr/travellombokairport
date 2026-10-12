@@ -2527,6 +2527,21 @@ input:checked + .slider:before { transform: translateX(22px); }
     box-shadow: 0 6px 20px rgba(2, 132, 199, 0.3);
 }
 
+#send-chat-btn:disabled {
+    background: #cbd5e1 !important;
+    color: #94a3b8 !important;
+    cursor: not-allowed !important;
+    box-shadow: none !important;
+    transform: none !important;
+    pointer-events: none;
+}
+
+#mic-chat-btn:disabled {
+    color: #cbd5e1 !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+}
+
 .typing-indicator {
     display: flex;
     gap: 4px;
