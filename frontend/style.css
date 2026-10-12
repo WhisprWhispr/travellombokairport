@@ -3096,6 +3096,28 @@ input:checked + .slider:before { transform: translateX(22px); }
   color: #0284c7;
 }
 
+.aira-chip-sasak {
+  color: #047857;
+  border-color: #a7f3d0;
+  background: #f0fdf4;
+}
+.aira-chip-sasak:hover {
+  background: #dcfce7;
+  border-color: #6ee7b7;
+  color: #065f46;
+}
+
+.ai-btn-emerald-sasak {
+  color: #047857;
+  background: #f0fdf4;
+  border: 1px solid #a7f3d0;
+}
+.ai-btn-emerald-sasak:hover {
+  color: #ffffff;
+  background: linear-gradient(135deg, #10b981, #059669);
+  border-color: #059669;
+}
+
 /* --- AIRA WA AUTO-SUMMARY LEAD CTA & DP/DEPOSIT CARD --- */
 .aira-wa-lead-card {
   margin-top: 14px;

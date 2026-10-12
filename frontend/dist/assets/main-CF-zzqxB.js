@@ -1618,6 +1618,9 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";!window.l
                 Halo Kak! 👋 Saya AIRA, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
             </div>
             <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
+                <button onclick="window.askAiraQuick('Ajarkan saya sapaan ramah bahasa Sasak Lombok sehari-hari dan tips menawar oleh-oleh di Sade atau Sukarara!')" class="ai-quick-reply-btn ai-btn-emerald-sasak">
+                    <i class="fa-solid fa-comments" style="margin-right: 6px; color:#10b981;"></i> 🗣️ Kamus Bahasa Sasak (Sapaan Lokal & Tips Belanja)
+                </button>
                 <button onclick="window.askAiraQuick('Rekomendasikan kuliner legendaris khas Lombok yang paling wajib dicoba dan rute lokasinya dong!')" class="ai-quick-reply-btn ai-btn-orange">
                     <i class="fa-solid fa-pepper-hot" style="margin-right: 6px; color:#ea580c;"></i> 🌶️ Kuliner Khas Lombok (Taliwang, Rembiga, Puyung)
                 </button>
