@@ -158,10 +158,10 @@
     "priceRange": "$$"
   }
   </script>
-  <script type="module" crossorigin src="/assets/main-CRWKEDTa.js"></script>
+  <script type="module" crossorigin src="/assets/main-dRDLaJSc.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-Ce6rRoS0.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-Bf4Rv6K1.css">
 </head>
 <body>
   <!-- Tsunami Alert Banner (Hidden by default) -->
@@ -1105,6 +1105,15 @@
                     Halo Kak! 👋 Saya AIRA, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
                 </div>
                 <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
+                    <button onclick="window.askAiraQuick('Rekomendasikan kuliner legendaris khas Lombok yang paling wajib dicoba dan rute lokasinya dong!')" class="ai-quick-reply-btn ai-btn-orange">
+                        <i class="fa-solid fa-pepper-hot" style="margin-right: 6px; color:#ea580c;"></i> 🌶️ Kuliner Khas Lombok (Taliwang, Rembiga, Puyung)
+                    </button>
+                    <button onclick="window.askAiraQuick('Rekomendasikan pusat oleh-oleh dan kerajinan hidden gems khas Lombok serta rute lokasinya dong!')" class="ai-quick-reply-btn ai-btn-purple">
+                        <i class="fa-solid fa-gem" style="margin-right: 6px; color:#7c3aed;"></i> 💎 Hidden Gems & Kerajinan (Tenun Sukarara, Mutiara, Gerabah)
+                    </button>
+                    <button onclick="window.findNearestLombokFood()" class="ai-quick-reply-btn ai-btn-blue">
+                        <i class="fa-solid fa-location-crosshairs" style="margin-right: 6px; color:#0284c7;"></i> 📍 Cari Kuliner Khas di Dekat Saya (GPS)
+                    </button>
                     <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami. 🙏<br><br>Sehubungan dengan peningkatan infrastruktur keamanan data Travel Lombok Airport, sistem otentikasi kami saat ini sedang dalam masa transisi. Hal tersebut menyebabkan fitur **Masuk (Login)** maupun **Pengaturan Ulang Kata Sandi (Reset Password)** belum dapat beroperasi secara optimal untuk beberapa akun.<br><br>Sebagai solusi alternatif yang cepat dan aman, **kami merekomendasikan Anda untuk melakukan Registrasi ulang menggunakan alamat email yang sama**.<br><br>Anda tidak perlu khawatir, seluruh riwayat dan data akun Anda akan secara otomatis tersinkronisasi kembali dengan sistem keamanan kami yang terbaru sesaat setelah pendaftaran berhasil dilakukan.<br><br>Terima kasih atas pengertian serta kepercayaan Anda dalam menggunakan layanan kami.')" class="ai-quick-reply-btn ai-btn-blue">
                         <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Bantuan Akses Akun (Gagal Login / Reset Sandi)
                     </button>
@@ -1137,7 +1146,25 @@
             </div>
 
             <div class="chat-footer-area" style="background: #ffffff; border-top: 1px solid #e2e8f0; flex-shrink: 0;">
-                <div class="chat-input-area" style="display: flex; gap: 5px; align-items: center; border-top: none; padding: 12px 14px 4px;">
+                <!-- Persistent Quick Chips Suggestion Bar -->
+                <div class="aira-quick-chips-bar" id="aira-quick-chips-bar">
+                    <button type="button" class="aira-chip-btn aira-chip-food" onclick="window.askAiraQuick('Rekomendasikan kuliner legendaris khas Lombok yang paling enak dan rute lokasinya')">
+                        <i class="fa-solid fa-pepper-hot"></i> Kuliner Lombok
+                    </button>
+                    <button type="button" class="aira-chip-btn aira-chip-gem" onclick="window.askAiraQuick('Rekomendasikan pusat oleh-oleh dan kerajinan tenun/mutiara khas Lombok')">
+                        <i class="fa-solid fa-gem"></i> Hidden Gems
+                    </button>
+                    <button type="button" class="aira-chip-btn aira-chip-maps" onclick="window.findNearestLombokFood()">
+                        <i class="fa-solid fa-location-crosshairs"></i> Kuliner Dekat Sini
+                    </button>
+                    <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif rental mobil lepas kunci dan all-in dengan supir di Lombok?')">
+                        <i class="fa-solid fa-car" style="color:#0284c7;"></i> Sewa Mobil
+                    </button>
+                    <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif layanan antar jemput Bandara Lombok ke Senggigi dan Kuta?')">
+                        <i class="fa-solid fa-plane-arrival" style="color:#10b981;"></i> Antar Jemput
+                    </button>
+                </div>
+                <div class="chat-input-area" style="display: flex; gap: 5px; align-items: center; border-top: none; padding: 10px 14px 4px;">
                     <input type="text" id="chat-input" placeholder="Tanya rekomendasi paket..." onkeypress="handleChatKeyPress(event)" style="flex: 1;">
                     <button onclick="window.toggleVoiceInput()" id="mic-chat-btn" title="Gunakan Suara" style="background:transparent; color:#64748b; border:none; padding:10px; cursor:pointer; font-size:1.1rem; transition:color 0.3s;"><i class="fa-solid fa-microphone"></i></button>
                     <button onclick="sendChatMessage()" id="send-chat-btn"><i class="fa-solid fa-paper-plane"></i></button>

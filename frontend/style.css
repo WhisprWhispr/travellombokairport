@@ -2420,6 +2420,30 @@ input:checked + .slider:before { transform: translateX(22px); }
     border-color: #ef4444;
 }
 
+.ai-btn-orange {
+    background: #fff7ed;
+    color: #ea580c;
+    border: 1px solid #fed7aa;
+}
+
+.ai-btn-orange:hover {
+    background: linear-gradient(135deg, #f97316, #ea580c);
+    color: white;
+    border-color: #ea580c;
+}
+
+.ai-btn-purple {
+    background: #faf5ff;
+    color: #7c3aed;
+    border: 1px solid #e9d5ff;
+}
+
+.ai-btn-purple:hover {
+    background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+    color: white;
+    border-color: #7c3aed;
+}
+
 .message {
     max-width: 85%;
     padding: 14px 18px;
@@ -2857,6 +2881,145 @@ input:checked + .slider:before { transform: translateX(22px); }
 .aira-chat-booking-link:hover {
   background: #bae6fd !important;
   color: #0284c7 !important;
+}
+/* --- AIRA GOOGLE MAPS NAVIGATION ROUTE BUTTONS --- */
+.aira-maps-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+  color: #ffffff !important;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 14px;
+  border-radius: 12px;
+  text-decoration: none !important;
+  margin: 6px 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 3px 10px rgba(2, 132, 199, 0.25);
+  transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  width: auto;
+  max-width: 100%;
+}
+
+.aira-maps-btn:hover {
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 6px 16px rgba(2, 132, 199, 0.35);
+  filter: brightness(1.08);
+}
+
+.aira-maps-btn:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.aira-maps-btn i.fa-map-location-dot {
+  font-size: 1rem;
+  color: #7dd3fc;
+  transition: transform 0.2s;
+}
+
+.aira-maps-btn:hover i.fa-map-location-dot {
+  transform: scale(1.15);
+}
+
+.aira-maps-btn .aira-maps-ext-icon {
+  font-size: 0.7rem;
+  opacity: 0.85;
+  margin-left: 2px;
+}
+
+/* Kuliner Specific Gradient (Orange-Red chili style) */
+.aira-maps-btn-food {
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #c2410c 100%) !important;
+  box-shadow: 0 3px 10px rgba(234, 88, 12, 0.28) !important;
+}
+
+.aira-maps-btn-food:hover {
+  box-shadow: 0 6px 18px rgba(234, 88, 12, 0.4) !important;
+}
+
+.aira-maps-btn-food i.fa-map-location-dot {
+  color: #fed7aa !important;
+}
+
+/* --- PERSISTENT QUICK CHIPS SCROLLBAR ABOVE CHAT INPUT --- */
+.aira-quick-chips-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+  padding: 8px 12px 6px;
+  background: #f8fafc;
+  border-top: 1px solid #f1f5f9;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.aira-quick-chips-bar::-webkit-scrollbar {
+  display: none;
+}
+
+.aira-chip-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  font-size: 0.74rem;
+  font-weight: 600;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+.aira-chip-btn:hover {
+  transform: translateY(-1px);
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+  color: #1e293b;
+}
+
+.aira-chip-btn:active {
+  transform: translateY(0);
+}
+
+.aira-chip-food {
+  color: #c2410c;
+  border-color: #fed7aa;
+  background: #fffaf5;
+}
+.aira-chip-food:hover {
+  background: #ffedd5;
+  border-color: #fdba74;
+  color: #9a3412;
+}
+
+.aira-chip-gem {
+  color: #6b21a8;
+  border-color: #e9d5ff;
+  background: #faf5ff;
+}
+.aira-chip-gem:hover {
+  background: #f3e8ff;
+  border-color: #d8b4fe;
+  color: #581c87;
+}
+
+.aira-chip-maps {
+  color: #0369a1;
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+.aira-chip-maps:hover {
+  background: #e0f2fe;
+  border-color: #7dd3fc;
+  color: #0284c7;
 }
 
 /* --- AIRA WA AUTO-SUMMARY LEAD CTA & DP/DEPOSIT CARD --- */

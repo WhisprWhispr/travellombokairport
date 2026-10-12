@@ -5329,8 +5329,20 @@ window.clearChatHistory = () => {
                 Halo Kak! 👋 Saya AIRA, asisten virtual Travel Lombok Airport. Ada yang bisa saya bantu untuk rencana perjalanan Anda?
             </div>
             <div id="ai-quick-replies" style="display: flex; flex-direction: column; gap: 8px; margin: 10px 15px;">
-                <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami. 🙏<br><br>Sehubungan dengan peningkatan infrastruktur keamanan data Travel Lombok Airport, sistem otentikasi kami saat ini sedang dalam masa transisi. Hal tersebut menyebabkan fitur **Masuk (Login)** maupun **Pengaturan Ulang Kata Sandi (Reset Password)** belum dapat beroperasi secara optimal untuk beberapa akun.<br><br>Sebagai solusi alternatif yang cepat dan aman, **kami merekomendasikan Anda untuk melakukan Registrasi ulang menggunakan alamat email yang sama**.<br><br>Anda tidak perlu khawatir, seluruh riwayat dan data akun Anda akan secara otomatis tersinkronisasi kembali dengan sistem keamanan kami yang terbaru sesaat setelah pendaftaran berhasil dilakukan.<br><br>Terima kasih atas pengertian serta kepercayaan Anda dalam menggunakan layanan kami.')" style="text-align: left; background: white; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 12px; font-size: 0.85rem; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s;">
+                <button onclick="window.askAiraQuick('Rekomendasikan kuliner legendaris khas Lombok yang paling wajib dicoba dan rute lokasinya dong!')" class="ai-quick-reply-btn ai-btn-orange">
+                    <i class="fa-solid fa-pepper-hot" style="margin-right: 6px; color:#ea580c;"></i> 🌶️ Kuliner Khas Lombok (Taliwang, Rembiga, Puyung)
+                </button>
+                <button onclick="window.askAiraQuick('Rekomendasikan pusat oleh-oleh dan kerajinan hidden gems khas Lombok serta rute lokasinya dong!')" class="ai-quick-reply-btn ai-btn-purple">
+                    <i class="fa-solid fa-gem" style="margin-right: 6px; color:#7c3aed;"></i> 💎 Hidden Gems & Kerajinan (Tenun Sukarara, Mutiara, Gerabah)
+                </button>
+                <button onclick="window.findNearestLombokFood()" class="ai-quick-reply-btn ai-btn-blue">
+                    <i class="fa-solid fa-location-crosshairs" style="margin-right: 6px; color:#0284c7;"></i> 📍 Cari Kuliner Khas di Dekat Saya (GPS)
+                </button>
+                <button onclick="window.sendDeterministicReply('Saya mengalami kendala tidak bisa login, padahal sudah mereset kata sandi.', 'Mohon maaf atas ketidaknyamanan yang Anda alami. 🙏<br><br>Sehubungan dengan peningkatan infrastruktur keamanan data Travel Lombok Airport, sistem otentikasi kami saat ini sedang dalam masa transisi. Hal tersebut menyebabkan fitur **Masuk (Login)** maupun **Pengaturan Ulang Kata Sandi (Reset Password)** belum dapat beroperasi secara optimal untuk beberapa akun.<br><br>Sebagai solusi alternatif yang cepat dan aman, **kami merekomendasikan Anda untuk melakukan Registrasi ulang menggunakan alamat email yang sama**.<br><br>Anda tidak perlu khawatir, seluruh riwayat dan data akun Anda akan secara otomatis tersinkronisasi kembali dengan sistem keamanan kami yang terbaru sesaat setelah pendaftaran berhasil dilakukan.<br><br>Terima kasih atas pengertian serta kepercayaan Anda dalam menggunakan layanan kami.')" class="ai-quick-reply-btn ai-btn-blue">
                     <i class="fa-solid fa-circle-question" style="margin-right: 6px;"></i> Bantuan Akses Akun (Gagal Login / Reset Sandi)
+                </button>
+                <button onclick="window.showBugReportOptions()" class="ai-quick-reply-btn ai-btn-red">
+                    <i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px;"></i> Laporkan Masalah / Bug
                 </button>
             </div>
         `;
@@ -6175,11 +6187,19 @@ function parseMarkdownToHTML(markdown, isTyping = false) {
         return `<a href="javascript:void(0)" onclick="window.handleAiraBookingLinkClick('${cleanText}', '${cleanUrl}')" class="aira-chat-pill-link aira-chat-booking-link" title="Buka Form Booking Resmi Website"><i class="fa-solid fa-file-signature"></i> ${text} (Form Web)</a>`;
     });
 
-    // 3. Links [Text](URL) umum - lindungi link lokal fiktif agar tidak 404
+    // 3. Links [Text](URL) umum - deteksi khusus Google Maps agar menjadi tombol navigasi rute mewah
     html = html.replace(/\[(.*?)\]\((.*?)\)/g, (match, text, url) => {
         const trimmedUrl = (url || '').trim();
+        const cleanText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
+        // Intercept Google Maps: ubah menjadi tombol navigasi rute Google Maps interaktif yang menarik
+        if (trimmedUrl.includes('google.com/maps') || trimmedUrl.includes('maps.google.com') || trimmedUrl.includes('goo.gl/maps')) {
+            const isFood = /kuliner|makan|taliwang|rembiga|puyung|bulayak|bebalung|warung|resto|pedas|inaq/i.test(text + ' ' + url);
+            const extraClass = isFood ? 'aira-maps-btn-food' : '';
+            return `<a href="${trimmedUrl}" target="_blank" rel="noopener noreferrer" class="aira-maps-btn ${extraClass}" title="Buka Rute di Google Maps"><i class="fa-solid fa-map-location-dot"></i> <span>${cleanText}</span> <i class="fa-solid fa-arrow-up-right-from-square aira-maps-ext-icon"></i></a>`;
+        }
+
         if (!trimmedUrl.startsWith('http://') && !trimmedUrl.startsWith('https://') && !trimmedUrl.startsWith('#') && !trimmedUrl.startsWith('mailto:') && !trimmedUrl.startsWith('tel:')) {
-            const cleanText = text.replace(/'/g, "\\'").replace(/"/g, '&quot;');
             const cleanUrl = trimmedUrl.replace(/'/g, "\\'").replace(/"/g, '&quot;');
             return `<a href="javascript:void(0)" onclick="window.handleAiraBookingLinkClick('${cleanText}', '${cleanUrl}')" class="aira-chat-pill-link aira-chat-booking-link"><i class="fa-solid fa-circle-arrow-right"></i> ${text}</a>`;
         }
@@ -6357,6 +6377,107 @@ window.toggleVoiceInput = () => {
     };
 
     aiSpeechRecognition.start();
+};
+
+window.askAiraQuick = (query) => {
+    if (!query) return;
+    const qrContainer = document.getElementById('ai-quick-replies');
+    if (qrContainer) qrContainer.remove();
+
+    const input = document.getElementById('chat-input');
+    if (input) {
+        input.value = query;
+        window.sendChatMessage();
+    } else {
+        window.sendChatMessage(query);
+    }
+};
+
+window.findNearestLombokFood = () => {
+    const qrContainer = document.getElementById('ai-quick-replies');
+    if (qrContainer) qrContainer.remove();
+
+    const messagesContainer = document.getElementById('chat-messages');
+    if (!messagesContainer) return;
+
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div class="message user-message" style="background:linear-gradient(135deg, #f97316, #ea580c); color:white; box-shadow:0 4px 15px rgba(234, 88, 12, 0.3);">
+            <i class="fa-solid fa-pepper-hot"></i> Cari Kuliner Khas Lombok Terdekat dari Lokasi Saya (GPS)
+        </div>
+    `);
+
+    const typingId = 'typing-' + Date.now();
+    messagesContainer.insertAdjacentHTML('beforeend', `
+        <div id="${typingId}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lng = position.coords.longitude;
+            const mapsUrl = `https://www.google.com/maps/search/Kuliner+Khas+Lombok+Ayam+Taliwang+Sate+Rembiga+Nasi+Balap/@${lat},${lng},14z`;
+
+            setTimeout(() => {
+                const t = document.getElementById(typingId);
+                if (t) t.remove();
+
+                let html = `
+                    <div class="message ai-message" style="border: 1.5px solid #fed7aa; background: #fffaf5;">
+                        <h4 style="color:#ea580c; margin:0 0 10px 0; display:flex; align-items:center; gap:8px;">
+                            <i class="fa-solid fa-utensils"></i> 📍 Kuliner Khas Lombok Terdekat
+                        </h4>
+                        <p style="font-size:0.88rem; margin:0 0 10px 0; color:#334155;">
+                            Lokasi Anda berhasil dideteksi! Klik tombol di bawah ini untuk melihat daftar rumah makan khas Lombok (Ayam Taliwang, Sate Rembiga, Nasi Balap, Bebalung) terdekat dari koordinat Anda langsung di Google Maps:
+                        </p>
+                        <a href="${mapsUrl}" target="_blank" rel="noopener noreferrer" class="aira-maps-btn aira-maps-btn-food" title="Buka Navigasi Rute Kuliner di Google Maps">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Buka Rute Kuliner Terdekat di Google Maps</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square aira-maps-ext-icon"></i>
+                        </a>
+                        <div style="margin-top: 10px; font-size: 0.8rem; color: #64748b; line-height: 1.4;">
+                            💡 <em>Ingin berburu kuliner tanpa repot menyetir? Armada rental mobil & driver profesional Travel Lombok Airport siap mengantar Anda!</em>
+                        </div>
+                    </div>
+                `;
+                messagesContainer.insertAdjacentHTML('beforeend', html);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 700);
+        }, (error) => {
+            setTimeout(() => {
+                const t = document.getElementById(typingId);
+                if (t) t.remove();
+                messagesContainer.insertAdjacentHTML('beforeend', `
+                    <div class="message ai-message" style="border:1px solid #fed7aa; background:#fffaf5; color:#9a3412;">
+                        <p style="margin:0 0 8px 0;"><strong>Akses GPS belum diizinkan atau dinonaktifkan.</strong> Jangan khawatir, berikut pencarian kuliner legendaris Lombok di Google Maps:</p>
+                        <a href="https://www.google.com/maps/search/Kuliner+Khas+Lombok+Ayam+Taliwang+Sate+Rembiga+Nasi+Balap" target="_blank" rel="noopener noreferrer" class="aira-maps-btn aira-maps-btn-food">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>Buka Rekomendasi Kuliner Lombok di Google Maps</span>
+                            <i class="fa-solid fa-arrow-up-right-from-square aira-maps-ext-icon"></i>
+                        </a>
+                    </div>
+                `);
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, 700);
+        });
+    } else {
+        setTimeout(() => {
+            const t = document.getElementById(typingId);
+            if (t) t.remove();
+            messagesContainer.insertAdjacentHTML('beforeend', `
+                <div class="message ai-message" style="border:1px solid #fed7aa; background:#fffaf5; color:#9a3412;">
+                    <a href="https://www.google.com/maps/search/Kuliner+Khas+Lombok+Ayam+Taliwang+Sate+Rembiga+Nasi+Balap" target="_blank" rel="noopener noreferrer" class="aira-maps-btn aira-maps-btn-food">
+                        <i class="fa-solid fa-map-location-dot"></i>
+                        <span>Buka Rekomendasi Kuliner Lombok di Google Maps</span>
+                        <i class="fa-solid fa-arrow-up-right-from-square aira-maps-ext-icon"></i>
+                    </a>
+                </div>
+            `);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 700);
+    }
 };
 
 window.sendDeterministicReply = (userText, aiText) => {
