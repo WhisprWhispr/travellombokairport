@@ -16,6 +16,7 @@
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://travellombokairport.com/">
+  <meta property="og:site_name" content="Travel Lombok Airport">
   <meta property="og:title" content="Travel Lombok Airport">
   <meta property="og:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
   <meta property="og:image" content="https://travellombokairport.com/logo.png">
@@ -43,77 +44,16 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   
-  <!-- Coming Soon Modal -->
-
-  <!-- Review Modal -->
-  <div id="review-modal" class="modal-overlay" style="z-index: 10000; position: fixed; inset: 0; background: rgba(15,23,42,0.7); display: none; justify-content: center; align-items: center; backdrop-filter: blur(6px); padding: 20px;">
-    <div style="background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: reviewPopIn 0.25s cubic-bezier(0.34,1.56,0.64,1);">
-      
-      <!-- Header -->
-      <div style="background: linear-gradient(135deg, #1d4ed8, #0284c7); padding: 20px 24px 18px; border-radius: 20px 20px 0 0; position: relative;">
-        <button onclick="document.getElementById('review-modal').classList.remove('active')" style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-times"></i></button>
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <div style="background: rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
-            <i class="fa-solid fa-star" style="color: #fbbf24; font-size: 1.2rem;"></i>
-          </div>
-          <div>
-            <h3 style="color: white; margin: 0; font-size: 1.15rem; font-weight: 700;">Berikan Ulasan</h3>
-            <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.8rem;">Bagikan pengalaman perjalanan Anda</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- Body -->
-      <div style="padding: 20px 24px 24px;">
-        <form id="review-form" onsubmit="submitReview(event)">
-
-          <!-- Nama -->
-          <div style="margin-bottom: 14px;">
-            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Nama Anda</label>
-            <input type="text" id="review-name" required placeholder="Contoh: Ridho Sandhika" style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 14px; width: 100%; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
-          </div>
-
-          <!-- Bintang -->
-          <div style="margin-bottom: 14px;">
-            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 8px;">Penilaian Anda</label>
-            <div class="star-rating" style="display: flex; gap: 6px; flex-direction: row-reverse; justify-content: flex-end;">
-              <input type="radio" id="star5" name="rating" value="5" required style="display: none;" /><label for="star5" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star4" name="rating" value="4" style="display: none;" /><label for="star4" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star3" name="rating" value="3" style="display: none;" /><label for="star3" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star2" name="rating" value="2" style="display: none;" /><label for="star2" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-              <input type="radio" id="star1" name="rating" value="1" style="display: none;" /><label for="star1" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
-            </div>
-          </div>
-
-          <!-- Komentar -->
-          <div style="margin-bottom: 18px;">
-            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Cerita Perjalanan</label>
-            <textarea id="review-comment" required rows="3" placeholder="Ceritakan pengalaman Anda..." style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 14px; width: 100%; font-size: 0.9rem; resize: none; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
-          </div>
-
-          <button type="submit" id="btn-submit-review" style="width: 100%; background: linear-gradient(135deg, #1d4ed8, #0284c7); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.3px;">
-            <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i>Kirim Ulasan
-          </button>
-        </form>
-      </div>
-
-    </div>
-  </div>
-
-  <style>
-    @keyframes reviewPopIn {
-      from { opacity: 0; transform: scale(0.85); }
-      to { opacity: 1; transform: scale(1); }
-    }
-    .star-rating label:hover,
-    .star-rating label:hover ~ label,
-    .star-rating input:checked ~ label {
-      color: #f59e0b !important;
-    }
-    #review-modal.active {
-      display: flex !important;
-    }
-  </style>
+  <!-- Structured Data (JSON-LD) for Google Search Site Name -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Travel Lombok Airport",
+    "alternateName": ["Travel Lombok", "TLA"],
+    "url": "https://travellombokairport.com/"
+  }
+  </script>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
@@ -1195,6 +1135,76 @@
             </div>
         </div>
     </div>
+
+  <!-- Review Modal -->
+  <div id="review-modal" class="modal-overlay" style="z-index: 10000; position: fixed; inset: 0; background: rgba(15,23,42,0.7); display: none; justify-content: center; align-items: center; backdrop-filter: blur(6px); padding: 20px;">
+    <div style="background: white; border-radius: 20px; width: 100%; max-width: 420px; max-height: 90vh; overflow-y: auto; position: relative; box-shadow: 0 25px 60px rgba(0,0,0,0.3); animation: reviewPopIn 0.25s cubic-bezier(0.34,1.56,0.64,1);">
+      
+      <!-- Header -->
+      <div style="background: linear-gradient(135deg, #1d4ed8, #0284c7); padding: 20px 24px 18px; border-radius: 20px 20px 0 0; position: relative;">
+        <button onclick="document.getElementById('review-modal').classList.remove('active')" style="position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.2); border: none; width: 32px; height: 32px; border-radius: 50%; color: white; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;"><i class="fa-solid fa-times"></i></button>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="background: rgba(255,255,255,0.2); width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+            <i class="fa-solid fa-star" style="color: #fbbf24; font-size: 1.2rem;"></i>
+          </div>
+          <div>
+            <h3 style="color: white; margin: 0; font-size: 1.15rem; font-weight: 700;">Berikan Ulasan</h3>
+            <p style="color: rgba(255,255,255,0.8); margin: 0; font-size: 0.8rem;">Bagikan pengalaman perjalanan Anda</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div style="padding: 20px 24px 24px;">
+        <form id="review-form" onsubmit="submitReview(event)">
+
+          <!-- Nama -->
+          <div style="margin-bottom: 14px;">
+            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Nama Anda</label>
+            <input type="text" id="review-name" required placeholder="Contoh: Ridho Sandhika" style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 14px; width: 100%; font-size: 0.9rem; outline: none; transition: border-color 0.2s; box-sizing: border-box;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'">
+          </div>
+
+          <!-- Bintang -->
+          <div style="margin-bottom: 14px;">
+            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 8px;">Penilaian Anda</label>
+            <div class="star-rating" style="display: flex; gap: 6px; flex-direction: row-reverse; justify-content: flex-end;">
+              <input type="radio" id="star5" name="rating" value="5" required style="display: none;" /><label for="star5" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
+              <input type="radio" id="star4" name="rating" value="4" style="display: none;" /><label for="star4" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
+              <input type="radio" id="star3" name="rating" value="3" style="display: none;" /><label for="star3" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
+              <input type="radio" id="star2" name="rating" value="2" style="display: none;" /><label for="star2" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
+              <input type="radio" id="star1" name="rating" value="1" style="display: none;" /><label for="star1" style="color: #cbd5e1; font-size: 1.8rem; cursor: pointer; transition: color 0.15s;"><i class="fa-solid fa-star"></i></label>
+            </div>
+          </div>
+
+          <!-- Komentar -->
+          <div style="margin-bottom: 18px;">
+            <label style="font-weight: 600; color: #1e293b; font-size: 0.85rem; display: block; margin-bottom: 6px;">Cerita Perjalanan</label>
+            <textarea id="review-comment" required rows="3" placeholder="Ceritakan pengalaman Anda..." style="border: 1.5px solid #e2e8f0; border-radius: 10px; padding: 9px 14px; width: 100%; font-size: 0.9rem; resize: none; outline: none; transition: border-color 0.2s; box-sizing: border-box; font-family: inherit;" onfocus="this.style.borderColor='#2563eb'" onblur="this.style.borderColor='#e2e8f0'"></textarea>
+          </div>
+
+          <button type="submit" id="btn-submit-review" style="width: 100%; background: linear-gradient(135deg, #1d4ed8, #0284c7); color: white; border: none; border-radius: 12px; padding: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: opacity 0.2s; letter-spacing: 0.3px;">
+            <i class="fa-solid fa-paper-plane" style="margin-right: 8px;"></i>Kirim Ulasan
+          </button>
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+  <style>
+    @keyframes reviewPopIn {
+      from { opacity: 0; transform: scale(0.85); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label,
+    .star-rating input:checked ~ label {
+      color: #f59e0b !important;
+    }
+    #review-modal.active {
+      display: flex !important;
+    }
+  </style>
 
   <!-- Gempa Modal -->
   <div id="gempa-modal" class="tour-modal-overlay" style="z-index: 100000; background: rgba(15,23,42,0.8); backdrop-filter: blur(4px);">
