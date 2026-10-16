@@ -2478,6 +2478,11 @@ window.generateEtiketPDF = (data) => {
     const issuedAt = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' });
     const logoUrl = window.location.origin + '/logo.png';
 
+    const is12HourDriverPdf = nameLower.includes("12 jam") || nameLower.includes("include driver");
+    if (is12HourDriverPdf) {
+        typeLbl = 'Sewa Mobil + Driver (12 Jam)';
+    }
+
     let depositAmount = 0;
     const matchedItemPdf = window.globalItems ? window.globalItems.find(i => i.title === (data.itemName || '')) : null;
     let isMobilPdf = nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner");
@@ -2501,7 +2506,7 @@ window.generateEtiketPDF = (data) => {
     else if (isMobilPdf) depositAmount = 1000000;
     
     // Deposit tidak berlaku jika include driver/supir
-    let isWithDriver = nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
+    let isWithDriver = is12HourDriverPdf || nameLower.includes("driver") || nameLower.includes("supir") || nameLower.includes("dengan supir");
     const matchedItem = window.globalItems ? window.globalItems.find(i => i.title === (data.itemName || '')) : null;
     if (matchedItem && matchedItem.driverOptions && matchedItem.driverOptions !== 'Tidak Include Driver') {
         isWithDriver = true;
@@ -2624,17 +2629,24 @@ window.generateEtiketPDF = (data) => {
                                 letter-spacing:0.8px;margin-bottom:5px;">Tanggal Pelaksanaan</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.startDate || data.details?.date)}</div>
                 </div>
-                ${data.endDate ? `
+                ${(data.endDate && !is12HourDriverPdf) ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Tanggal Selesai</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${fmtDate(data.endDate)}</div>
                 </div>
                 ` : ''}
+                ${is12HourDriverPdf ? `
+                <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
+                    <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
+                                letter-spacing:0.8px;margin-bottom:5px;">Durasi Layanan</div>
+                    <div style="font-size:13px;font-weight:700;color:#1e293b;">${(data.startDate === data.endDate || !data.endDate) ? '12 Jam Pemakaian' : 'Paket 12 Jam Per Hari'}</div>
+                </div>
+                ` : `
                 ${data.details?.time ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">Jam Penjemputan</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">Jam Pengambilan</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.pickupTime || data.details.time}</div>
                 </div>
                 ` : ''}
@@ -2645,6 +2657,7 @@ window.generateEtiketPDF = (data) => {
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.dropoffTime}</div>
                 </div>
                 ` : ''}
+                `}
                 ${data.details?.pax ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
@@ -2655,14 +2668,14 @@ window.generateEtiketPDF = (data) => {
                 ${data.details?.pickup ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;grid-column:1/-1;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">Lokasi Jemput</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">${is12HourDriverPdf ? 'Lokasi Penjemputan' : 'Lokasi Jemput'}</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.pickup}</div>
                 </div>
                 ` : ''}
                 ${data.details?.dropoff ? `
                 <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:13px 15px;grid-column:1/-1;">
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
-                                letter-spacing:0.8px;margin-bottom:5px;">Tujuan / Drop-off</div>
+                                letter-spacing:0.8px;margin-bottom:5px;">${is12HourDriverPdf ? 'Lokasi Pengantaran / Selesai' : 'Tujuan / Drop-off'}</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.dropoff}</div>
                 </div>
                 ` : ''}
@@ -2689,8 +2702,18 @@ window.generateEtiketPDF = (data) => {
                 ` : ''}
                 ${data.endDate ? (() => {
             const itemName = (data.itemName || "").toLowerCase();
+            const is12Hour = itemName.includes('12 jam') || itemName.includes('include driver');
             const isPackage = itemName.includes('paket') || itemName.includes('tour') || itemName.includes('trip') || itemName.includes('honeymoon') || (data.transactionId && data.transactionId.startsWith('ORD-'));
-            const text = isPackage ? `Paket/layanan berakhir pada <strong>${fmtDate(data.endDate)}</strong>.` : `Masa sewa berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
+            let text = '';
+            if (is12Hour) {
+                text = (data.startDate === data.endDate || !data.endDate)
+                    ? `Layanan sewa Include Driver berlaku selama <strong>12 Jam</strong> pada tanggal <strong>${fmtDate(data.startDate)}</strong>.`
+                    : `Layanan sewa Include Driver (12 Jam per hari) berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
+            } else if (isPackage) {
+                text = `Paket/layanan berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
+            } else {
+                text = `Masa sewa berakhir pada <strong>${fmtDate(data.endDate)}</strong>.`;
+            }
             return `
                     <div style="background:#eff6ff;border:1px solid #bae6fd;border-radius:8px;padding:8px 12px;grid-column:1/-1;display:flex;align-items:center;gap:10px;">
                         <div style="width:28px;height:28px;background:#0ea5e9;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;">
@@ -2908,7 +2931,7 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                     </div>
                     <div>
                         <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Jadwal</span>
-                        <div style="font-weight: 700; color: #1e293b;">${data.startDate ? new Date(data.startDate).toLocaleDateString('id-ID') : '-'} ${data.endDate ? '– ' + new Date(data.endDate).toLocaleDateString('id-ID') : ''}</div>
+                        <div style="font-weight: 700; color: #1e293b;">${data.startDate ? new Date(data.startDate).toLocaleDateString('id-ID') : '-'} ${(data.endDate && data.endDate !== data.startDate) ? '– ' + new Date(data.endDate).toLocaleDateString('id-ID') : ''}</div>
                     </div>
                 </div>
                 
@@ -3308,11 +3331,14 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
     }
 
+    const is12HourDriver = (category === 'mobil' && (nameLower.includes("12 jam") || nameLower.includes("include driver")));
+    window._is12HourDriver = is12HourDriver;
+
     // ====== APPLY EVENT MODE ======
     const evtSettings = window.globalEventSettings || { eventMode: false, eventPriceIncrease: 0 };
     const isEventActive = evtSettings.eventMode && evtSettings.eventPriceIncrease > 0;
     const isRentalItem = (category === 'motor' || category === 'mobil');
-    const eventPriceIncrease = (isEventActive && isRentalItem) ? evtSettings.eventPriceIncrease : 0;
+    const eventPriceIncrease = (isEventActive && isRentalItem && !is12HourDriver) ? evtSettings.eventPriceIncrease : 0;
     const EVENT_MIN_DAYS = 4; // Minimum sewa saat event
     // ====== END EVENT MODE ======
 
@@ -3327,17 +3353,17 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             <p style="font-size: 0.85rem; color: #64748b; margin-bottom: 5px;">${method === 'wa' ? "Item Booking:" : (isOrder ? "Item yang diorder:" : "Rincian Booking:")}</p>
             <h3 style="color: var(--text-dark); margin-bottom: 5px;">${itemName}</h3>
             ${isOrder ? `
-                ${(isEventActive && isRentalItem) ? `
+                ${(isEventActive && isRentalItem && !is12HourDriver) ? `
                 <div style="margin-bottom: 6px;">
                     <span id="co-crossed-price" style="text-decoration: line-through; color: #94a3b8; font-size: 0.9rem;">${formatPrice(price * EVENT_MIN_DAYS)}</span>
                     <span style="background: linear-gradient(135deg,#f59e0b,#ef4444); color: white; font-size: 0.7rem; font-weight: 700; padding: 2px 7px; border-radius: 10px; margin-left: 6px;">EVENT +${formatPrice(evtSettings.eventPriceIncrease)}</span>
                 </div>
                 <p id="co-display-price" data-base-price="${price}" data-event-increase="${eventPriceIncrease}" style="font-weight: bold; color: #ef4444; font-size: 1.25rem;">${formatPrice((price * EVENT_MIN_DAYS) + eventPriceIncrease)} <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${EVENT_MIN_DAYS} Hari)</span></p>
-                ` : `<p id="co-display-price" data-base-price="${price}" data-event-increase="0" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${formatPrice(price)}</p>`}
+                ` : `<p id="co-display-price" data-base-price="${price}" data-event-increase="0" style="font-weight: bold; color: var(--primary-green); font-size: 1.1rem;">${formatPrice(price)} ${is12HourDriver ? '<span style="font-size:0.85rem;color:#15803d;font-weight:normal;">/ 12 Jam</span>' : ''}</p>`}
             ` : ""}
         </div>
 
-        ${(isEventActive && isRentalItem) ? `
+        ${(isEventActive && isRentalItem && !is12HourDriver) ? `
         <div style="background: linear-gradient(135deg, #fff7ed, #fef3c7); border: 1.5px solid #f59e0b; border-radius: 10px; padding: 10px 14px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
             <i class="fa-solid fa-fire" style="color: #f59e0b; font-size: 1.2rem;"></i>
             <div>
@@ -3366,27 +3392,38 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             </div>
             <div style="display: flex; gap: 15px;">
                 <div class="form-group mb-3" style="flex: 1;">
-                    <label>${category === 'airport' ? 'Tanggal' : 'Tanggal Mulai'}</label>
+                    <label>${category === 'airport' ? 'Tanggal' : (is12HourDriver ? 'Tanggal Pemakaian' : 'Tanggal Mulai')}</label>
                     <input type="date" id="co-start-date" class="form-control" required>
                 </div>
                 ${category === 'airport' ? `
                 <input type="hidden" id="co-end-date" required>
                 ` : (durationDays === 0 ? `
                 <div class="form-group mb-3" style="flex: 1; display:flex; flex-direction:column;">
-                    <label>Durasi Sewa${(isEventActive && isRentalItem) ? ' <span style="font-size:0.75rem;color:#ef4444;font-weight:700;">⚠ Min. 4 Hari (Event)</span>' : ''}</label>
+                    <label>${is12HourDriver ? 'Durasi Pemakaian (Paket 12 Jam)' : 'Durasi Sewa'}${ (isEventActive && isRentalItem && !is12HourDriver) ? ' <span style="font-size:0.75rem;color:#ef4444;font-weight:700;">⚠ Min. 4 Hari (Event)</span>' : '' }</label>
                     <div style="display:flex; gap:10px;">
                         <select id="co-duration-select" class="form-control" style="flex:1;" required onchange="const c = document.getElementById('co-duration-custom'); if(this.value==='custom') { c.style.display='block'; c.required=true; c.focus(); } else { c.style.display='none'; c.required=false; }">
-                            ${(isEventActive && isRentalItem) ? '' : '<option value="1">1 Hari</option>'}
-                            ${(isEventActive && isRentalItem) ? '' : '<option value="2">2 Hari</option>'}
-                            ${(isEventActive && isRentalItem) ? '' : '<option value="3">3 Hari</option>'}
-                            <option value="4"${(isEventActive && isRentalItem) ? ' selected' : ''}>4 Hari${(isEventActive && isRentalItem) ? ' (Minimum Event)' : ''}</option>
-                            <option value="5">5 Hari</option>
-                            <option value="6">6 Hari</option>
-                            <option value="7">1 Minggu (7 Hari)</option>
-                            <option value="14">2 Minggu (14 Hari)</option>
-                            <option value="custom">Custom (Ketik Sendiri)</option>
+                            ${is12HourDriver ? `
+                                <option value="1" selected>12 Jam</option>
+                                <option value="2">2 Hari (2x 12 Jam)</option>
+                                <option value="3">3 Hari (3x 12 Jam)</option>
+                                <option value="4">4 Hari (4x 12 Jam)</option>
+                                <option value="5">5 Hari (5x 12 Jam)</option>
+                                <option value="6">6 Hari (6x 12 Jam)</option>
+                                <option value="7">1 Minggu (7x 12 Jam)</option>
+                                <option value="custom">Custom (Berapa Hari?)</option>
+                            ` : `
+                                ${(isEventActive && isRentalItem) ? '' : '<option value="1">1 Hari</option>'}
+                                ${(isEventActive && isRentalItem) ? '' : '<option value="2">2 Hari</option>'}
+                                ${(isEventActive && isRentalItem) ? '' : '<option value="3">3 Hari</option>'}
+                                <option value="4"${(isEventActive && isRentalItem) ? ' selected' : ''}>4 Hari${(isEventActive && isRentalItem) ? ' (Minimum Event)' : ''}</option>
+                                <option value="5">5 Hari</option>
+                                <option value="6">6 Hari</option>
+                                <option value="7">1 Minggu (7 Hari)</option>
+                                <option value="14">2 Minggu (14 Hari)</option>
+                                <option value="custom">Custom (Ketik Sendiri)</option>
+                            `}
                         </select>
-                        <input type="number" id="co-duration-custom" class="form-control" min="${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1}" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1} && this.value!==''){this.value=${(isEventActive && isRentalItem) ? EVENT_MIN_DAYS : 1};}">
+                        <input type="number" id="co-duration-custom" class="form-control" min="${(isEventActive && isRentalItem && !is12HourDriver) ? EVENT_MIN_DAYS : 1}" max="60" placeholder="Berapa hari?" style="display:none; width:110px;" oninput="if(this.value>60){this.value=60;} else if(this.value<1 && this.value!==''){this.value=1;}">
                     </div>
                 </div>
                 <input type="hidden" id="co-end-date" required>
@@ -3403,7 +3440,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 </div>
                 <div>
                     <div id="date-duration-title" style="font-size:0.8rem;font-weight:700;color:#0369a1;">
-                        ${durationDays > 0 ? (itemName.match(/(\d+H\s*\d+M)/i)?.[1] || durationDays + 'H ' + (durationDays - 1) + 'M') + ' &mdash; Durasi Paket' : 'Info Pengembalian'}
+                        ${durationDays > 0 ? (itemName.match(/(\d+H\s*\d+M)/i)?.[1] || durationDays + 'H ' + (durationDays - 1) + 'M') + ' &mdash; Durasi Paket' : (is12HourDriver ? 'Info Durasi 12 Jam' : 'Info Pengembalian')}
                     </div>
                     <div id="date-duration-text" style="font-size:0.82rem;color:#0369a1;margin-top:2px;">
                         ${durationDays > 0 ? 'Pilih tanggal mulai, tanggal selesai akan otomatis terisi.' : ''}
@@ -3417,11 +3454,11 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     if (category === 'motor' || category === 'mobil') {
         html += `
             <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-location-dot"></i> Detail Lokasi & Waktu</h4>
+                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-location-dot"></i> ${is12HourDriver ? 'Detail Lokasi Penjemputan' : 'Detail Lokasi & Waktu'}</h4>
                 <div class="form-group mb-3">
                     <div style="display: flex; gap: 8px;">
                         <div style="flex: 1;">
-                            <label>Tempat Pengambilan (GPS/Alamat)</label>
+                            <label>${is12HourDriver ? 'Lokasi Penjemputan (Hotel / Bandara / Alamat)' : 'Tempat Pengambilan (GPS/Alamat)'}</label>
                             <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="width: 100%;">
                         </div>
                         <div>
@@ -3433,7 +3470,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <div class="form-group mb-3">
                     <div style="display: flex; gap: 8px;">
                         <div style="flex: 1;">
-                            <label>Tempat Pengembalian (GPS/Alamat)</label>
+                            <label>${is12HourDriver ? 'Lokasi Pengantaran / Selesai Tour (Hotel / Bandara / Alamat)' : 'Tempat Pengembalian (GPS/Alamat)'}</label>
                             <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="width: 100%;">
                         </div>
                         <div>
@@ -3442,16 +3479,22 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; gap: 15px;">
+                <div style="display: ${is12HourDriver ? 'none' : 'flex'}; gap: 15px;">
                     <div class="form-group mb-0" style="flex: 1;">
                         <label>Jam Pengambilan</label>
-                        <input type="time" id="co-pickup-time" class="form-control" required>
+                        <input type="time" id="co-pickup-time" class="form-control" ${is12HourDriver ? '' : 'required'} value="${is12HourDriver ? '08:00' : ''}">
                     </div>
                     <div class="form-group mb-0" style="flex: 1;">
                         <label>Jam Pengembalian</label>
-                        <input type="time" id="co-dropoff-time" class="form-control" required>
+                        <input type="time" id="co-dropoff-time" class="form-control" ${is12HourDriver ? '' : 'required'} value="${is12HourDriver ? '20:00' : ''}">
                     </div>
                 </div>
+                ${is12HourDriver ? `
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 9px 12px; font-size: 0.8rem; color: #166534; display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-circle-check" style="color: #16a34a; font-size: 0.95rem;"></i>
+                    <span>Paket Include Driver berlaku <strong>12 Jam pemakaian</strong> per hari (Sudah termasuk Unit Mobil, Supir & BBM). Jam penjemputan fleksibel disesuaikan dengan driver saat di lokasi.</span>
+                </div>
+                ` : ''}
             </div>
         `;
     } else if (category === 'airport') {
@@ -3831,9 +3874,19 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
         }
 
         // Hitung End Date
-        // Untuk rental (0), 1 hari = pengembalian besok (daysToAdd = currentDuration)
+        // Untuk rental mobil 12 jam (Include Driver):
+        // - 1 pemakaian (12 jam) = hari yang sama (daysToAdd = 0)
+        // - 2 pemakaian (2x 12 jam) = hari ke-2 (daysToAdd = 1), dst.
+        // Untuk rental lepas kunci biasa (0), 1 hari = pengembalian besok (daysToAdd = currentDuration)
         // Untuk paket (>0), 5 hari 4 malam = pengembalian di hari ke-5 (daysToAdd = currentDuration - 1)
-        const daysToAdd = window._currentDurationDays === 0 ? currentDuration : Math.max(0, currentDuration - 1);
+        let daysToAdd = 0;
+        if (window._is12HourDriver) {
+            daysToAdd = Math.max(0, currentDuration - 1);
+        } else if (window._currentDurationDays === 0) {
+            daysToAdd = currentDuration;
+        } else {
+            daysToAdd = Math.max(0, currentDuration - 1);
+        }
         sDate.setDate(sDate.getDate() + daysToAdd);
         endDateEl.value = sDate.toISOString().split('T')[0];
 
@@ -3844,7 +3897,13 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
             infoBox.style.display = 'flex';
             const opt = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = sDate.toLocaleDateString('id-ID', opt);
-            if (window._currentDurationDays === 0) {
+            if (window._is12HourDriver) {
+                if (currentDuration === 1) {
+                    infoText.innerHTML = `Layanan sewa Include Driver berlaku selama <strong>12 Jam</strong> pada tanggal <strong>${formattedDate}</strong>.`;
+                } else {
+                    infoText.innerHTML = `Layanan sewa Include Driver (<strong>${currentDuration}x 12 Jam</strong>) berakhir pada <strong>${formattedDate}</strong>.`;
+                }
+            } else if (window._currentDurationDays === 0) {
                 infoText.innerHTML = `Masa sewa berakhir pada <strong>${formattedDate}</strong>.`;
             } else {
                 infoText.innerHTML = `Paket/layanan berakhir pada <strong>${formattedDate}</strong>.`;
@@ -3886,7 +3945,10 @@ window.updateRentalDisplayPrice = () => {
                 crossedPriceEl.innerHTML = formatPrice(baseTotal);
             }
             
-            basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">(${diffDays} Hari)</span>`;
+            const durationLabel = window._is12HourDriver 
+                ? (diffDays === 1 ? '(12 Jam)' : `(${diffDays}x 12 Jam)`)
+                : `(${diffDays} Hari)`;
+            basePriceEl.innerHTML = formatPrice(total) + ` <span style="font-size:0.85rem;color:#64748b;font-weight:normal;">${durationLabel}</span>`;
         }
     }
 };
@@ -4119,7 +4181,13 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         if (category === 'motor') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 50.000) dan Deposit (Rp 500.000) diterima.\n💳 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
         } else if (category === 'mobil') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) dan Deposit (Rp 1.000.000) diterima.\n👇 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
+            const is12HourDriverWA = nameLower.includes("12 jam") || nameLower.includes("include driver");
+            if (is12HourDriverWA) {
+                const durStr = diffDays === 1 ? '12 Jam' : `${diffDays}x 12 Jam (${diffDays} Hari)`;
+                waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL (INCLUDE DRIVER 12 JAM)\nTanggal Pemakaian: ${startDate}${startDate !== endDate ? ` s/d ${endDate}` : ''}\nDurasi: ${durStr}\nLokasi Penjemputan: ${pickupLoc}\nLokasi Pengantaran: ${dropoffLoc}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima (Bebas Deposit Jaminan Rp 0).\n👇 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
+            } else {
+                waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) dan Deposit (Rp 1.000.000) diterima.\n👇 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
+            }
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
         } else if (category === 'tour') {
@@ -5249,17 +5317,24 @@ window.showRiwayatTransaksi = async (isPage = false) => {
         `;
             };
 
+            const itemTitleLower = (item.itemName || '').toLowerCase();
+            const is12HItem = itemTitleLower.includes('12 jam') || itemTitleLower.includes('include driver');
+
             detailsHtml += showRow('Nama Pemesan', item.customerName || item.userEmail);
             detailsHtml += showRow('Email', item.customerEmail || item.userEmail);
             detailsHtml += showRow('No. HP / WA', item.phone || item.details?.phone);
-            detailsHtml += showRow('Tgl Keberangkatan', item.startDate || item.details?.date);
-            if (item.endDate) detailsHtml += showRow('Tgl Selesai', item.endDate);
-            if (item.details?.pickupTime) detailsHtml += showRow('Waktu Penjemputan', item.details.pickupTime);
-            else if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
-            if (item.details?.dropoffTime) detailsHtml += showRow('Waktu Pengembalian', item.details.dropoffTime);
+            detailsHtml += showRow(is12HItem ? 'Tgl Pemakaian' : 'Tgl Keberangkatan', item.startDate || item.details?.date);
+            if (item.endDate && (!is12HItem || item.endDate !== item.startDate)) detailsHtml += showRow('Tgl Selesai', item.endDate);
+            if (is12HItem) {
+                detailsHtml += showRow('Durasi Layanan', (item.startDate === item.endDate || !item.endDate) ? '12 Jam' : 'Paket 12 Jam Per Hari');
+            } else {
+                if (item.details?.pickupTime) detailsHtml += showRow('Waktu Penjemputan', item.details.pickupTime);
+                else if (item.details?.time) detailsHtml += showRow('Waktu', item.details.time);
+                if (item.details?.dropoffTime) detailsHtml += showRow('Waktu Pengembalian', item.details.dropoffTime);
+            }
             if (item.details?.pax) detailsHtml += showRow('Jumlah Peserta', item.details.pax + ' Orang');
-            if (item.details?.pickup) detailsHtml += showRow('Lokasi Jemput', item.details.pickup);
-            if (item.details?.dropoff) detailsHtml += showRow('Tujuan', item.details.dropoff);
+            if (item.details?.pickup) detailsHtml += showRow(is12HItem ? 'Lokasi Penjemputan' : 'Lokasi Jemput', item.details.pickup);
+            if (item.details?.dropoff) detailsHtml += showRow(is12HItem ? 'Lokasi Pengantaran / Selesai' : 'Tujuan', item.details.dropoff);
             if (item.details?.flightNumber) detailsHtml += showRow('No. Penerbangan', item.details.flightNumber);
             detailsHtml += '</tbody></table></div>';
 
