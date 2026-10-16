@@ -114,7 +114,11 @@ TRAVEL LOMBOK AIRPORT 🚙`,l=`🛵 SYARAT & KETENTUAN SEWA MOTOR
    • BBM, parkir, dan tilang menjadi tanggung jawab penyewa.
 
 TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
-`),n=``,r=!1;return t.forEach(e=>{let t=e.trim();if(t=t.replace(/\b(\d{4,})\b/g,e=>parseInt(e,10).toLocaleString(`id-ID`)),t.match(/^\d+\.\s*/))r&&=(n+=`</ul>`,!1),n+=`<div style="margin-top: 14px; margin-bottom: 4px; font-weight: 700; color: #0284c7;">${t}</div>`;else if(t.startsWith(`•`)||t.startsWith(`-`)||t.startsWith(`*`)){r||=(n+=`<ul style="margin: 4px 0 10px 18px; padding: 0; list-style-type: disc;">`,!0);let e=t.replace(/^[•\-\*]\s*/,``);n+=`<li style="margin-bottom: 4px; color: #475569;">${e}</li>`}else t===``?(r&&=(n+=`</ul>`,!1),n+=`<div style="height: 8px;"></div>`):(r&&=(n+=`</ul>`,!1),t.includes(`DEPOSIT`)||t.startsWith(`🛵`)||t.startsWith(`🚙`)?n+=`<div style="font-weight: 800; color: #0f172a; margin-top: 10px; margin-bottom: 4px;">${t}</div>`:n+=`<div style="color: #475569; margin-bottom: 4px;">${t}</div>`)}),r&&(n+=`</ul>`),n};window.closeGalleryModal=()=>{document.getElementById(`gallery-modal`).classList.remove(`active`)};var d=()=>{document.getElementById(`video-modal`)||document.body.insertAdjacentHTML(`beforeend`,`
+`),n=``,r=!1;return t.forEach(e=>{let t=e.trim();if(t.startsWith(`🚙 SYARAT`)||t.startsWith(`🛵 SYARAT`)||t.toUpperCase().includes(`TRAVEL LOMBOK AIRPORT`))return;t=t.replace(/\b(\d{4,})\b/g,e=>parseInt(e,10).toLocaleString(`id-ID`));let i=t.match(/^(\d+)\.\s*(.*)/);if(i){r&&=(n+=`</ul>`,!1);let e=i[1],t=i[2];n+=`
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0;">${e}</span>
+                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a;">${t}</span>
+            </div>`}else if(t.startsWith(`•`)||t.startsWith(`-`)||t.startsWith(`*`)){r||=(n+=`<ul style="margin: 2px 0 8px 30px; padding: 0; list-style-type: none;">`,!0);let e=t.replace(/^[•\-\*]\s*/,``);n+=`<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.85rem; line-height: 1.5; padding-left: 14px;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900;">•</span>${e}</li>`}else t===``?(r&&=(n+=`</ul>`,!1),n+=`<div style="height: 4px;"></div>`):(r&&=(n+=`</ul>`,!1),t.includes(`DEPOSIT`)?n+=`<div style="display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; margin: 8px 0; border: 1px solid #fde68a;"><i class="fa-solid fa-shield-halved"></i> ${t}</div>`:n+=`<div style="color: #475569; font-size: 0.85rem; margin-bottom: 4px;">${t}</div>`)}),r&&(n+=`</ul>`),n};window.closeGalleryModal=()=>{document.getElementById(`gallery-modal`).classList.remove(`active`)};var d=()=>{document.getElementById(`video-modal`)||document.body.insertAdjacentHTML(`beforeend`,`
     <div id="video-modal" class="modal-overlay" style="z-index: 9999; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; flex-direction: column;">
         <div style="position: relative; width: 90%; max-width: 800px; height: 80vh; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <button onclick="closeVideoModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><i class="fa-solid fa-xmark"></i></button>
@@ -261,44 +265,44 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
             </div>
             `:``}
 
-            <div class="tm-top premium-card">
-                <div class="tm-title" style="flex: 1;">
+            <div class="tm-top premium-card" style="position: relative; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);">
+                <div class="tm-title" style="flex: 1; min-width: 280px;">
                     ${(()=>{let e=`PAKET TOUR`;d?e=f?`Sewa Mobil + Driver`:`Sewa Mobil Lepas Kunci`:r.category===`motorcycle`?e=`Sewa Motor`:r.category===`drone`?e=`Sewa Drone`:r.category===`transfer`&&(e=`Antar Jemput Bandara`),r.packageType&&(e=r.packageType);let t=r.duration?r.duration.toUpperCase():`N/A`;!r.duration&&(r.category===`car`||r.category===`motorcycle`)&&(t=f?`12 Jam`:`24 Jam Penuh`);let n=``;return d?n=f?`
-                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 12 Jam</span>
-                                    <span style="background: #ecfdf5; color: #059669; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-user-tie"></i> Supir & BBM</span>
-                                    <span style="background: #fef08a; color: #854d0e; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-shield-halved"></i> Bebas Deposit</span>
+                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 12 Jam</span>
+                                    <span style="background: #ecfdf5; color: #059669; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-user-tie"></i> Supir & BBM</span>
+                                    <span style="background: #fef3c7; color: #92400e; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-shield-halved"></i> Bebas Deposit</span>
                                 `:`
-                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 24 Jam Penuh</span>
-                                    <span style="background: #f1f5f9; color: #475569; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-key"></i> Setir Sendiri</span>
-                                    <span style="background: #f0fdf4; color: #166534; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-car-side"></i> Unit Bersih & AC</span>
+                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 24 Jam Penuh</span>
+                                    <span style="background: #f1f5f9; color: #475569; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-key"></i> Setir Sendiri</span>
+                                    <span style="background: #f0fdf4; color: #166534; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-car-side"></i> Unit Bersih & AC</span>
                                 `:r.driverOptions&&(n=`
-                                <span style="background: #f0fdf4; color: var(--primary-green); font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-id-card"></i> ${r.driverOptions===`Sertakan Pengemudi`?`Dengan Supir`:r.driverOptions===`Tidak Include Driver`?`Lepas Kunci`:r.driverOptions}</span>
+                                <span style="background: #f0fdf4; color: var(--primary-green); font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-id-card"></i> ${r.driverOptions===`Sertakan Pengemudi`?`Dengan Supir`:r.driverOptions===`Tidak Include Driver`?`Lepas Kunci`:r.driverOptions}</span>
                             `),`
-                            <div style="font-size: 0.78rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-map-location-dot"></i> ${e}
+                            <div style="font-size: 0.8rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: #e0f2fe; padding: 4px 12px; border-radius: 20px;">
+                                <i class="fa-solid fa-car-rear"></i> ${e}
                             </div>
-                            <h2 style="color: #0f172a; font-size: 2rem; margin-bottom: 12px; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em;">${r.title.toUpperCase()}</h2>
-                            <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
-                                ${d?``:`<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${t}</span>`}
+                            <h2 style="color: #0f172a; font-size: 2.2rem; margin: 8px 0 12px 0; line-height: 1.15; font-weight: 900; letter-spacing: -0.02em;">${r.title.toUpperCase()}</h2>
+                            <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                                ${d?``:`<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${t}</span>`}
                                 ${n}
                             </div>
-                            <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin: 0;">${r.description||`Deskripsi detail tidak tersedia.`}</p>
+                            <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 600px;">${r.description||`Deskripsi detail tidak tersedia.`}</p>
                         `})()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Tarif Sewa</span>
-                        <span style="font-size: 0.72rem; font-weight: 800; color: ${f?`#15803d`:`#0284c7`}; background: ${f?`#dcfce7`:`#e0f2fe`}; padding: 3px 9px; border-radius: 12px;">
-                            ${d?f?`Include Driver`:`Lepas Kunci`:`Paket`}
+                        <span style="font-size: 0.72rem; font-weight: 800; color: ${f?`#15803d`:`#0284c7`}; background: ${f?`#dcfce7`:`#e0f2fe`}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="fa-solid ${f?`fa-user-check`:`fa-key`}"></i> ${d?f?`Include Driver`:`Lepas Kunci`:`Paket`}
                         </span>
                     </div>
-                    <div style="display: flex; align-items: baseline; gap: 6px;">
-                        <h3 style="color: #0284c7; margin: 0; font-size: 2rem; font-weight: 900; line-height: 1;">${i(h)}</h3>
-                        <span style="color: #64748b; font-size: 0.85rem; font-weight: 600;">/ ${d?f?`12 Jam`:`24 Jam`:`paket`}</span>
+                    <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px;">
+                        <h3 style="color: #0284c7; margin: 0; font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em;">${i(h)}</h3>
+                        <span style="color: #64748b; font-size: 0.88rem; font-weight: 700;">/ ${d?f?`12 Jam`:`24 Jam`:`paket`}</span>
                     </div>
-                    <p style="color: #64748b; margin: 6px 0 0 0; font-size: 0.78rem; line-height: 1.4;">
-                        ${d?f?`✓ Termasuk Unit Mobil, Driver & BBM`:`✓ Unit Bersih, AC Dingin & Toolkit Standar`:`Mulai harga terendah`}
-                    </p>
+                    <div style="border-top: 1px dashed #cbd5e1; padding-top: 10px; font-size: 0.78rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
+                        ${d?f?`<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Termasuk Unit Mobil, Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Bebas Deposit Jaminan (Rp 0)</span>`:`<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Durasi 24 Jam Penuh Setir Sendiri</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Unit Bersih, AC Dingin & Toolkit</span>`:`<span>Mulai harga terendah</span>`}
+                    </div>
                 </div>
 
             </div>
@@ -322,60 +326,129 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 </div>`:``}
                 
                 ${D?`
-                <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                    <div class="tm-box-title" style="background: var(--primary-blue); font-size: 0.95rem; font-weight: 800; padding: 12px 18px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN ${d?f?`(DENGAN DRIVER)`:`(LEPAS KUNCI)`:``}
+                <div class="tm-box tm-box-blue" style="border-radius: 16px; overflow: hidden; border: 1px solid #bae6fd; box-shadow: 0 4px 20px -4px rgba(2, 132, 199, 0.08); background: #ffffff;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN
+                        </span>
+                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase;">
+                            ${d?f?`Dengan Driver`:`Lepas Kunci`:`Rental`}
+                        </span>
                     </div>
-                    <div style="padding: 18px; color: var(--text-dark); font-size: 0.92rem; line-height: 1.6;">
-                        ${u(D)}
+                    <div style="padding: 20px;">
+                        ${d?f?`
+                        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #059669; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.88rem; color: #065f46;">Bebas Uang Jaminan Deposit (Rp 0)</div>
+                                <div style="font-size: 0.78rem; color: #047857; margin-top: 2px;">Layanan include driver tidak membutuhkan uang jaminan deposit atau jaminan SIM/KTP.</div>
+                            </div>
+                        </div>
+                        `:`
+                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.88rem; color: #1e40af;">Jaminan Deposit Rp 1.000.000 (100% Refundable)</div>
+                                <div style="font-size: 0.78rem; color: #1d4ed8; margin-top: 2px;">Wajib KTP & SIM A aktif. Uang jaminan dikembalikan penuh setelah sewa selesai dalam kondisi baik.</div>
+                            </div>
+                        </div>
+                        `:``}
+
+                        <div style="color: #334155; font-size: 0.88rem; line-height: 1.6;">
+                            ${u(D)}
+                        </div>
                     </div>
                 </div>`:``}
             </div>
             
             <div class="tm-right">
                 ${T.length>0?`
-                <div class="tm-box tm-box-green">
-                    <div class="tm-box-title"><i class="fa-solid fa-check"></i> FASILITAS INCLUDE</div>
-                    <ul class="tm-list">
-                        ${T.map(e=>`<li><i class="fa-solid fa-check-circle"></i> ${e}</li>`).join(``)}
+                <div class="tm-box tm-box-green" style="border-radius: 16px; overflow: hidden; border: 1px solid #bbf7d0; box-shadow: 0 4px 20px -4px rgba(16, 185, 129, 0.08); background: #ffffff; margin-bottom: 20px;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-check"></i> FASILITAS INCLUDE
+                        </span>
+                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700;">
+                            ${T.length} Fasilitas
+                        </span>
+                    </div>
+                    <ul class="tm-list" style="padding: 16px 20px; list-style: none; margin: 0;">
+                        ${T.map(e=>`
+                            <li style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.88rem; font-weight: 600; color: #334155;">
+                                <i class="fa-solid fa-circle-check" style="color: #10b981; margin-top: 3px; font-size: 0.95rem; flex-shrink: 0;"></i>
+                                <span>${e}</span>
+                            </li>
+                        `).join(``)}
                     </ul>
                 </div>`:``}
                 
                 ${E.length>0?`
-                <div class="tm-box tm-box-red">
-                    <div class="tm-box-title"><i class="fa-solid fa-xmark"></i> TIDAK TERMASUK</div>
-                    <ul class="tm-list">
-                        ${E.map(e=>`<li><i class="fa-solid fa-times-circle"></i> ${e}</li>`).join(``)}
+                <div class="tm-box tm-box-red" style="border-radius: 16px; overflow: hidden; border: 1px solid #fecaca; box-shadow: 0 4px 20px -4px rgba(239, 68, 68, 0.08); background: #ffffff; margin-bottom: 20px;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-xmark"></i> TIDAK TERMASUK (EXCLUDE)
+                        </span>
+                    </div>
+                    <ul class="tm-list" style="padding: 16px 20px; list-style: none; margin: 0;">
+                        ${E.map(e=>`
+                            <li style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.88rem; font-weight: 600; color: #475569;">
+                                <i class="fa-solid fa-circle-xmark" style="color: #ef4444; margin-top: 3px; font-size: 0.95rem; flex-shrink: 0;"></i>
+                                <span>${e}</span>
+                            </li>
+                        `).join(``)}
                     </ul>
                 </div>`:``}
                 
-                <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
-                    <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
-                    ${r.category===`motorcycle`?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`:d?f?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`}
-                    <div class="bank-item" style="background: #f8fafc; border: none;">
-                        <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
-                        <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>
+                <div class="tm-box tm-box-blue" style="border-radius: 16px; overflow: hidden; border: 1px solid #bae6fd; box-shadow: 0 4px 20px -4px rgba(2, 132, 199, 0.08); background: #ffffff;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-regular fa-credit-card"></i> CARA RESERVASI & PEMBAYARAN
                     </div>
-                    <div class="bank-item" style="background: #f8fafc; border: none;">
-                        <img src="/bri.svg" alt="BRI" style="height: 25px; object-fit: contain;">
-                        <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">759801017387536</span></div>
-                    </div>
-
-                    ${localStorage.getItem(`auth_token`)?``:`
-                    <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin-top: 20px; text-align: center;">
-                        <div style="font-size: 0.85rem; color: #d97706; margin-bottom: 12px; font-weight: 600;">
-                            <i class="fa-solid fa-circle-exclamation"></i> Anda harus login atau daftar akun terlebih dahulu untuk melakukan pesanan via Web.
+                    <div style="padding: 20px;">
+                        ${r.category===`motorcycle`?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa motor, silakan transfer <strong>DP sebesar Rp 50.000 dan jaminan deposit Rp 500.000</strong> ke rekening resmi berikut:</p>`:d?f?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <span style="color: #059669; font-weight: 700;">Bebas Deposit (Rp 0)!</span> Pelunasan dapat dibayarkan saat bertemu driver:</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP Rp 200.000 & jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan setelah masa sewa):</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening resmi berikut:</p>`}
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="/mandiri.svg" alt="Mandiri" style="height: 24px; object-fit: contain;">
+                                    <div>
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank Mandiri - LALU RENGGANE</div>
+                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">1610017191425</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="navigator.clipboard.writeText('1610017191425'); alert('Nomor Rekening Mandiri berhasil disalin!');" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                            </div>
+                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="/bri.svg" alt="BRI" style="height: 24px; object-fit: contain;">
+                                    <div>
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank BRI - LALU RENGGANE</div>
+                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">759801017387536</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="navigator.clipboard.writeText('759801017387536'); alert('Nomor Rekening BRI berhasil disalin!');" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 8px; justify-content: center;">
-                            <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='login'; window.openAuthModal();" class="btn" style="background: white; color: #d97706; border: 1px solid #d97706; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; flex:1; text-align: center;">LOGIN</a>
-                            <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='register'; window.openAuthModal();" class="btn" style="background: #d97706; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; flex:1; text-align: center;">DAFTAR</a>
-                        </div>
-                    </div>
-                    `}
 
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${g.replace(/'/g,`\\'`)}', ${h}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
-                        <button onclick="openCheckoutModal('${g.replace(/'/g,`\\'`)}', ${h})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
+                        ${localStorage.getItem(`auth_token`)?``:`
+                        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; margin-top: 16px; text-align: center;">
+                            <div style="font-size: 0.82rem; color: #d97706; margin-bottom: 10px; font-weight: 600;">
+                                <i class="fa-solid fa-circle-exclamation"></i> Login akun Anda untuk memesan lebih cepat dan cek riwayat booking.
+                            </div>
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='login'; window.openAuthModal();" class="btn" style="background: white; color: #d97706; border: 1px solid #d97706; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; flex:1; text-align: center;">LOGIN</a>
+                                <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='register'; window.openAuthModal();" class="btn" style="background: #d97706; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; flex:1; text-align: center;">DAFTAR</a>
+                            </div>
+                        </div>
+                        `}
+
+                        <div style="display: flex; gap: 10px; margin-top: 18px;">
+                            <a href="#" onclick="event.preventDefault(); openCheckoutModal('${g.replace(/'/g,`\\'`)}', ${h}, 'wa');" class="btn" style="flex:1; background: #25d366; color: white; padding: 12px 14px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); text-decoration: none;"><i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Booking via WA</a>
+                            <button onclick="openCheckoutModal('${g.replace(/'/g,`\\'`)}', ${h})" class="btn btn-blue" style="flex:1; padding: 12px 14px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); border: none; cursor: pointer;"><i class="fa-solid fa-calendar-check"></i> Booking via Web</button>
+                        </div>
                     </div>
                 </div>
             </div>

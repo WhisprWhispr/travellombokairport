@@ -541,25 +541,37 @@ const formatTerms = (termsText) => {
     lines.forEach(line => {
         let trimmed = line.trim();
 
+        // Skip redundant headers or footer signatures
+        if (trimmed.startsWith('🚙 SYARAT') || trimmed.startsWith('🛵 SYARAT') || trimmed.toUpperCase().includes('TRAVEL LOMBOK AIRPORT')) {
+            return;
+        }
+
         // Auto-format numbers (4 digits or more) with dots (e.g. 500000 -> 500.000)
         trimmed = trimmed.replace(/\b(\d{4,})\b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
 
-        if (trimmed.match(/^\d+\.\s*/)) {
+        const numMatch = trimmed.match(/^(\d+)\.\s*(.*)/);
+        if (numMatch) {
             if (inList) { html += '</ul>'; inList = false; }
-            html += `<div style="margin-top: 14px; margin-bottom: 4px; font-weight: 700; color: #0284c7;">${trimmed}</div>`;
+            const num = numMatch[1];
+            const sectionTitle = numMatch[2];
+            html += `
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0;">${num}</span>
+                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a;">${sectionTitle}</span>
+            </div>`;
         } else if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
-            if (!inList) { html += '<ul style="margin: 4px 0 10px 18px; padding: 0; list-style-type: disc;">'; inList = true; }
+            if (!inList) { html += '<ul style="margin: 2px 0 8px 30px; padding: 0; list-style-type: none;">'; inList = true; }
             const cleanText = trimmed.replace(/^[•\-\*]\s*/, '');
-            html += `<li style="margin-bottom: 4px; color: #475569;">${cleanText}</li>`;
+            html += `<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.85rem; line-height: 1.5; padding-left: 14px;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900;">•</span>${cleanText}</li>`;
         } else if (trimmed === '') {
             if (inList) { html += '</ul>'; inList = false; }
-            html += '<div style="height: 8px;"></div>';
+            html += '<div style="height: 4px;"></div>';
         } else {
             if (inList) { html += '</ul>'; inList = false; }
-            if (trimmed.includes('DEPOSIT') || trimmed.startsWith('🛵') || trimmed.startsWith('🚙')) {
-                html += `<div style="font-weight: 800; color: #0f172a; margin-top: 10px; margin-bottom: 4px;">${trimmed}</div>`;
+            if (trimmed.includes('DEPOSIT')) {
+                html += `<div style="display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; margin: 8px 0; border: 1px solid #fde68a;"><i class="fa-solid fa-shield-halved"></i> ${trimmed}</div>`;
             } else {
-                html += `<div style="color: #475569; margin-bottom: 4px;">${trimmed}</div>`;
+                html += `<div style="color: #475569; font-size: 0.85rem; margin-bottom: 4px;">${trimmed}</div>`;
             }
         }
     });
@@ -946,8 +958,8 @@ window.openTourModal = (id, carMode = null) => {
             </div>
             ` : ''}
 
-            <div class="tm-top premium-card">
-                <div class="tm-title" style="flex: 1;">
+            <div class="tm-top premium-card" style="position: relative; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);">
+                <div class="tm-title" style="flex: 1; min-width: 280px;">
                     ${(() => {
                         let typeLabel = 'PAKET TOUR';
                         if (isCarCategory) typeLabel = isDriverMode ? 'Sewa Mobil + Driver' : 'Sewa Mobil Lepas Kunci';
@@ -965,51 +977,54 @@ window.openTourModal = (id, carMode = null) => {
                         if (isCarCategory) {
                             if (isDriverMode) {
                                 driverPillsHtml = `
-                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 12 Jam</span>
-                                    <span style="background: #ecfdf5; color: #059669; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-user-tie"></i> Supir & BBM</span>
-                                    <span style="background: #fef08a; color: #854d0e; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-shield-halved"></i> Bebas Deposit</span>
+                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 12 Jam</span>
+                                    <span style="background: #ecfdf5; color: #059669; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-user-tie"></i> Supir & BBM</span>
+                                    <span style="background: #fef3c7; color: #92400e; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-shield-halved"></i> Bebas Deposit</span>
                                 `;
                             } else {
                                 driverPillsHtml = `
-                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 24 Jam Penuh</span>
-                                    <span style="background: #f1f5f9; color: #475569; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-key"></i> Setir Sendiri</span>
-                                    <span style="background: #f0fdf4; color: #166534; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-car-side"></i> Unit Bersih & AC</span>
+                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 24 Jam Penuh</span>
+                                    <span style="background: #f1f5f9; color: #475569; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-key"></i> Setir Sendiri</span>
+                                    <span style="background: #f0fdf4; color: #166534; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-car-side"></i> Unit Bersih & AC</span>
                                 `;
                             }
                         } else if (item.driverOptions) {
                             const optText = item.driverOptions === 'Sertakan Pengemudi' ? 'Dengan Supir' : item.driverOptions === 'Tidak Include Driver' ? 'Lepas Kunci' : item.driverOptions;
                             driverPillsHtml = `
-                                <span style="background: #f0fdf4; color: var(--primary-green); font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-id-card"></i> ${optText}</span>
+                                <span style="background: #f0fdf4; color: var(--primary-green); font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-id-card"></i> ${optText}</span>
                             `;
                         }
 
                         return `
-                            <div style="font-size: 0.78rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                                <i class="fa-solid fa-map-location-dot"></i> ${typeLabel}
+                            <div style="font-size: 0.8rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: #e0f2fe; padding: 4px 12px; border-radius: 20px;">
+                                <i class="fa-solid fa-car-rear"></i> ${typeLabel}
                             </div>
-                            <h2 style="color: #0f172a; font-size: 2rem; margin-bottom: 12px; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em;">${item.title.toUpperCase()}</h2>
-                            <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
-                                ${!isCarCategory ? `<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
+                            <h2 style="color: #0f172a; font-size: 2.2rem; margin: 8px 0 12px 0; line-height: 1.15; font-weight: 900; letter-spacing: -0.02em;">${item.title.toUpperCase()}</h2>
+                            <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
+                                ${!isCarCategory ? `<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
                                 ${driverPillsHtml}
                             </div>
-                            <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin: 0;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
+                            <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 600px;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
                         `;
                     })()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
                         <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Tarif Sewa</span>
-                        <span style="font-size: 0.72rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; padding: 3px 9px; border-radius: 12px;">
-                            ${isCarCategory ? (isDriverMode ? 'Include Driver' : 'Lepas Kunci') : 'Paket'}
+                        <span style="font-size: 0.72rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            <i class="fa-solid ${isDriverMode ? 'fa-user-check' : 'fa-key'}"></i> ${isCarCategory ? (isDriverMode ? 'Include Driver' : 'Lepas Kunci') : 'Paket'}
                         </span>
                     </div>
-                    <div style="display: flex; align-items: baseline; gap: 6px;">
-                        <h3 style="color: #0284c7; margin: 0; font-size: 2rem; font-weight: 900; line-height: 1;">${formatPrice(activeItemPrice)}</h3>
-                        <span style="color: #64748b; font-size: 0.85rem; font-weight: 600;">/ ${isCarCategory ? (isDriverMode ? '12 Jam' : '24 Jam') : 'paket'}</span>
+                    <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px;">
+                        <h3 style="color: #0284c7; margin: 0; font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em;">${formatPrice(activeItemPrice)}</h3>
+                        <span style="color: #64748b; font-size: 0.88rem; font-weight: 700;">/ ${isCarCategory ? (isDriverMode ? '12 Jam' : '24 Jam') : 'paket'}</span>
                     </div>
-                    <p style="color: #64748b; margin: 6px 0 0 0; font-size: 0.78rem; line-height: 1.4;">
-                        ${isCarCategory ? (isDriverMode ? '✓ Termasuk Unit Mobil, Driver & BBM' : '✓ Unit Bersih, AC Dingin & Toolkit Standar') : 'Mulai harga terendah'}
-                    </p>
+                    <div style="border-top: 1px dashed #cbd5e1; padding-top: 10px; font-size: 0.78rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
+                        ${isCarCategory ? (isDriverMode 
+                            ? '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Termasuk Unit Mobil, Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Bebas Deposit Jaminan (Rp 0)</span>' 
+                            : '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Durasi 24 Jam Penuh Setir Sendiri</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Unit Bersih, AC Dingin & Toolkit</span>') 
+                            : '<span>Mulai harga terendah</span>'}
+                    </div>
                 </div>
 
             </div>
@@ -1033,72 +1048,141 @@ window.openTourModal = (id, carMode = null) => {
                 </div>` : ''}
                 
                 ${activeTerms ? `
-                <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
-                    <div class="tm-box-title" style="background: var(--primary-blue); font-size: 0.95rem; font-weight: 800; padding: 12px 18px; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN ${isCarCategory ? (isDriverMode ? '(DENGAN DRIVER)' : '(LEPAS KUNCI)') : ''}
+                <div class="tm-box tm-box-blue" style="border-radius: 16px; overflow: hidden; border: 1px solid #bae6fd; box-shadow: 0 4px 20px -4px rgba(2, 132, 199, 0.08); background: #ffffff;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN
+                        </span>
+                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase;">
+                            ${isCarCategory ? (isDriverMode ? 'Dengan Driver' : 'Lepas Kunci') : 'Rental'}
+                        </span>
                     </div>
-                    <div style="padding: 18px; color: var(--text-dark); font-size: 0.92rem; line-height: 1.6;">
-                        ${formatTerms(activeTerms)}
+                    <div style="padding: 20px;">
+                        ${isCarCategory ? (isDriverMode ? `
+                        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #059669; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-shield-heart"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.88rem; color: #065f46;">Bebas Uang Jaminan Deposit (Rp 0)</div>
+                                <div style="font-size: 0.78rem; color: #047857; margin-top: 2px;">Layanan include driver tidak membutuhkan uang jaminan deposit atau jaminan SIM/KTP.</div>
+                            </div>
+                        </div>
+                        ` : `
+                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
+                                <i class="fa-solid fa-key"></i>
+                            </div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 0.88rem; color: #1e40af;">Jaminan Deposit Rp 1.000.000 (100% Refundable)</div>
+                                <div style="font-size: 0.78rem; color: #1d4ed8; margin-top: 2px;">Wajib KTP & SIM A aktif. Uang jaminan dikembalikan penuh setelah sewa selesai dalam kondisi baik.</div>
+                            </div>
+                        </div>
+                        `) : ''}
+
+                        <div style="color: #334155; font-size: 0.88rem; line-height: 1.6;">
+                            ${formatTerms(activeTerms)}
+                        </div>
                     </div>
                 </div>` : ''}
             </div>
             
             <div class="tm-right">
                 ${includes.length > 0 ? `
-                <div class="tm-box tm-box-green">
-                    <div class="tm-box-title"><i class="fa-solid fa-check"></i> FASILITAS INCLUDE</div>
-                    <ul class="tm-list">
-                        ${includes.map(i => `<li><i class="fa-solid fa-check-circle"></i> ${i}</li>`).join('')}
+                <div class="tm-box tm-box-green" style="border-radius: 16px; overflow: hidden; border: 1px solid #bbf7d0; box-shadow: 0 4px 20px -4px rgba(16, 185, 129, 0.08); background: #ffffff; margin-bottom: 20px;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-check"></i> FASILITAS INCLUDE
+                        </span>
+                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700;">
+                            ${includes.length} Fasilitas
+                        </span>
+                    </div>
+                    <ul class="tm-list" style="padding: 16px 20px; list-style: none; margin: 0;">
+                        ${includes.map(i => `
+                            <li style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.88rem; font-weight: 600; color: #334155;">
+                                <i class="fa-solid fa-circle-check" style="color: #10b981; margin-top: 3px; font-size: 0.95rem; flex-shrink: 0;"></i>
+                                <span>${i}</span>
+                            </li>
+                        `).join('')}
                     </ul>
                 </div>` : ''}
                 
                 ${excludes.length > 0 ? `
-                <div class="tm-box tm-box-red">
-                    <div class="tm-box-title"><i class="fa-solid fa-xmark"></i> TIDAK TERMASUK</div>
-                    <ul class="tm-list">
-                        ${excludes.map(i => `<li><i class="fa-solid fa-times-circle"></i> ${i}</li>`).join('')}
+                <div class="tm-box tm-box-red" style="border-radius: 16px; overflow: hidden; border: 1px solid #fecaca; box-shadow: 0 4px 20px -4px rgba(239, 68, 68, 0.08); background: #ffffff; margin-bottom: 20px;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
+                        <span style="display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-xmark"></i> TIDAK TERMASUK (EXCLUDE)
+                        </span>
+                    </div>
+                    <ul class="tm-list" style="padding: 16px 20px; list-style: none; margin: 0;">
+                        ${excludes.map(i => `
+                            <li style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.88rem; font-weight: 600; color: #475569;">
+                                <i class="fa-solid fa-circle-xmark" style="color: #ef4444; margin-top: 3px; font-size: 0.95rem; flex-shrink: 0;"></i>
+                                <span>${i}</span>
+                            </li>
+                        `).join('')}
                     </ul>
                 </div>` : ''}
                 
-                <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
-                    <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
-                    ${(() => {
-                        if (item.category === 'motorcycle') {
-                            return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`;
-                        } else if (isCarCategory) {
-                            if (isDriverMode) {
-                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`;
+                <div class="tm-box tm-box-blue" style="border-radius: 16px; overflow: hidden; border: 1px solid #bae6fd; box-shadow: 0 4px 20px -4px rgba(2, 132, 199, 0.08); background: #ffffff;">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-regular fa-credit-card"></i> CARA RESERVASI & PEMBAYARAN
+                    </div>
+                    <div style="padding: 20px;">
+                        ${(() => {
+                            if (item.category === 'motorcycle') {
+                                return `<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa motor, silakan transfer <strong>DP sebesar Rp 50.000 dan jaminan deposit Rp 500.000</strong> ke rekening resmi berikut:</p>`;
+                            } else if (isCarCategory) {
+                                if (isDriverMode) {
+                                    return `<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <span style="color: #059669; font-weight: 700;">Bebas Deposit (Rp 0)!</span> Pelunasan dapat dibayarkan saat bertemu driver:</p>`;
+                                } else {
+                                    return `<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP Rp 200.000 & jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan setelah masa sewa):</p>`;
+                                }
                             } else {
-                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`;
+                                return `<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening resmi berikut:</p>`;
                             }
-                        } else {
-                            return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`;
-                        }
-                    })()}
-                    <div class="bank-item" style="background: #f8fafc; border: none;">
-                        <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
-                        <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>
-                    </div>
-                    <div class="bank-item" style="background: #f8fafc; border: none;">
-                        <img src="/bri.svg" alt="BRI" style="height: 25px; object-fit: contain;">
-                        <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">759801017387536</span></div>
-                    </div>
-
-                    ${!localStorage.getItem('auth_token') ? `
-                    <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 12px; margin-top: 20px; text-align: center;">
-                        <div style="font-size: 0.85rem; color: #d97706; margin-bottom: 12px; font-weight: 600;">
-                            <i class="fa-solid fa-circle-exclamation"></i> Anda harus login atau daftar akun terlebih dahulu untuk melakukan pesanan via Web.
+                        })()}
+                        
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="/mandiri.svg" alt="Mandiri" style="height: 24px; object-fit: contain;">
+                                    <div>
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank Mandiri - LALU RENGGANE</div>
+                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">1610017191425</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="navigator.clipboard.writeText('1610017191425'); alert('Nomor Rekening Mandiri berhasil disalin!');" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                            </div>
+                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <img src="/bri.svg" alt="BRI" style="height: 24px; object-fit: contain;">
+                                    <div>
+                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank BRI - LALU RENGGANE</div>
+                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">759801017387536</div>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="navigator.clipboard.writeText('759801017387536'); alert('Nomor Rekening BRI berhasil disalin!');" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                            </div>
                         </div>
-                        <div style="display: flex; gap: 8px; justify-content: center;">
-                            <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='login'; window.openAuthModal();" class="btn" style="background: white; color: #d97706; border: 1px solid #d97706; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; flex:1; text-align: center;">LOGIN</a>
-                            <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='register'; window.openAuthModal();" class="btn" style="background: #d97706; color: white; border: none; padding: 8px 15px; border-radius: 6px; font-size: 0.8rem; font-weight: 700; flex:1; text-align: center;">DAFTAR</a>
-                        </div>
-                    </div>
-                    ` : ''}
 
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
-                        <button onclick="openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
+                        ${!localStorage.getItem('auth_token') ? `
+                        <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 10px; padding: 12px; margin-top: 16px; text-align: center;">
+                            <div style="font-size: 0.82rem; color: #d97706; margin-bottom: 10px; font-weight: 600;">
+                                <i class="fa-solid fa-circle-exclamation"></i> Login akun Anda untuk memesan lebih cepat dan cek riwayat booking.
+                            </div>
+                            <div style="display: flex; gap: 8px; justify-content: center;">
+                                <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='login'; window.openAuthModal();" class="btn" style="background: white; color: #d97706; border: 1px solid #d97706; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; flex:1; text-align: center;">LOGIN</a>
+                                <a href="#" onclick="event.preventDefault(); window.closeTourModal(); window._authMode='register'; window.openAuthModal();" class="btn" style="background: #d97706; color: white; border: none; padding: 6px 14px; border-radius: 6px; font-size: 0.78rem; font-weight: 700; flex:1; text-align: center;">DAFTAR</a>
+                            </div>
+                        </div>
+                        ` : ''}
+
+                        <div style="display: flex; gap: 10px; margin-top: 18px;">
+                            <a href="#" onclick="event.preventDefault(); openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice}, 'wa');" class="btn" style="flex:1; background: #25d366; color: white; padding: 12px 14px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); text-decoration: none;"><i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Booking via WA</a>
+                            <button onclick="openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice})" class="btn btn-blue" style="flex:1; padding: 12px 14px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); border: none; cursor: pointer;"><i class="fa-solid fa-calendar-check"></i> Booking via Web</button>
+                        </div>
                     </div>
                 </div>
             </div>
