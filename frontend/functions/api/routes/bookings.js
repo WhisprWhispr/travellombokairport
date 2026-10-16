@@ -46,6 +46,110 @@ const autoExpire = (db, col, id, data) => {
     return data;
 };
 
+const buildInvoicePriceRows = (data, isPaid = false) => {
+    const rawPrice = Number(data.price || 0);
+    const fullPrice = Number(data.fullPrice || 0);
+    const isDp = Boolean(data.isDp);
+    const promoDiscount = Number(data.promoDiscount || 0);
+    const promoCode = data.promoCode || '';
+    const deposit = Number(data.deposit || 0);
+
+    // Hitung harga dasar layanan
+    let baseServicePrice = 0;
+    if (fullPrice > 0) {
+        baseServicePrice = fullPrice + promoDiscount;
+    } else if (rawPrice > 0) {
+        baseServicePrice = Math.max(0, rawPrice - 6500 - deposit);
+    }
+
+    // Nominal DP
+    let dpNominal = 0;
+    if (isDp) {
+        if (data.dpAmount && Number(data.dpAmount) > 0) {
+            dpNominal = Number(data.dpAmount);
+        } else {
+            dpNominal = Math.max(0, rawPrice - 6500 - deposit);
+        }
+    }
+
+    const effectiveTotal = fullPrice > 0 ? fullPrice : (baseServicePrice - promoDiscount);
+    const remainingBalance = (isDp && effectiveTotal > dpNominal) ? (effectiveTotal - dpNominal) : 0;
+
+    let html = '';
+
+    // 1. Harga Layanan / Sewa
+    if (baseServicePrice > 0) {
+        html += `
+        <tr style="border-top: 1px dashed #e2e8f0; border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; color: #64748b;">Harga Layanan / Sewa</td>
+            <td style="padding: 10px 0; font-weight: bold; color: #1e293b;">Rp ${Number(baseServicePrice).toLocaleString('id-ID')}</td>
+        </tr>`;
+    }
+
+    // 2. Diskon Promo (jika ada)
+    if (promoDiscount > 0) {
+        html += `
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; color: #16a34a;">Diskon Promo ${promoCode ? `(${promoCode})` : ''}</td>
+            <td style="padding: 10px 0; font-weight: bold; color: #16a34a;">-Rp ${Number(promoDiscount).toLocaleString('id-ID')}</td>
+        </tr>`;
+    }
+
+    // 3. Uang Muka (DP) jika opsi DP aktif
+    if (isDp && dpNominal > 0) {
+        html += `
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; color: #64748b;">Uang Muka (DP)</td>
+            <td style="padding: 10px 0; font-weight: bold; color: #1e293b;">Rp ${Number(dpNominal).toLocaleString('id-ID')}</td>
+        </tr>`;
+    }
+
+    // 4. Jaminan Deposit jika ada
+    if (deposit > 0) {
+        html += `
+        <tr style="border-bottom: 1px solid #f1f5f9;">
+            <td style="padding: 10px 0; color: #64748b;">
+                Jaminan Deposit
+                <div style="font-size: 11px; color: #94a3b8; font-weight: normal;">(100% Refundable saat pengembalian unit)</div>
+            </td>
+            <td style="padding: 10px 0; font-weight: bold; color: #1e293b;">Rp ${Number(deposit).toLocaleString('id-ID')}</td>
+        </tr>`;
+    }
+
+    // 5. Biaya Layanan
+    html += `
+    <tr style="border-bottom: 1px solid #f1f5f9;">
+        <td style="padding: 10px 0; color: #64748b;">Biaya Layanan</td>
+        <td style="padding: 10px 0; font-weight: bold; color: #1e293b;">Rp 6.500</td>
+    </tr>`;
+
+    // 6. Total Tagihan / Total Dibayar
+    const totalLabel = isPaid 
+        ? (isDp ? 'Total Dibayar (DP)' : 'Total Dibayar (LUNAS)')
+        : (isDp ? 'Total Tagihan DP (Bayar Sekarang)' : 'Total Tagihan');
+    const totalColor = isPaid ? '#16a34a' : '#2563eb';
+
+    html += `
+    <tr style="border-bottom: 1px solid #e2e8f0; background-color: #f8fafc;">
+        <td style="padding: 12px 10px; color: #1e293b; font-weight: bold; border-radius: 6px 0 0 6px;">${totalLabel}</td>
+        <td style="padding: 12px 10px; font-weight: bold; color: ${totalColor}; font-size: 16px; border-radius: 0 6px 6px 0;">Rp ${Number(rawPrice).toLocaleString('id-ID')}</td>
+    </tr>`;
+
+    // 7. Sisa Pelunasan di Lokasi jika DP
+    if (isDp && remainingBalance > 0) {
+        html += `
+        <tr style="background-color: #fffbeb; border-top: 1px dashed #f59e0b; border-bottom: 1px solid #fde68a;">
+            <td style="padding: 10px 8px; color: #92400e; font-weight: 600;">
+                Sisa Pelunasan di Lokasi
+                <div style="font-size: 11px; color: #b45309; font-weight: normal;">(Dibayarkan saat serah terima / penjemputan)</div>
+            </td>
+            <td style="padding: 10px 8px; font-weight: bold; color: #b45309; font-size: 15px;">Rp ${Number(remainingBalance).toLocaleString('id-ID')}</td>
+        </tr>`;
+    }
+
+    return html;
+};
+
 
 // Middleware for auth
 const verifyToken = async (c, next) => {
@@ -195,16 +299,7 @@ bookingsRoutes.post('/', async (c) => {
                                     <td style="padding: 10px 0; color: #64748b;">Tanggal</td>
                                     <td style="padding: 10px 0; font-weight: bold;">${body.startDate || '-'} ${body.endDate ? 's.d ' + body.endDate : ''}</td>
                                 </tr>
-                                ${body.price ? `
-                                <tr style="border-top: 1px dashed #e2e8f0;">
-                                    <td style="padding: 12px 0 8px; color: #64748b;">Biaya Layanan</td>
-                                    <td style="padding: 12px 0 8px; font-weight: bold;">Rp 6.500</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 0 0 12px; color: #1e293b; font-weight: bold;">Total Tagihan</td>
-                                    <td style="padding: 0 0 12px; font-weight: bold; color: #2563eb; font-size: 16px;">Rp ${Number(body.price).toLocaleString('id-ID')}</td>
-                                </tr>
-                                ` : ''}
+                                ${buildInvoicePriceRows(body, false)}
                                 <tr style="border-top: 1px solid #e2e8f0;">
                                     <td style="padding: 12px 0 0; color: #64748b;">Status Pembayaran</td>
                                     <td style="padding: 12px 0 0; font-weight: bold; color: #f59e0b;">Menunggu Pembayaran (Pending)</td>
@@ -575,16 +670,7 @@ bookingsRoutes.put('/by-txid/:transactionId/status', async (c) => {
                                     <td style="padding: 10px 0; color: #64748b;">Tanggal</td>
                                     <td style="padding: 10px 0; font-weight: bold;">${oldData.startDate || '-'} ${oldData.endDate ? 's.d ' + oldData.endDate : ''}</td>
                                 </tr>
-                                ${oldData.price ? `
-                                <tr style="border-top: 1px dashed #e2e8f0;">
-                                    <td style="padding: 12px 0 8px; color: #64748b;">Biaya Layanan</td>
-                                    <td style="padding: 12px 0 8px; font-weight: bold;">Rp 6.500</td>
-                                </tr>
-                                <tr>
-                                    <td style="padding: 0 0 12px; color: #1e293b; font-weight: bold;">Total Dibayar</td>
-                                    <td style="padding: 0 0 12px; font-weight: bold; color: #16a34a; font-size: 16px;">Rp ${Number(oldData.price).toLocaleString('id-ID')}</td>
-                                </tr>
-                                ` : ''}
+                                ${buildInvoicePriceRows(oldData, true)}
                                 <tr style="border-top: 1px solid #e2e8f0;">
                                     <td style="padding: 12px 0 0; color: #64748b;">Status Pembayaran</td>
                                     <td style="padding: 12px 0 0; font-weight: bold; color: #16a34a;">Pembayaran Berhasil (LUNAS)</td>

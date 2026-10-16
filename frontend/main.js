@@ -3210,6 +3210,40 @@ window.cekStatusBooking = async (event, type = 'booking') => {
                         <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Jadwal</span>
                         <div style="font-weight: 700; color: #1e293b;">${data.startDate ? new Date(data.startDate).toLocaleDateString('id-ID') : '-'} ${(data.endDate && data.endDate !== data.startDate) ? '– ' + new Date(data.endDate).toLocaleDateString('id-ID') : ''}</div>
                     </div>
+                    ${data.price ? `
+                    <div style="margin-top: 12px; padding-top: 10px; border-top: 1px dashed #cbd5e1;">
+                        <span style="font-size: 0.78rem; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;">Rincian Biaya</span>
+                        <div style="font-size: 0.85rem; color: #334155; margin-top: 6px;">
+                            ${(data.fullPrice || 0) > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                <span>Harga Layanan / Sewa:</span>
+                                <strong>Rp ${Number(data.fullPrice + (data.promoDiscount || 0)).toLocaleString('id-ID')}</strong>
+                            </div>` : ''}
+                            ${(data.promoDiscount || 0) > 0 ? `
+                            <div style="display: flex; justify-content: space-between; color: #16a34a; margin-bottom: 3px;">
+                                <span>Diskon Promo (${data.promoCode || ''}):</span>
+                                <strong>-Rp ${Number(data.promoDiscount).toLocaleString('id-ID')}</strong>
+                            </div>` : ''}
+                            ${(data.deposit || 0) > 0 ? `
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                <span>Deposit (100% Refundable):</span>
+                                <strong>Rp ${Number(data.deposit).toLocaleString('id-ID')}</strong>
+                            </div>` : ''}
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 3px;">
+                                <span>Biaya Layanan:</span>
+                                <strong>Rp 6.500</strong>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px solid #e2e8f0; font-weight: 700; color: #1d4ed8; font-size: 0.95rem;">
+                                <span>${data.isDp ? 'Total Tagihan DP' : 'Total Tagihan'}:</span>
+                                <span>Rp ${Number(data.price).toLocaleString('id-ID')}</span>
+                            </div>
+                            ${data.isDp && (data.fullPrice || 0) > (data.dpAmount || (data.price - 6500 - (data.deposit || 0))) ? `
+                            <div style="display: flex; justify-content: space-between; margin-top: 6px; color: #92400e; font-weight: 600; font-size: 0.85rem; background: #fffbeb; padding: 6px 8px; border-radius: 6px; border: 1px solid #fde68a;">
+                                <span>Sisa Pelunasan di Lokasi:</span>
+                                <span>Rp ${Number(data.fullPrice - (data.dpAmount || (data.price - 6500 - (data.deposit || 0)))).toLocaleString('id-ID')}</span>
+                            </div>` : ''}
+                        </div>
+                    </div>` : ''}
                 </div>
                 
                 <div style="margin-top: 16px;">
@@ -4557,6 +4591,8 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         price: paymentAmount,
         isDp: isDp,
         fullPrice: discountedTotal,
+        deposit: depositAmount || 0,
+        dpAmount: isDp ? dpAmount : 0,
         customerEmail,
         promoCode: promoCode,
         promoDiscount: promoDiscount,
