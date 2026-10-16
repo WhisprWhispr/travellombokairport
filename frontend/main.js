@@ -555,9 +555,159 @@ window.closeVideoModal = () => {
     }
 };
 
-window.openTourModal = (id) => {
+// ====== CAR SERVICE CHOICE MODAL (INCLUDE DRIVER vs TIDAK INCLUDE DRIVER) ======
+window.openCarChoiceModal = (id) => {
     const item = globalItems.find(i => i.id === id);
     if (!item) return;
+
+    const modal = document.getElementById('car-choice-modal');
+    const titleEl = document.getElementById('car-choice-title');
+    const subtitleEl = document.getElementById('car-choice-subtitle');
+    const bodyEl = document.getElementById('car-choice-body');
+    if (!modal || !bodyEl) return;
+
+    if (titleEl) titleEl.textContent = `Pilih Layanan: ${item.title}`;
+    if (subtitleEl) subtitleEl.textContent = `Tersedia opsi Lepas Kunci (Setir Sendiri) atau Include Driver (Dengan Supir & BBM)`;
+
+    const rawLepasKunciPrice = Number(item.price) || 0;
+    const rawDriverPrice = (item.priceWithDriver && Number(item.priceWithDriver) > 0)
+        ? Number(item.priceWithDriver)
+        : (rawLepasKunciPrice > 0 ? rawLepasKunciPrice + 200000 : 650000);
+
+    const lepasKunciFormatted = formatPrice(rawLepasKunciPrice);
+    const driverFormatted = formatPrice(rawDriverPrice);
+
+    bodyEl.innerHTML = `
+        <div class="car-choice-grid">
+            <!-- Card 1: Include Driver (Rekomendasi / Paling Populer) -->
+            <div class="car-choice-card car-choice-card-driver" onclick="window.selectCarMode('${item.id}', 'include_driver')">
+                <div class="car-choice-card-badge">
+                    <i class="fa-solid fa-crown" style="color: #f59e0b;"></i> PALING PRAKTIS & POPULER
+                </div>
+                <div class="car-choice-card-header">
+                    <div class="car-choice-icon-wrap" style="background: #ecfdf5; color: #059669;">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div>
+                        <h4 class="car-choice-option-title">Include Driver</h4>
+                        <span class="car-choice-option-sub">Dengan Supir Berpengalaman + BBM</span>
+                    </div>
+                </div>
+
+                <div class="car-choice-price-box">
+                    <span class="car-choice-price-label">Tarif Lengkap Termasuk Supir</span>
+                    <div class="car-choice-price-val">${driverFormatted}</div>
+                    <span class="car-choice-price-unit">/ 12 Jam - 1 Hari Pemakaian</span>
+                </div>
+
+                <div class="car-choice-features">
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span><strong>Bebas Deposit Jaminan (Rp 0)</strong> - Tanpa tahan deposit</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span><strong>Sudah Termasuk BBM</strong> selama pemakaian rute tour</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span><strong>Driver Ramah & Berpengalaman</strong> merangkap pemandu lokal</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span>Antar & Jemput di Bandara / Hotel (Area Kota)</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-car-choice btn-car-choice-driver">
+                    <i class="fa-solid fa-user-check"></i> Pilih Include Driver
+                </button>
+            </div>
+
+            <!-- Card 2: Tidak Include Driver (Lepas Kunci) -->
+            <div class="car-choice-card car-choice-card-self" onclick="window.selectCarMode('${item.id}', 'lepas_kunci')">
+                <div class="car-choice-card-badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
+                    <i class="fa-solid fa-key" style="color: #2563eb;"></i> FLEKSIBEL SETIR SENDIRI
+                </div>
+                <div class="car-choice-card-header">
+                    <div class="car-choice-icon-wrap" style="background: #eff6ff; color: #2563eb;">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <div>
+                        <h4 class="car-choice-option-title">Tidak Include Driver</h4>
+                        <span class="car-choice-option-sub">Lepas Kunci (Setir Sendiri 24 Jam)</span>
+                    </div>
+                </div>
+
+                <div class="car-choice-price-box" style="background: #f1f5f9; border-color: #e2e8f0;">
+                    <span class="car-choice-price-label" style="color: #64748b;">Tarif Sewa Lepas Kunci</span>
+                    <div class="car-choice-price-val" style="color: #0f172a;">${lepasKunciFormatted}</div>
+                    <span class="car-choice-price-unit">/ 24 Jam Pemakaian Penuh</span>
+                </div>
+
+                <div class="car-choice-features">
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #3b82f6;"></i>
+                        <span>Unit Mobil Prima, Bersih, AC Dingin & Nyaman</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #3b82f6;"></i>
+                        <span>Bebas Menjelajah Seluruh Pulau Lombok 24 Jam</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-info" style="color: #64748b;"></i>
+                        <span>DP Pemesanan Rp 200.000 + Jaminan Deposit Rp 1.000.000</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-info" style="color: #64748b;"></i>
+                        <span>BBM & Biaya Parkir ditanggung penyewa</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-car-choice btn-car-choice-self">
+                    <i class="fa-solid fa-key"></i> Pilih Lepas Kunci
+                </button>
+            </div>
+        </div>
+    `;
+
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeCarChoiceModal = () => {
+    const modal = document.getElementById('car-choice-modal');
+    if (modal) modal.classList.remove('active');
+    const tourModal = document.getElementById('tour-modal');
+    if (!tourModal || !tourModal.classList.contains('active')) {
+        document.body.style.overflow = '';
+    }
+};
+
+window.selectCarMode = (id, mode) => {
+    window.closeCarChoiceModal();
+    window.openTourModal(id, mode);
+};
+
+// Overlay click listener for car choice modal
+document.addEventListener('DOMContentLoaded', () => {
+    const carModal = document.getElementById('car-choice-modal');
+    if (carModal) {
+        carModal.addEventListener('click', (e) => {
+            if (e.target === carModal) window.closeCarChoiceModal();
+        });
+    }
+});
+
+window.openTourModal = (id, carMode = null) => {
+    const item = globalItems.find(i => i.id === id);
+    if (!item) return;
+
+    // Khusus Sewa Mobil: jika belum ada mode layanan yang dipilih, tampilkan modal pilihan 2 opsi
+    if (item.category === 'car' && !carMode) {
+        window.openCarChoiceModal(id);
+        return;
+    }
 
     if (item.title && item.title.toLowerCase().includes('honeymoon')) {
         const chatWidget = document.getElementById('ai-chat-widget');
@@ -566,10 +716,20 @@ window.openTourModal = (id) => {
 
     const modalBody = document.getElementById('tour-modal-body');
 
+    // Penentuan kalkulasi khusus Sewa Mobil (Lepas Kunci vs Include Driver)
+    const isCarCategory = (item.category === 'car');
+    const isDriverMode = isCarCategory && (carMode === 'include_driver');
+    const rawLepasKunciPrice = Number(item.price) || 0;
+    const rawDriverPrice = (item.priceWithDriver && Number(item.priceWithDriver) > 0)
+        ? Number(item.priceWithDriver)
+        : (rawLepasKunciPrice > 0 ? rawLepasKunciPrice + 200000 : 650000);
+
+    const activeItemPrice = isCarCategory ? (isDriverMode ? rawDriverPrice : rawLepasKunciPrice) : (Number(item.price) || 0);
+    const activeItemTitle = isCarCategory ? `${item.title} (${isDriverMode ? 'Include Driver' : 'Lepas Kunci'})` : item.title;
+
     // Parse itineraries
     let itineraryHTML = '';
     const itins = parseLines(item.itinerary);
-    // Asumsikan format: "DAY 1: Title" lalu diikuti "-"
     let currentDay = '';
     let currentTitle = '';
     let currentDests = [];
@@ -617,8 +777,41 @@ window.openTourModal = (id) => {
     commitDay();
 
     // Parse include/exclude
-    const includes = parseLines(item.include);
-    const excludes = parseLines(item.exclude);
+    const rawIncludes = parseLines(item.include);
+    const rawExcludes = parseLines(item.exclude);
+
+    let includes = rawIncludes;
+    let excludes = rawExcludes;
+
+    if (isCarCategory) {
+        if (isDriverMode) {
+            includes = [
+                'Unit Mobil Bersih, Nyaman & AC Dingin',
+                'Driver Profesional, Ramah & Berpengalaman',
+                'Bahan Bakar Minyak (BBM) selama rute pemakaian',
+                'Antar & Jemput di Bandara / Hotel (Area Kota)',
+                'Bebas Uang Jaminan Deposit (Rp 0)'
+            ];
+            excludes = [
+                'Tiket Masuk Objek Wisata',
+                'Biaya Parkir & Tol (jika ada)',
+                'Pengeluaran Pribadi & Makan Driver',
+                'Tips Driver (Sukarela)'
+            ];
+        } else {
+            includes = rawIncludes.length > 0 ? rawIncludes : [
+                'Unit Mobil Bersih, Prima & AC Dingin',
+                'Peralatan Standar Kendaraan (Ban Cadangan & Toolkit)',
+                'Durasi Pemakaian Penuh 24 Jam'
+            ];
+            excludes = rawExcludes.length > 0 ? rawExcludes : [
+                'Bahan Bakar Minyak (BBM)',
+                'Biaya Parkir & Tol',
+                'Driver / Supir (Setir Sendiri)',
+                'Jaminan Deposit Rp 1.000.000 (Refundable 100%)'
+            ];
+        }
+    }
 
     modalBody.innerHTML = `
         <div style="width: 100%; height: 400px; position: relative;">
@@ -626,11 +819,25 @@ window.openTourModal = (id) => {
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 150px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
         </div>
         <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
+            ${isCarCategory ? `
+            <div class="car-mode-switcher-bar" style="margin-bottom: 14px;">
+                <button type="button" class="car-mode-tab-btn ${!isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'lepas_kunci')">
+                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci)
+                    <span class="car-tab-price-chip">${formatPrice(rawLepasKunciPrice)}</span>
+                </button>
+                <button type="button" class="car-mode-tab-btn ${isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'include_driver')">
+                    <i class="fa-solid fa-user-tie"></i> Include Driver (Dengan Supir & BBM)
+                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${formatPrice(rawDriverPrice)}</span>
+                    <span class="car-tab-highlight-chip">Bebas Deposit</span>
+                </button>
+            </div>
+            ` : ''}
+
             <div class="tm-top premium-card">
                 <div class="tm-title" style="flex: 1;">
                     ${(() => {
             let typeLabel = 'PAKET TOUR';
-            if (item.category === 'car') typeLabel = 'SEWA MOBIL';
+            if (isCarCategory) typeLabel = isDriverMode ? 'SEWA MOBIL + DRIVER' : 'SEWA MOBIL LEPAS KUNCI';
             else if (item.category === 'motorcycle') typeLabel = 'SEWA MOTOR';
             else if (item.category === 'drone') typeLabel = 'SEWA DRONE';
             else if (item.category === 'transfer') typeLabel = 'ANTAR JEMPUT';
@@ -638,7 +845,18 @@ window.openTourModal = (id) => {
 
             let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
             if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
-                durationLabel = 'PER HARI';
+                durationLabel = isDriverMode ? '12 JAM / 1 HARI' : '24 JAM PENUH';
+            }
+
+            let driverBadgeHtml = '';
+            if (isCarCategory) {
+                if (isDriverMode) {
+                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (BEBAS DEPOSIT)</span>`;
+                } else {
+                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI)</span>`;
+                }
+            } else if (item.driverOptions) {
+                driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions === 'Sertakan Pengemudi' ? 'DENGAN SUPIR' : item.driverOptions === 'Tidak Include Driver' ? 'LEPAS KUNCI' : item.driverOptions.toUpperCase()}</span>`;
             }
 
             return `
@@ -646,7 +864,7 @@ window.openTourModal = (id) => {
                         <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
                         <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
                             <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>
-                            ${item.driverOptions ? `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions === 'Sertakan Pengemudi' ? 'DENGAN SUPIR' : item.driverOptions === 'Tidak Include Driver' ? 'LEPAS KUNCI' : item.driverOptions.toUpperCase()}</span>` : ''}
+                            ${driverBadgeHtml}
                         </div>
                         <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
                         `;
@@ -655,14 +873,19 @@ window.openTourModal = (id) => {
                 <div class="tm-price-box premium-price-box">
                     ${(() => {
             let priceLabel = 'HARGA PAKET';
-            if (item.category === 'car' || item.category === 'motorcycle' || item.category === 'drone') {
+            if (isCarCategory) {
+                priceLabel = isDriverMode ? 'HARGA DENGAN SUPIR' : 'HARGA LEPAS KUNCI';
+            } else if (item.category === 'motorcycle' || item.category === 'drone') {
                 priceLabel = 'HARGA SEWA';
             }
-            return `<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
+            return `<span class="price-label" style="background: ${isDriverMode ? '#16a34a' : 'var(--primary-green)'}; color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
         })()}
                     ${(() => {
-                        return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(item.price)}</h3>
-                                <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>`;
+                        const priceSubText = isCarCategory
+                            ? (isDriverMode ? 'Termasuk BBM + Supir' : 'Tarif lepas kunci 24 jam')
+                            : 'Mulai harga terendah';
+                        return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(activeItemPrice)}</h3>
+                                <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">${priceSubText}</p>`;
                     })()}
                 </div>
 
@@ -717,8 +940,12 @@ window.openTourModal = (id) => {
                     ${(() => {
                         if (item.category === 'motorcycle') {
                             return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`;
-                        } else if (item.category === 'car') {
-                            return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 200.000 dan deposit Rp 1.000.000</strong> ke rekening berikut:</p>`;
+                        } else if (isCarCategory) {
+                            if (isDriverMode) {
+                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`;
+                            } else {
+                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`;
+                            }
                         } else {
                             return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`;
                         }
@@ -745,8 +972,8 @@ window.openTourModal = (id) => {
                     ` : ''}
 
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${item.price}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
-                        <button onclick="openCheckoutModal('${item.title}', ${item.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
+                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <button onclick="openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
             </div>

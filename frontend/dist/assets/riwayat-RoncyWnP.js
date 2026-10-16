@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -47,51 +47,157 @@
             <a id="video-modal-fallback-link" href="#" target="_blank" style="color: white; background: var(--primary-blue); padding: 8px 20px; border-radius: 20px; text-decoration: none; font-size: 0.95rem; font-weight: bold; display: inline-block; transition: background 0.3s;" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='var(--primary-blue)'"><i class="fa-solid fa-arrow-up-right-from-square"></i> Buka Langsung dari Sumbernya</a>
         </div>
     </div>
-    `)};window.openVideoModal=e=>{c();let t=document.getElementById(`video-modal`),n=document.getElementById(`video-modal-content`),r=e;try{let t=new URL(e);if(t.hostname.includes(`instagram.com`)){let e=t.pathname.split(`/`).filter(e=>e);e.length>=2&&(e[0]===`p`||e[0]===`reel`)&&(r=`https://www.instagram.com/p/${e[1]}/embed`)}else if(t.hostname.includes(`tiktok.com`)){let e=t.pathname.split(`/`).filter(e=>e);e.includes(`video`)&&(r=`https://www.tiktok.com/embed/v2/${e[e.indexOf(`video`)+1]}`)}else if(t.hostname.includes(`facebook.com`)&&t.pathname.includes(`/watch`))r=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(e)}&show_text=0`;else if(t.hostname.includes(`streamable.com`)){let e=t.pathname.replace(`/e/`,``).replace(`/`,``);e&&(r=`https://streamable.com/e/${e}?autoplay=1`)}else if(t.hostname.includes(`drive.google.com`))r=e.replace(`/view`,`/preview`);else if(t.hostname.includes(`youtube.com`)&&e.includes(`watch?v=`)){let e=t.searchParams.get(`v`);e&&(r=`https://www.youtube.com/embed/${e}?autoplay=1`)}}catch{}n.innerHTML=`<iframe width="100%" height="100%" src="${r}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="background: #000;"></iframe>`;let i=document.getElementById(`video-modal-fallback-link`);i&&(i.href=e),t.style.display=`flex`},window.closeVideoModal=()=>{let e=document.getElementById(`video-modal`);e&&(e.style.display=`none`,document.getElementById(`video-modal-content`).innerHTML=``)},window.openTourModal=e=>{let t=n.find(t=>t.id===e);if(!t)return;if(t.title&&t.title.toLowerCase().includes(`honeymoon`)){let e=document.getElementById(`ai-chat-widget`);e&&(e.style.display=`none`)}let r=document.getElementById(`tour-modal-body`),a=``,c=o(t.itinerary),l=``,u=``,d=[],f=()=>{if(l){let e=``;d.length>0&&(e=d.length===1?`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(d[0]+` Lombok`)}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-map-location-dot"></i> Lihat Peta di Google Maps</a>`:`<a href="${`https://www.google.com/maps/dir/${d.map(e=>encodeURIComponent(e+` Lombok`)).join(`/`)}`}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-route"></i> Buka Rute di Google Maps</a>`),a+=`
+    `)};window.openVideoModal=e=>{c();let t=document.getElementById(`video-modal`),n=document.getElementById(`video-modal-content`),r=e;try{let t=new URL(e);if(t.hostname.includes(`instagram.com`)){let e=t.pathname.split(`/`).filter(e=>e);e.length>=2&&(e[0]===`p`||e[0]===`reel`)&&(r=`https://www.instagram.com/p/${e[1]}/embed`)}else if(t.hostname.includes(`tiktok.com`)){let e=t.pathname.split(`/`).filter(e=>e);e.includes(`video`)&&(r=`https://www.tiktok.com/embed/v2/${e[e.indexOf(`video`)+1]}`)}else if(t.hostname.includes(`facebook.com`)&&t.pathname.includes(`/watch`))r=`https://www.facebook.com/plugins/video.php?href=${encodeURIComponent(e)}&show_text=0`;else if(t.hostname.includes(`streamable.com`)){let e=t.pathname.replace(`/e/`,``).replace(`/`,``);e&&(r=`https://streamable.com/e/${e}?autoplay=1`)}else if(t.hostname.includes(`drive.google.com`))r=e.replace(`/view`,`/preview`);else if(t.hostname.includes(`youtube.com`)&&e.includes(`watch?v=`)){let e=t.searchParams.get(`v`);e&&(r=`https://www.youtube.com/embed/${e}?autoplay=1`)}}catch{}n.innerHTML=`<iframe width="100%" height="100%" src="${r}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="background: #000;"></iframe>`;let i=document.getElementById(`video-modal-fallback-link`);i&&(i.href=e),t.style.display=`flex`},window.closeVideoModal=()=>{let e=document.getElementById(`video-modal`);e&&(e.style.display=`none`,document.getElementById(`video-modal-content`).innerHTML=``)},window.openCarChoiceModal=e=>{let t=n.find(t=>t.id===e);if(!t)return;let r=document.getElementById(`car-choice-modal`),a=document.getElementById(`car-choice-title`),o=document.getElementById(`car-choice-subtitle`),s=document.getElementById(`car-choice-body`);if(!r||!s)return;a&&(a.textContent=`Pilih Layanan: ${t.title}`),o&&(o.textContent=`Tersedia opsi Lepas Kunci (Setir Sendiri) atau Include Driver (Dengan Supir & BBM)`);let c=Number(t.price)||0,l=t.priceWithDriver&&Number(t.priceWithDriver)>0?Number(t.priceWithDriver):c>0?c+2e5:65e4,u=i(c),d=i(l);s.innerHTML=`
+        <div class="car-choice-grid">
+            <!-- Card 1: Include Driver (Rekomendasi / Paling Populer) -->
+            <div class="car-choice-card car-choice-card-driver" onclick="window.selectCarMode('${t.id}', 'include_driver')">
+                <div class="car-choice-card-badge">
+                    <i class="fa-solid fa-crown" style="color: #f59e0b;"></i> PALING PRAKTIS & POPULER
+                </div>
+                <div class="car-choice-card-header">
+                    <div class="car-choice-icon-wrap" style="background: #ecfdf5; color: #059669;">
+                        <i class="fa-solid fa-user-tie"></i>
+                    </div>
+                    <div>
+                        <h4 class="car-choice-option-title">Include Driver</h4>
+                        <span class="car-choice-option-sub">Dengan Supir Berpengalaman + BBM</span>
+                    </div>
+                </div>
+
+                <div class="car-choice-price-box">
+                    <span class="car-choice-price-label">Tarif Lengkap Termasuk Supir</span>
+                    <div class="car-choice-price-val">${d}</div>
+                    <span class="car-choice-price-unit">/ 12 Jam - 1 Hari Pemakaian</span>
+                </div>
+
+                <div class="car-choice-features">
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span><strong>Bebas Deposit Jaminan (Rp 0)</strong> - Tanpa tahan deposit</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span><strong>Sudah Termasuk BBM</strong> selama pemakaian rute tour</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span><strong>Driver Ramah & Berpengalaman</strong> merangkap pemandu lokal</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
+                        <span>Antar & Jemput di Bandara / Hotel (Area Kota)</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-car-choice btn-car-choice-driver">
+                    <i class="fa-solid fa-user-check"></i> Pilih Include Driver
+                </button>
+            </div>
+
+            <!-- Card 2: Tidak Include Driver (Lepas Kunci) -->
+            <div class="car-choice-card car-choice-card-self" onclick="window.selectCarMode('${t.id}', 'lepas_kunci')">
+                <div class="car-choice-card-badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
+                    <i class="fa-solid fa-key" style="color: #2563eb;"></i> FLEKSIBEL SETIR SENDIRI
+                </div>
+                <div class="car-choice-card-header">
+                    <div class="car-choice-icon-wrap" style="background: #eff6ff; color: #2563eb;">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <div>
+                        <h4 class="car-choice-option-title">Tidak Include Driver</h4>
+                        <span class="car-choice-option-sub">Lepas Kunci (Setir Sendiri 24 Jam)</span>
+                    </div>
+                </div>
+
+                <div class="car-choice-price-box" style="background: #f1f5f9; border-color: #e2e8f0;">
+                    <span class="car-choice-price-label" style="color: #64748b;">Tarif Sewa Lepas Kunci</span>
+                    <div class="car-choice-price-val" style="color: #0f172a;">${u}</div>
+                    <span class="car-choice-price-unit">/ 24 Jam Pemakaian Penuh</span>
+                </div>
+
+                <div class="car-choice-features">
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #3b82f6;"></i>
+                        <span>Unit Mobil Prima, Bersih, AC Dingin & Nyaman</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-check" style="color: #3b82f6;"></i>
+                        <span>Bebas Menjelajah Seluruh Pulau Lombok 24 Jam</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-info" style="color: #64748b;"></i>
+                        <span>DP Pemesanan Rp 200.000 + Jaminan Deposit Rp 1.000.000</span>
+                    </div>
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-circle-info" style="color: #64748b;"></i>
+                        <span>BBM & Biaya Parkir ditanggung penyewa</span>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-car-choice btn-car-choice-self">
+                    <i class="fa-solid fa-key"></i> Pilih Lepas Kunci
+                </button>
+            </div>
+        </div>
+    `,r.classList.add(`active`),document.body.style.overflow=`hidden`},window.closeCarChoiceModal=()=>{let e=document.getElementById(`car-choice-modal`);e&&e.classList.remove(`active`);let t=document.getElementById(`tour-modal`);(!t||!t.classList.contains(`active`))&&(document.body.style.overflow=``)},window.selectCarMode=(e,t)=>{window.closeCarChoiceModal(),window.openTourModal(e,t)},document.addEventListener(`DOMContentLoaded`,()=>{let e=document.getElementById(`car-choice-modal`);e&&e.addEventListener(`click`,t=>{t.target===e&&window.closeCarChoiceModal()})}),window.openTourModal=(e,t=null)=>{let r=n.find(t=>t.id===e);if(!r)return;if(r.category===`car`&&!t){window.openCarChoiceModal(e);return}if(r.title&&r.title.toLowerCase().includes(`honeymoon`)){let e=document.getElementById(`ai-chat-widget`);e&&(e.style.display=`none`)}let a=document.getElementById(`tour-modal-body`),c=r.category===`car`,l=c&&t===`include_driver`,u=Number(r.price)||0,d=r.priceWithDriver&&Number(r.priceWithDriver)>0?Number(r.priceWithDriver):u>0?u+2e5:65e4,f=c?l?d:u:Number(r.price)||0,p=c?`${r.title} (${l?`Include Driver`:`Lepas Kunci`})`:r.title,m=``,h=o(r.itinerary),g=``,_=``,v=[],y=()=>{if(g){let e=``;v.length>0&&(e=v.length===1?`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v[0]+` Lombok`)}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-map-location-dot"></i> Lihat Peta di Google Maps</a>`:`<a href="${`https://www.google.com/maps/dir/${v.map(e=>encodeURIComponent(e+` Lombok`)).join(`/`)}`}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-route"></i> Buka Rute di Google Maps</a>`),m+=`
             <div class="tm-day">
                 <div class="tm-day-header">
-                    <div class="tm-day-badge">DAY<br><span>${l.replace(`DAY`,``).trim()}</span></div>
-                    <div class="tm-day-title">${u}</div>
+                    <div class="tm-day-badge">DAY<br><span>${g.replace(`DAY`,``).trim()}</span></div>
+                    <div class="tm-day-title">${_}</div>
                 </div>
                 <ul class="tm-day-list" style="margin-bottom: 8px;">
-                    ${d.map(e=>`<li>${e}</li>`).join(``)}
+                    ${v.map(e=>`<li>${e}</li>`).join(``)}
                 </ul>
                 ${e}
-            </div>`}};c.forEach(e=>{if(e.toUpperCase().startsWith(`DAY`)){f();let t=e.split(`:`);l=t[0],u=t.slice(1).join(`:`).trim(),d=[]}else e.startsWith(`-`)?d.push(e.substring(1).trim()):d.push(e)}),f();let p=o(t.include),m=o(t.exclude);r.innerHTML=`
+            </div>`}};h.forEach(e=>{if(e.toUpperCase().startsWith(`DAY`)){y();let t=e.split(`:`);g=t[0],_=t.slice(1).join(`:`).trim(),v=[]}else e.startsWith(`-`)?v.push(e.substring(1).trim()):v.push(e)}),y();let b=o(r.include),x=o(r.exclude),S=b,C=x;c&&(l?(S=[`Unit Mobil Bersih, Nyaman & AC Dingin`,`Driver Profesional, Ramah & Berpengalaman`,`Bahan Bakar Minyak (BBM) selama rute pemakaian`,`Antar & Jemput di Bandara / Hotel (Area Kota)`,`Bebas Uang Jaminan Deposit (Rp 0)`],C=[`Tiket Masuk Objek Wisata`,`Biaya Parkir & Tol (jika ada)`,`Pengeluaran Pribadi & Makan Driver`,`Tips Driver (Sukarela)`]):(S=b.length>0?b:[`Unit Mobil Bersih, Prima & AC Dingin`,`Peralatan Standar Kendaraan (Ban Cadangan & Toolkit)`,`Durasi Pemakaian Penuh 24 Jam`],C=x.length>0?x:[`Bahan Bakar Minyak (BBM)`,`Biaya Parkir & Tol`,`Driver / Supir (Setir Sendiri)`,`Jaminan Deposit Rp 1.000.000 (Refundable 100%)`])),a.innerHTML=`
         <div style="width: 100%; height: 400px; position: relative;">
-            <img src="${t.imageUrl}" alt="${t.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
+            <img src="${r.imageUrl}" alt="${r.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 150px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
         </div>
         <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
+            ${c?`
+            <div class="car-mode-switcher-bar" style="margin-bottom: 14px;">
+                <button type="button" class="car-mode-tab-btn ${l?``:`active`}" onclick="window.openTourModal('${r.id}', 'lepas_kunci')">
+                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci)
+                    <span class="car-tab-price-chip">${i(u)}</span>
+                </button>
+                <button type="button" class="car-mode-tab-btn ${l?`active`:``}" onclick="window.openTourModal('${r.id}', 'include_driver')">
+                    <i class="fa-solid fa-user-tie"></i> Include Driver (Dengan Supir & BBM)
+                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${i(d)}</span>
+                    <span class="car-tab-highlight-chip">Bebas Deposit</span>
+                </button>
+            </div>
+            `:``}
+
             <div class="tm-top premium-card">
                 <div class="tm-title" style="flex: 1;">
-                    ${(()=>{let e=`PAKET TOUR`;t.category===`car`?e=`SEWA MOBIL`:t.category===`motorcycle`?e=`SEWA MOTOR`:t.category===`drone`?e=`SEWA DRONE`:t.category===`transfer`&&(e=`ANTAR JEMPUT`),t.packageType&&(e=t.packageType);let n=t.duration?t.duration.toUpperCase():`N/A`;return!t.duration&&(t.category===`car`||t.category===`motorcycle`)&&(n=`PER HARI`),`
+                    ${(()=>{let e=`PAKET TOUR`;c?e=l?`SEWA MOBIL + DRIVER`:`SEWA MOBIL LEPAS KUNCI`:r.category===`motorcycle`?e=`SEWA MOTOR`:r.category===`drone`?e=`SEWA DRONE`:r.category===`transfer`&&(e=`ANTAR JEMPUT`),r.packageType&&(e=r.packageType);let t=r.duration?r.duration.toUpperCase():`N/A`;!r.duration&&(r.category===`car`||r.category===`motorcycle`)&&(t=l?`12 JAM / 1 HARI`:`24 JAM PENUH`);let n=``;return c?n=l?`<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (BEBAS DEPOSIT)</span>`:`<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI)</span>`:r.driverOptions&&(n=`<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${r.driverOptions===`Sertakan Pengemudi`?`DENGAN SUPIR`:r.driverOptions===`Tidak Include Driver`?`LEPAS KUNCI`:r.driverOptions.toUpperCase()}</span>`),`
                         <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${e}</h4>
-                        <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${t.title.toUpperCase()}</h2>
+                        <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${r.title.toUpperCase()}</h2>
                         <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                            <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-regular fa-clock"></i> ${n}</span>
-                            ${t.driverOptions?`<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${t.driverOptions===`Sertakan Pengemudi`?`DENGAN SUPIR`:t.driverOptions===`Tidak Include Driver`?`LEPAS KUNCI`:t.driverOptions.toUpperCase()}</span>`:``}
+                            <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-regular fa-clock"></i> ${t}</span>
+                            ${n}
                         </div>
-                        <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${t.description||`Deskripsi detail tidak tersedia.`}</p>
+                        <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${r.description||`Deskripsi detail tidak tersedia.`}</p>
                         `})()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    ${(()=>{let e=`HARGA PAKET`;return(t.category===`car`||t.category===`motorcycle`||t.category===`drone`)&&(e=`HARGA SEWA`),`<span class="price-label" style="background: var(--primary-green); color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${e}</span>`})()}
-                    ${`<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${i(t.price)}</h3>
-                                <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">Mulai harga terendah</p>`}
+                    ${(()=>{let e=`HARGA PAKET`;return c?e=l?`HARGA DENGAN SUPIR`:`HARGA LEPAS KUNCI`:(r.category===`motorcycle`||r.category===`drone`)&&(e=`HARGA SEWA`),`<span class="price-label" style="background: ${l?`#16a34a`:`var(--primary-green)`}; color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${e}</span>`})()}
+                    ${(()=>{let e=c?l?`Termasuk BBM + Supir`:`Tarif lepas kunci 24 jam`:`Mulai harga terendah`;return`<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${i(f)}</h3>
+                                <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">${e}</p>`})()}
                 </div>
 
             </div>
         </div>
         <div class="tm-body">
             <div class="tm-left">
-                ${a?`
+                ${m?`
                 <h4 style="margin-bottom: 20px; color: var(--text-dark); font-weight: 800;"><i class="fa-solid fa-route" style="color: var(--primary-green);"></i> JADWAL PERJALANAN</h4>
                 <div class="tm-timeline">
-                    ${a}
+                    ${m}
                 </div>`:``}
                 
-                ${t.category===`package`||a?`
+                ${r.category===`package`||m?`
                 <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
                     <div class="tm-box-title" style="background: var(--text-dark);"><i class="fa-solid fa-shield-halved"></i> KEBIJAKAN PEMBATALAN</div>
                     <ul class="tm-list" style="color:var(--text-dark);">
@@ -101,35 +207,35 @@
                     </ul>
                 </div>`:``}
                 
-                ${t.terms?`
+                ${r.terms?`
                 <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
                     <div class="tm-box-title" style="background: var(--primary-blue);"><i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN</div>
                     <div style="padding: 15px; color: var(--text-dark); font-size: 0.95rem; line-height: 1.6;">
-                        ${s(t.terms)}
+                        ${s(r.terms)}
                     </div>
                 </div>`:``}
             </div>
             
             <div class="tm-right">
-                ${p.length>0?`
+                ${S.length>0?`
                 <div class="tm-box tm-box-green">
                     <div class="tm-box-title"><i class="fa-solid fa-check"></i> FASILITAS INCLUDE</div>
                     <ul class="tm-list">
-                        ${p.map(e=>`<li><i class="fa-solid fa-check-circle"></i> ${e}</li>`).join(``)}
+                        ${S.map(e=>`<li><i class="fa-solid fa-check-circle"></i> ${e}</li>`).join(``)}
                     </ul>
                 </div>`:``}
                 
-                ${m.length>0?`
+                ${C.length>0?`
                 <div class="tm-box tm-box-red">
                     <div class="tm-box-title"><i class="fa-solid fa-xmark"></i> TIDAK TERMASUK</div>
                     <ul class="tm-list">
-                        ${m.map(e=>`<li><i class="fa-solid fa-times-circle"></i> ${e}</li>`).join(``)}
+                        ${C.map(e=>`<li><i class="fa-solid fa-times-circle"></i> ${e}</li>`).join(``)}
                     </ul>
                 </div>`:``}
                 
                 <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
                     <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
-                    ${t.category===`motorcycle`?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`:t.category===`car`?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 200.000 dan deposit Rp 1.000.000</strong> ke rekening berikut:</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`}
+                    ${r.category===`motorcycle`?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`:c?l?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`}
                     <div class="bank-item" style="background: #f8fafc; border: none;">
                         <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>
@@ -152,8 +258,8 @@
                     `}
 
                     <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${t.title.replace(/'/g,`\\'`)}', ${t.price}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
-                        <button onclick="openCheckoutModal('${t.title}', ${t.price})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
+                        <a href="#" onclick="event.preventDefault(); openCheckoutModal('${p.replace(/'/g,`\\'`)}', ${f}, 'wa');" class="btn" style="flex:1; background: #e0f2fe; color: var(--primary-blue); padding: 12px; border-radius: 8px;"><i class="fa-brands fa-whatsapp"></i> via WA</a>
+                        <button onclick="openCheckoutModal('${p.replace(/'/g,`\\'`)}', ${f})" class="btn btn-blue" style="flex:1; padding: 12px; border-radius: 8px;"><i class="fa-solid fa-desktop"></i> via Web</button>
                     </div>
                 </div>
             </div>
@@ -167,35 +273,35 @@
                         <h3 style="font-size: 1.05rem; color: #78350f; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                             <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Rating Pelanggan
                         </h3>
-                        <span id="item-rating-score-${t.id}" style="background: #f59e0b; color: white; font-weight: 800; font-size: 0.8rem; padding: 2px 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);">
-                            ${t.rating?t.rating:`5.0`} ★
+                        <span id="item-rating-score-${r.id}" style="background: #f59e0b; color: white; font-weight: 800; font-size: 0.8rem; padding: 2px 10px; border-radius: 12px; box-shadow: 0 2px 5px rgba(245, 158, 11, 0.3);">
+                            ${r.rating?r.rating:`5.0`} ★
                         </span>
                     </div>
-                    <div id="item-rating-subtitle-${t.id}" style="font-size: 0.8rem; color: #92400e;">
-                        Berdasarkan ${t.reviewCount||0} rating penilaian
+                    <div id="item-rating-subtitle-${r.id}" style="font-size: 0.8rem; color: #92400e;">
+                        Berdasarkan ${r.reviewCount||0} rating penilaian
                     </div>
                 </div>
 
                 <!-- 5 Clickable Stars (Hanya bintang aja!) -->
                 <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
-                    <div id="star-action-title-${t.id}" style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
-                    <div id="star-bar-${t.id}" class="quick-item-stars" style="display: inline-flex; gap: 6px; font-size: 1.6rem; cursor: pointer; user-select: none;">
-                        <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${t.id}', 1)" onmouseover="window.previewItemStars('${t.id}', 1)" onmouseout="window.resetItemStars('${t.id}')"></i>
-                        <i class="fa-solid fa-star item-star" data-idx="2" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${t.id}', 2)" onmouseover="window.previewItemStars('${t.id}', 2)" onmouseout="window.resetItemStars('${t.id}')"></i>
-                        <i class="fa-solid fa-star item-star" data-idx="3" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${t.id}', 3)" onmouseover="window.previewItemStars('${t.id}', 3)" onmouseout="window.resetItemStars('${t.id}')"></i>
-                        <i class="fa-solid fa-star item-star" data-idx="4" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${t.id}', 4)" onmouseover="window.previewItemStars('${t.id}', 4)" onmouseout="window.resetItemStars('${t.id}')"></i>
-                        <i class="fa-solid fa-star item-star" data-idx="5" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${t.id}', 5)" onmouseover="window.previewItemStars('${t.id}', 5)" onmouseout="window.resetItemStars('${t.id}')"></i>
+                    <div id="star-action-title-${r.id}" style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
+                    <div id="star-bar-${r.id}" class="quick-item-stars" style="display: inline-flex; gap: 6px; font-size: 1.6rem; cursor: pointer; user-select: none;">
+                        <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 1)" onmouseover="window.previewItemStars('${r.id}', 1)" onmouseout="window.resetItemStars('${r.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="2" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 2)" onmouseover="window.previewItemStars('${r.id}', 2)" onmouseout="window.resetItemStars('${r.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="3" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 3)" onmouseover="window.previewItemStars('${r.id}', 3)" onmouseout="window.resetItemStars('${r.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="4" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 4)" onmouseover="window.previewItemStars('${r.id}', 4)" onmouseout="window.resetItemStars('${r.id}')"></i>
+                        <i class="fa-solid fa-star item-star" data-idx="5" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 5)" onmouseover="window.previewItemStars('${r.id}', 5)" onmouseout="window.resetItemStars('${r.id}')"></i>
                     </div>
-                    <div id="star-hint-${t.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px; text-align: right;"></div>
+                    <div id="star-hint-${r.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px; text-align: right;"></div>
                 </div>
             </div>
 
             <!-- List of Ratings given -->
-            <div id="item-reviews-container-${t.id}" style="display: flex; gap: 10px; overflow-x: auto; padding: 8px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 5px;">
+            <div id="item-reviews-container-${r.id}" style="display: flex; gap: 10px; overflow-x: auto; padding: 8px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 5px;">
                 <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 12px 0; width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat rating...</p>
             </div>
             <style>
-                #item-reviews-container-${t.id}::-webkit-scrollbar { display: none; }
+                #item-reviews-container-${r.id}::-webkit-scrollbar { display: none; }
             </style>
         </div>
 
@@ -221,7 +327,7 @@
                 </div>
             </div>
         </div>
-    `,document.getElementById(`tour-modal`).classList.add(`active`),document.body.style.overflow=`hidden`,window.loadItemReviews(t.id)},window.closeTourModal=()=>{let e=document.getElementById(`tour-modal`);if(e){e.classList.remove(`active`);let t=document.getElementById(`sub-package-modal`);(!t||t.style.display===`none`)&&(document.body.style.overflow=``);let n=document.getElementById(`ai-chat-widget`);n&&(n.style.display=``)}},window.previewItemStars=(e,t)=>{if(localStorage.getItem(`rated_item_`+e))return;let n=document.getElementById(`star-bar-${e}`);if(!n)return;n.querySelectorAll(`.item-star`).forEach(e=>{parseInt(e.getAttribute(`data-idx`))<=t?(e.style.color=`#f59e0b`,e.style.transform=`scale(1.15)`):(e.style.color=`#cbd5e1`,e.style.transform=`scale(1)`)});let r=[`★ Kurang`,`★★ Cukup`,`★★★ Bagus`,`★★★★ Sangat Bagus`,`★★★★★ Luar Biasa!`],i=document.getElementById(`star-hint-${e}`);i&&(i.innerHTML=`<span style="color:#d97706; font-weight:700;">${r[t-1]}</span>`)},window.resetItemStars=e=>{let t=document.getElementById(`star-bar-${e}`);if(!t)return;let n=localStorage.getItem(`rated_item_`+e),r=t.querySelectorAll(`.item-star`),i=document.getElementById(`star-hint-${e}`),a=document.getElementById(`star-action-title-${e}`);if(n){let e=parseInt(n);r.forEach(t=>{parseInt(t.getAttribute(`data-idx`))<=e?(t.style.color=`#f59e0b`,t.style.transform=`scale(1)`):(t.style.color=`#cbd5e1`,t.style.transform=`scale(1)`),t.style.cursor=`default`}),i&&(i.innerHTML=`<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Rating Anda: ${e}★ (Hanya 1x per item)</span>`),a&&(a.innerText=`Rating Anda (Sudah Dinilai):`)}else r.forEach(e=>{e.style.color=`#cbd5e1`,e.style.transform=`scale(1)`,e.style.cursor=`pointer`}),i&&(i.innerHTML=``),a&&(a.innerText=`Ketuk Bintang untuk Menilai:`)},window.quickRateItem=async(t,n)=>{let r=localStorage.getItem(`rated_item_`+t);if(r){Swal.fire({toast:!0,position:`top-end`,icon:`info`,title:`Anda sudah memberi rating ${r}★!`,text:`Setiap pelanggan hanya dapat memberi rating 1 kali per item.`,showConfirmButton:!1,timer:3e3});return}if(window._isSubmittingRating)return;window._isSubmittingRating=!0,window.previewItemStars(t,n);let i=document.getElementById(`star-hint-${t}`);i&&(i.innerHTML=`<span style="color:#0284c7;"><i class="fa-solid fa-spinner fa-spin"></i> Menyimpan rating...</span>`);let a=`Pelanggan Terverifikasi`,o=null,s=null,c=localStorage.getItem(`auth_user`);if(c)try{let e=JSON.parse(c);e&&(e.displayName?a=e.displayName:e.name&&(a=e.name),o=e.uid||e.id||null,s=e.photoUrl||null)}catch{}try{if(!(await fetch(`${e}/reviews`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify({itemId:t,rating:Number(n),name:a,comment:``,photoUrl:s,userId:o})})).ok)throw Error(`Failed to submit rating`);localStorage.setItem(`rated_item_`+t,n),i&&(i.innerHTML=`<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Rating ${n}★ berhasil disimpan!</span>`);let r=document.getElementById(`star-action-title-${t}`);r&&(r.innerText=`Rating Anda (Sudah Dinilai):`),Swal.fire({toast:!0,position:`top-end`,icon:`success`,title:`Rating ${n} Bintang Berhasil! ⭐`,text:`Terima kasih atas penilaian Anda!`,showConfirmButton:!1,timer:2500,timerProgressBar:!0}),await window.loadItemReviews(t)}catch(e){console.error(`Quick rate error:`,e),i&&(i.innerHTML=`<span style="color:#ef4444;"><i class="fa-solid fa-circle-exclamation"></i> Gagal menyimpan rating.</span>`),Swal.fire({toast:!0,position:`top-end`,icon:`error`,title:`Gagal mengirim rating`,text:`Silakan coba lagi.`,showConfirmButton:!1,timer:3e3})}finally{window._isSubmittingRating=!1,window.resetItemStars(t)}},window.loadItemReviews=async t=>{let n=document.getElementById(`item-reviews-container-${t}`);if(n)try{let r=await fetch(`${e}/reviews?itemId=${t}`);if(!r.ok)throw Error(`Failed to fetch item reviews`);let i=await r.json(),a=localStorage.getItem(`auth_user`);if(a&&Array.isArray(i))try{let e=JSON.parse(a),n=(e.displayName||e.name||``).trim().toLowerCase(),r=e.uid||e.id,o=i.find(e=>r&&e.userId===r||n&&e.name&&e.name.trim().toLowerCase()===n);o&&localStorage.setItem(`rated_item_`+t,o.rating)}catch{}let o=new Set,s=[];if(Array.isArray(i))for(let e of i){let t=``;t=e.userId?`u_`+e.userId:e.name&&e.name.trim().toLowerCase()!==`pelanggan terverifikasi`?`n_`+e.name.trim().toLowerCase():`id_`+e.id,o.has(t)||(o.add(t),s.push(e))}let c=document.getElementById(`item-rating-score-${t}`),l=document.getElementById(`item-rating-subtitle-${t}`);if(s.length>0){let e=(s.reduce((e,t)=>e+(Number(t.rating)||5),0)/s.length).toFixed(1).replace(`.0`,``);if(c&&(c.innerText=`${e} ★`),l&&(l.innerText=`Berdasarkan ${s.length} rating penilaian`),window.globalItems){let n=window.globalItems.find(e=>e.id===t);if(n&&(n.rating=e,n.reviewCount=s.length,n.parentId)){let e=window.globalItems.find(e=>e.id===n.parentId);if(e){let t=window.globalItems.filter(t=>t.parentId===e.id).map(e=>e.id);if(window.allReviewsData){let n=window.allReviewsData.filter(n=>(n.itemId===e.id||t.includes(n.itemId))&&n.status===`approved`);n.length>0&&(e.rating=(n.reduce((e,t)=>e+t.rating,0)/n.length).toFixed(1).replace(`.0`,``),e.reviewCount=n.length)}}}}}if(window.resetItemStars(t),s.length===0){n.innerHTML=`<p style="font-size: 0.82rem; color: #64748b; text-align: center; padding: 8px 0; width: 100%;">Belum ada rating. Ketuk bintang di atas untuk memberi rating pertama! ⭐</p>`;return}n.innerHTML=s.map(e=>{let t=``,n=Number(e.rating)||5;for(let e=0;e<5;e++)t+=e<n?`<i class="fa-solid fa-star" style="color: #f59e0b; font-size:0.75rem;"></i>`:`<i class="fa-regular fa-star" style="color: #cbd5e1; font-size:0.75rem;"></i>`;let r=e.createdAt?new Date(e.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`short`,year:`numeric`}):``;return`
+    `,document.getElementById(`tour-modal`).classList.add(`active`),document.body.style.overflow=`hidden`,window.loadItemReviews(r.id)},window.closeTourModal=()=>{let e=document.getElementById(`tour-modal`);if(e){e.classList.remove(`active`);let t=document.getElementById(`sub-package-modal`);(!t||t.style.display===`none`)&&(document.body.style.overflow=``);let n=document.getElementById(`ai-chat-widget`);n&&(n.style.display=``)}},window.previewItemStars=(e,t)=>{if(localStorage.getItem(`rated_item_`+e))return;let n=document.getElementById(`star-bar-${e}`);if(!n)return;n.querySelectorAll(`.item-star`).forEach(e=>{parseInt(e.getAttribute(`data-idx`))<=t?(e.style.color=`#f59e0b`,e.style.transform=`scale(1.15)`):(e.style.color=`#cbd5e1`,e.style.transform=`scale(1)`)});let r=[`★ Kurang`,`★★ Cukup`,`★★★ Bagus`,`★★★★ Sangat Bagus`,`★★★★★ Luar Biasa!`],i=document.getElementById(`star-hint-${e}`);i&&(i.innerHTML=`<span style="color:#d97706; font-weight:700;">${r[t-1]}</span>`)},window.resetItemStars=e=>{let t=document.getElementById(`star-bar-${e}`);if(!t)return;let n=localStorage.getItem(`rated_item_`+e),r=t.querySelectorAll(`.item-star`),i=document.getElementById(`star-hint-${e}`),a=document.getElementById(`star-action-title-${e}`);if(n){let e=parseInt(n);r.forEach(t=>{parseInt(t.getAttribute(`data-idx`))<=e?(t.style.color=`#f59e0b`,t.style.transform=`scale(1)`):(t.style.color=`#cbd5e1`,t.style.transform=`scale(1)`),t.style.cursor=`default`}),i&&(i.innerHTML=`<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Rating Anda: ${e}★ (Hanya 1x per item)</span>`),a&&(a.innerText=`Rating Anda (Sudah Dinilai):`)}else r.forEach(e=>{e.style.color=`#cbd5e1`,e.style.transform=`scale(1)`,e.style.cursor=`pointer`}),i&&(i.innerHTML=``),a&&(a.innerText=`Ketuk Bintang untuk Menilai:`)},window.quickRateItem=async(t,n)=>{let r=localStorage.getItem(`rated_item_`+t);if(r){Swal.fire({toast:!0,position:`top-end`,icon:`info`,title:`Anda sudah memberi rating ${r}★!`,text:`Setiap pelanggan hanya dapat memberi rating 1 kali per item.`,showConfirmButton:!1,timer:3e3});return}if(window._isSubmittingRating)return;window._isSubmittingRating=!0,window.previewItemStars(t,n);let i=document.getElementById(`star-hint-${t}`);i&&(i.innerHTML=`<span style="color:#0284c7;"><i class="fa-solid fa-spinner fa-spin"></i> Menyimpan rating...</span>`);let a=`Pelanggan Terverifikasi`,o=null,s=null,c=localStorage.getItem(`auth_user`);if(c)try{let e=JSON.parse(c);e&&(e.displayName?a=e.displayName:e.name&&(a=e.name),o=e.uid||e.id||null,s=e.photoUrl||null)}catch{}try{if(!(await fetch(`${e}/reviews`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify({itemId:t,rating:Number(n),name:a,comment:``,photoUrl:s,userId:o})})).ok)throw Error(`Failed to submit rating`);localStorage.setItem(`rated_item_`+t,n),i&&(i.innerHTML=`<span style="color:#16a34a; font-weight:700;"><i class="fa-solid fa-circle-check"></i> Rating ${n}★ berhasil disimpan!</span>`);let r=document.getElementById(`star-action-title-${t}`);r&&(r.innerText=`Rating Anda (Sudah Dinilai):`),Swal.fire({toast:!0,position:`top-end`,icon:`success`,title:`Rating ${n} Bintang Berhasil! ⭐`,text:`Terima kasih atas penilaian Anda!`,showConfirmButton:!1,timer:2500,timerProgressBar:!0}),await window.loadItemReviews(t)}catch(e){console.error(`Quick rate error:`,e),i&&(i.innerHTML=`<span style="color:#ef4444;"><i class="fa-solid fa-circle-exclamation"></i> Gagal menyimpan rating.</span>`),Swal.fire({toast:!0,position:`top-end`,icon:`error`,title:`Gagal mengirim rating`,text:`Silakan coba lagi.`,showConfirmButton:!1,timer:3e3})}finally{window._isSubmittingRating=!1,window.resetItemStars(t)}},window.loadItemReviews=async t=>{let n=document.getElementById(`item-reviews-container-${t}`);if(n)try{let r=await fetch(`${e}/reviews?itemId=${t}`);if(!r.ok)throw Error(`Failed to fetch item reviews`);let i=await r.json(),a=localStorage.getItem(`auth_user`);if(a&&Array.isArray(i))try{let e=JSON.parse(a),n=(e.displayName||e.name||``).trim().toLowerCase(),r=e.uid||e.id,o=i.find(e=>r&&e.userId===r||n&&e.name&&e.name.trim().toLowerCase()===n);o&&localStorage.setItem(`rated_item_`+t,o.rating)}catch{}let o=new Set,s=[];if(Array.isArray(i))for(let e of i){let t=``;t=e.userId?`u_`+e.userId:e.name&&e.name.trim().toLowerCase()!==`pelanggan terverifikasi`?`n_`+e.name.trim().toLowerCase():`id_`+e.id,o.has(t)||(o.add(t),s.push(e))}let c=document.getElementById(`item-rating-score-${t}`),l=document.getElementById(`item-rating-subtitle-${t}`);if(s.length>0){let e=(s.reduce((e,t)=>e+(Number(t.rating)||5),0)/s.length).toFixed(1).replace(`.0`,``);if(c&&(c.innerText=`${e} ★`),l&&(l.innerText=`Berdasarkan ${s.length} rating penilaian`),window.globalItems){let n=window.globalItems.find(e=>e.id===t);if(n&&(n.rating=e,n.reviewCount=s.length,n.parentId)){let e=window.globalItems.find(e=>e.id===n.parentId);if(e){let t=window.globalItems.filter(t=>t.parentId===e.id).map(e=>e.id);if(window.allReviewsData){let n=window.allReviewsData.filter(n=>(n.itemId===e.id||t.includes(n.itemId))&&n.status===`approved`);n.length>0&&(e.rating=(n.reduce((e,t)=>e+t.rating,0)/n.length).toFixed(1).replace(`.0`,``),e.reviewCount=n.length)}}}}}if(window.resetItemStars(t),s.length===0){n.innerHTML=`<p style="font-size: 0.82rem; color: #64748b; text-align: center; padding: 8px 0; width: 100%;">Belum ada rating. Ketuk bintang di atas untuk memberi rating pertama! ⭐</p>`;return}n.innerHTML=s.map(e=>{let t=``,n=Number(e.rating)||5;for(let e=0;e<5;e++)t+=e<n?`<i class="fa-solid fa-star" style="color: #f59e0b; font-size:0.75rem;"></i>`:`<i class="fa-regular fa-star" style="color: #cbd5e1; font-size:0.75rem;"></i>`;let r=e.createdAt?new Date(e.createdAt).toLocaleDateString(`id-ID`,{day:`numeric`,month:`short`,year:`numeric`}):``;return`
             <div style="flex: 0 0 auto; min-width: 140px; background: white; padding: 10px 14px; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 2px 5px rgba(0,0,0,0.03);">
                 <div style="display: flex; justify-content: space-between; align-items: center; gap: 6px; margin-bottom: 4px;">
                     <span style="font-weight: 700; font-size: 0.8rem; color: #1e293b; max-width: 95px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${e.name||`Pelanggan`}</span>

@@ -98,10 +98,10 @@
     "priceRange": "$$"
   }
   </script>
-  <script type="module" crossorigin src="/assets/main-7l-Aha94.js"></script>
+  <script type="module" crossorigin src="/assets/main-_vULhgCm.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-CFpoAf99.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-BlDKtrJX.css">
 </head>
 <body>
   <!-- Tsunami Alert Banner (Hidden by default) -->
@@ -928,6 +928,27 @@
       </div>
     </div>
   </footer>
+
+  <!-- Car Choice Modal (Include Driver vs Tidak Include Driver) -->
+  <div id="car-choice-modal" class="tour-modal-overlay">
+    <div class="tour-modal-content car-choice-dialog" style="max-width: 820px; border-radius: 24px; padding: 0; overflow: hidden; background: #ffffff; box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.35);">
+      <div class="car-choice-header" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); padding: 22px 28px; color: white; display: flex; justify-content: space-between; align-items: center; position: relative;">
+        <div>
+          <span style="display: inline-block; background: rgba(255,255,255,0.2); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px;">
+            <i class="fa-solid fa-car"></i> Pilihan Sewa Mobil
+          </span>
+          <h3 id="car-choice-title" style="margin: 0; font-size: 1.45rem; font-weight: 800; color: #ffffff;">Pilih Layanan Sewa</h3>
+          <p id="car-choice-subtitle" style="margin: 4px 0 0 0; font-size: 0.88rem; color: #e0f2fe;">Pilih opsi yang paling nyaman untuk perjalanan liburan Anda di Lombok</p>
+        </div>
+        <button type="button" class="car-choice-close-btn" onclick="closeCarChoiceModal()" aria-label="Tutup" style="background: rgba(255,255,255,0.18); border: none; width: 38px; height: 38px; border-radius: 50%; color: white; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.2s;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div id="car-choice-body" style="padding: 24px; background: #f8fafc;">
+        <!-- Dinamis diisi oleh JS -->
+      </div>
+    </div>
+  </div>
 
   <!-- Detail Tour Modal -->
   <div id="tour-modal" class="tour-modal-overlay">

@@ -23,6 +23,9 @@ const titleInput = document.getElementById("item-title");
 const orderInput = document.getElementById("item-order");
 const descriptionInput = document.getElementById("item-description");
 const priceInput = document.getElementById("item-price");
+const priceLabel = document.getElementById("item-price-label");
+const priceWithDriverInput = document.getElementById("item-price-with-driver");
+const carDriverPriceGroup = document.getElementById("car-driver-price-group");
 const imageInput = document.getElementById("item-image");
 const droneVideoInput = document.getElementById("item-droneVideo");
 const packageTypeInput = document.getElementById("item-packageType");
@@ -47,6 +50,29 @@ priceInput.addEventListener('input', function(e) {
         this.value = '';
     }
 });
+
+// Auto-format price with driver input while typing
+if (priceWithDriverInput) {
+    priceWithDriverInput.addEventListener('input', function(e) {
+        let value = this.value.replace(/\D/g, ''); // Remove non-digits
+        if (value) {
+            this.value = parseInt(value, 10).toLocaleString('id-ID');
+        } else {
+            this.value = '';
+        }
+    });
+}
+
+// Function to toggle car driver price field visibility
+const toggleCarPriceVisibility = () => {
+    const isCar = categoryInput && categoryInput.value === 'car';
+    if (carDriverPriceGroup) {
+        carDriverPriceGroup.style.display = isCar ? 'block' : 'none';
+    }
+    if (priceLabel) {
+        priceLabel.textContent = isCar ? "Harga Lepas Kunci (Otomatis titik)" : "Harga (Otomatis titik)";
+    }
+};
 
 // ====== TRANSFER MATRIX STATE & FUNCTIONS ======
 let transferMatrixData = {
@@ -199,6 +225,9 @@ window.scanImageWithAI = async () => {
                     // 3. Price
                     if (aiData.price) {
                         priceInput.value = parseInt(aiData.price, 10).toLocaleString('id-ID');
+                    }
+                    if (aiData.priceWithDriver && priceWithDriverInput) {
+                        priceWithDriverInput.value = parseInt(aiData.priceWithDriver, 10).toLocaleString('id-ID');
                     }
                     
                     // 4. Description
@@ -709,12 +738,14 @@ const autoFillPackageTitle = async () => {
 // Modal handlers
 const openModal = async () => {
     modal.classList.add("active");
+    toggleCarPriceVisibility();
     // If opening for new item and category is already 'tour', auto-fill title
     await autoFillPackageTitle();
 };
 
 categoryInput.addEventListener('change', () => {
     autoFillPackageTitle();
+    toggleCarPriceVisibility();
     if (categoryInput.value === 'tour' || categoryInput.value === 'honeymoon' || categoryInput.value === 'package') {
         titleQuickSelect.style.display = 'flex';
     } else {
@@ -743,6 +774,7 @@ const closeModal = () => {
     idInput.value = "";
     if(isParentInput) isParentInput.checked = false;
     if(parentIdInput) parentIdInput.value = "";
+    if(priceWithDriverInput) priceWithDriverInput.value = "";
     orderInput.value = "0";
     termsCustomGroup.style.display = "none";
     modalTitle.textContent = "Add New Item";
@@ -750,6 +782,7 @@ const closeModal = () => {
     transferMatrixData.areas = [];
     transferMatrixData.vehicles = ['Avanza Grand/FL', 'New Avanza', 'Innova Reborn', 'Hiace Komuter', 'Hiace Premio'];
     toggleTransferMatrixVisibility();
+    toggleCarPriceVisibility();
 };
 
 addBtn.addEventListener("click", openModal);
@@ -811,6 +844,7 @@ form.addEventListener("submit", async (e) => {
         parentId: (parentIdInput && parentIdInput.value) ? parentIdInput.value : null,
         order: parseInt(orderInput.value) || 0,
         price: priceInput.value.replace(/\./g, ''), // Strip dots before saving
+        priceWithDriver: (priceWithDriverInput && priceWithDriverInput.value) ? priceWithDriverInput.value.replace(/\./g, '') : null,
         imageUrl: imageInput.value,
         droneVideoUrl: droneVideoInput.value,
         packageType: packageTypeInput.value,
@@ -980,6 +1014,15 @@ window.editItem = async (id) => {
         } else {
             priceInput.value = "";
         }
+
+        if (priceWithDriverInput) {
+            if (item.priceWithDriver) {
+                priceWithDriverInput.value = parseInt(item.priceWithDriver.toString().replace(/\D/g, ''), 10).toLocaleString('id-ID');
+            } else {
+                priceWithDriverInput.value = "";
+            }
+        }
+        toggleCarPriceVisibility();
         
         imageInput.value = item.imageUrl || "";
         droneVideoInput.value = item.droneVideoUrl || "";
