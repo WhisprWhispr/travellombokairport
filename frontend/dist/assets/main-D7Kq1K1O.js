@@ -60,17 +60,21 @@
                     </div>
                     <div>
                         <h4 class="car-choice-option-title">Include Driver</h4>
-                        <span class="car-choice-option-sub">Dengan Supir Berpengalaman + BBM</span>
+                        <span class="car-choice-option-sub">Dengan Supir Berpengalaman + BBM (12 Jam)</span>
                     </div>
                 </div>
 
                 <div class="car-choice-price-box">
-                    <span class="car-choice-price-label">Tarif Lengkap Termasuk Supir</span>
+                    <span class="car-choice-price-label">Tarif Termasuk Supir & BBM</span>
                     <div class="car-choice-price-val">${d}</div>
-                    <span class="car-choice-price-unit">/ 12 Jam - 1 Hari Pemakaian</span>
+                    <span class="car-choice-price-unit">/ 12 Jam Pemakaian</span>
                 </div>
 
                 <div class="car-choice-features">
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-clock" style="color: #10b981;"></i>
+                        <span><strong>Durasi 12 Jam Penuh</strong> - Fleksibel keliling rute wisata</span>
+                    </div>
                     <div class="car-choice-feature-item">
                         <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
                         <span><strong>Bebas Deposit Jaminan (Rp 0)</strong> - Tanpa tahan deposit</span>
@@ -90,7 +94,7 @@
                 </div>
 
                 <button type="button" class="btn btn-car-choice btn-car-choice-driver">
-                    <i class="fa-solid fa-user-check"></i> Pilih Include Driver
+                    <i class="fa-solid fa-user-check"></i> Pilih Include Driver (12 Jam)
                 </button>
             </div>
 
@@ -139,7 +143,7 @@
                 </button>
             </div>
         </div>
-    `,r.classList.add(`active`),document.body.style.overflow=`hidden`},window.closeCarChoiceModal=()=>{let e=document.getElementById(`car-choice-modal`);e&&e.classList.remove(`active`);let t=document.getElementById(`tour-modal`);(!t||!t.classList.contains(`active`))&&(document.body.style.overflow=``)},window.selectCarMode=(e,t)=>{window.closeCarChoiceModal(),window.openTourModal(e,t)},document.addEventListener(`DOMContentLoaded`,()=>{let e=document.getElementById(`car-choice-modal`);e&&e.addEventListener(`click`,t=>{t.target===e&&window.closeCarChoiceModal()})}),window.openTourModal=(e,t=null)=>{let r=n.find(t=>t.id===e);if(!r)return;if(r.category===`car`&&!t){window.openCarChoiceModal(e);return}if(r.title&&r.title.toLowerCase().includes(`honeymoon`)){let e=document.getElementById(`ai-chat-widget`);e&&(e.style.display=`none`)}let a=document.getElementById(`tour-modal-body`),c=r.category===`car`,l=c&&t===`include_driver`,u=Number(r.price)||0,d=r.priceWithDriver&&Number(r.priceWithDriver)>0?Number(r.priceWithDriver):u>0?u+2e5:65e4,f=c?l?d:u:Number(r.price)||0,p=c?`${r.title} (${l?`Include Driver`:`Lepas Kunci`})`:r.title,m=``,h=o(r.itinerary),g=``,_=``,v=[],y=()=>{if(g){let e=``;v.length>0&&(e=v.length===1?`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v[0]+` Lombok`)}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-map-location-dot"></i> Lihat Peta di Google Maps</a>`:`<a href="${`https://www.google.com/maps/dir/${v.map(e=>encodeURIComponent(e+` Lombok`)).join(`/`)}`}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-route"></i> Buka Rute di Google Maps</a>`),m+=`
+    `,r.classList.add(`active`),document.body.style.overflow=`hidden`},window.closeCarChoiceModal=()=>{let e=document.getElementById(`car-choice-modal`);e&&e.classList.remove(`active`);let t=document.getElementById(`tour-modal`);(!t||!t.classList.contains(`active`))&&(document.body.style.overflow=``)},window.selectCarMode=(e,t)=>{window.closeCarChoiceModal(),window.openTourModal(e,t)},document.addEventListener(`DOMContentLoaded`,()=>{let e=document.getElementById(`car-choice-modal`);e&&e.addEventListener(`click`,t=>{t.target===e&&window.closeCarChoiceModal()})}),window.openTourModal=(e,t=null)=>{let r=n.find(t=>t.id===e);if(!r)return;if(r.category===`car`&&!t){window.openCarChoiceModal(e);return}if(r.title&&r.title.toLowerCase().includes(`honeymoon`)){let e=document.getElementById(`ai-chat-widget`);e&&(e.style.display=`none`)}let a=document.getElementById(`tour-modal-body`),c=r.category===`car`,l=c&&t===`include_driver`,u=Number(r.price)||0,d=r.priceWithDriver&&Number(r.priceWithDriver)>0?Number(r.priceWithDriver):u>0?u+2e5:65e4,f=c?l?d:u:Number(r.price)||0,p=c?`${r.title} (${l?`Include Driver 12 Jam`:`Lepas Kunci 24 Jam`})`:r.title,m=``,h=o(r.itinerary),g=``,_=``,v=[],y=()=>{if(g){let e=``;v.length>0&&(e=v.length===1?`<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v[0]+` Lombok`)}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-map-location-dot"></i> Lihat Peta di Google Maps</a>`:`<a href="${`https://www.google.com/maps/dir/${v.map(e=>encodeURIComponent(e+` Lombok`)).join(`/`)}`}" target="_blank" style="background:#e0f2fe; color:#0284c7; padding: 6px 14px; font-size:0.8rem; border-radius: 20px; margin-top:12px; display:inline-flex; align-items:center; gap:6px; font-weight:700; text-decoration:none; transition:all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-solid fa-route"></i> Buka Rute di Google Maps</a>`),m+=`
             <div class="tm-day">
                 <div class="tm-day-header">
                     <div class="tm-day-badge">DAY<br><span>${g.replace(`DAY`,``).trim()}</span></div>
@@ -149,7 +153,7 @@
                     ${v.map(e=>`<li>${e}</li>`).join(``)}
                 </ul>
                 ${e}
-            </div>`}};h.forEach(e=>{if(e.toUpperCase().startsWith(`DAY`)){y();let t=e.split(`:`);g=t[0],_=t.slice(1).join(`:`).trim(),v=[]}else e.startsWith(`-`)?v.push(e.substring(1).trim()):v.push(e)}),y();let b=o(r.include),x=o(r.exclude),S=b,C=x;c&&(l?(S=[`Unit Mobil Bersih, Nyaman & AC Dingin`,`Driver Profesional, Ramah & Berpengalaman`,`Bahan Bakar Minyak (BBM) selama rute pemakaian`,`Antar & Jemput di Bandara / Hotel (Area Kota)`,`Bebas Uang Jaminan Deposit (Rp 0)`],C=[`Tiket Masuk Objek Wisata`,`Biaya Parkir & Tol (jika ada)`,`Pengeluaran Pribadi & Makan Driver`,`Tips Driver (Sukarela)`]):(S=b.length>0?b:[`Unit Mobil Bersih, Prima & AC Dingin`,`Peralatan Standar Kendaraan (Ban Cadangan & Toolkit)`,`Durasi Pemakaian Penuh 24 Jam`],C=x.length>0?x:[`Bahan Bakar Minyak (BBM)`,`Biaya Parkir & Tol`,`Driver / Supir (Setir Sendiri)`,`Jaminan Deposit Rp 1.000.000 (Refundable 100%)`])),a.innerHTML=`
+            </div>`}};h.forEach(e=>{if(e.toUpperCase().startsWith(`DAY`)){y();let t=e.split(`:`);g=t[0],_=t.slice(1).join(`:`).trim(),v=[]}else e.startsWith(`-`)?v.push(e.substring(1).trim()):v.push(e)}),y();let b=o(r.include),x=o(r.exclude),S=b,C=x;c&&(l?(S=[`Durasi Pemakaian 12 Jam Penuh (Rute Wisata)`,`Unit Mobil Bersih, Nyaman & AC Dingin`,`Driver Profesional, Ramah & Berpengalaman`,`Bahan Bakar Minyak (BBM) selama rute pemakaian`,`Antar & Jemput di Bandara / Hotel (Area Kota)`,`Bebas Uang Jaminan Deposit (Rp 0)`],C=[`Tiket Masuk Objek Wisata`,`Biaya Parkir & Tol (jika ada)`,`Pengeluaran Pribadi & Makan Driver`,`Tips Driver (Sukarela)`]):(S=b.length>0?b:[`Unit Mobil Bersih, Prima & AC Dingin`,`Peralatan Standar Kendaraan (Ban Cadangan & Toolkit)`,`Durasi Pemakaian Penuh 24 Jam`],C=x.length>0?x:[`Bahan Bakar Minyak (BBM)`,`Biaya Parkir & Tol`,`Driver / Supir (Setir Sendiri)`,`Jaminan Deposit Rp 1.000.000 (Refundable 100%)`])),a.innerHTML=`
         <div style="width: 100%; height: 400px; position: relative;">
             <img src="${r.imageUrl}" alt="${r.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 150px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
@@ -158,12 +162,12 @@
             ${c?`
             <div class="car-mode-switcher-bar" style="margin-bottom: 14px;">
                 <button type="button" class="car-mode-tab-btn ${l?``:`active`}" onclick="window.openTourModal('${r.id}', 'lepas_kunci')">
-                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci)
+                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci 24 Jam)
                     <span class="car-tab-price-chip">${i(u)}</span>
                 </button>
                 <button type="button" class="car-mode-tab-btn ${l?`active`:``}" onclick="window.openTourModal('${r.id}', 'include_driver')">
-                    <i class="fa-solid fa-user-tie"></i> Include Driver (Dengan Supir & BBM)
-                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${i(d)}</span>
+                    <i class="fa-solid fa-user-tie"></i> Include Driver (Per 12 Jam)
+                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${i(d)} / 12 Jam</span>
                     <span class="car-tab-highlight-chip">Bebas Deposit</span>
                 </button>
             </div>
@@ -171,7 +175,7 @@
 
             <div class="tm-top premium-card">
                 <div class="tm-title" style="flex: 1;">
-                    ${(()=>{let e=`PAKET TOUR`;c?e=l?`SEWA MOBIL + DRIVER`:`SEWA MOBIL LEPAS KUNCI`:r.category===`motorcycle`?e=`SEWA MOTOR`:r.category===`drone`?e=`SEWA DRONE`:r.category===`transfer`&&(e=`ANTAR JEMPUT`),r.packageType&&(e=r.packageType);let t=r.duration?r.duration.toUpperCase():`N/A`;!r.duration&&(r.category===`car`||r.category===`motorcycle`)&&(t=l?`12 JAM / 1 HARI`:`24 JAM PENUH`);let n=``;return c?n=l?`<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (BEBAS DEPOSIT)</span>`:`<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI)</span>`:r.driverOptions&&(n=`<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${r.driverOptions===`Sertakan Pengemudi`?`DENGAN SUPIR`:r.driverOptions===`Tidak Include Driver`?`LEPAS KUNCI`:r.driverOptions.toUpperCase()}</span>`),`
+                    ${(()=>{let e=`PAKET TOUR`;c?e=l?`SEWA MOBIL + DRIVER (12 JAM)`:`SEWA MOBIL LEPAS KUNCI (24 JAM)`:r.category===`motorcycle`?e=`SEWA MOTOR`:r.category===`drone`?e=`SEWA DRONE`:r.category===`transfer`&&(e=`ANTAR JEMPUT`),r.packageType&&(e=r.packageType);let t=r.duration?r.duration.toUpperCase():`N/A`;!r.duration&&(r.category===`car`||r.category===`motorcycle`)&&(t=l?`12 JAM PEMAKAIAN`:`24 JAM PENUH`);let n=``;return c?n=l?`<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (PER 12 JAM - BEBAS DEPOSIT)</span>`:`<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI 24 JAM)</span>`:r.driverOptions&&(n=`<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${r.driverOptions===`Sertakan Pengemudi`?`DENGAN SUPIR`:r.driverOptions===`Tidak Include Driver`?`LEPAS KUNCI`:r.driverOptions.toUpperCase()}</span>`),`
                         <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${e}</h4>
                         <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${r.title.toUpperCase()}</h2>
                         <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
@@ -182,8 +186,8 @@
                         `})()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    ${(()=>{let e=`HARGA PAKET`;return c?e=l?`HARGA DENGAN SUPIR`:`HARGA LEPAS KUNCI`:(r.category===`motorcycle`||r.category===`drone`)&&(e=`HARGA SEWA`),`<span class="price-label" style="background: ${l?`#16a34a`:`var(--primary-green)`}; color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${e}</span>`})()}
-                    ${(()=>{let e=c?l?`Termasuk BBM + Supir`:`Tarif lepas kunci 24 jam`:`Mulai harga terendah`;return`<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${i(f)}</h3>
+                    ${(()=>{let e=`HARGA PAKET`;return c?e=l?`HARGA DENGAN SUPIR (12 JAM)`:`HARGA LEPAS KUNCI (24 JAM)`:(r.category===`motorcycle`||r.category===`drone`)&&(e=`HARGA SEWA`),`<span class="price-label" style="background: ${l?`#16a34a`:`var(--primary-green)`}; color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${e}</span>`})()}
+                    ${(()=>{let e=c?l?`Tarif per 12 Jam (Termasuk BBM + Supir)`:`Tarif lepas kunci 24 jam`:`Mulai harga terendah`;return`<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${i(f)}</h3>
                                 <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">${e}</p>`})()}
                 </div>
 
@@ -235,7 +239,7 @@
                 
                 <div class="tm-box tm-box-blue" style="background: white; border: 2px solid var(--primary-blue);">
                     <div class="tm-box-title" style="background: var(--primary-blue); box-shadow: 0 4px 6px -1px rgba(2, 132, 199, 0.3);"><i class="fa-regular fa-calendar-check"></i> CARA RESERVASI</div>
-                    ${r.category===`motorcycle`?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`:c?l?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`}
+                    ${r.category===`motorcycle`?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`:c?l?`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`:`<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`}
                     <div class="bank-item" style="background: #f8fafc; border: none;">
                         <img src="/mandiri.svg" alt="Mandiri" style="height: 25px; object-fit: contain;">
                         <div>LALU RENGGANE<br><span style="color: var(--primary-blue); font-size: 1.1rem; letter-spacing: 1px;">1610017191425</span></div>

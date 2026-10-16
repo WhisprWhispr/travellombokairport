@@ -590,17 +590,21 @@ window.openCarChoiceModal = (id) => {
                     </div>
                     <div>
                         <h4 class="car-choice-option-title">Include Driver</h4>
-                        <span class="car-choice-option-sub">Dengan Supir Berpengalaman + BBM</span>
+                        <span class="car-choice-option-sub">Dengan Supir Berpengalaman + BBM (12 Jam)</span>
                     </div>
                 </div>
 
                 <div class="car-choice-price-box">
-                    <span class="car-choice-price-label">Tarif Lengkap Termasuk Supir</span>
+                    <span class="car-choice-price-label">Tarif Termasuk Supir & BBM</span>
                     <div class="car-choice-price-val">${driverFormatted}</div>
-                    <span class="car-choice-price-unit">/ 12 Jam - 1 Hari Pemakaian</span>
+                    <span class="car-choice-price-unit">/ 12 Jam Pemakaian</span>
                 </div>
 
                 <div class="car-choice-features">
+                    <div class="car-choice-feature-item">
+                        <i class="fa-solid fa-clock" style="color: #10b981;"></i>
+                        <span><strong>Durasi 12 Jam Penuh</strong> - Fleksibel keliling rute wisata</span>
+                    </div>
                     <div class="car-choice-feature-item">
                         <i class="fa-solid fa-circle-check" style="color: #10b981;"></i>
                         <span><strong>Bebas Deposit Jaminan (Rp 0)</strong> - Tanpa tahan deposit</span>
@@ -620,7 +624,7 @@ window.openCarChoiceModal = (id) => {
                 </div>
 
                 <button type="button" class="btn btn-car-choice btn-car-choice-driver">
-                    <i class="fa-solid fa-user-check"></i> Pilih Include Driver
+                    <i class="fa-solid fa-user-check"></i> Pilih Include Driver (12 Jam)
                 </button>
             </div>
 
@@ -725,7 +729,7 @@ window.openTourModal = (id, carMode = null) => {
         : (rawLepasKunciPrice > 0 ? rawLepasKunciPrice + 200000 : 650000);
 
     const activeItemPrice = isCarCategory ? (isDriverMode ? rawDriverPrice : rawLepasKunciPrice) : (Number(item.price) || 0);
-    const activeItemTitle = isCarCategory ? `${item.title} (${isDriverMode ? 'Include Driver' : 'Lepas Kunci'})` : item.title;
+    const activeItemTitle = isCarCategory ? `${item.title} (${isDriverMode ? 'Include Driver 12 Jam' : 'Lepas Kunci 24 Jam'})` : item.title;
 
     // Parse itineraries
     let itineraryHTML = '';
@@ -786,6 +790,7 @@ window.openTourModal = (id, carMode = null) => {
     if (isCarCategory) {
         if (isDriverMode) {
             includes = [
+                'Durasi Pemakaian 12 Jam Penuh (Rute Wisata)',
                 'Unit Mobil Bersih, Nyaman & AC Dingin',
                 'Driver Profesional, Ramah & Berpengalaman',
                 'Bahan Bakar Minyak (BBM) selama rute pemakaian',
@@ -822,12 +827,12 @@ window.openTourModal = (id, carMode = null) => {
             ${isCarCategory ? `
             <div class="car-mode-switcher-bar" style="margin-bottom: 14px;">
                 <button type="button" class="car-mode-tab-btn ${!isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'lepas_kunci')">
-                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci)
+                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci 24 Jam)
                     <span class="car-tab-price-chip">${formatPrice(rawLepasKunciPrice)}</span>
                 </button>
                 <button type="button" class="car-mode-tab-btn ${isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'include_driver')">
-                    <i class="fa-solid fa-user-tie"></i> Include Driver (Dengan Supir & BBM)
-                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${formatPrice(rawDriverPrice)}</span>
+                    <i class="fa-solid fa-user-tie"></i> Include Driver (Per 12 Jam)
+                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${formatPrice(rawDriverPrice)} / 12 Jam</span>
                     <span class="car-tab-highlight-chip">Bebas Deposit</span>
                 </button>
             </div>
@@ -837,7 +842,7 @@ window.openTourModal = (id, carMode = null) => {
                 <div class="tm-title" style="flex: 1;">
                     ${(() => {
             let typeLabel = 'PAKET TOUR';
-            if (isCarCategory) typeLabel = isDriverMode ? 'SEWA MOBIL + DRIVER' : 'SEWA MOBIL LEPAS KUNCI';
+            if (isCarCategory) typeLabel = isDriverMode ? 'SEWA MOBIL + DRIVER (12 JAM)' : 'SEWA MOBIL LEPAS KUNCI (24 JAM)';
             else if (item.category === 'motorcycle') typeLabel = 'SEWA MOTOR';
             else if (item.category === 'drone') typeLabel = 'SEWA DRONE';
             else if (item.category === 'transfer') typeLabel = 'ANTAR JEMPUT';
@@ -845,15 +850,15 @@ window.openTourModal = (id, carMode = null) => {
 
             let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
             if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
-                durationLabel = isDriverMode ? '12 JAM / 1 HARI' : '24 JAM PENUH';
+                durationLabel = isDriverMode ? '12 JAM PEMAKAIAN' : '24 JAM PENUH';
             }
 
             let driverBadgeHtml = '';
             if (isCarCategory) {
                 if (isDriverMode) {
-                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (BEBAS DEPOSIT)</span>`;
+                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (PER 12 JAM - BEBAS DEPOSIT)</span>`;
                 } else {
-                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI)</span>`;
+                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI 24 JAM)</span>`;
                 }
             } else if (item.driverOptions) {
                 driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions === 'Sertakan Pengemudi' ? 'DENGAN SUPIR' : item.driverOptions === 'Tidak Include Driver' ? 'LEPAS KUNCI' : item.driverOptions.toUpperCase()}</span>`;
@@ -874,7 +879,7 @@ window.openTourModal = (id, carMode = null) => {
                     ${(() => {
             let priceLabel = 'HARGA PAKET';
             if (isCarCategory) {
-                priceLabel = isDriverMode ? 'HARGA DENGAN SUPIR' : 'HARGA LEPAS KUNCI';
+                priceLabel = isDriverMode ? 'HARGA DENGAN SUPIR (12 JAM)' : 'HARGA LEPAS KUNCI (24 JAM)';
             } else if (item.category === 'motorcycle' || item.category === 'drone') {
                 priceLabel = 'HARGA SEWA';
             }
@@ -882,7 +887,7 @@ window.openTourModal = (id, carMode = null) => {
         })()}
                     ${(() => {
                         const priceSubText = isCarCategory
-                            ? (isDriverMode ? 'Termasuk BBM + Supir' : 'Tarif lepas kunci 24 jam')
+                            ? (isDriverMode ? 'Tarif per 12 Jam (Termasuk BBM + Supir)' : 'Tarif lepas kunci 24 jam')
                             : 'Mulai harga terendah';
                         return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(activeItemPrice)}</h3>
                                 <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">${priceSubText}</p>`;
@@ -942,9 +947,9 @@ window.openTourModal = (id, carMode = null) => {
                             return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 50.000 dan deposit Rp 500.000</strong> ke rekening berikut:</p>`;
                         } else if (isCarCategory) {
                             if (isDriverMode) {
-                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`;
+                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <strong>Bebas Jaminan Deposit (Rp 0)!</strong> Sisa pembayaran dapat dilunasi saat serah terima di lokasi:</p>`;
                             } else {
-                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`;
+                                return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal pemesanan <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000 dan jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan saat unit selesai disewa):</p>`;
                             }
                         } else {
                             return `<p style="color: var(--text-gray); font-size: 0.9rem; margin-bottom: 15px;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening berikut:</p>`;

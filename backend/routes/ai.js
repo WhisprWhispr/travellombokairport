@@ -106,7 +106,7 @@ router.post('/chat', async (req, res) => {
                 // DILARANG mengirim item dengan harga 0, kosong, folder induk (parent), dokumen pricelist, atau jasa transfer matrix ke AI
                 if (numPrice <= 0 || data.isParent === true || titleLower.includes('pricelist') || catLower === 'transfer' || (data.transferMatrix && data.transferMatrix.length > 0)) return;
 
-                let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${numPrice}${data.category === 'car' ? ' (Lepas Kunci)' : ''}${data.priceWithDriver ? ` | Harga Include Driver: Rp${data.priceWithDriver}` : ''} | Kategori: ${data.category}`;
+                let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${numPrice}${data.category === 'car' ? ' (Lepas Kunci 24 Jam)' : ''}${data.priceWithDriver ? ` | Harga Include Driver: Rp${data.priceWithDriver} / 12 Jam` : ''} | Kategori: ${data.category}`;
                 if (data.description) itemInfo += ` | Deskripsi: ${data.description}`;
                 if (data.facilities) itemInfo += ` | Fasilitas: ${data.facilities}`;
                 if (data.include) itemInfo += ` | Include: ${data.include}`;
