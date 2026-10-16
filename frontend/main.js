@@ -825,15 +825,25 @@ window.openTourModal = (id, carMode = null) => {
         </div>
         <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
             ${isCarCategory ? `
-            <div class="car-mode-switcher-bar" style="margin-bottom: 14px;">
+            <div class="car-mode-switcher-bar">
                 <button type="button" class="car-mode-tab-btn ${!isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'lepas_kunci')">
-                    <i class="fa-solid fa-key"></i> Tidak Include Driver (Lepas Kunci 24 Jam)
-                    <span class="car-tab-price-chip">${formatPrice(rawLepasKunciPrice)}</span>
+                    <div class="car-tab-header">
+                        <i class="fa-solid fa-key"></i> Lepas Kunci
+                    </div>
+                    <div class="car-tab-sub">
+                        <span class="car-tab-price">${formatPrice(rawLepasKunciPrice)}</span>
+                        <span class="car-tab-dur">/ 24 Jam</span>
+                    </div>
                 </button>
                 <button type="button" class="car-mode-tab-btn ${isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'include_driver')">
-                    <i class="fa-solid fa-user-tie"></i> Include Driver (Per 12 Jam)
-                    <span class="car-tab-price-chip" style="background: #dcfce7; color: #15803d;">${formatPrice(rawDriverPrice)} / 12 Jam</span>
                     <span class="car-tab-highlight-chip">Bebas Deposit</span>
+                    <div class="car-tab-header">
+                        <i class="fa-solid fa-user-tie"></i> Include Driver
+                    </div>
+                    <div class="car-tab-sub">
+                        <span class="car-tab-price">${formatPrice(rawDriverPrice)}</span>
+                        <span class="car-tab-dur">/ 12 Jam</span>
+                    </div>
                 </button>
             </div>
             ` : ''}
@@ -841,57 +851,67 @@ window.openTourModal = (id, carMode = null) => {
             <div class="tm-top premium-card">
                 <div class="tm-title" style="flex: 1;">
                     ${(() => {
-            let typeLabel = 'PAKET TOUR';
-            if (isCarCategory) typeLabel = isDriverMode ? 'SEWA MOBIL + DRIVER (12 JAM)' : 'SEWA MOBIL LEPAS KUNCI (24 JAM)';
-            else if (item.category === 'motorcycle') typeLabel = 'SEWA MOTOR';
-            else if (item.category === 'drone') typeLabel = 'SEWA DRONE';
-            else if (item.category === 'transfer') typeLabel = 'ANTAR JEMPUT';
-            if (item.packageType) typeLabel = item.packageType;
+                        let typeLabel = 'PAKET TOUR';
+                        if (isCarCategory) typeLabel = isDriverMode ? 'Sewa Mobil + Driver' : 'Sewa Mobil Lepas Kunci';
+                        else if (item.category === 'motorcycle') typeLabel = 'Sewa Motor';
+                        else if (item.category === 'drone') typeLabel = 'Sewa Drone';
+                        else if (item.category === 'transfer') typeLabel = 'Antar Jemput Bandara';
+                        if (item.packageType) typeLabel = item.packageType;
 
-            let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
-            if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
-                durationLabel = isDriverMode ? '12 JAM PEMAKAIAN' : '24 JAM PENUH';
-            }
+                        let durationLabel = item.duration ? item.duration.toUpperCase() : 'N/A';
+                        if (!item.duration && (item.category === 'car' || item.category === 'motorcycle')) {
+                            durationLabel = isDriverMode ? '12 Jam' : '24 Jam Penuh';
+                        }
 
-            let driverBadgeHtml = '';
-            if (isCarCategory) {
-                if (isDriverMode) {
-                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: #15803d; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-user-tie"></i> INCLUDE DRIVER & BBM (PER 12 JAM - BEBAS DEPOSIT)</span>`;
-                } else {
-                    driverBadgeHtml = `<span class="tm-badge-blue" style="background: #eff6ff; color: #1d4ed8; font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-key"></i> LEPAS KUNCI (SETIR SENDIRI 24 JAM)</span>`;
-                }
-            } else if (item.driverOptions) {
-                driverBadgeHtml = `<span class="tm-badge-blue" style="background: #f0fdf4; color: var(--primary-green); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-solid fa-id-card"></i> ${item.driverOptions === 'Sertakan Pengemudi' ? 'DENGAN SUPIR' : item.driverOptions === 'Tidak Include Driver' ? 'LEPAS KUNCI' : item.driverOptions.toUpperCase()}</span>`;
-            }
+                        let driverPillsHtml = '';
+                        if (isCarCategory) {
+                            if (isDriverMode) {
+                                driverPillsHtml = `
+                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 12 Jam</span>
+                                    <span style="background: #ecfdf5; color: #059669; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-user-tie"></i> Supir & BBM</span>
+                                    <span style="background: #fef08a; color: #854d0e; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 800; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-shield-halved"></i> Bebas Deposit</span>
+                                `;
+                            } else {
+                                driverPillsHtml = `
+                                    <span style="background: #e0f2fe; color: #0284c7; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> 24 Jam Penuh</span>
+                                    <span style="background: #f1f5f9; color: #475569; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-key"></i> Setir Sendiri</span>
+                                    <span style="background: #f0fdf4; color: #166534; font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-car-side"></i> Unit Bersih & AC</span>
+                                `;
+                            }
+                        } else if (item.driverOptions) {
+                            const optText = item.driverOptions === 'Sertakan Pengemudi' ? 'Dengan Supir' : item.driverOptions === 'Tidak Include Driver' ? 'Lepas Kunci' : item.driverOptions;
+                            driverPillsHtml = `
+                                <span style="background: #f0fdf4; color: var(--primary-green); font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-solid fa-id-card"></i> ${optText}</span>
+                            `;
+                        }
 
-            return `
-                        <h4 style="letter-spacing: 2px; color: var(--primary-green); margin-bottom: 10px; font-weight: 800; font-size: 0.9rem;"><i class="fa-solid fa-map-location-dot"></i> ${typeLabel}</h4>
-                        <h2 style="color: var(--text-dark); font-size: 2.5rem; margin-bottom: 20px; line-height: 1.2; font-weight: 800;">${item.title.toUpperCase()}</h2>
-                        <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
-                            <span class="tm-badge-blue" style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.95rem; padding: 8px 18px; border-radius: 30px; font-weight: 800; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>
-                            ${driverBadgeHtml}
-                        </div>
-                        <p style="color: #475569; font-size: 1.1rem; line-height: 1.7;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
+                        return `
+                            <div style="font-size: 0.78rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-map-location-dot"></i> ${typeLabel}
+                            </div>
+                            <h2 style="color: #0f172a; font-size: 2rem; margin-bottom: 12px; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em;">${item.title.toUpperCase()}</h2>
+                            <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px;">
+                                ${!isCarCategory ? `<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 4px 11px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
+                                ${driverPillsHtml}
+                            </div>
+                            <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin: 0;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
                         `;
-        })()}
+                    })()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    ${(() => {
-            let priceLabel = 'HARGA PAKET';
-            if (isCarCategory) {
-                priceLabel = isDriverMode ? 'HARGA DENGAN SUPIR (12 JAM)' : 'HARGA LEPAS KUNCI (24 JAM)';
-            } else if (item.category === 'motorcycle' || item.category === 'drone') {
-                priceLabel = 'HARGA SEWA';
-            }
-            return `<span class="price-label" style="background: ${isDriverMode ? '#16a34a' : 'var(--primary-green)'}; color: white; font-size: 0.85rem; padding: 6px 15px; border-radius: 20px; font-weight: bold; align-self: flex-end;">${priceLabel}</span>`;
-        })()}
-                    ${(() => {
-                        const priceSubText = isCarCategory
-                            ? (isDriverMode ? 'Tarif per 12 Jam (Termasuk BBM + Supir)' : 'Tarif lepas kunci 24 jam')
-                            : 'Mulai harga terendah';
-                        return `<h3 style="color: var(--primary-blue); margin-top: 15px; font-size: 2.2rem; font-weight: 900;">${formatPrice(activeItemPrice)}</h3>
-                                <p style="color: var(--text-gray); margin-top: 5px; font-size: 0.95rem;">${priceSubText}</p>`;
-                    })()}
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 6px;">
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Tarif Sewa</span>
+                        <span style="font-size: 0.72rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; padding: 3px 9px; border-radius: 12px;">
+                            ${isCarCategory ? (isDriverMode ? 'Include Driver' : 'Lepas Kunci') : 'Paket'}
+                        </span>
+                    </div>
+                    <div style="display: flex; align-items: baseline; gap: 6px;">
+                        <h3 style="color: #0284c7; margin: 0; font-size: 2rem; font-weight: 900; line-height: 1;">${formatPrice(activeItemPrice)}</h3>
+                        <span style="color: #64748b; font-size: 0.85rem; font-weight: 600;">/ ${isCarCategory ? (isDriverMode ? '12 Jam' : '24 Jam') : 'paket'}</span>
+                    </div>
+                    <p style="color: #64748b; margin: 6px 0 0 0; font-size: 0.78rem; line-height: 1.4;">
+                        ${isCarCategory ? (isDriverMode ? '✓ Termasuk Unit Mobil, Driver & BBM' : '✓ Unit Bersih, AC Dingin & Toolkit Standar') : 'Mulai harga terendah'}
+                    </p>
                 </div>
 
             </div>

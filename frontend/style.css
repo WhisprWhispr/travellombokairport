@@ -3862,73 +3862,111 @@ input:checked + .slider:before { transform: translateX(22px); }
 
 /* Tab Switcher Bar inside Tour Modal for Cars */
 .car-mode-switcher-bar {
-  display: flex;
-  gap: 10px;
-  background: #ffffff;
-  padding: 8px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  background: #f1f5f9;
+  padding: 6px;
   border-radius: 14px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   border: 1px solid #e2e8f0;
-}
-
-@media (max-width: 640px) {
-  .car-mode-switcher-bar {
-    flex-direction: column;
-    gap: 6px;
-  }
+  margin-bottom: 14px;
 }
 
 .car-mode-tab-btn {
-  flex: 1;
-  padding: 10px 14px;
-  border-radius: 10px;
   border: 1.5px solid transparent;
-  background: #f8fafc;
-  color: #475569;
-  font-size: 0.88rem;
-  font-weight: 700;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: transparent;
+  color: #64748b;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  flex-wrap: wrap;
+  text-align: center;
+  position: relative;
   transition: all 0.2s ease;
+  min-height: 52px;
 }
 
 .car-mode-tab-btn:hover {
-  background: #f1f5f9;
+  background: rgba(255, 255, 255, 0.6);
   color: #0f172a;
 }
 
 .car-mode-tab-btn.active {
-  background: #0284c7;
-  color: #ffffff;
-  border-color: #0284c7;
-  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+  background: #ffffff;
+  color: #0284c7;
+  border-color: #bae6fd;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.12);
 }
 
-.car-tab-price-chip {
-  font-size: 0.78rem;
-  padding: 2px 8px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.08);
+.car-tab-header {
+  font-size: 0.82rem;
   font-weight: 800;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  line-height: 1.2;
 }
 
-.car-mode-tab-btn.active .car-tab-price-chip {
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
+.car-tab-sub {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  margin-top: 3px;
+  line-height: 1;
+}
+
+.car-tab-price {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.car-mode-tab-btn.active .car-tab-price {
+  color: #0284c7;
+}
+
+.car-tab-dur {
+  font-size: 0.68rem;
+  color: #64748b;
+  font-weight: 600;
 }
 
 .car-tab-highlight-chip {
-  font-size: 0.7rem;
-  padding: 2px 8px;
-  border-radius: 10px;
-  background: #fef08a;
-  color: #854d0e;
+  position: absolute;
+  top: -7px;
+  right: 6px;
+  font-size: 0.58rem;
+  padding: 1px 6px;
+  border-radius: 6px;
+  background: #f59e0b;
+  color: #ffffff;
   font-weight: 800;
   text-transform: uppercase;
+  letter-spacing: 0.4px;
+  box-shadow: 0 2px 4px rgba(245, 158, 11, 0.25);
+}
+
+@media (max-width: 480px) {
+  .car-mode-switcher-bar {
+    gap: 6px;
+    padding: 4px;
+  }
+  .car-mode-tab-btn {
+    padding: 6px 4px;
+    min-height: 48px;
+  }
+  .car-tab-header {
+    font-size: 0.76rem;
+  }
+  .car-tab-price {
+    font-size: 0.78rem;
+  }
+  .car-tab-dur {
+    font-size: 0.62rem;
+  }
 }
 
 
