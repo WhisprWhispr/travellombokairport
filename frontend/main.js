@@ -2421,7 +2421,10 @@ const init = async () => {
 window.generateEtiketPDF = (data) => {
     if (!data) { alert('Data tiket tidak ditemukan, cek status dulu.'); return; }
 
-    const isDpPayment = data.isDp === true || data.isDp === 'true';
+    const paidAmt = Number(data.itemPrice || data.price || 0);
+    const totalAmt = Number(data.fullPrice || 0);
+    const isDpExplicit = data.isDp === true || data.isDp === 'true';
+    const isDpPayment = isDpExplicit || (totalAmt > 0 && paidAmt > 0 && (totalAmt - paidAmt) > 50000);
 
     let sc = '#dc2626';
     let scBg = '#fee2e2';
@@ -2440,17 +2443,6 @@ window.generateEtiketPDF = (data) => {
         sc = '#2563eb';
         scBg = '#dbeafe';
         stIcon = '&#9881;'; // Gear
-    }
-
-    // Flag apakah harus memunculkan peringatan DP (kalau sudah lunas/selesai, jangan dimunculkan)
-    const showDpWarning = isDpPayment && data.status !== 'PAID' && data.status !== 'COMPLETED';
-
-    // Override untuk DP: tampilkan status khusus DP
-    if (showDpWarning) {
-        sc = '#ea580c';
-        scBg = '#fff7ed';
-        stText = 'DP - BELUM LUNAS';
-        stIcon = '&#9651;'; // segitiga atas = sebagian
     }
 
     const fmtDate = (d) => {
@@ -2514,6 +2506,46 @@ window.generateEtiketPDF = (data) => {
     if (isWithDriver) {
         depositAmount = 0;
     }
+
+    // Hitung nominal DP murni dan sisa pelunasan
+    let defaultDp = 200000;
+    if (isMotorPdf) defaultDp = 50000;
+    else if (nameLower.includes("tour") || nameLower.includes("paket")) defaultDp = 500000;
+
+    let netDpPaid = defaultDp;
+    if (paidAmt > 0) {
+        let temp = paidAmt - depositAmount;
+        if (temp > 6500 && (temp.toString().endsWith('500') || temp % 1000 !== 0)) {
+            temp -= 6500;
+        }
+        if (temp > 0 && temp < (totalAmt || Infinity)) {
+            netDpPaid = temp;
+        }
+    }
+    const remainingAmt = totalAmt > 0 ? Math.max(0, totalAmt - netDpPaid) : 0;
+
+    // Flag info DP: aktif selama jenis pembayaran adalah DP dan transaksi belum COMPLETED
+    const isFullyCompleted = (data.status === 'COMPLETED');
+    const showDpInfo = isDpPayment && !isFullyCompleted;
+
+    if (showDpInfo) {
+        if (data.status === 'PAID') {
+            sc = '#16a34a';
+            scBg = '#dcfce7';
+            stText = 'DP TERBAYAR (BELUM LUNAS)';
+            stIcon = '&#10003;';
+        } else if (data.status === 'PENDING') {
+            sc = '#ea580c';
+            scBg = '#fff7ed';
+            stText = 'MENUNGGU PEMBAYARAN DP';
+            stIcon = '&#9203;';
+        } else if (data.status === 'PROCESSING') {
+            sc = '#2563eb';
+            scBg = '#dbeafe';
+            stText = 'DP SEDANG DIPROSES';
+            stIcon = '&#9881;';
+        }
+    }
     
     let depositNote = '';
     if (depositAmount > 0) {
@@ -2544,7 +2576,7 @@ window.generateEtiketPDF = (data) => {
                 </div>
             </div>
             <div style="text-align:right;color:#fff;">
-                <div style="font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;">${isDpPayment ? 'Bukti DP' : 'Bukti Pembayaran'}</div>
+                <div style="font-size:11px;opacity:0.7;text-transform:uppercase;letter-spacing:1px;">${isDpPayment ? 'Bukti Pembayaran DP' : 'Bukti Pembayaran'}</div>
                 <div style="font-size:28px;font-weight:900;letter-spacing:-1px;line-height:1.1;">${isDpPayment ? 'e-Tiket DP' : 'e-Tiket'}</div>
             <div style="font-size:11px;opacity:0.65;font-family:monospace;margin-top:3px;">${data.transactionId}</div>
             </div>
@@ -2576,13 +2608,39 @@ window.generateEtiketPDF = (data) => {
                 </div>
             </div>
 
-            ${showDpWarning ? `
-            <div style="background:linear-gradient(135deg,#fff7ed,#ffedd5);border:2px solid #ea580c;border-radius:10px;padding:10px 16px;margin-bottom:12px;display:flex;align-items:center;gap:12px;">
-                <div style="width:36px;height:36px;background:#ea580c;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">!</div>
+            ${showDpInfo ? `
+            <div style="background:linear-gradient(135deg,#fffbeb,#fef3c7);border:2px solid #f59e0b;border-radius:10px;padding:12px 16px;margin-bottom:12px;display:flex;align-items:flex-start;gap:12px;">
+                <div style="width:36px;height:36px;background:#f59e0b;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:16px;color:white;font-weight:900;">
+                    💳
+                </div>
                 <div style="flex:1;">
-                    <div style="font-size:10px;font-weight:800;color:#c2410c;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:3px;">&#9888; Pembayaran DP &mdash; Belum Lunas</div>
-                    <div style="font-size:11px;color:#9a3412;">Terbayar: <strong>Rp ${Number(data.itemPrice || 0).toLocaleString('id-ID')}</strong> &nbsp;&bull;&nbsp; Sisa Tagihan: <strong>${data.fullPrice ? 'Rp ' + Number(Number(data.fullPrice) - (Number(data.itemPrice || 0) - depositAmount)).toLocaleString('id-ID') : 'Lihat admin'}</strong></div>
-                    <div style="font-size:10px;color:#9a3412;margin-top:2px;">Lunasi sisa pembayaran sebelum waktu pelaksanaan / keberangkatan.</div>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                        <div style="font-size:11px;font-weight:800;color:#b45309;text-transform:uppercase;letter-spacing:0.8px;">
+                            ${data.status === 'PAID' ? '✓ Pembayaran DP Diterima (Belum Lunas)' : '&#9888; Tagihan Pembayaran DP'}
+                        </div>
+                        <span style="background:${data.status === 'PAID' ? '#16a34a' : '#d97706'};color:white;padding:2px 8px;border-radius:12px;font-size:9px;font-weight:800;">
+                            ${data.status === 'PAID' ? 'DP TERBAYAR' : 'MENUNGGU PEMBAYARAN'}
+                        </span>
+                    </div>
+                    
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0;background:white;padding:8px 12px;border-radius:6px;border:1px solid #fde68a;">
+                        <div>
+                            <div style="font-size:9px;color:#78350f;font-weight:600;text-transform:uppercase;">Total Biaya Sewa</div>
+                            <div style="font-size:13px;font-weight:800;color:#1e293b;">${totalAmt > 0 ? 'Rp ' + Number(totalAmt).toLocaleString('id-ID') : '-'}</div>
+                        </div>
+                        <div>
+                            <div style="font-size:9px;color:#78350f;font-weight:600;text-transform:uppercase;">DP ${data.status === 'PAID' ? 'Sudah Diterima' : 'Yang Harus Dibayar'}</div>
+                            <div style="font-size:13px;font-weight:800;color:${data.status === 'PAID' ? '#16a34a' : '#d97706'};">Rp ${Number(netDpPaid).toLocaleString('id-ID')}</div>
+                        </div>
+                        <div style="grid-column:1/-1;border-top:1px dashed #cbd5e1;padding-top:6px;display:flex;justify-content:space-between;align-items:center;">
+                            <div style="font-size:10px;color:#b45309;font-weight:700;">SISA TAGIHAN WAJIB DILUNASI:</div>
+                            <div style="font-size:14px;font-weight:900;color:#dc2626;">Rp ${Number(remainingAmt).toLocaleString('id-ID')}</div>
+                        </div>
+                    </div>
+                    
+                    <div style="font-size:10px;color:#78350f;line-height:1.5;">
+                        📌 <strong>Instruksi Pelunasan:</strong> Sisa tagihan sebesar <strong>Rp ${Number(remainingAmt).toLocaleString('id-ID')}</strong> dapat dilunasi secara tunai atau transfer kepada driver / tim kami saat penjemputan / serah terima unit di lokasi.
+                    </div>
                 </div>
             </div>` : ''}
             ${depositNote}
@@ -2698,6 +2756,16 @@ window.generateEtiketPDF = (data) => {
                     <div style="font-size:10px;color:#94a3b8;font-weight:600;text-transform:uppercase;
                                 letter-spacing:0.8px;margin-bottom:5px;">Catatan Khusus</div>
                     <div style="font-size:13px;font-weight:700;color:#1e293b;">${data.details.notes}</div>
+                </div>
+                ` : ''}
+                ${showDpInfo ? `
+                <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:12px 15px;">
+                    <div style="font-size:10px;color:#166534;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">DP ${data.status === 'PAID' ? 'Terbayar' : 'Harus Dibayar'}</div>
+                    <div style="font-size:14px;font-weight:800;color:${data.status === 'PAID' ? '#16a34a' : '#d97706'};">Rp ${Number(netDpPaid).toLocaleString('id-ID')}</div>
+                </div>
+                <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:12px 15px;">
+                    <div style="font-size:10px;color:#991b1b;font-weight:600;text-transform:uppercase;letter-spacing:0.8px;margin-bottom:5px;">Sisa Pelunasan di Lokasi</div>
+                    <div style="font-size:14px;font-weight:800;color:#dc2626;">Rp ${Number(remainingAmt).toLocaleString('id-ID')}</div>
                 </div>
                 ` : ''}
                 ${data.endDate ? (() => {

@@ -150,6 +150,11 @@ router.get('/check/:transactionId', async (req, res) => {
             createdAt: data.createdAt || null,
             status: data.status || 'PENDING',
             itemPrice: data.price || data.totalPrice || data.itemPrice || 0,
+            isDp: data.isDp || false,
+            fullPrice: data.fullPrice || data.price || data.totalPrice || 0,
+            details: data.details || null,
+            paymentMethod: data.paymentMethod || null,
+            vaNumber: data.vaNumber || data.va_number || null,
             type: isORD ? 'order' : 'booking'
         });
     } catch (error) {
