@@ -425,6 +425,155 @@ const formatPrice = (price) => {
 
 window.formatPrice = formatPrice;
 
+// ====== CATEGORY & ICON HELPER ======
+window.getItemCategoryMeta = (itemOrName, optCategory = '') => {
+    const rawName = typeof itemOrName === 'string' 
+        ? itemOrName 
+        : (itemOrName?.itemName || itemOrName?.title || itemOrName?.serviceName || '');
+    const nameLower = (rawName || '').toLowerCase();
+    let cat = (optCategory || (typeof itemOrName === 'object' ? itemOrName?.category : '') || '').toLowerCase();
+
+    // Cek item di global catalog (window.globalItems) jika kategori belum diketahui
+    if (!cat && window.globalItems && Array.isArray(window.globalItems)) {
+        const found = window.globalItems.find(g => 
+            g.title === rawName || 
+            (rawName && rawName.toLowerCase().includes((g.title || '').toLowerCase())) ||
+            (g.id && typeof itemOrName === 'object' && (g.id === itemOrName?.itemId || g.id === itemOrName?.id))
+        );
+        if (found && found.category) cat = found.category.toLowerCase();
+    }
+
+    // 1. HONEYMOON (Prioritas pertama, sebelum tour/paket umum)
+    if (
+        cat === 'honeymoon' ||
+        nameLower.includes('honeymoon') ||
+        nameLower.includes('bulan madu') ||
+        nameLower.includes('romantic')
+    ) {
+        return {
+            key: 'honeymoon',
+            label: 'Paket Honeymoon',
+            icon: 'fa-heart',
+            color: '#e11d48',
+            bgColor: '#fff1f2',
+            gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)',
+            borderColor: '#fecdd3',
+            shadow: 'rgba(225, 29, 72, 0.18)'
+        };
+    }
+
+    // 2. MOTOR / MOTORCYCLE
+    if (
+        cat === 'motorcycle' || cat === 'motor' ||
+        /(motor|motorcycle|nmax|vario|pcx|beat|scoopy|aerox|fazzio|adv|vespa|lexi|genio|mio)/i.test(nameLower)
+    ) {
+        return {
+            key: 'motor',
+            label: 'Rental Motor',
+            icon: 'fa-motorcycle',
+            color: '#d97706',
+            bgColor: '#fffbeb',
+            gradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
+            borderColor: '#fde68a',
+            shadow: 'rgba(217, 119, 6, 0.18)'
+        };
+    }
+
+    // 3. AIRPORT TRANSFER / ANTAR JEMPUT BANDARA
+    if (
+        cat === 'transfer' || cat === 'airport' ||
+        /(transfer|airport|bandara|antar jemput|drop off|dropoff|pick up|pickup)/i.test(nameLower)
+    ) {
+        return {
+            key: 'transfer',
+            label: 'Airport Transfer',
+            icon: 'fa-plane-departure',
+            color: '#0284c7',
+            bgColor: '#f0f9ff',
+            gradient: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)',
+            borderColor: '#bae6fd',
+            shadow: 'rgba(2, 132, 199, 0.18)'
+        };
+    }
+
+    // 4. PAKET TOUR / WISATA / PRIVATE TRIP
+    if (
+        cat === 'package' || cat === 'tour' ||
+        /(tour|trip|paket|wisata|liburan|gili|mandalika|sembalun|sasak|snorkeling|rinjani|pantai)/i.test(nameLower)
+    ) {
+        return {
+            key: 'tour',
+            label: 'Paket Tour Wisata',
+            icon: 'fa-umbrella-beach',
+            color: '#16a34a',
+            bgColor: '#f0fdf4',
+            gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)',
+            borderColor: '#bbf7d0',
+            shadow: 'rgba(22, 163, 74, 0.18)'
+        };
+    }
+
+    // 5. MOBIL / SEWA MOBIL / RENTAL MOBIL (Semua tipe mobil, lepas kunci & driver)
+    if (
+        cat === 'car' || cat === 'mobil' ||
+        /(mobil|car|rental|sewa|lepas kunci|include driver|driver|supir|sopir|avanza|innova|hiace|brio|xpander|alphard|fortuner|agya|ayla|calya|sigra|raize|rocky|rize|wrv|wr-v|ertiga|xl7|terios|rush|zenix|reborn|commuter|premio|pajero|sedan|camry|veloz|stargazer|creta|brv|br-v|hrv|hr-v|crv|cr-v)/i.test(nameLower)
+    ) {
+        return {
+            key: 'mobil',
+            label: 'Sewa Mobil',
+            icon: 'fa-car',
+            color: '#2563eb',
+            bgColor: '#eff6ff',
+            gradient: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+            borderColor: '#bfdbfe',
+            shadow: 'rgba(37, 99, 235, 0.18)'
+        };
+    }
+
+    // 6. DRONE / DOKUMENTASI / FOTOGRAFI
+    if (
+        cat === 'drone' ||
+        /(drone|kamera|camera|gopro|fotografi|video|dokumentasi)/i.test(nameLower)
+    ) {
+        return {
+            key: 'drone',
+            label: 'Sewa Drone',
+            icon: 'fa-camera',
+            color: '#9333ea',
+            bgColor: '#faf5ff',
+            gradient: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)',
+            borderColor: '#e9d5ff',
+            shadow: 'rgba(147, 51, 234, 0.18)'
+        };
+    }
+
+    // 7. WEBSITE / IT / JASA DIGITAL
+    if (/(website|web|jasa|aplikasi|software|it)/i.test(nameLower)) {
+        return {
+            key: 'it',
+            label: 'Layanan Digital',
+            icon: 'fa-laptop-code',
+            color: '#0d9488',
+            bgColor: '#f0fdfa',
+            gradient: 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)',
+            borderColor: '#99f6e4',
+            shadow: 'rgba(13, 148, 136, 0.18)'
+        };
+    }
+
+    // 8. FALLBACK DEFAULT
+    return {
+        key: 'other',
+        label: 'Layanan Travel',
+        icon: 'fa-receipt',
+        color: '#475569',
+        bgColor: '#f8fafc',
+        gradient: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)',
+        borderColor: '#e2e8f0',
+        shadow: 'rgba(71, 85, 105, 0.12)'
+    };
+};
+
 // Fetch items from backend
 const fetchItems = async (category = null) => {
     try {
@@ -5656,6 +5805,7 @@ window.showRiwayatTransaksi = async (isPage = false) => {
 
         window.showTransactionDetail = (encodedData) => {
             const item = JSON.parse(decodeURIComponent(encodedData));
+            const meta = window.getItemCategoryMeta(item);
             const isPaid = item.status === 'PAID';
             const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
             const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
@@ -5730,10 +5880,10 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     <!-- Header Card (Premium Gradient) -->
                     <div style="background: linear-gradient(135deg, var(--primary-blue), #1e3a8a); padding: 40px 20px 50px; text-align: center; position: relative;">
                         <button onclick="window.showRiwayatTransaksi(true)" style="position: absolute; top: 15px; left: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; z-index: 10;" onmouseover="this.style.background='rgba(255,255,255,0.3)'; this.style.transform='scale(1.1)';" onmouseout="this.style.background='rgba(255,255,255,0.2)'; this.style.transform='scale(1)';"><i class="fa-solid fa-chevron-left" style="margin-right:2px;"></i></button>
-                        <div style="width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: var(--primary-blue); font-size: 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
-                            <i class="fa-solid fa-receipt"></i>
+                        <div style="width: 75px; height: 75px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; color: ${meta.color}; font-size: 2.2rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2);">
+                            <i class="fa-solid ${meta.icon}"></i>
                         </div>
-                        <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">Detail Transaksi</h3>
+                        <h3 style="color: white; font-size: 1.6rem; font-weight: 800; margin: 0 0 5px; text-shadow: 0 2px 4px rgba(0,0,0,0.2);">${meta.label}</h3>
                         <p style="color: rgba(255,255,255,0.85); font-size: 0.95rem; margin: 0;">${tgl}</p>
                         
                         <div style="position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%);">
@@ -5761,8 +5911,13 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                                 </div>
                             </div>
                             <div style="display:flex; flex-direction:column; gap:8px;">
-                                <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-layer-group" style="opacity:0.6; margin-right:8px;"></i> Layanan</span>
-                                <span style="font-weight:800; color:#1e293b; font-size:1.15rem; line-height: 1.4; padding-left: 26px;">${item.itemName}</span>
+                                <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+                                    <span style="color:#64748b; font-size:0.95rem; font-weight: 600;"><i class="fa-solid fa-layer-group" style="opacity:0.6; margin-right:8px;"></i> Layanan</span>
+                                    <span style="display:inline-flex; align-items:center; gap:5px; font-size:0.75rem; font-weight:700; color:${meta.color}; background:${meta.bgColor}; padding:3px 10px; border-radius:8px; border:1px solid ${meta.borderColor};">
+                                        <i class="fa-solid ${meta.icon}"></i> ${meta.label}
+                                    </span>
+                                </div>
+                                <span style="font-weight:800; color:#1e293b; font-size:1.15rem; line-height: 1.4; padding-left: 26px; word-break:break-word;">${item.itemName}</span>
                             </div>
                         </div>
 
@@ -5805,15 +5960,9 @@ window.showRiwayatTransaksi = async (isPage = false) => {
             const isPaid = item.status === 'PAID';
             const statusColor = isPaid ? '#10b981' : (item.status === 'PENDING' ? '#f59e0b' : '#ef4444');
             const statusBg = isPaid ? 'rgba(16, 185, 129, 0.1)' : (item.status === 'PENDING' ? 'rgba(245, 158, 11, 0.1)' : 'rgba(239, 68, 68, 0.1)');
-            // Dynamic Icon based on itemName
-            let icon = 'fa-file-invoice-dollar';
-            const itemNameLower = (item.itemName || '').toLowerCase();
-            if (itemNameLower.includes('trip') || itemNameLower.includes('tour') || itemNameLower.includes('paket')) icon = 'fa-map-location-dot';
-            else if (itemNameLower.includes('motor') || itemNameLower.includes('vario') || itemNameLower.includes('nmax') || itemNameLower.includes('pcx') || itemNameLower.includes('beat')) icon = 'fa-motorcycle';
-            else if (itemNameLower.includes('mobil') || itemNameLower.includes('avanza') || itemNameLower.includes('innova') || itemNameLower.includes('brio') || itemNameLower.includes('hiace') || itemNameLower.includes('fortuner')) icon = 'fa-car';
-            else if (itemNameLower.includes('website') || itemNameLower.includes('jasa')) icon = 'fa-laptop-code';
-            else if (itemNameLower.includes('drone') || itemNameLower.includes('kamera') || itemNameLower.includes('gopro')) icon = 'fa-camera';
-            else if (item.type === 'order') icon = 'fa-box';
+            
+            // Dynamic Icon & Category Badge based on itemName and catalog
+            const meta = window.getItemCategoryMeta(item);
 
             const parsedPrice = parseInt((item.itemPrice || '').toString().replace(/\D/g, ''));
             const price = !isNaN(parsedPrice) && parsedPrice > 0 ? 'Rp ' + parsedPrice.toLocaleString('id-ID') : '-';
@@ -5837,12 +5986,17 @@ window.showRiwayatTransaksi = async (isPage = false) => {
                     </div>
 
                     <!-- Body: Icon & Title -->
-                    <div style="display: flex; gap: 16px; margin-bottom: 16px; flex: 1;">
-                        <div style="width: 55px; height: 55px; border-radius: 14px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); color: var(--primary-blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.4rem; box-shadow: inset 0 2px 4px rgba(255,255,255,0.5), 0 4px 10px rgba(14, 165, 233, 0.1);">
-                            <i class="fa-solid ${icon}"></i>
+                    <div style="display: flex; gap: 16px; margin-bottom: 16px; flex: 1; align-items: center;">
+                        <div style="width: 55px; height: 55px; border-radius: 14px; background: ${meta.gradient}; color: ${meta.color}; border: 1px solid ${meta.borderColor}; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 1.45rem; box-shadow: inset 0 2px 4px rgba(255,255,255,0.6), 0 6px 14px ${meta.shadow};">
+                            <i class="fa-solid ${meta.icon}"></i>
                         </div>
-                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center;">
-                            <h4 style="margin: 0 0 6px; font-size: 1.05rem; color: #0f172a; font-weight: 800; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${item.itemName}</h4>
+                        <div style="flex: 1; display: flex; flex-direction: column; justify-content: center; min-width: 0;">
+                            <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 4px;">
+                                <span style="display: inline-flex; align-items: center; gap: 4px; font-size: 0.7rem; font-weight: 700; color: ${meta.color}; background: ${meta.bgColor}; padding: 2px 8px; border-radius: 6px; border: 1px solid ${meta.borderColor};">
+                                    <i class="fa-solid ${meta.icon}" style="font-size: 0.65rem;"></i> ${meta.label}
+                                </span>
+                            </div>
+                            <h4 style="margin: 0 0 6px; font-size: 1.05rem; color: #0f172a; font-weight: 800; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; word-break: break-word;">${item.itemName}</h4>
                             <div style="font-size: 0.8rem; color: #64748b; display: flex; align-items: center; gap: 6px; font-weight: 500;">
                                 <i class="fa-regular fa-calendar-days" style="color: #94a3b8;"></i> Dipesan: ${tgl}
                             </div>

@@ -1,6 +1,36 @@
 let authToken = localStorage.getItem('adminToken') || null;
 const API_URL = "/api";
 
+// Universal Category & Icon Helper
+window.getItemCategoryMeta = window.getItemCategoryMeta || function(itemOrName, optCategory = '') {
+    const rawName = typeof itemOrName === 'string' ? itemOrName : (itemOrName?.itemName || itemOrName?.title || itemOrName?.serviceName || '');
+    const nameLower = (rawName || '').toLowerCase();
+    let cat = (optCategory || (typeof itemOrName === 'object' ? itemOrName?.category : '') || '').toLowerCase();
+
+    if (cat === 'honeymoon' || nameLower.includes('honeymoon') || nameLower.includes('bulan madu') || nameLower.includes('romantic')) {
+        return { key: 'honeymoon', label: 'Paket Honeymoon', icon: 'fa-heart', color: '#e11d48', bgColor: '#fff1f2', gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)', borderColor: '#fecdd3', shadow: 'rgba(225, 29, 72, 0.18)' };
+    }
+    if (cat === 'motorcycle' || cat === 'motor' || /(motor|motorcycle|nmax|vario|pcx|beat|scoopy|aerox|fazzio|adv|vespa|lexi|genio|mio)/i.test(nameLower)) {
+        return { key: 'motor', label: 'Rental Motor', icon: 'fa-motorcycle', color: '#d97706', bgColor: '#fffbeb', gradient: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)', borderColor: '#fde68a', shadow: 'rgba(217, 119, 6, 0.18)' };
+    }
+    if (cat === 'transfer' || cat === 'airport' || /(transfer|airport|bandara|antar jemput|drop off|dropoff|pick up|pickup)/i.test(nameLower)) {
+        return { key: 'transfer', label: 'Airport Transfer', icon: 'fa-plane-departure', color: '#0284c7', bgColor: '#f0f9ff', gradient: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', borderColor: '#bae6fd', shadow: 'rgba(2, 132, 199, 0.18)' };
+    }
+    if (cat === 'package' || cat === 'tour' || /(tour|trip|paket|wisata|liburan|gili|mandalika|sembalun|sasak|snorkeling|rinjani|pantai)/i.test(nameLower)) {
+        return { key: 'tour', label: 'Paket Tour Wisata', icon: 'fa-umbrella-beach', color: '#16a34a', bgColor: '#f0fdf4', gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', borderColor: '#bbf7d0', shadow: 'rgba(22, 163, 74, 0.18)' };
+    }
+    if (cat === 'car' || cat === 'mobil' || /(mobil|car|rental|sewa|lepas kunci|include driver|driver|supir|sopir|avanza|innova|hiace|brio|xpander|alphard|fortuner|agya|ayla|calya|sigra|raize|rocky|rize|wrv|wr-v|ertiga|xl7|terios|rush|zenix|reborn|commuter|premio|pajero|sedan|camry|veloz|stargazer|creta|brv|br-v|hrv|hr-v|crv|cr-v)/i.test(nameLower)) {
+        return { key: 'mobil', label: 'Sewa Mobil', icon: 'fa-car', color: '#2563eb', bgColor: '#eff6ff', gradient: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)', borderColor: '#bfdbfe', shadow: 'rgba(37, 99, 235, 0.18)' };
+    }
+    if (cat === 'drone' || /(drone|kamera|camera|gopro|fotografi|video|dokumentasi)/i.test(nameLower)) {
+        return { key: 'drone', label: 'Sewa Drone', icon: 'fa-camera', color: '#9333ea', bgColor: '#faf5ff', gradient: 'linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%)', borderColor: '#e9d5ff', shadow: 'rgba(147, 51, 234, 0.18)' };
+    }
+    if (/(website|web|jasa|aplikasi|software|it)/i.test(nameLower)) {
+        return { key: 'it', label: 'Layanan Digital', icon: 'fa-laptop-code', color: '#0d9488', bgColor: '#f0fdfa', gradient: 'linear-gradient(135deg, #f0fdfa 0%, #ccfbf1 100%)', borderColor: '#99f6e4', shadow: 'rgba(13, 148, 136, 0.18)' };
+    }
+    return { key: 'other', label: 'Layanan Travel', icon: 'fa-receipt', color: '#475569', bgColor: '#f8fafc', gradient: 'linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%)', borderColor: '#e2e8f0', shadow: 'rgba(71, 85, 105, 0.12)' };
+};
+
 // Elements
 const loginContainer = document.getElementById("login-container");
 const adminDashboard = document.getElementById("admin-dashboard");
@@ -1412,6 +1442,7 @@ Salam hangat,
 📞 +62 896-7696-3255 (WhatsApp)
 🌐 www.travellombokairport.com`);
                     const assignDriverBtn = `<button class="action-btn btn-edit" onclick="assignDriver('${b.id}')" style="margin-top: 5px; background: var(--primary-green); color: white;"><i class="fa-solid fa-car"></i> Assign Supir</button>`;
+                    const meta = window.getItemCategoryMeta(b.itemName);
                     
                     return `
                     <tr>
@@ -1424,6 +1455,9 @@ Salam hangat,
                             <br><small>${startDateStr} - ${new Date(b.endDate).toLocaleDateString('id-ID')}</small>
                         </td>
                         <td>
+                            <div style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:700; color:${meta.color}; background:${meta.bgColor}; padding:2px 8px; border-radius:6px; border:1px solid ${meta.borderColor}; margin-bottom:4px;">
+                                <i class="fa-solid ${meta.icon}"></i> ${meta.label}
+                            </div><br>
                             <strong>${b.itemName}</strong>
                             ${(b.isDp === true || b.isDp === 'true') ? `<span style="background:#f59e0b; color:white; padding:2px 6px; border-radius:4px; font-size:0.7rem; margin-left:5px;">DP</span>` : ''}
                             ${b.details?.pickup ? `<br><small style="color: #64748b; font-size: 0.75rem;"><b>Pickup:</b> ${b.details.pickup}</small>` : ''}
@@ -2911,15 +2945,18 @@ function renderPromos() {
             ? `<span class="badge bg-danger">Habis (${used}/${p.usageLimit})</span>` 
             : (p.isActive ? '<span class="badge bg-success">Aktif</span>' : '<span class="badge bg-secondary">Tidak Aktif</span>');
         
-        let itemName = 'Semua Paket';
+        let itemName = 'Semua Paket & Armada';
+        let itemMeta = null;
         if (p.itemId) {
             const found = typeof allAdminItems !== 'undefined' ? allAdminItems.find(i => i.id === p.itemId) : null;
-            itemName = found ? found.title : (window.globalItems?.find(i => i.id === p.itemId)?.title || 'Item Khusus');
+            const title = found ? found.title : (window.globalItems?.find(i => i.id === p.itemId)?.title || 'Item Khusus');
+            itemMeta = window.getItemCategoryMeta(title, found?.category);
+            itemName = title;
         }
         
         return `
         <tr>
-            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}<br><span style="font-size:0.75rem; color:#64748b; font-weight:normal;">${itemName}</span></td>
+            <td style="font-weight: bold; color: var(--primary-blue);">${p.code}<br><span style="font-size:0.75rem; color:#64748b; font-weight:normal; display:inline-flex; align-items:center; gap:4px; margin-top:2px;">${itemMeta ? `<i class="fa-solid ${itemMeta.icon}" style="color:${itemMeta.color};"></i>` : '<i class="fa-solid fa-check-double" style="color:#16a34a;"></i>'} ${itemName}</span></td>
             <td>${discountStr}<br><span style="font-size:0.75rem; color:#0284c7; font-weight:600;"><i class="fa-solid fa-users"></i> Kuota: ${limitStr}</span></td>
             <td>${validStr}</td>
             <td>${statusBadge}</td>
@@ -2941,12 +2978,13 @@ async function populatePromoItems() {
         // Always fetch fresh from API to ensure items are available
         const res = await fetch(`${API_URL}/items`);
         const items = await res.json();
-        sel.innerHTML = '<option value="">-- Semua Paket --</option>';
+        sel.innerHTML = '<option value="">-- Semua Paket & Armada --</option>';
         items.forEach(item => {
-            sel.innerHTML += `<option value="${item.id}">${item.title}</option>`;
+            const meta = window.getItemCategoryMeta(item.title, item.category);
+            sel.innerHTML += `<option value="${item.id}">[${meta.label}] ${item.title}</option>`;
         });
     } catch (e) {
-        sel.innerHTML = '<option value="">-- Semua Paket --</option>';
+        sel.innerHTML = '<option value="">-- Semua Paket & Armada --</option>';
         console.error('Failed to load items for promo dropdown', e);
     }
     sel.value = currentVal;
