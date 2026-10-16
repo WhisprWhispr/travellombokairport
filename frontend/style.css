@@ -1007,16 +1007,25 @@ ul {
 
 .tour-modal-content {
   background: white;
-  width: 100vw;
-  max-width: 100vw;
-  height: 100vh;
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
   max-height: 100vh;
   border-radius: 0;
   position: relative;
+  overflow-x: hidden;
   overflow-y: auto;
+  box-sizing: border-box;
   box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
   transform: translateY(20px);
   transition: transform 0.3s ease;
+}
+
+#tour-modal-body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .tour-modal-overlay.active .tour-modal-content {
@@ -1324,10 +1333,65 @@ ul {
 .tm-footer span i { font-size: 1.2rem; }
 
 @media (max-width: 768px) {
-  .tm-body { grid-template-columns: 1fr; }
-  .tm-top { flex-direction: column; align-items: stretch; }
-  .tm-price-box { width: 100%; }
-  .tm-footer { flex-direction: column; gap: 15px; }
+  .tour-modal-content {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+  }
+  .tm-header {
+    padding: 18px 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .tm-body {
+    padding: 18px 16px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    grid-template-columns: 1fr !important;
+  }
+  .tm-top {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .tm-title {
+    min-width: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .tm-title h2 {
+    font-size: clamp(1.35rem, 5vw, 1.8rem) !important;
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+  }
+  .tm-price-box {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  .tm-footer {
+    flex-direction: column !important;
+    gap: 15px !important;
+    padding: 16px !important;
+  }
+  .tour-modal-close {
+    top: 16px !important;
+    left: 14px !important;
+    padding: 6px 14px !important;
+    font-size: 0.82rem !important;
+  }
+  #sub-modal-body {
+    grid-template-columns: 1fr !important;
+    gap: 16px !important;
+  }
+  .modal-booking-actions {
+    grid-template-columns: 1fr !important;
+  }
 }
 
 /* ========================================= */

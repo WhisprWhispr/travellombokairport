@@ -790,6 +790,57 @@ window.selectCarMode = (id, mode) => {
     window.openTourModal(id, mode);
 };
 
+window.copyRekening = (nomor, bank, btnEl) => {
+    const showSuccess = () => {
+        if (btnEl) {
+            const originalHtml = btnEl.innerHTML;
+            btnEl.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+            btnEl.style.background = '#dcfce7';
+            btnEl.style.color = '#15803d';
+            setTimeout(() => {
+                btnEl.innerHTML = originalHtml;
+                btnEl.style.background = '#e0f2fe';
+                btnEl.style.color = '#0284c7';
+            }, 2000);
+        }
+        Swal.fire({
+            toast: true,
+            position: 'top',
+            icon: 'success',
+            title: `Nomor Rekening ${bank} Berhasil Disalin!`,
+            text: nomor,
+            showConfirmButton: false,
+            timer: 2200,
+            timerProgressBar: true,
+            background: '#ffffff',
+            color: '#0f172a',
+            customClass: {
+                popup: 'my-swal-container'
+            }
+        });
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(nomor).then(showSuccess).catch(() => {
+            const temp = document.createElement('input');
+            temp.value = nomor;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showSuccess();
+        });
+    } else {
+        const temp = document.createElement('input');
+        temp.value = nomor;
+        document.body.appendChild(temp);
+        temp.select();
+        document.execCommand('copy');
+        document.body.removeChild(temp);
+        showSuccess();
+    }
+};
+
 // Overlay click listener for car choice modal
 document.addEventListener('DOMContentLoaded', () => {
     const carModal = document.getElementById('car-choice-modal');
@@ -958,8 +1009,8 @@ window.openTourModal = (id, carMode = null) => {
             </div>
             ` : ''}
 
-            <div class="tm-top premium-card" style="position: relative; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08);">
-                <div class="tm-title" style="flex: 1; min-width: 280px;">
+            <div class="tm-top premium-card" style="position: relative; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08); width: 100%; box-sizing: border-box;">
+                <div class="tm-title" style="flex: 1; min-width: 0; width: 100%; max-width: 100%; box-sizing: border-box;">
                     ${(() => {
                         let typeLabel = 'PAKET TOUR';
                         if (isCarCategory) typeLabel = isDriverMode ? 'Sewa Mobil + Driver' : 'Sewa Mobil Lepas Kunci';
@@ -999,7 +1050,7 @@ window.openTourModal = (id, carMode = null) => {
                             <div style="font-size: 0.8rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: #e0f2fe; padding: 4px 12px; border-radius: 20px;">
                                 <i class="fa-solid fa-car-rear"></i> ${typeLabel}
                             </div>
-                            <h2 style="color: #0f172a; font-size: 2.2rem; margin: 8px 0 12px 0; line-height: 1.15; font-weight: 900; letter-spacing: -0.02em;">${item.title.toUpperCase()}</h2>
+                            <h2 style="color: #0f172a; font-size: clamp(1.4rem, 5.5vw, 2.2rem); margin: 8px 0 12px 0; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em; word-break: break-word; overflow-wrap: break-word;">${item.title.toUpperCase()}</h2>
                             <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
                                 ${!isCarCategory ? `<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
                                 ${driverPillsHtml}
@@ -1153,7 +1204,7 @@ window.openTourModal = (id, carMode = null) => {
                                         <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">1610017191425</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="navigator.clipboard.writeText('1610017191425'); alert('Nomor Rekening Mandiri berhasil disalin!');" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                                <button type="button" onclick="window.copyRekening('1610017191425', 'Mandiri', this);" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
                             </div>
                             <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
                                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -1163,7 +1214,7 @@ window.openTourModal = (id, carMode = null) => {
                                         <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">759801017387536</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="navigator.clipboard.writeText('759801017387536'); alert('Nomor Rekening BRI berhasil disalin!');" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                                <button type="button" onclick="window.copyRekening('759801017387536', 'BRI', this);" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
                             </div>
                         </div>
 
@@ -1179,19 +1230,33 @@ window.openTourModal = (id, carMode = null) => {
                         </div>
                         ` : ''}
 
-                        <div style="display: flex; gap: 10px; margin-top: 18px;">
-                            <a href="#" onclick="event.preventDefault(); openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice}, 'wa');" class="btn" style="flex:1; background: #25d366; color: white; padding: 12px 14px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); text-decoration: none;"><i class="fa-brands fa-whatsapp" style="font-size: 1.1rem;"></i> Booking via WA</a>
-                            <button onclick="openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice})" class="btn btn-blue" style="flex:1; padding: 12px 14px; border-radius: 10px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); border: none; cursor: pointer;"><i class="fa-solid fa-calendar-check"></i> Booking via Web</button>
+                        <div class="modal-booking-actions" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 18px; width: 100%; box-sizing: border-box;">
+                            <a href="#" onclick="event.preventDefault(); openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice}, 'wa');" 
+                               class="btn-detail-booking-wa"
+                               style="background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; padding: 13px 8px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(22, 163, 74, 0.28); text-decoration: none; text-align: center; font-size: clamp(0.78rem, 3.4vw, 0.9rem); white-space: nowrap; transition: all 0.2s ease;"
+                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 18px rgba(22, 163, 74, 0.38)';"
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(22, 163, 74, 0.28)';">
+                                <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem; flex-shrink: 0;"></i>
+                                <span>Booking via WA</span>
+                            </a>
+                            <button type="button" onclick="openCheckoutModal('${activeItemTitle.replace(/'/g, "\\'")}', ${activeItemPrice})" 
+                               class="btn-detail-booking-web"
+                               style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 13px 8px; border-radius: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(2, 132, 199, 0.28); border: none; cursor: pointer; text-align: center; font-size: clamp(0.78rem, 3.4vw, 0.9rem); white-space: nowrap; transition: all 0.2s ease;"
+                               onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 18px rgba(2, 132, 199, 0.38)';"
+                               onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 14px rgba(2, 132, 199, 0.28)';">
+                                <i class="fa-solid fa-calendar-check" style="font-size: 1.15rem; flex-shrink: 0;"></i>
+                                <span>Booking via Web</span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div style="padding: 22px 20px; background: white; border-top: 1px solid #e2e8f0;">
+        <div style="padding: 22px 20px; background: white; border-top: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; overflow-x: hidden;">
             <!-- Rating Box Header & Quick Interactive Stars -->
-            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 14px; padding: 16px 20px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 15px;">
-                <div style="flex: 1; min-width: 180px;">
+            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 14px; padding: 16px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; width: 100%; max-width: 100%; box-sizing: border-box;">
+                <div style="flex: 1; min-width: 160px;">
                     <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
                         <h3 style="font-size: 1.05rem; color: #78350f; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                             <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Rating Pelanggan
@@ -1206,9 +1271,9 @@ window.openTourModal = (id, carMode = null) => {
                 </div>
 
                 <!-- 5 Clickable Stars (Hanya bintang aja!) -->
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center;">
+                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; min-width: 0;">
                     <div id="star-action-title-${item.id}" style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
-                    <div id="star-bar-${item.id}" class="quick-item-stars" style="display: inline-flex; gap: 6px; font-size: 1.6rem; cursor: pointer; user-select: none;">
+                    <div id="star-bar-${item.id}" class="quick-item-stars" style="display: inline-flex; gap: 5px; font-size: clamp(1.2rem, 4.5vw, 1.5rem); cursor: pointer; user-select: none;">
                         <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 1)" onmouseover="window.previewItemStars('${item.id}', 1)" onmouseout="window.resetItemStars('${item.id}')"></i>
                         <i class="fa-solid fa-star item-star" data-idx="2" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 2)" onmouseover="window.previewItemStars('${item.id}', 2)" onmouseout="window.resetItemStars('${item.id}')"></i>
                         <i class="fa-solid fa-star item-star" data-idx="3" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 3)" onmouseover="window.previewItemStars('${item.id}', 3)" onmouseout="window.resetItemStars('${item.id}')"></i>
@@ -1220,7 +1285,7 @@ window.openTourModal = (id, carMode = null) => {
             </div>
 
             <!-- List of Ratings given -->
-            <div id="item-reviews-container-${item.id}" style="display: flex; gap: 10px; overflow-x: auto; padding: 8px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 5px;">
+            <div id="item-reviews-container-${item.id}" style="display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; width: 100%; max-width: 100%; box-sizing: border-box; padding: 8px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 5px;">
                 <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 12px 0; width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat rating...</p>
             </div>
             <style>
@@ -1850,7 +1915,7 @@ window.openSubPackageModal = (parentId) => {
             const childRatingBadge = child.rating ? `<span style="position:absolute; ${isHoneymoon ? 'top:45px;' : 'top:10px;'} left:10px; background:rgba(255,255,255,0.95); color:#f59e0b; font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:20px; z-index:2; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa-solid fa-star" style="margin-right:4px;"></i>${child.rating}</span>` : '';
             
             return `
-            <div style="${bgStyle} ${borderStyle} border-radius:16px; overflow:hidden; ${shadowStyle} cursor:pointer; display:flex; flex-direction:column; transition: transform 0.3s ease, box-shadow 0.3s ease;"
+            <div style="${bgStyle} ${borderStyle} border-radius:16px; overflow:hidden; ${shadowStyle} cursor:pointer; display:flex; flex-direction:column; min-width:0; width:100%; box-sizing:border-box; transition: transform 0.3s ease, box-shadow 0.3s ease;"
                  onmouseover="this.style.transform='translateY(-5px)'; ${hoverShadow};"
                  onmouseout="this.style.transform='translateY(0)'; ${normalShadow};"
                  onclick="openTourModal('${child.id}');">

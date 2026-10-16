@@ -335,7 +335,7 @@
     }
   </style>
   <script src="/protect.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-C48o6y8_.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-CZDnBXWS.css">
 </head>
 <body>
 
@@ -903,7 +903,7 @@
                     </div>
                     <div style="font-family:'Courier New', Courier, monospace; font-size:1.6rem; font-weight:900; color:#1e293b; letter-spacing:3px; user-select:all; margin-bottom:20px; background:white; padding:15px; border-radius:12px; border:1px dashed #94a3b8;">${data.vaNumber}</div>
                     <div style="display:flex; gap:10px;">
-                      <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); alert('Nomor Virtual Account berhasil disalin!');" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; flex:1; box-shadow:0 4px 12px rgba(37, 99, 235, 0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy"></i> Salin VA</button>
+                      <button onclick="navigator.clipboard.writeText('${data.vaNumber}'); Swal.fire({toast:true, position:'top', icon:'success', title:'Nomor Virtual Account Berhasil Disalin!', text:'${data.vaNumber}', showConfirmButton:false, timer:2200, timerProgressBar:true, background:'#ffffff', color:'#0f172a'});" style="background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; flex:1; box-shadow:0 4px 12px rgba(37, 99, 235, 0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-regular fa-copy"></i> Salin VA</button>
                       <button type="button" onclick="window.checkPaymentStatus('${txId}', this)" style="background:linear-gradient(135deg, #10b981, #059669); color:white; border:none; padding:12px 20px; border-radius:12px; font-weight:700; font-size:1rem; cursor:pointer; flex:1; box-shadow:0 4px 12px rgba(16,185,129,0.2); transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'"><i class="fa-solid fa-check-circle"></i> Bayar</button>
                     </div>
                   </div>
