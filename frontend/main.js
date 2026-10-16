@@ -1223,7 +1223,18 @@ window.openTourModal = (id, carMode = null) => {
                 </div>
                 <div class="tm-price-box premium-price-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">${isCarCategory ? 'Tarif Sewa' : (item.category === 'motorcycle' || item.category === 'drone' ? 'Tarif Sewa' : 'Tarif Paket')}</span>
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
+                            ${(() => {
+                                const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { key: 'tour' };
+                                if (meta.key === 'honeymoon') return 'Harga Paket Honeymoon';
+                                if (meta.key === 'tour') return 'Harga Paket Tour';
+                                if (isCarCategory) return 'Tarif Sewa Mobil';
+                                if (item.category === 'motorcycle' || meta.key === 'motor') return 'Tarif Sewa Motor';
+                                if (item.category === 'drone' || meta.key === 'drone') return 'Tarif Sewa Drone';
+                                if (item.category === 'transfer' || meta.key === 'transfer') return 'Tarif Antar Jemput';
+                                return 'Harga Paket';
+                            })()}
+                        </span>
                         ${(() => {
                             const meta = (typeof window.getItemCategoryMeta === 'function') 
                                 ? window.getItemCategoryMeta(item) 
@@ -1254,12 +1265,21 @@ window.openTourModal = (id, carMode = null) => {
                                     : '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Durasi 24 Jam Penuh Setir Sendiri</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Unit Bersih, AC Dingin & Toolkit</span>';
                             }
                             if (meta.key === 'honeymoon') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-heart" style="color: #e11d48;"></i> Paket Romantic Private Honeymoon</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Jadwal Fleksibel & Driver Ramah</span>';
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-heart" style="color: #e11d48;"></i> Private Tour Romantis Sepasang (2 Pax)</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-car-side" style="color: #10b981;"></i> Transport Private Full AC + Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-camera" style="color: #e11d48;"></i> Dokumentasi Foto & Tiket Destinasi</span>';
                             }
                             if (meta.key === 'tour') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-route" style="color: #16a34a;"></i> Rute Wisata Terbaik & Lengkap</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Include Transport & Dokumentasi</span>';
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a;"></i> Rute Wisata Terbaik & Jadwal Fleksibel</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-car-side" style="color: #10b981;"></i> Transportasi Private Full AC + Driver</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Fasilitas Lengkap Sesuai Rincian Paket</span>';
                             }
-                            return '<span>Mulai harga terendah</span>';
+                            if (meta.key === 'motor' || item.category === 'motorcycle') {
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706;"></i> Termasuk 2 Helm SNI & Jas Hujan</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Unit Terawat, Bersih & Bebas Ribet</span>';
+                            }
+                            if (meta.key === 'transfer' || item.category === 'transfer') {
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7;"></i> Antar Jemput Bandara Tepat Waktu</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Driver Ramah & Bebas Parkir Bandara</span>';
+                            }
+                            if (meta.key === 'drone' || item.category === 'drone') {
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-video" style="color: #9333ea;"></i> Pilot Drone Berpengalaman</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-film" style="color: #10b981;"></i> File Mentah & Hasil Video High-Res</span>';
+                            }
+                            return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Layanan Resmi Terpercaya</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Jaminan Kepuasan Pelanggan</span>';
                         })()}
                     </div>
                 </div>
