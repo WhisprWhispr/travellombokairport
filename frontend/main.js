@@ -430,12 +430,7 @@ window.getItemCategoryMeta = (itemOrName, optCategory = '') => {
     const rawName = typeof itemOrName === 'string' 
         ? itemOrName 
         : (itemOrName?.itemName || itemOrName?.title || itemOrName?.serviceName || '');
-    const rawDesc = typeof itemOrName === 'object' 
-        ? (itemOrName?.description || itemOrName?.packageType || itemOrName?.typeLabel || '') 
-        : '';
     const nameLower = (rawName || '').toLowerCase();
-    const descLower = (rawDesc || '').toLowerCase();
-    const combinedLower = `${nameLower} ${descLower}`;
     let cat = (optCategory || (typeof itemOrName === 'object' ? itemOrName?.category : '') || '').toLowerCase();
 
     // Cek item di global catalog (window.globalItems) jika kategori belum diketahui
@@ -448,12 +443,11 @@ window.getItemCategoryMeta = (itemOrName, optCategory = '') => {
         if (found && found.category) cat = found.category.toLowerCase();
     }
 
-    // 1. HONEYMOON (Prioritas pertama, baik dari category, nama, atau deskripsi paket)
+    // 1. HONEYMOON (Hanya jika category memang honeymoon atau judul jelas mengandung honeymoon/bulan madu)
     if (
         cat === 'honeymoon' ||
-        combinedLower.includes('honeymoon') ||
-        combinedLower.includes('bulan madu') ||
-        combinedLower.includes('romantic')
+        nameLower.includes('honeymoon') ||
+        nameLower.includes('bulan madu')
     ) {
         return {
             key: 'honeymoon',
@@ -1017,8 +1011,7 @@ window.openTourModal = (id, carMode = null) => {
     }
 
     const isHoneymoonItem = (item.category === 'honeymoon') || 
-        (item.title && item.title.toLowerCase().includes('honeymoon')) || 
-        (item.description && item.description.toLowerCase().includes('honeymoon'));
+        (item.title && (item.title.toLowerCase().includes('honeymoon') || item.title.toLowerCase().includes('bulan madu')));
     if (isHoneymoonItem) {
         const chatWidget = document.getElementById('ai-chat-widget');
         if (chatWidget) chatWidget.style.display = 'none';
@@ -1985,8 +1978,7 @@ const createTransferCard = (item, index = 0) => {
 const createPackageCard = (item, index = 0) => {
     const isParent = item.isParent === true;
     const isHoneymoon = (item.category === 'honeymoon') || 
-        (item.title && item.title.toLowerCase().includes('honeymoon')) || 
-        (item.description && item.description.toLowerCase().includes('honeymoon'));
+        (item.title && (item.title.toLowerCase().includes('honeymoon') || item.title.toLowerCase().includes('bulan madu')));
     
     const parentBorder = isHoneymoon ? 'border:2px solid #ec4899; box-shadow:0 10px 20px rgba(236,72,153,0.15);' : (isParent ? 'border:2px solid #fbbf24;' : '');
     const gradientBtn = isHoneymoon ? 'linear-gradient(135deg, #ec4899, #be185d)' : 'linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af)';
@@ -2041,8 +2033,7 @@ window.openSubPackageModal = (parentId) => {
     if (!parentItem) return;
 
     const isParentHoneymoon = (parentItem.category === 'honeymoon') || 
-        (parentItem.title && parentItem.title.toLowerCase().includes('honeymoon')) || 
-        (parentItem.description && parentItem.description.toLowerCase().includes('honeymoon'));
+        (parentItem.title && (parentItem.title.toLowerCase().includes('honeymoon') || parentItem.title.toLowerCase().includes('bulan madu')));
     if (isParentHoneymoon) {
         const chatWidget = document.getElementById('ai-chat-widget');
         if (chatWidget) chatWidget.style.display = 'none';
@@ -2116,8 +2107,7 @@ window.openSubPackageModal = (parentId) => {
             })
             .map((child) => {
             const isHoneymoon = (child.category === 'honeymoon') || 
-                (child.title && child.title.toLowerCase().includes('honeymoon')) || 
-                (child.description && child.description.toLowerCase().includes('honeymoon')) || 
+                (child.title && (child.title.toLowerCase().includes('honeymoon') || child.title.toLowerCase().includes('bulan madu'))) || 
                 isParentHoneymoon;
             const formattedPrice = child.price ? formatPrice(child.price) : '';
             const borderStyle = isHoneymoon ? 'border: 1px solid #fbcfe8;' : 'border:none;';

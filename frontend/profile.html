@@ -634,13 +634,10 @@
     // Universal Category & Icon Helper
     window.getItemCategoryMeta = window.getItemCategoryMeta || function(itemOrName, optCategory = '') {
       const rawName = typeof itemOrName === 'string' ? itemOrName : (itemOrName?.itemName || itemOrName?.title || itemOrName?.serviceName || '');
-      const rawDesc = typeof itemOrName === 'object' ? (itemOrName?.description || itemOrName?.packageType || '') : '';
       const nameLower = (rawName || '').toLowerCase();
-      const descLower = (rawDesc || '').toLowerCase();
-      const combinedLower = `${nameLower} ${descLower}`;
       let cat = (optCategory || (typeof itemOrName === 'object' ? itemOrName?.category : '') || '').toLowerCase();
 
-      if (cat === 'honeymoon' || combinedLower.includes('honeymoon') || combinedLower.includes('bulan madu') || combinedLower.includes('romantic')) {
+      if (cat === 'honeymoon' || nameLower.includes('honeymoon') || nameLower.includes('bulan madu')) {
         return { key: 'honeymoon', label: 'Paket Honeymoon', icon: 'fa-heart', color: '#e11d48', bgColor: '#fff1f2', gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)', borderColor: '#fecdd3', shadow: 'rgba(225, 29, 72, 0.18)' };
       }
       if (cat === 'motorcycle' || cat === 'motor' || /(motor|motorcycle|nmax|vario|pcx|beat|scoopy|aerox|fazzio|adv|vespa|lexi|genio|mio)/i.test(nameLower)) {
