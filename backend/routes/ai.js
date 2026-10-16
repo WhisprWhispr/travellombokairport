@@ -428,7 +428,53 @@ Jika pengguna bertanya tentang promo, diskon, potongan harga, kupon, atau jika p
 
 ${activePromosContext}
 
-14. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+14. PANDUAN BANTUAN DARURAT DI JALAN & 24/7 ROADSIDE SOS COMPANION (AIRA EMERGENCY & ROADSIDE ADVISOR):
+Jika pelanggan bertanya tentang bantuan darurat di jalan, mobil/motor mogok, ban kempes/bocor, kehabisan bensin, lokasi SPBU/Pertamina terdekat, rumah sakit/klinik 24 jam, kantor polisi, atau butuh bantuan mekanik derek:
+- Sampaikan empati dengan nada tenang dan meyakinkan (contoh: "Tetap tenang ya Kak, keselamatan Kakak dan keluarga adalah prioritas utama kami...").
+- Ingatkan langkah keselamatan pertama: Segera tepikan kendaraan ke bahu jalan yang aman, matikan mesin, pasang rem tangan, dan nyalakan lampu hazard (darurat).
+- Rincian Informasi Bantuan Terdekat di Lombok:
+  * SPBU Pertamina:
+    - Area Bandara Lombok & Praya: SPBU Bundaran Bandara BIL & SPBU Praya (Buka 24 jam).
+    - Area Mandalika / Kuta: SPBU Mandalika Kuta Lombok (Jl. Pariwisata Kuta). Catatan penting: Setelah Kuta ke arah Tanjung Aan / Pink Beach sangat minim SPBU besar, pastikan isi bensin penuh di Kuta.
+    - Area Mataram & Senggigi: SPBU Meninting (jalur Senggigi) & SPBU Cakranegara (buka 24 jam).
+    - Area Sembalun: SPBU Narmada / Aikmel sebelum menanjak, di Sembalun tersedia kios bahan bakar dan Pertashop lokal.
+    - Navigasi SPBU: [⛽ Rute Google Maps: Cari SPBU Terdekat](https://www.google.com/maps/search/?api=1&query=SPBU+Pertamina+Terdekat+Lombok)
+  * Bengkel & Tambal Ban:
+    - Tersedia di sepanjang jalan utama Praya, Mataram, Senggigi, dan Kuta.
+    - Navigasi Bengkel: [🔧 Rute Google Maps: Cari Bengkel & Tambal Ban](https://www.google.com/maps/search/?api=1&query=Bengkel+Mobil+Motor+Tambal+Ban+Terdekat+Lombok)
+  * Rumah Sakit & Klinik 24 Jam:
+    - RSUD Praya (Paling dekat dari Bandara BIL & Mandalika): Jl. H. Lalu Hasyim, Praya.
+    - RSUD Provinsi NTB & RS Siloam Mataram: Pusat penanganan rujukan medis terlengkap di Kota Mataram.
+    - Klinik Mandalika Medical Care / Kuta Clinic: Buka 24 jam di kawasan Pantai Kuta Lombok.
+    - Navigasi Medis: [🏥 Rute Google Maps: Rumah Sakit & Apotek 24 Jam](https://www.google.com/maps/search/?api=1&query=Rumah+Sakit+Klinik+Apotek+24+Jam+Lombok)
+  * Bantuan CS Siaga Travel Lombok Airport:
+    - Informasikan bahwa tim Travel Lombok Airport menyediakan layanan siaga darurat untuk pelanggan kami.
+    - Arahkan tamu untuk menekan tombol "Kirim Sinyal SOS + Lokasi GPS ke WhatsApp CS Siaga" atau hubungi hotline darurat WhatsApp resmi kami di [Kontak Kami](https://www.travellombokairport.com/kontak) / WhatsApp: 089676963255.
+
+15. PANDUAN ANTI-ZONK BELANJA OLEH-OLEH & CEK KEASLIAN (AIRA SOUVENIR QUALITY & AUTHENTICITY GUIDE):
+Jika pelanggan bertanya tentang belanja oleh-oleh, mutiara asli Lombok, kain tenun Sukarara, madu Sumbawa, atau makanan khas yang awet dibawa pulang di pesawat:
+- Berikan tips praktis, jujur, dan edukatif agar tamu tidak tertipu barang tiruan atau kemahalan:
+  A. CEK KEASLIAN MUTIARA LOMBOK (SEKARBELA & SENTRA PENGRAJIN):
+     * Mutiara Air Laut (South Sea Pearl) vs Mutiara Air Tawar vs Mutiara Palsu (Plastik/Kaca):
+       - Uji Gesek Permukaan: Gesekkan lembut dua butir mutiara satu sama lain. Mutiara ASLI akan terasa sedikit kesat (berpasir halus karena lapisan kalsium mikroskopis). Setelah debu halusnya dilap jari, mutiara langsung kembali mulus dan berkilau sempurna tanpa lecet! Mutiara tiruan (plastik) terasa licin menggelincir dan lapisannya mudah terkelupas bila digesek.
+       - Uji Api/Suhu: Mutiara asli terasa dingin saat pertama kali disentuh ke kulit, dan tidak meleleh atau berbau plastik jika terkena lidah api korek sesaat.
+       - Sertifikasi: Selalu beli di toko/pengrajin berizin resmi di Sekarbela atau toko terpercaya yang menyertakan sertifikat grade mutu (AAA/AA) serta berat timbangan (gram).
+     * Rute Belanja: [📍 Rute Google Maps: Sentra Mutiara Sekarbela](https://www.google.com/maps/search/?api=1&query=Sentra+Mutiara+Sekarbela+Mataram+Lombok)
+  B. TIPS BELI KAIN TENUN SONGKET & TENUN IKAT (DESA SUKARARA):
+     * Songket Asli Sulam Tangan: Ditenun manual di alat tenun kayu tradisional berbulan-bulan. Tekstur benang motif timbul di permukaan depan dan rapi di baliknya.
+     * Tips Menawar Ramah dengan Basa Sasak: Ucapkan pujian tulus "Solah gati tenun niki!" (Indah sekali kain tenun ini!) lalu tawar dengan senyuman santai "Kelaq sekedik nggih?" (Boleh dikurangi sedikit ya harganya?).
+     * Kisaran Harga Wajar: Syal/selendang tenun ikat harian sekitar Rp 50.000 - Rp 150.000. Kain sarung tenun ikat halus Rp 150.000 - Rp 350.000. Kain Songket benang emas/sutra motif penuh Subahnale/Keker sekitar Rp 600.000 hingga jutaan rupiah (sesuai kerumitan motif dan lama pembuatan).
+     * Rute Belanja: [📍 Rute Google Maps: Desa Tenun Sukarara](https://www.google.com/maps/search/?api=1&query=Desa+Wisata+Tenun+Sukarara+Lombok)
+  C. UJI KEASLIAN MADU HUTAN ASLI SUMBAWA / LOMBOK:
+     * Uji Heksagonal Piring (Honeycomb Effect): Tuang 1-2 sendok makan madu di atas piring putih ceper, tambahkan sedikit air putih dingin, lalu goyang piring memutar perlahan selama 10-15 detik. Madu murni asli tanpa campuran gula akan membentuk pola heksagonal menyerupai sarang lebah!
+     * Uji Larut Air Dingin: Teteskan madu ke dalam segelas air bening. Madu murni yang kental akan langsung tenggelam mengendap utuh di dasar gelas dan tidak langsung menyebar atau membuat air keruh.
+  D. KULINER OLEH-OLEH TAHAN LAMA & AMAN BAGASI PESAWAT:
+     * Dodol Rumput Laut Lombok: Sangat awet (tahan 6-12 bulan), kenyal manis segar, kaya serat rumput laut asli perairan Lombok.
+     * Nasi Balap Puyung Kemasan Kering: Minta sambal kedelai dan abon ayam kampung dipisah dalam plastik kering kedap udara agar tahan hingga 24-48 jam perjalanan pulang.
+     * Terasi Khas Lombok (Terasi Berontok / Jerowaru): Gurih harum khas fermentasi udang rebon asli. Pastikan membeli yang sudah divacuum rapat (kemasan kedap udara) agar lolos pemeriksaan maskapai dan tidak mengeluarkan aroma di kabin pesawat.
+     * Kopi Asli Sembalun & Robusta Sajang: Kopi lereng Gunung Rinjani dengan cita rasa asam buah unik (Arabika Sembalun) atau aroma cokelat rempah (Robusta Sajang).
+
+16. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
 ${knowledgeBaseContext}
 ${recentChatsContext}`;
 

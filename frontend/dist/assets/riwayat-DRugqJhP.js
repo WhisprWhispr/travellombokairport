@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -1621,6 +1621,12 @@
                 <button onclick="window.checkAiraPromoDeals()" class="ai-quick-reply-btn ai-btn-rose-promo">
                     <i class="fa-solid fa-ticket" style="margin-right: 6px; color:#e11d48;"></i> 🎟️ Cek Promo Hari Ini & Klaim Kupon Diskon
                 </button>
+                <button onclick="window.showAiraRoadsideEmergencySOS()" class="ai-quick-reply-btn ai-btn-red-sos">
+                    <i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px; color:#ef4444;"></i> 🚨 Bantuan Darurat di Jalan & SOS 24/7 (SPBU, Bengkel, RS, CS Siaga)
+                </button>
+                <button onclick="window.askAiraAntiZonkSouvenirs()" class="ai-quick-reply-btn ai-btn-amber-oleholeh">
+                    <i class="fa-solid fa-shield-halved" style="margin-right: 6px; color:#f59e0b;"></i> 🛍️ Panduan Anti-Zonk Belanja Oleh-Oleh (Cek Mutiara, Madu & Tenun Asli)
+                </button>
                 <button onclick="window.askAiraQuick('Ajarkan saya sapaan ramah bahasa Sasak Lombok sehari-hari dan tips menawar oleh-oleh di Sade atau Sukarara!')" class="ai-quick-reply-btn ai-btn-emerald-sasak">
                     <i class="fa-solid fa-comments" style="margin-right: 6px; color:#10b981;"></i> 🗣️ Kamus Bahasa Sasak (Sapaan Lokal & Tips Belanja)
                 </button>
@@ -1792,54 +1798,144 @@ Saya mau booking sesuai rekomendasi AIRA:
         </div>
     `),r.scrollTop=r.scrollHeight,setTimeout(()=>{let e=document.getElementById(i);e&&e.remove();let n=`det-msg-`+Date.now();r.insertAdjacentHTML(`beforeend`,`
             <div id="${n}" class="message ai-message"></div>
-        `),g.push({role:`model`,parts:[{text:t}]}),localStorage.setItem(`aiChatHistory`,JSON.stringify(g)),window._simulateTyping(n,t)},800)},window.showEmergencyCenter=()=>{let e=document.getElementById(`ai-quick-replies`);e&&e.remove();let t=document.getElementById(`chat-messages`);if(!t)return;t.insertAdjacentHTML(`beforeend`,`
+        `),g.push({role:`model`,parts:[{text:t}]}),localStorage.setItem(`aiChatHistory`,JSON.stringify(g)),window._simulateTyping(n,t)},800)},window.showAiraRoadsideEmergencySOS=()=>{if(window.checkGuestLimit()){typeof window.openAuthModal==`function`&&window.openAuthModal(`login`);return}let e=document.getElementById(`ai-quick-replies`);e&&e.remove();let t=document.getElementById(`chat-messages`);if(!t)return;t.insertAdjacentHTML(`beforeend`,`
         <div class="message user-message" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:white; box-shadow:0 4px 15px rgba(239, 68, 68, 0.3);">
-            <i class="fa-solid fa-truck-medical"></i> Saya butuh bantuan darurat! (SOS)
+            <i class="fa-solid fa-triangle-exclamation"></i> 🚨 Bantuan Darurat di Jalan & SOS 24/7 (SPBU, Bengkel, RS, CS Siaga)
+        </div>
+    `);let n=`typing-`+Date.now();t.insertAdjacentHTML(`beforeend`,`
+        <div id="${n}" class="typing-indicator">
+            <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
+        </div>
+    `),t.scrollTop=t.scrollHeight;let r=e=>{let r=document.getElementById(n);r&&r.remove();let i=e?`@${e.lat},${e.lng},14z`:``,a=e?`https://www.google.com/maps/search/SPBU+Pertamina/${i}`:`https://www.google.com/maps/search/SPBU+Pertamina+Lombok`,o=e?`https://www.google.com/maps/search/Bengkel+Mobil+Motor+Tambal+Ban/${i}`:`https://www.google.com/maps/search/Bengkel+Mobil+Motor+Tambal+Ban+Lombok`,s=e?`https://www.google.com/maps/search/Rumah+Sakit+Klinik+24+Jam/${i}`:`https://www.google.com/maps/search/Rumah+Sakit+Klinik+24+Jam+Lombok`,c=e?`https://www.google.com/maps/search/Apotek+24+Jam/${i}`:`https://www.google.com/maps/search/Apotek+24+Jam+Lombok`,l=e?`🚨 *SOS DARURAT TRAVEL LOMBOK AIRPORT!* 🚨\nSaya mengalami kendala di jalan saat sewa kendaraan / berwisata di Lombok.\n\n📍 *Koordinat GPS Lokasi Saya:*\nhttps://www.google.com/maps?q=${e.lat},${e.lng}\n\nMohon bantuan darurat dari tim Travel Lombok Airport sesegera mungkin! 🙏`:`🚨 *SOS DARURAT TRAVEL LOMBOK AIRPORT!* 🚨
+Saya mengalami kendala di jalan saat sewa kendaraan / berwisata di Lombok.
+Mohon bantuan darurat dan arahan tim siaga sesegera mungkin! 🙏`,u=`
+            <div class="message ai-message" style="border: 1.5px solid #fca5a5; background: #fffaf9; padding: 12px 14px;">
+                <div class="aira-emergency-card">
+                    <div class="aira-emergency-header">
+                        <div class="aira-emergency-beacon">
+                            <i class="fa-solid fa-triangle-exclamation"></i>
+                        </div>
+                        <div class="aira-emergency-title-box">
+                            <h5>Pusat Bantuan Darurat & Siaga 24 Jam</h5>
+                            <p>Layanan Darurat Wisatawan & Sewa Kendaraan Travel Lombok Airport</p>
+                        </div>
+                    </div>
+                    
+                    <p style="margin: 0; font-size: 0.8rem; color: #334155; line-height: 1.45;">
+                        Tetap tenang ya Kak. Jika kendaraan mengalami kendala (ban bocor, mogok, kehabisan bensin), <strong>segera tepikan ke bahu jalan yang aman dan nyalakan lampu hazard</strong>. Pilih bantuan yang Anda butuhkan di bawah ini:
+                    </p>
+
+                    <a href="${`https://wa.me/6289676963255?text=${encodeURIComponent(l)}`}" target="_blank" rel="noopener noreferrer" class="aira-emergency-sos-action" title="Kirim Sinyal Darurat ke CS Siaga Travel Lombok">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 1.15rem;"></i>
+                        <span>🚨 Kirim Sinyal SOS + Lokasi ke WhatsApp CS Siaga</span>
+                    </a>
+
+                    <div class="aira-emergency-grid">
+                        <a href="${a}" target="_blank" rel="noopener noreferrer" class="aira-emergency-grid-btn">
+                            <i class="fa-solid fa-gas-pump" style="color: #dc2626;"></i>
+                            <span>⛽ SPBU Terdekat</span>
+                        </a>
+                        <a href="${o}" target="_blank" rel="noopener noreferrer" class="aira-emergency-grid-btn">
+                            <i class="fa-solid fa-wrench" style="color: #ea580c;"></i>
+                            <span>🔧 Bengkel & Tambal Ban</span>
+                        </a>
+                        <a href="${s}" target="_blank" rel="noopener noreferrer" class="aira-emergency-grid-btn">
+                            <i class="fa-solid fa-hospital" style="color: #0284c7;"></i>
+                            <span>🏥 RS & Klinik 24 Jam</span>
+                        </a>
+                        <a href="${c}" target="_blank" rel="noopener noreferrer" class="aira-emergency-grid-btn">
+                            <i class="fa-solid fa-prescription-bottle-medical" style="color: #059669;"></i>
+                            <span>💊 Apotek 24 Jam</span>
+                        </a>
+                    </div>
+
+                    <div class="aira-emergency-contacts">
+                        <div style="font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                            <i class="fa-solid fa-phone-volume"></i> Kontak Penting & Medis Darurat Lombok:
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px;">
+                            <div>• CS Siaga: <a href="tel:089676963255" style="color:#b91c1c; font-weight:700;">0896-7696-3255</a></div>
+                            <div>• Ambulans: <a href="tel:118" style="color:#b91c1c; font-weight:700;">118</a> / <a href="tel:119" style="color:#b91c1c; font-weight:700;">119</a></div>
+                            <div>• Polisi: <a href="tel:110" style="color:#b91c1c; font-weight:700;">110</a></div>
+                            <div>• RSUD Praya: <a href="tel:0370654007" style="color:#b91c1c; font-weight:700;">(0370) 654007</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;t.insertAdjacentHTML(`beforeend`,u),t.scrollTop=t.scrollHeight};navigator.geolocation?navigator.geolocation.getCurrentPosition(e=>{setTimeout(()=>r({lat:e.coords.latitude,lng:e.coords.longitude}),500)},()=>{setTimeout(()=>r(null),500)},{timeout:4e3}):setTimeout(()=>r(null),500)},window.showEmergencyCenter=window.showAiraRoadsideEmergencySOS,window.askAiraAntiZonkSouvenirs=()=>{if(window.checkGuestLimit()){typeof window.openAuthModal==`function`&&window.openAuthModal(`login`);return}let e=document.getElementById(`ai-quick-replies`);e&&e.remove();let t=document.getElementById(`chat-messages`);if(!t)return;t.insertAdjacentHTML(`beforeend`,`
+        <div class="message user-message" style="background:linear-gradient(135deg, #f59e0b, #d97706); color:white; box-shadow:0 4px 15px rgba(245, 158, 11, 0.3);">
+            <i class="fa-solid fa-bag-shopping"></i> 🛍️ Panduan Anti-Zonk Belanja Oleh-Oleh (Cek Mutiara, Madu & Tenun Asli)
         </div>
     `);let n=`typing-`+Date.now();t.insertAdjacentHTML(`beforeend`,`
         <div id="${n}" class="typing-indicator">
             <div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div>
         </div>
     `),t.scrollTop=t.scrollHeight,setTimeout(()=>{let e=document.getElementById(n);e&&e.remove(),t.insertAdjacentHTML(`beforeend`,`
-            <div class="message ai-message" style="border: 2px solid #fecaca; background: #fffaf7;">
-                <h4 style="color:#ef4444; margin:0 0 12px 0; display:flex; align-items:center; gap:8px;">
-                    <i class="fa-solid fa-triangle-exclamation"></i> Pusat Bantuan Darurat
-                </h4>
-                <p style="font-size:0.85rem; margin-bottom:12px;">Berikut adalah daftar layanan darurat penting di Lombok:</p>
-                
-                <ul style="list-style:none; padding:0; margin:0; font-size:0.85rem; display:flex; flex-direction:column; gap:10px;">
-                    <li style="display:flex; align-items:center; gap:10px;">
-                        <span style="background:#ef4444; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(239,68,68,0.3);"><i class="fa-solid fa-truck-medical"></i></span>
-                        <div><strong>Ambulans / Gawat Darurat:</strong> <br><a href="tel:118" style="font-weight:bold; color:#ef4444;">118</a> / <a href="tel:119" style="font-weight:bold; color:#ef4444;">119</a></div>
-                    </li>
-                    <li style="display:flex; align-items:center; gap:10px;">
-                        <span style="background:#3b82f6; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(59,130,246,0.3);"><i class="fa-solid fa-shield-halved"></i></span>
-                        <div><strong>Polisi:</strong> <br><a href="tel:110" style="font-weight:bold; color:#3b82f6;">110</a></div>
-                    </li>
-                    <li style="display:flex; align-items:center; gap:10px;">
-                        <span style="background:#f97316; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(249,115,22,0.3);"><i class="fa-solid fa-fire"></i></span>
-                        <div><strong>Pemadam Kebakaran:</strong> <br><a href="tel:113" style="font-weight:bold; color:#f97316;">113</a></div>
-                    </li>
-                    <li style="display:flex; align-items:center; gap:10px;">
-                        <span style="background:#8b5cf6; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(139,92,246,0.3);"><i class="fa-solid fa-building-flag"></i></span>
-                        <div><strong>Pusat Krisis Kemenpar:</strong> <br><a href="https://wa.me/628118956767" target="_blank" style="font-weight:bold; color:#8b5cf6;">0811-8956-767 (WA)</a></div>
-                    </li>
-                    <li style="display:flex; align-items:center; gap:10px;">
-                        <span style="background:#10b981; color:white; min-width:32px; height:32px; border-radius:50%; display:flex; justify-content:center; align-items:center; box-shadow:0 2px 5px rgba(16,185,129,0.3);"><i class="fa-brands fa-whatsapp"></i></span>
-                        <div><strong>Tim Travel Lombok:</strong> <br><a href="https://wa.me/6289676963255?text=Halo%20Tim%20Travel%20Lombok%20Airport,%20saya%20membutuhkan%20bantuan%20darurat%20sekarang." target="_blank" style="font-weight:bold; color:#10b981;">Hubungi CS (WA)</a></div>
-                    </li>
-                </ul>
+            <div class="message ai-message" style="border: 1.5px solid #fde68a; background: #fffdf5; padding: 12px 14px;">
+                <div class="aira-oleholeh-card">
+                    <div class="aira-oleholeh-header">
+                        <i class="fa-solid fa-shield-halved" style="color: #f59e0b; font-size: 1.1rem;"></i>
+                        <span>Panduan Anti-Zonk Belanja Oleh-Oleh Lombok</span>
+                    </div>
 
-                <div style="margin-top:15px; border-top:1px dashed #fca5a5; padding-top:12px; display:flex; flex-direction:column; gap:8px;">
-                    <button onclick="window.findNearestEmergency()" style="width:100%; background:linear-gradient(135deg, #ef4444, #dc2626); color:white; border:none; padding:10px; border-radius:10px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px; box-shadow:0 4px 10px rgba(239, 68, 68, 0.3); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                        <i class="fa-solid fa-location-dot"></i> Cari RS / Klinik Terdekat
-                    </button>
-                    <button onclick="window.shareLiveLocation()" style="width:100%; background:linear-gradient(135deg, #3b82f6, #2563eb); color:white; border:none; padding:10px; border-radius:10px; font-weight:bold; cursor:pointer; display:flex; justify-content:center; align-items:center; gap:8px; box-shadow:0 4px 10px rgba(59, 130, 246, 0.3); transition:all 0.2s;" onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
-                        <i class="fa-regular fa-share-from-square"></i> Bagikan Live Location
-                    </button>
+                    <div style="font-size: 0.8rem; color: #475569; line-height: 1.45;">
+                        Jangan sampai salah beli atau kemahalan ya Kak! Berikut tips rahasia mengecek keaslian oleh-oleh legendaris khas Lombok langsung dari warga lokal:
+                    </div>
+
+                    <div class="aira-oleholeh-tip-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong>🦪 1. Cek Keaslian Mutiara Sekarbela</strong>
+                            <span class="aira-oleholeh-badge-pill"><i class="fa-solid fa-gem"></i> South Sea Pearls</span>
+                        </div>
+                        • <strong>Uji Gesek:</strong> Gesekkan 2 butir mutiara perlahan. Mutiara ASLI terasa kesat berpasir mikroskopis, dilap jari langsung mulus berkilau tanpa lecet. Mutiara palsu terasa licin & lapisannya mudah terkelupas.<br>
+                        • <strong>Uji Suhu & Api:</strong> Mutiara asli terasa sejuk saat menyentuh kulit, tidak meleleh jika kena api sesaat. Selalu minta sertifikat grade (AAA/AA) & berat timbangan gram resmi.
+                    </div>
+
+                    <div class="aira-oleholeh-tip-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong>🧶 2. Tips Beli Kain Tenun Songket Sukarara</strong>
+                            <span class="aira-oleholeh-badge-pill"><i class="fa-solid fa-scroll"></i> Tenun Tangan Asli</span>
+                        </div>
+                        • <strong>Ciri Songket Asli:</strong> Ditenun manual di alat tenun kayu berbulan-bulan, motif timbul di permukaan depan.<br>
+                        • <strong>Sapaan Menawar Sopan (Basa Sasak):</strong> <em>"Solah gati tenun niki, kelaq sekedik nggih?"</em> (Indah sekali tenun ini, boleh dikurangi sedikit ya?).<br>
+                        • <strong>Harga Wajar:</strong> Syal tenun ikat ~Rp 50rb - 150rb; Sarung tenun ikat halus ~Rp 150rb - 350rb; Songket sulam benang emas ~Rp 600rb - jutaan.
+                    </div>
+
+                    <div class="aira-oleholeh-tip-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong>🍯 3. Uji Madu Hutan Asli Sumbawa</strong>
+                            <span class="aira-oleholeh-badge-pill"><i class="fa-solid fa-jar"></i> Honeycomb Effect</span>
+                        </div>
+                        • <strong>Uji Piring Heksagonal:</strong> Tuang 1 sendok madu di piring putih datar + sedikit air dingin, goyang memutar 10 detik. Madu murni asli akan membentuk pola heksagonal sarang lebah!<br>
+                        • <strong>Uji Air:</strong> Teteskan ke segelas air bening, madu asli langsung mengendap utuh di dasar tanpa membuat air keruh.
+                    </div>
+
+                    <div class="aira-oleholeh-tip-item">
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+                            <strong>🌶️ 4. Kuliner Awet & Aman Bagasi Pesawat</strong>
+                            <span class="aira-oleholeh-badge-pill"><i class="fa-solid fa-plane-circle-check"></i> Lolos Bandara</span>
+                        </div>
+                        • <strong>Nasi Balap Puyung:</strong> Minta sambal kedelai & abon kering dipisah agar awet 24-48 jam.<br>
+                        • <strong>Dodol Rumput Laut:</strong> Tahan 6-12 bulan, aman untuk bagasi kabin.<br>
+                        • <strong>Terasi Jerowaru:</strong> Wajib pilih kemasan vacuum seal rapat agar tidak mengeluarkan aroma di pesawat.<br>
+                        • <strong>Kopi Asli Sembalun:</strong> Kopi Arabika lereng Rinjani beraroma fruity segar.
+                    </div>
+
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                        <a href="https://www.google.com/maps/search/?api=1&query=Sentra+Mutiara+Sekarbela+Mataram+Lombok" target="_blank" rel="noopener noreferrer" class="aira-maps-btn" style="flex:1; min-width:140px; font-size:0.75rem; padding:7px 10px;">
+                            <i class="fa-solid fa-map-location-dot"></i> Rute Mutiara Sekarbela
+                        </a>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Desa+Wisata+Tenun+Sukarara+Lombok" target="_blank" rel="noopener noreferrer" class="aira-maps-btn" style="flex:1; min-width:140px; font-size:0.75rem; padding:7px 10px;">
+                            <i class="fa-solid fa-map-location-dot"></i> Rute Tenun Sukarara
+                        </a>
+                    </div>
+
+                    <div style="margin-top: 6px; font-size: 0.78rem; color: #64748b; line-height: 1.4; border-top: 1px dashed #e2e8f0; padding-top: 8px;">
+                        💡 <em>Ingin belanja oleh-oleh bebas repot tanpa takut tersesat? Tim driver lokal Travel Lombok Airport siap mengantar & menemani Anda berbelanja dengan armada sewa harian all-in kami!</em>
+                    </div>
                 </div>
             </div>
-        `),t.scrollTop=t.scrollHeight},800)},window.findNearestEmergency=()=>{let e=document.getElementById(`chat-messages`);e.insertAdjacentHTML(`beforeend`,`
+        `),t.scrollTop=t.scrollHeight},700)},window.findNearestEmergency=()=>{let e=document.getElementById(`chat-messages`);e.insertAdjacentHTML(`beforeend`,`
         <div class="message user-message" style="background:linear-gradient(135deg, #ef4444, #dc2626); color:white; box-shadow:0 4px 15px rgba(239, 68, 68, 0.3);">
             <i class="fa-solid fa-location-dot"></i> Cari RS / Klinik Terdekat
         </div>
