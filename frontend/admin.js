@@ -4,10 +4,13 @@ const API_URL = "/api";
 // Universal Category & Icon Helper
 window.getItemCategoryMeta = window.getItemCategoryMeta || function(itemOrName, optCategory = '') {
     const rawName = typeof itemOrName === 'string' ? itemOrName : (itemOrName?.itemName || itemOrName?.title || itemOrName?.serviceName || '');
+    const rawDesc = typeof itemOrName === 'object' ? (itemOrName?.description || itemOrName?.packageType || '') : '';
     const nameLower = (rawName || '').toLowerCase();
+    const descLower = (rawDesc || '').toLowerCase();
+    const combinedLower = `${nameLower} ${descLower}`;
     let cat = (optCategory || (typeof itemOrName === 'object' ? itemOrName?.category : '') || '').toLowerCase();
 
-    if (cat === 'honeymoon' || nameLower.includes('honeymoon') || nameLower.includes('bulan madu') || nameLower.includes('romantic')) {
+    if (cat === 'honeymoon' || combinedLower.includes('honeymoon') || combinedLower.includes('bulan madu') || combinedLower.includes('romantic')) {
         return { key: 'honeymoon', label: 'Paket Honeymoon', icon: 'fa-heart', color: '#e11d48', bgColor: '#fff1f2', gradient: 'linear-gradient(135deg, #fff1f2 0%, #ffe4e6 100%)', borderColor: '#fecdd3', shadow: 'rgba(225, 29, 72, 0.18)' };
     }
     if (cat === 'motorcycle' || cat === 'motor' || /(motor|motorcycle|nmax|vario|pcx|beat|scoopy|aerox|fazzio|adv|vespa|lexi|genio|mio)/i.test(nameLower)) {
@@ -16,7 +19,7 @@ window.getItemCategoryMeta = window.getItemCategoryMeta || function(itemOrName, 
     if (cat === 'transfer' || cat === 'airport' || /(transfer|airport|bandara|antar jemput|drop off|dropoff|pick up|pickup)/i.test(nameLower)) {
         return { key: 'transfer', label: 'Airport Transfer', icon: 'fa-plane-departure', color: '#0284c7', bgColor: '#f0f9ff', gradient: 'linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%)', borderColor: '#bae6fd', shadow: 'rgba(2, 132, 199, 0.18)' };
     }
-    if (cat === 'package' || cat === 'tour' || /(tour|trip|paket|wisata|liburan|gili|mandalika|sembalun|sasak|snorkeling|rinjani|pantai)/i.test(nameLower)) {
+    if (cat !== 'car' && cat !== 'mobil' && cat !== 'motorcycle' && cat !== 'motor' && (cat === 'package' || cat === 'tour' || /(tour|trip|paket|wisata|liburan|gili|mandalika|sembalun|sasak|snorkeling|rinjani|pantai)/i.test(nameLower))) {
         return { key: 'tour', label: 'Paket Tour Wisata', icon: 'fa-umbrella-beach', color: '#16a34a', bgColor: '#f0fdf4', gradient: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', borderColor: '#bbf7d0', shadow: 'rgba(22, 163, 74, 0.18)' };
     }
     if (cat === 'car' || cat === 'mobil' || /(mobil|car|rental|sewa|lepas kunci|include driver|driver|supir|sopir|avanza|innova|hiace|brio|xpander|alphard|fortuner|agya|ayla|calya|sigra|raize|rocky|rize|wrv|wr-v|ertiga|xl7|terios|rush|zenix|reborn|commuter|premio|pajero|sedan|camry|veloz|stargazer|creta|brv|br-v|hrv|hr-v|crv|cr-v)/i.test(nameLower)) {

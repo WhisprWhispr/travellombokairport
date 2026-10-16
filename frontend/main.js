@@ -430,7 +430,12 @@ window.getItemCategoryMeta = (itemOrName, optCategory = '') => {
     const rawName = typeof itemOrName === 'string' 
         ? itemOrName 
         : (itemOrName?.itemName || itemOrName?.title || itemOrName?.serviceName || '');
+    const rawDesc = typeof itemOrName === 'object' 
+        ? (itemOrName?.description || itemOrName?.packageType || itemOrName?.typeLabel || '') 
+        : '';
     const nameLower = (rawName || '').toLowerCase();
+    const descLower = (rawDesc || '').toLowerCase();
+    const combinedLower = `${nameLower} ${descLower}`;
     let cat = (optCategory || (typeof itemOrName === 'object' ? itemOrName?.category : '') || '').toLowerCase();
 
     // Cek item di global catalog (window.globalItems) jika kategori belum diketahui
@@ -443,12 +448,12 @@ window.getItemCategoryMeta = (itemOrName, optCategory = '') => {
         if (found && found.category) cat = found.category.toLowerCase();
     }
 
-    // 1. HONEYMOON (Prioritas pertama, sebelum tour/paket umum)
+    // 1. HONEYMOON (Prioritas pertama, baik dari category, nama, atau deskripsi paket)
     if (
         cat === 'honeymoon' ||
-        nameLower.includes('honeymoon') ||
-        nameLower.includes('bulan madu') ||
-        nameLower.includes('romantic')
+        combinedLower.includes('honeymoon') ||
+        combinedLower.includes('bulan madu') ||
+        combinedLower.includes('romantic')
     ) {
         return {
             key: 'honeymoon',
@@ -496,10 +501,11 @@ window.getItemCategoryMeta = (itemOrName, optCategory = '') => {
         };
     }
 
-    // 4. PAKET TOUR / WISATA / PRIVATE TRIP
+    // 4. PAKET TOUR / WISATA / PRIVATE TRIP (Kecuali mobil/motor murni)
     if (
-        cat === 'package' || cat === 'tour' ||
-        /(tour|trip|paket|wisata|liburan|gili|mandalika|sembalun|sasak|snorkeling|rinjani|pantai)/i.test(nameLower)
+        cat !== 'car' && cat !== 'mobil' && cat !== 'motorcycle' && cat !== 'motor' &&
+        (cat === 'package' || cat === 'tour' ||
+        /(tour|trip|paket|wisata|liburan|gili|mandalika|sembalun|sasak|snorkeling|rinjani|pantai)/i.test(nameLower))
     ) {
         return {
             key: 'tour',
@@ -1010,7 +1016,10 @@ window.openTourModal = (id, carMode = null) => {
         return;
     }
 
-    if (item.title && item.title.toLowerCase().includes('honeymoon')) {
+    const isHoneymoonItem = (item.category === 'honeymoon') || 
+        (item.title && item.title.toLowerCase().includes('honeymoon')) || 
+        (item.description && item.description.toLowerCase().includes('honeymoon'));
+    if (isHoneymoonItem) {
         const chatWidget = document.getElementById('ai-chat-widget');
         if (chatWidget) chatWidget.style.display = 'none';
     }
@@ -1161,7 +1170,11 @@ window.openTourModal = (id, carMode = null) => {
             <div class="tm-top premium-card" style="position: relative; overflow: hidden; border: 1px solid #f1f5f9; box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.08); width: 100%; box-sizing: border-box;">
                 <div class="tm-title" style="flex: 1; min-width: 0; width: 100%; max-width: 100%; box-sizing: border-box;">
                     ${(() => {
-                        let typeLabel = 'PAKET TOUR';
+                        const meta = (typeof window.getItemCategoryMeta === 'function') 
+                            ? window.getItemCategoryMeta(item) 
+                            : { key: 'tour', icon: 'fa-umbrella-beach', color: '#16a34a', bgColor: '#f0fdf4', borderColor: '#bbf7d0', shadow: 'rgba(22, 163, 74, 0.15)', label: 'Paket Tour' };
+
+                        let typeLabel = meta.label.toUpperCase();
                         if (isCarCategory) typeLabel = isDriverMode ? 'Sewa Mobil + Driver' : 'Sewa Mobil Lepas Kunci';
                         else if (item.category === 'motorcycle') typeLabel = 'Sewa Motor';
                         else if (item.category === 'drone') typeLabel = 'Sewa Drone';
@@ -1196,12 +1209,12 @@ window.openTourModal = (id, carMode = null) => {
                         }
 
                         return `
-                            <div style="font-size: 0.8rem; font-weight: 800; color: #0284c7; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: #e0f2fe; padding: 4px 12px; border-radius: 20px;">
-                                <i class="fa-solid fa-car-rear"></i> ${typeLabel}
+                            <div style="font-size: 0.8rem; font-weight: 800; color: ${meta.color}; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: ${meta.bgColor}; border: 1px solid ${meta.borderColor}; padding: 4px 14px; border-radius: 20px; box-shadow: 0 2px 6px ${meta.shadow || 'rgba(0,0,0,0.06)'};">
+                                <i class="fa-solid ${meta.icon}"></i> ${typeLabel}
                             </div>
                             <h2 style="color: #0f172a; font-size: clamp(1.4rem, 5.5vw, 2.2rem); margin: 8px 0 12px 0; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em; word-break: break-word; overflow-wrap: break-word;">${item.title.toUpperCase()}</h2>
                             <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
-                                ${!isCarCategory ? `<span style="background: #f0f9ff; color: var(--primary-blue); font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
+                                ${!isCarCategory ? `<span style="background: ${meta.bgColor}; color: ${meta.color}; border: 1px solid ${meta.borderColor}; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
                                 ${driverPillsHtml}
                             </div>
                             <p style="color: #64748b; font-size: 0.95rem; line-height: 1.6; margin: 0; max-width: 600px;">${item.description || 'Deskripsi detail tidak tersedia.'}</p>
@@ -1210,20 +1223,44 @@ window.openTourModal = (id, carMode = null) => {
                 </div>
                 <div class="tm-price-box premium-price-box">
                     <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">Tarif Sewa</span>
-                        <span style="font-size: 0.72rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
-                            <i class="fa-solid ${isDriverMode ? 'fa-user-check' : 'fa-key'}"></i> ${isCarCategory ? (isDriverMode ? 'Include Driver' : 'Lepas Kunci') : 'Paket'}
-                        </span>
+                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">${isCarCategory ? 'Tarif Sewa' : (item.category === 'motorcycle' || item.category === 'drone' ? 'Tarif Sewa' : 'Tarif Paket')}</span>
+                        ${(() => {
+                            const meta = (typeof window.getItemCategoryMeta === 'function') 
+                                ? window.getItemCategoryMeta(item) 
+                                : { icon: 'fa-tag', color: '#0284c7', bgColor: '#e0f2fe', borderColor: '#bae6fd', label: 'Paket' };
+                            if (isCarCategory) {
+                                return `<span style="font-size: 0.72rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; border: 1px solid ${isDriverMode ? '#bbf7d0' : '#bae6fd'}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid ${isDriverMode ? 'fa-user-check' : 'fa-key'}"></i> ${isDriverMode ? 'Include Driver' : 'Lepas Kunci'}
+                                </span>`;
+                            }
+                            return `<span style="font-size: 0.72rem; font-weight: 800; color: ${meta.color}; background: ${meta.bgColor}; border: 1px solid ${meta.borderColor}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                <i class="fa-solid ${meta.icon}"></i> ${meta.label}
+                            </span>`;
+                        })()}
                     </div>
                     <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px;">
-                        <h3 style="color: #0284c7; margin: 0; font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em;">${formatPrice(activeItemPrice)}</h3>
-                        <span style="color: #64748b; font-size: 0.88rem; font-weight: 700;">/ ${isCarCategory ? (isDriverMode ? '12 Jam' : '24 Jam') : 'paket'}</span>
+                        <h3 style="color: ${(() => {
+                            const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { color: '#0284c7' };
+                            return isCarCategory ? '#0284c7' : meta.color;
+                        })()}; margin: 0; font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em;">${formatPrice(activeItemPrice)}</h3>
+                        <span style="color: #64748b; font-size: 0.88rem; font-weight: 700;">/ ${isCarCategory ? (isDriverMode ? '12 Jam' : '24 Jam') : (item.category === 'motorcycle' ? '24 Jam' : 'paket')}</span>
                     </div>
                     <div style="border-top: 1px dashed #cbd5e1; padding-top: 10px; font-size: 0.78rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
-                        ${isCarCategory ? (isDriverMode 
-                            ? '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Termasuk Unit Mobil, Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Bebas Deposit Jaminan (Rp 0)</span>' 
-                            : '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Durasi 24 Jam Penuh Setir Sendiri</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Unit Bersih, AC Dingin & Toolkit</span>') 
-                            : '<span>Mulai harga terendah</span>'}
+                        ${(() => {
+                            const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { key: 'tour' };
+                            if (isCarCategory) {
+                                return isDriverMode 
+                                    ? '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Termasuk Unit Mobil, Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Bebas Deposit Jaminan (Rp 0)</span>' 
+                                    : '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Durasi 24 Jam Penuh Setir Sendiri</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Unit Bersih, AC Dingin & Toolkit</span>';
+                            }
+                            if (meta.key === 'honeymoon') {
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-heart" style="color: #e11d48;"></i> Paket Romantic Private Honeymoon</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Jadwal Fleksibel & Driver Ramah</span>';
+                            }
+                            if (meta.key === 'tour') {
+                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-route" style="color: #16a34a;"></i> Rute Wisata Terbaik & Lengkap</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Include Transport & Dokumentasi</span>';
+                            }
+                            return '<span>Mulai harga terendah</span>';
+                        })()}
                     </div>
                 </div>
 
@@ -1254,7 +1291,7 @@ window.openTourModal = (id, carMode = null) => {
                             <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN
                         </span>
                         <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase;">
-                            ${isCarCategory ? (isDriverMode ? 'Dengan Driver' : 'Lepas Kunci') : 'Rental'}
+                            ${isCarCategory ? (isDriverMode ? 'Dengan Driver' : 'Lepas Kunci') : (item.category === 'motorcycle' ? 'Rental Motor' : (item.category === 'drone' ? 'Sewa Drone' : 'Ketentuan Paket'))}
                         </span>
                     </div>
                     <div style="padding: 20px;">
@@ -1927,7 +1964,9 @@ const createTransferCard = (item, index = 0) => {
 // Render Package Card (Paket Tour)
 const createPackageCard = (item, index = 0) => {
     const isParent = item.isParent === true;
-    const isHoneymoon = item.title && item.title.toLowerCase().includes('honeymoon');
+    const isHoneymoon = (item.category === 'honeymoon') || 
+        (item.title && item.title.toLowerCase().includes('honeymoon')) || 
+        (item.description && item.description.toLowerCase().includes('honeymoon'));
     
     const parentBorder = isHoneymoon ? 'border:2px solid #ec4899; box-shadow:0 10px 20px rgba(236,72,153,0.15);' : (isParent ? 'border:2px solid #fbbf24;' : '');
     const gradientBtn = isHoneymoon ? 'linear-gradient(135deg, #ec4899, #be185d)' : 'linear-gradient(135deg,var(--primary-blue,#0ea5e9),#1e40af)';
@@ -1981,7 +2020,10 @@ window.openSubPackageModal = (parentId) => {
     const parentItem = globalItems.find(i => i.id === parentId);
     if (!parentItem) return;
 
-    if (parentItem.title && parentItem.title.toLowerCase().includes('honeymoon')) {
+    const isParentHoneymoon = (parentItem.category === 'honeymoon') || 
+        (parentItem.title && parentItem.title.toLowerCase().includes('honeymoon')) || 
+        (parentItem.description && parentItem.description.toLowerCase().includes('honeymoon'));
+    if (isParentHoneymoon) {
         const chatWidget = document.getElementById('ai-chat-widget');
         if (chatWidget) chatWidget.style.display = 'none';
     }
@@ -2053,7 +2095,10 @@ window.openSubPackageModal = (parentId) => {
                 return (a.title || '').localeCompare(b.title || '', 'id', { sensitivity: 'base' });
             })
             .map((child) => {
-            const isHoneymoon = child.title && child.title.toLowerCase().includes('honeymoon');
+            const isHoneymoon = (child.category === 'honeymoon') || 
+                (child.title && child.title.toLowerCase().includes('honeymoon')) || 
+                (child.description && child.description.toLowerCase().includes('honeymoon')) || 
+                isParentHoneymoon;
             const formattedPrice = child.price ? formatPrice(child.price) : '';
             const borderStyle = isHoneymoon ? 'border: 1px solid #fbcfe8;' : 'border:none;';
             const bgStyle = isHoneymoon ? 'background: linear-gradient(to bottom, #ffffff, #fdf2f8);' : 'background:white;';
