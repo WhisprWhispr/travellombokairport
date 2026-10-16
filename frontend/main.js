@@ -447,6 +447,90 @@ const parseLines = (text) => {
     return text.split('\n').map(t => t.trim()).filter(t => t.length > 0);
 };
 
+const DEFAULT_CAR_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL LEPAS KUNCI 
+
+1. Identitas Penyewa
+   • WNI: KTP & SIM A aktif.
+   • WNA: Paspor & SIM yang berlaku.
+
+2. Booking
+   • Booking dinyatakan sah setelah pembayaran lock booking sebesar Rp 200.000.
+   • Pelunasan dilakukan sebelum kendaraan digunakan.
+
+3. Deposit / Uang Jaminan
+   • Deposit: Rp 1.000.000 (100% Refundable).
+   • Deposit dibayarkan sebelum kendaraan diserahkan.
+   • Deposit dikembalikan setelah unit dikembalikan dan kondisi unit dinyatakan baik.
+   • Jika terdapat kerusakan, kehilangan, atau denda akibat kelalaian, biaya dipotong dari deposit.
+
+4. Penggunaan Kendaraan
+   • Durasi pemakaian penuh 24 Jam sejak unit diserahkan.
+   • Kendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas resmi di Pulau Lombok.
+   • Dilarang menyewakan kembali unit atau membawanya keluar Pulau Lombok tanpa izin.
+   • Dilarang menggunakan kendaraan untuk balapan, off-road ekstrem, atau kegiatan ilegal.
+
+5. Tanggung Jawab Penyewa
+   • BBM, biaya parkir, tol, dan tilang menjadi tanggung jawab penyewa.
+   • Jika terjadi kendala darurat, segera hubungi admin kami.
+
+6. Pengembalian
+   • Kendaraan wajib dikembalikan tepat waktu sesuai kesepakatan.
+   • Keterlambatan dikenakan biaya overtime per jam.
+
+💰 DEPOSIT: Rp 1.000.000 (100% Dikembalikan)
+
+TRAVEL LOMBOK AIRPORT 🚙`;
+
+const DEFAULT_CAR_DRIVER_TERMS = `🚙 SYARAT & KETENTUAN SEWA MOBIL + DRIVER (12 JAM)
+
+1. Durasi Layanan
+   • Durasi pemakaian 12 Jam per hari sesuai rute dan jadwal yang disepakati.
+   • Pemakaian melebihi 12 jam (overtime) dikenakan biaya overtime per jam.
+
+2. Fasilitas Termasuk (Include)
+   • Unit mobil bersih, ber-AC dingin, dan siap jalan.
+   • Driver profesional, ramah, dan berpengalaman rute wisata Lombok.
+   • Bahan Bakar Minyak (BBM) selama rute pemakaian.
+   • Antar / Jemput di Bandara Lombok (BIL) atau Hotel (Area Kota).
+
+3. Ketentuan Bebas Deposit
+   • Layanan dengan Driver BEBAS DEPOSIT (Rp 0 / tanpa jaminan uang deposit).
+   • Penyewa tidak perlu memberikan jaminan SIM atau uang deposit.
+
+4. Biaya Tidak Termasuk (Exclude)
+   • Tiket masuk objek wisata dan biaya parkir/tol.
+   • Makan supir dan pengeluaran pribadi penyewa.
+   • Tips supir (sukarela).
+
+5. Booking & Pelunasan
+   • Booking sah setelah pembayaran DP sebesar Rp 200.000.
+   • Sisa pembayaran dapat dilunasi saat bertemu driver di lokasi.
+
+TRAVEL LOMBOK AIRPORT 🚙`;
+
+const DEFAULT_MOTOR_TERMS = `🛵 SYARAT & KETENTUAN SEWA MOTOR 
+
+1. Identitas Penyewa
+   • WNI: KTP & SIM C aktif.
+   • WNA: Paspor & SIM yang berlaku.
+
+2. Booking
+   • Booking dinyatakan sah setelah pembayaran lock booking / DP sebesar Rp 50.000.
+   • Pelunasan dilakukan sebelum kendaraan digunakan.
+
+3. Deposit / Uang Jaminan
+   • Deposit: Rp 500.000 (100% dikembalikan setelah masa sewa berakhir).
+   • Deposit dibayarkan sebelum kendaraan diserahkan.
+
+4. Penggunaan Kendaraan
+   • Kendaraan hanya digunakan untuk keperluan pribadi dan sesuai aturan lalu lintas.
+   • Wajib mengenakan helm SNI yang telah disediakan.
+
+5. Tanggung Jawab Penyewa
+   • BBM, parkir, dan tilang menjadi tanggung jawab penyewa.
+
+TRAVEL LOMBOK AIRPORT 🛵`;
+
 // Format terms into HTML list
 const formatTerms = (termsText) => {
     if (!termsText) return '';
@@ -458,23 +542,24 @@ const formatTerms = (termsText) => {
         let trimmed = line.trim();
 
         // Auto-format numbers (4 digits or more) with dots (e.g. 500000 -> 500.000)
-        trimmed = trimmed.replace(/b(d{4,})b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
+        trimmed = trimmed.replace(/\b(\d{4,})\b/g, (match) => parseInt(match, 10).toLocaleString('id-ID'));
 
-        if (trimmed.match(/^d+.s/)) {
+        if (trimmed.match(/^\d+\.\s*/)) {
             if (inList) { html += '</ul>'; inList = false; }
-            html += `<div style="margin-top: 15px; font-weight: 700; color: var(--primary-blue);">${trimmed}</div>`;
-        } else if (trimmed.startsWith('•')) {
-            if (!inList) { html += '<ul style="margin: 5px 0 10px 20px; padding: 0; list-style-type: disc;">'; inList = true; }
-            html += `<li style="margin-bottom: 5px;">${trimmed.substring(1).trim()}</li>`;
+            html += `<div style="margin-top: 14px; margin-bottom: 4px; font-weight: 700; color: #0284c7;">${trimmed}</div>`;
+        } else if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
+            if (!inList) { html += '<ul style="margin: 4px 0 10px 18px; padding: 0; list-style-type: disc;">'; inList = true; }
+            const cleanText = trimmed.replace(/^[•\-\*]\s*/, '');
+            html += `<li style="margin-bottom: 4px; color: #475569;">${cleanText}</li>`;
         } else if (trimmed === '') {
             if (inList) { html += '</ul>'; inList = false; }
-            html += '<div style="height: 10px;"></div>';
+            html += '<div style="height: 8px;"></div>';
         } else {
             if (inList) { html += '</ul>'; inList = false; }
             if (trimmed.includes('DEPOSIT') || trimmed.startsWith('🛵') || trimmed.startsWith('🚙')) {
-                html += `<div style="font-weight: 700;">${trimmed}</div>`;
+                html += `<div style="font-weight: 800; color: #0f172a; margin-top: 10px; margin-bottom: 4px;">${trimmed}</div>`;
             } else {
-                html += `<div>${trimmed}</div>`;
+                html += `<div style="color: #475569; margin-bottom: 4px;">${trimmed}</div>`;
             }
         }
     });
@@ -818,6 +903,19 @@ window.openTourModal = (id, carMode = null) => {
         }
     }
 
+    let activeTerms = item.terms;
+    if (isCarCategory) {
+        if (isDriverMode) {
+            activeTerms = DEFAULT_CAR_DRIVER_TERMS;
+        } else {
+            activeTerms = (item.terms && item.terms.trim() && !item.terms.includes('DRIVER (12 JAM)'))
+                ? item.terms
+                : DEFAULT_CAR_TERMS;
+        }
+    } else if (item.category === 'motorcycle') {
+        activeTerms = (item.terms && item.terms.trim()) ? item.terms : DEFAULT_MOTOR_TERMS;
+    }
+
     modalBody.innerHTML = `
         <div style="width: 100%; height: 400px; position: relative;">
             <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
@@ -934,11 +1032,13 @@ window.openTourModal = (id, carMode = null) => {
                     </ul>
                 </div>` : ''}
                 
-                ${item.terms ? `
-                <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
-                    <div class="tm-box-title" style="background: var(--primary-blue);"><i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN</div>
-                    <div style="padding: 15px; color: var(--text-dark); font-size: 0.95rem; line-height: 1.6;">
-                        ${formatTerms(item.terms)}
+                ${activeTerms ? `
+                <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1; border-radius: 14px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.03);">
+                    <div class="tm-box-title" style="background: var(--primary-blue); font-size: 0.95rem; font-weight: 800; padding: 12px 18px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN ${isCarCategory ? (isDriverMode ? '(DENGAN DRIVER)' : '(LEPAS KUNCI)') : ''}
+                    </div>
+                    <div style="padding: 18px; color: var(--text-dark); font-size: 0.92rem; line-height: 1.6;">
+                        ${formatTerms(activeTerms)}
                     </div>
                 </div>` : ''}
             </div>

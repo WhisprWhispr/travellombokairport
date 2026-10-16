@@ -776,6 +776,7 @@ const closeModal = () => {
     if(parentIdInput) parentIdInput.value = "";
     if(priceWithDriverInput) priceWithDriverInput.value = "";
     orderInput.value = "0";
+    termsCategoryInput.value = "default";
     termsCustomGroup.style.display = "none";
     modalTitle.textContent = "Add New Item";
     // Reset transfer matrix
