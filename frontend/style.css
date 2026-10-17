@@ -1385,9 +1385,14 @@ ul {
     padding: 6px 14px !important;
     font-size: 0.82rem !important;
   }
-  #sub-modal-body {
-    grid-template-columns: 1fr !important;
-    gap: 16px !important;
+  #sub-modal-body,
+  .sub-modal-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+  #parent-packages-container {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
   }
   .modal-booking-actions {
     grid-template-columns: 1fr !important;
