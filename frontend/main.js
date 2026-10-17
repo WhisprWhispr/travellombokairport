@@ -3354,8 +3354,118 @@ window.generateEtiketPDF = (data) => {
     });
 };
 
+// Paste Order ID with custom branded modal & graceful clipboard fallback
+window.pasteOrderId = async () => {
+    const input = document.getElementById('input-cek-orderan');
+    if (!input) return;
 
+    // Check if clipboard permission is already explicitly granted
+    let isAlreadyGranted = false;
+    try {
+        if (navigator.permissions && navigator.permissions.query) {
+            const status = await navigator.permissions.query({ name: 'clipboard-read' });
+            if (status.state === 'granted') {
+                isAlreadyGranted = true;
+            }
+        }
+    } catch (e) {}
 
+    if (isAlreadyGranted) {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text && text.trim()) {
+                input.value = text.trim().toUpperCase();
+                Swal.fire({
+                    toast: true,
+                    position: 'top',
+                    icon: 'success',
+                    title: 'ID Pesanan Ditempel!',
+                    text: text.trim().toUpperCase(),
+                    showConfirmButton: false,
+                    timer: 2000,
+                    background: '#ffffff',
+                    color: '#0f172a'
+                });
+                return;
+            }
+        } catch (e) {}
+    }
+
+    // Custom Branded Modal Pengganti Dialog Browser yang Kaku
+    Swal.fire({
+        title: 'Tempel ID Pesanan',
+        html: `
+            <div style="text-align: center; padding: 4px 0;">
+                <div style="width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); color: #059669; display: inline-flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 12px; border: 1px solid #a7f3d0; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);">
+                    <i class="fa-solid fa-clipboard-check"></i>
+                </div>
+                <p style="color: #475569; font-size: 0.9rem; line-height: 1.5; margin: 0 0 16px 0;">
+                    Tempel atau masukkan kode ID pesanan Anda (contoh: <strong>ORD-xxxx</strong>) untuk melacak status pesanan secara instan:
+                </p>
+                <div style="position: relative; margin-bottom: 12px;">
+                    <input type="text" id="swal-paste-order-id" class="swal2-input" placeholder="ORD-xxxx" value="${input.value || ''}" 
+                           style="width: 100%; box-sizing: border-box; text-align: center; font-weight: 800; font-size: 1.1rem; letter-spacing: 0.5px; border-radius: 12px; margin: 0 auto; height: 48px; border: 1.5px solid #cbd5e1; color: #0f172a; text-transform: uppercase;">
+                </div>
+                <div style="display: flex; justify-content: center; gap: 8px;">
+                    <button type="button" id="swal-btn-read-clipboard" class="btn" style="background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; padding: 7px 15px; border-radius: 20px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s;" onmouseover="this.style.background='#dcfce7'" onmouseout="this.style.background='#f0fdf4'">
+                        <i class="fa-solid fa-paste"></i> Ambil dari Salinan HP
+                    </button>
+                </div>
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa-solid fa-check"></i> Terapkan ID',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#059669',
+        cancelButtonColor: '#94a3b8',
+        customClass: { popup: 'modern-popup-radius' },
+        didOpen: () => {
+            const modalInput = document.getElementById('swal-paste-order-id');
+            if (modalInput) modalInput.focus();
+
+            const clipBtn = document.getElementById('swal-btn-read-clipboard');
+            if (clipBtn) {
+                clipBtn.onclick = async () => {
+                    try {
+                        const clipText = await navigator.clipboard.readText();
+                        if (clipText && clipText.trim()) {
+                            modalInput.value = clipText.trim().toUpperCase();
+                            Swal.resetValidationMessage();
+                        } else {
+                            Swal.showValidationMessage('Papan klip kosong. Silakan salin ID pesanan terlebih dahulu.');
+                        }
+                    } catch (err) {
+                        Swal.showValidationMessage('Akses salinan otomatis dibatasi browser. Silakan tahan kolom input di atas lalu pilih Tempel / Paste.');
+                    }
+                };
+            }
+        },
+        preConfirm: () => {
+            const val = document.getElementById('swal-paste-order-id')?.value.trim();
+            if (!val) {
+                Swal.showValidationMessage('Harap isi atau tempel ID pesanan Anda.');
+                return false;
+            }
+            return val;
+        }
+    }).then((result) => {
+        if (result.isConfirmed && result.value) {
+            input.value = result.value.toUpperCase();
+            input.focus();
+            Swal.fire({
+                toast: true,
+                position: 'top',
+                icon: 'success',
+                title: 'ID Berhasil Diterapkan!',
+                text: result.value.toUpperCase(),
+                showConfirmButton: false,
+                timer: 1800,
+                background: '#ffffff',
+                color: '#0f172a'
+            });
+        }
+    });
+};
 
 // Cek Booking Status
 window.cekStatusBooking = async (event, type = 'booking') => {
