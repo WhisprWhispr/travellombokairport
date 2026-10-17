@@ -1131,9 +1131,9 @@ window.openTourModal = (id, carMode = null) => {
     }
 
     modalBody.innerHTML = `
-        <div style="width: 100%; height: 400px; position: relative;">
+        <div style="width: 100%; height: clamp(280px, 45vw, 400px); position: relative;">
             <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 150px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
         </div>
         <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
             ${isCarCategory ? `
@@ -1215,13 +1215,13 @@ window.openTourModal = (id, carMode = null) => {
                     })()}
                 </div>
                 <div class="tm-price-box premium-price-box">
-                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-bottom: 8px;">
-                        <span style="font-size: 0.75rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; flex-wrap: wrap;">
+                        <span style="font-size: 0.76rem; font-weight: 800; color: #64748b; text-transform: uppercase; letter-spacing: 0.6px; white-space: nowrap;">
                             ${(() => {
                                 const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { key: 'tour' };
-                                if (meta.key === 'honeymoon') return 'Harga Paket Honeymoon';
-                                if (meta.key === 'tour') return 'Harga Paket Tour';
-                                if (isCarCategory) return 'Tarif Sewa Mobil';
+                                if (meta.key === 'honeymoon') return 'Harga Paket';
+                                if (meta.key === 'tour') return 'Harga Paket';
+                                if (isCarCategory) return isDriverMode ? 'Tarif + Supir' : 'Tarif Lepas Kunci';
                                 if (item.category === 'motorcycle' || meta.key === 'motor') return 'Tarif Sewa Motor';
                                 if (item.category === 'drone' || meta.key === 'drone') return 'Tarif Sewa Drone';
                                 if (item.category === 'transfer' || meta.key === 'transfer') return 'Tarif Antar Jemput';
@@ -1233,46 +1233,46 @@ window.openTourModal = (id, carMode = null) => {
                                 ? window.getItemCategoryMeta(item) 
                                 : { icon: 'fa-tag', color: '#0284c7', bgColor: '#e0f2fe', borderColor: '#bae6fd', label: 'Paket' };
                             if (isCarCategory) {
-                                return `<span style="font-size: 0.72rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; border: 1px solid ${isDriverMode ? '#bbf7d0' : '#bae6fd'}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                                return `<span style="font-size: 0.74rem; font-weight: 800; color: ${isDriverMode ? '#15803d' : '#0284c7'}; background: ${isDriverMode ? '#dcfce7' : '#e0f2fe'}; border: 1px solid ${isDriverMode ? '#bbf7d0' : '#bae6fd'}; padding: 4px 12px; border-radius: 14px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0;">
                                     <i class="fa-solid ${isDriverMode ? 'fa-user-check' : 'fa-key'}"></i> ${isDriverMode ? 'Include Driver' : 'Lepas Kunci'}
                                 </span>`;
                             }
-                            return `<span style="font-size: 0.72rem; font-weight: 800; color: ${meta.color}; background: ${meta.bgColor}; border: 1px solid ${meta.borderColor}; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px;">
+                            return `<span style="font-size: 0.74rem; font-weight: 800; color: ${meta.color}; background: ${meta.bgColor}; border: 1px solid ${meta.borderColor}; padding: 4px 12px; border-radius: 14px; display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; flex-shrink: 0;">
                                 <i class="fa-solid ${meta.icon}"></i> ${meta.label}
                             </span>`;
                         })()}
                     </div>
-                    <div style="display: flex; align-items: baseline; gap: 6px; margin-bottom: 10px;">
+                    <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 12px; flex-wrap: wrap;">
                         <h3 style="color: ${(() => {
                             const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { color: '#0284c7' };
                             return isCarCategory ? '#0284c7' : meta.color;
-                        })()}; margin: 0; font-size: 2.2rem; font-weight: 900; line-height: 1; letter-spacing: -0.02em;">${formatPrice(activeItemPrice)}</h3>
+                        })()}; margin: 0; font-size: clamp(1.8rem, 6vw, 2.2rem); font-weight: 900; line-height: 1; letter-spacing: -0.02em;">${formatPrice(activeItemPrice)}</h3>
                         <span style="color: #64748b; font-size: 0.88rem; font-weight: 700;">/ ${isCarCategory ? (isDriverMode ? '12 Jam' : '24 Jam') : (item.category === 'motorcycle' ? '24 Jam' : 'paket')}</span>
                     </div>
-                    <div style="border-top: 1px dashed #cbd5e1; padding-top: 10px; font-size: 0.78rem; color: #475569; display: flex; flex-direction: column; gap: 4px;">
+                    <div style="border-top: 1px dashed #cbd5e1; padding-top: 12px; font-size: 0.82rem; color: #475569; display: flex; flex-direction: column; gap: 8px; line-height: 1.45;">
                         ${(() => {
                             const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { key: 'tour' };
                             if (isCarCategory) {
                                 return isDriverMode 
-                                    ? '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Termasuk Unit Mobil, Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #10b981;"></i> Bebas Deposit Jaminan (Rp 0)</span>' 
-                                    : '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Durasi 24 Jam Penuh Setir Sendiri</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-check" style="color: #0284c7;"></i> Unit Bersih, AC Dingin & Toolkit</span>';
+                                    ? '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Termasuk Unit Mobil, Driver & BBM</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Bebas Deposit Jaminan (Rp 0)</span></span>' 
+                                    : '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Durasi 24 Jam Penuh Setir Sendiri</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Unit Bersih, AC Dingin & Toolkit</span></span>';
                             }
                             if (meta.key === 'honeymoon') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-heart" style="color: #e11d48;"></i> Private Tour Romantis Sepasang (2 Pax)</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-car-side" style="color: #10b981;"></i> Transport Private Full AC + Driver & BBM</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-camera" style="color: #e11d48;"></i> Dokumentasi Foto & Tiket Destinasi</span>';
+                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-heart" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Private Tour Romantis Sepasang (2 Pax)</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Transport Private Full AC + Driver & BBM</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-camera" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Dokumentasi Foto</span></span>';
                             }
                             if (meta.key === 'tour') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a;"></i> Rute Wisata Terbaik & Jadwal Fleksibel</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-car-side" style="color: #10b981;"></i> Transportasi Private Full AC + Driver</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Fasilitas Lengkap Sesuai Rincian Paket</span>';
+                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Rute Wisata Terbaik & Jadwal Fleksibel</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Transportasi Private Full AC + Driver</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Fasilitas Lengkap Sesuai Rincian Paket</span></span>';
                             }
                             if (meta.key === 'motor' || item.category === 'motorcycle') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706;"></i> Termasuk 2 Helm SNI & Jas Hujan</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-shield-halved" style="color: #10b981;"></i> Unit Terawat, Bersih & Bebas Ribet</span>';
+                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Termasuk 2 Helm SNI & Jas Hujan</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-shield-halved" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Unit Terawat, Bersih & Bebas Ribet</span></span>';
                             }
                             if (meta.key === 'transfer' || item.category === 'transfer') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7;"></i> Antar Jemput Bandara Tepat Waktu</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Driver Ramah & Bebas Parkir Bandara</span>';
+                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Antar Jemput Bandara Tepat Waktu</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Driver Ramah & Bebas Parkir Bandara</span></span>';
                             }
                             if (meta.key === 'drone' || item.category === 'drone') {
-                                return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-video" style="color: #9333ea;"></i> Pilot Drone Berpengalaman</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-film" style="color: #10b981;"></i> File Mentah & Hasil Video High-Res</span>';
+                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-video" style="color: #9333ea; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Pilot Drone Berpengalaman</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-film" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>File Mentah & Hasil Video High-Res</span></span>';
                             }
-                            return '<span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-circle-check" style="color: #10b981;"></i> Layanan Resmi Terpercaya</span><span style="display: flex; align-items: center; gap: 6px;"><i class="fa-solid fa-star" style="color: #f59e0b;"></i> Jaminan Kepuasan Pelanggan</span>';
+                            return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Layanan Resmi Terpercaya</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-star" style="color: #f59e0b; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Jaminan Kepuasan Pelanggan</span></span>';
                         })()}
                     </div>
                 </div>

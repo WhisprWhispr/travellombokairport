@@ -1380,10 +1380,12 @@ ul {
     padding: 16px !important;
   }
   .tour-modal-close {
-    top: 16px !important;
-    left: 14px !important;
-    padding: 6px 14px !important;
-    font-size: 0.82rem !important;
+    top: max(24px, env(safe-area-inset-top, 24px)) !important;
+    left: 16px !important;
+    padding: 7px 16px !important;
+    font-size: 0.85rem !important;
+    border-radius: 20px !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
   }
   #sub-modal-body,
   .sub-modal-grid {
@@ -1854,10 +1856,10 @@ ul {
   align-self: stretch; 
 }
 @media (max-width: 768px) { 
-  .premium-card { padding: 20px; } 
-  .tm-header { padding: 15px; margin-top: -60px; } 
-  .premium-price-box { padding: 18px; text-align: left; border-radius: 16px; margin-top: 15px; min-width: auto; } 
-  .premium-price-box h3 { font-size: 1.8rem; } 
+  .premium-card { padding: 22px 18px !important; border-radius: 20px !important; } 
+  .tm-header { padding: 12px 14px !important; margin-top: -60px !important; } 
+  .premium-price-box { padding: 18px 16px !important; text-align: left; border-radius: 16px !important; margin-top: 16px !important; min-width: auto !important; } 
+  .premium-price-box h3 { font-size: clamp(1.75rem, 6vw, 2.1rem) !important; } 
 }
 
 /* Google Translate overrides */
