@@ -1010,12 +1010,9 @@ window.openTourModal = (id, carMode = null) => {
         return;
     }
 
-    const isHoneymoonItem = (item.category === 'honeymoon') || 
-        (item.title && (item.title.toLowerCase().includes('honeymoon') || item.title.toLowerCase().includes('bulan madu')));
-    if (isHoneymoonItem) {
-        const chatWidget = document.getElementById('ai-chat-widget');
-        if (chatWidget) chatWidget.style.display = 'none';
-    }
+    // Sembunyikan floating widget Tanya AIRA saat modal detail dibuka agar tidak menutupi tampilan
+    const chatWidget = document.getElementById('ai-chat-widget');
+    if (chatWidget) chatWidget.style.display = 'none';
 
     const modalBody = document.getElementById('tour-modal-body');
 
@@ -1528,11 +1525,12 @@ window.closeTourModal = () => {
     if (modal) {
         modal.classList.remove('active');
         const subModal = document.getElementById('sub-package-modal');
-        if (!subModal || subModal.style.display === 'none') {
+        const isSubModalOpen = subModal && subModal.style.display !== 'none';
+        if (!isSubModalOpen) {
             document.body.style.overflow = ''; // Restore scroll only if sub-package is closed
+            const chatWidget = document.getElementById('ai-chat-widget');
+            if (chatWidget) chatWidget.style.display = '';
         }
-        const chatWidget = document.getElementById('ai-chat-widget');
-        if (chatWidget) chatWidget.style.display = '';
     }
 };
 
@@ -2032,12 +2030,9 @@ window.openSubPackageModal = (parentId) => {
     const parentItem = globalItems.find(i => i.id === parentId);
     if (!parentItem) return;
 
-    const isParentHoneymoon = (parentItem.category === 'honeymoon') || 
-        (parentItem.title && (parentItem.title.toLowerCase().includes('honeymoon') || parentItem.title.toLowerCase().includes('bulan madu')));
-    if (isParentHoneymoon) {
-        const chatWidget = document.getElementById('ai-chat-widget');
-        if (chatWidget) chatWidget.style.display = 'none';
-    }
+    // Sembunyikan floating widget Tanya AIRA saat modal sub-paket dibuka
+    const chatWidget = document.getElementById('ai-chat-widget');
+    if (chatWidget) chatWidget.style.display = 'none';
 
     const children = globalItems.filter(i => i.parentId === parentId);
 
@@ -2168,9 +2163,13 @@ window.openSubPackageModal = (parentId) => {
 window.closeSubPackageModal = () => {
     const modal = document.getElementById('sub-package-modal');
     if (modal) modal.style.display = 'none';
-    document.body.style.overflow = '';
-    const chatWidget = document.getElementById('ai-chat-widget');
-    if (chatWidget) chatWidget.style.display = '';
+    const tourModal = document.getElementById('tour-modal');
+    const isTourModalOpen = tourModal && tourModal.classList.contains('active');
+    if (!isTourModalOpen) {
+        document.body.style.overflow = '';
+        const chatWidget = document.getElementById('ai-chat-widget');
+        if (chatWidget) chatWidget.style.display = '';
+    }
 };
 
 

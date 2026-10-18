@@ -2209,6 +2209,13 @@ input:checked + .slider:before { transform: translateX(22px); }
 }
 
 /* AI Chatbot Styles */
+/* Sembunyikan widget Tanya AIRA saat modal detail atau sub-paket sedang aktif */
+body:has(.tour-modal-overlay.active) #ai-chat-widget,
+body:has(#sub-package-modal[style*="display: block"]) #ai-chat-widget,
+body:has(#checkout-modal.active) #ai-chat-widget {
+    display: none !important;
+}
+
 #ai-chat-widget {
     position: fixed;
     bottom: 30px;
