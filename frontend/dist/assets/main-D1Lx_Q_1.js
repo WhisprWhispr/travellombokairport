@@ -115,10 +115,10 @@ TRAVEL LOMBOK AIRPORT 🚙`,l=`🛵 SYARAT & KETENTUAN SEWA MOTOR
 
 TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
 `),n=``,r=!1;return t.forEach(e=>{let t=e.trim();if(t.startsWith(`🚙 SYARAT`)||t.startsWith(`🛵 SYARAT`)||t.toUpperCase().includes(`TRAVEL LOMBOK AIRPORT`))return;t=t.replace(/\b(\d{4,})\b/g,e=>parseInt(e,10).toLocaleString(`id-ID`));let i=t.match(/^(\d+)\.\s*(.*)/);if(i){r&&=(n+=`</ul>`,!1);let e=i[1],t=i[2];n+=`
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0;">${e}</span>
-                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a;">${t}</span>
-            </div>`}else if(t.startsWith(`•`)||t.startsWith(`-`)||t.startsWith(`*`)){r||=(n+=`<ul style="margin: 2px 0 8px 30px; padding: 0; list-style-type: none;">`,!0);let e=t.replace(/^[•\-\*]\s*/,``);n+=`<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.85rem; line-height: 1.5; padding-left: 14px;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900;">•</span>${e}</li>`}else t===``?(r&&=(n+=`</ul>`,!1),n+=`<div style="height: 4px;"></div>`):(r&&=(n+=`</ul>`,!1),t.includes(`DEPOSIT`)?n+=`<div style="display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; margin: 8px 0; border: 1px solid #fde68a;"><i class="fa-solid fa-shield-halved"></i> ${t}</div>`:n+=`<div style="color: #475569; font-size: 0.85rem; margin-bottom: 4px;">${t}</div>`)}),r&&(n+=`</ul>`),n};window.closeGalleryModal=()=>{document.getElementById(`gallery-modal`).classList.remove(`active`)};var d=()=>{document.getElementById(`video-modal`)||document.body.insertAdjacentHTML(`beforeend`,`
+            <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; margin-top: 1px;">${e}</span>
+                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a; line-height: 1.4;">${t}</span>
+            </div>`}else if(t.startsWith(`•`)||t.startsWith(`-`)||t.startsWith(`*`)){r||=(n+=`<ul style="margin: 4px 0 8px 10px; padding: 0 0 0 4px; list-style-type: none;">`,!0);let e=t.replace(/^[•\-\*]\s*/,``);n+=`<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.85rem; line-height: 1.5; padding-left: 14px;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900;">•</span>${e}</li>`}else t===``?(r&&=(n+=`</ul>`,!1),n+=`<div style="height: 4px;"></div>`):(r&&=(n+=`</ul>`,!1),t.includes(`DEPOSIT`)?n+=`<div style="display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; margin: 8px 0; border: 1px solid #fde68a;"><i class="fa-solid fa-shield-halved"></i> ${t}</div>`:n+=`<div style="color: #475569; font-size: 0.85rem; margin-bottom: 4px;">${t}</div>`)}),r&&(n+=`</ul>`),n};window.closeGalleryModal=()=>{document.getElementById(`gallery-modal`).classList.remove(`active`)};var d=()=>{document.getElementById(`video-modal`)||document.body.insertAdjacentHTML(`beforeend`,`
     <div id="video-modal" class="modal-overlay" style="z-index: 9999; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; flex-direction: column;">
         <div style="position: relative; width: 90%; max-width: 800px; height: 80vh; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <button onclick="closeVideoModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><i class="fa-solid fa-xmark"></i></button>
@@ -236,11 +236,11 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 </ul>
                 ${e}
             </div>`}};y.forEach(e=>{if(e.toUpperCase().startsWith(`DAY`)){C();let t=e.split(`:`);b=t[0],x=t.slice(1).join(`:`).trim(),S=[]}else e.startsWith(`-`)?S.push(e.substring(1).trim()):S.push(e)}),C();let w=o(r.include),T=o(r.exclude),E=w,D=T;f&&(p?(E=[`Durasi Pemakaian 12 Jam Penuh (Rute Wisata)`,`Unit Mobil Bersih, Nyaman & AC Dingin`,`Driver Profesional, Ramah & Berpengalaman`,`Bahan Bakar Minyak (BBM) selama rute pemakaian`,`Antar & Jemput di Bandara / Hotel (Area Kota)`,`Bebas Uang Jaminan Deposit (Rp 0)`],D=[`Tiket Masuk Objek Wisata`,`Biaya Parkir & Tol (jika ada)`,`Pengeluaran Pribadi & Makan Driver`,`Tips Driver (Sukarela)`]):(E=w.length>0?w:[`Unit Mobil Bersih, Prima & AC Dingin`,`Peralatan Standar Kendaraan (Ban Cadangan & Toolkit)`,`Durasi Pemakaian Penuh 24 Jam`],D=T.length>0?T:[`Bahan Bakar Minyak (BBM)`,`Biaya Parkir & Tol`,`Driver / Supir (Setir Sendiri)`,`Jaminan Deposit Rp 1.000.000 (Refundable 100%)`]));let O=r.terms;f?O=p?c:r.terms&&r.terms.trim()&&!r.terms.includes(`DRIVER (12 JAM)`)?r.terms:s:r.category===`motorcycle`&&(O=r.terms&&r.terms.trim()?r.terms:l),d.innerHTML=`
-        <div style="width: 100%; height: clamp(280px, 45vw, 400px); position: relative;">
+        <div style="width: 100%; height: clamp(260px, 42vw, 400px); position: relative; overflow: hidden;">
             <img src="${r.imageUrl}" alt="${r.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0)); pointer-events: none;"></div>
         </div>
-        <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
+        <div class="tm-header tm-header-floating">
             ${f?`
             <div class="car-mode-switcher-bar">
                 <button type="button" class="car-mode-tab-btn ${p?``:`active`}" onclick="window.openTourModal('${r.id}', 'lepas_kunci')">
@@ -281,7 +281,7 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                             <div style="font-size: 0.8rem; font-weight: 800; color: ${e.color}; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: ${e.bgColor}; border: 1px solid ${e.borderColor}; padding: 4px 14px; border-radius: 20px; box-shadow: 0 2px 6px ${e.shadow||`rgba(0,0,0,0.06)`};">
                                 <i class="fa-solid ${e.icon}"></i> ${t}
                             </div>
-                            <h2 style="color: #0f172a; font-size: clamp(1.4rem, 5.5vw, 2.2rem); margin: 8px 0 12px 0; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em; word-break: break-word; overflow-wrap: break-word;">${r.title.toUpperCase()}</h2>
+                            <h2 style="color: #0f172a; font-size: clamp(1.35rem, 5vw, 2.2rem); margin: 8px 0 12px 0; line-height: 1.25; font-weight: 900; letter-spacing: -0.02em; word-break: break-word; overflow-wrap: break-word;">${r.title.toUpperCase()}</h2>
                             <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
                                 ${f?``:`<span style="background: ${e.bgColor}; color: ${e.color}; border: 1px solid ${e.borderColor}; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${n}</span>`}
                                 ${i}
@@ -305,7 +305,7 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                         <span style="color: #64748b; font-size: 0.88rem; font-weight: 700;">/ ${f?p?`12 Jam`:`24 Jam`:r.category===`motorcycle`?`24 Jam`:`paket`}</span>
                     </div>
                     <div style="border-top: 1px dashed #cbd5e1; padding-top: 12px; font-size: 0.82rem; color: #475569; display: flex; flex-direction: column; gap: 8px; line-height: 1.45;">
-                        ${(()=>{let e=typeof window.getItemCategoryMeta==`function`?window.getItemCategoryMeta(r):{key:`tour`};return f?p?`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Termasuk Unit Mobil, Driver & BBM</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Bebas Deposit Jaminan (Rp 0)</span></span>`:`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Durasi 24 Jam Penuh Setir Sendiri</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Unit Bersih, AC Dingin & Toolkit</span></span>`:e.key===`honeymoon`?`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-heart" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Private Tour Romantis Sepasang (2 Pax)</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Transport Private Full AC + Driver & BBM</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-camera" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Dokumentasi Foto</span></span>`:e.key===`tour`?`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Rute Wisata Terbaik & Jadwal Fleksibel</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Transportasi Private Full AC + Driver</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Fasilitas Lengkap Sesuai Rincian Paket</span></span>`:e.key===`motor`||r.category===`motorcycle`?`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Termasuk 2 Helm SNI & Jas Hujan</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-shield-halved" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Unit Terawat, Bersih & Bebas Ribet</span></span>`:e.key===`transfer`||r.category===`transfer`?`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Antar Jemput Bandara Tepat Waktu</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Driver Ramah & Bebas Parkir Bandara</span></span>`:e.key===`drone`||r.category===`drone`?`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-video" style="color: #9333ea; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Pilot Drone Berpengalaman</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-film" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>File Mentah & Hasil Video High-Res</span></span>`:`<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Layanan Resmi Terpercaya</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-star" style="color: #f59e0b; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Jaminan Kepuasan Pelanggan</span></span>`})()}
+                        ${(()=>{let e=typeof window.getItemCategoryMeta==`function`?window.getItemCategoryMeta(r):{key:`tour`};return f?p?`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Termasuk Unit Mobil, Driver & BBM</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Bebas Deposit Jaminan (Rp 0)</span></span>`:`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Durasi 24 Jam Penuh Setir Sendiri</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Unit Bersih, AC Dingin & Toolkit</span></span>`:e.key===`honeymoon`?`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-heart" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Private Tour Romantis Sepasang (2 Pax)</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Transport Private Full AC + Driver & BBM</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-camera" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Dokumentasi Foto Liburan</span></span>`:e.key===`tour`?`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Rute Wisata Terbaik & Jadwal Fleksibel</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Transportasi Private Full AC + Driver</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Fasilitas Lengkap Sesuai Rincian Paket</span></span>`:e.key===`motor`||r.category===`motorcycle`?`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Termasuk 2 Helm SNI & Jas Hujan</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-shield-halved" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Unit Terawat, Bersih & Bebas Ribet</span></span>`:e.key===`transfer`||r.category===`transfer`?`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Antar Jemput Bandara Tepat Waktu</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Driver Ramah & Bebas Parkir Bandara</span></span>`:e.key===`drone`||r.category===`drone`?`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-video" style="color: #9333ea; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Pilot Drone Berpengalaman</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-film" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">File Mentah & Hasil Video High-Res</span></span>`:`<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Layanan Resmi Terpercaya</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-star" style="color: #f59e0b; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Jaminan Kepuasan Pelanggan</span></span>`})()}
                     </div>
                 </div>
 
@@ -415,25 +415,29 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                         ${r.category===`motorcycle`?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa motor, silakan transfer <strong>DP sebesar Rp 50.000 dan jaminan deposit Rp 500.000</strong> ke rekening resmi berikut:</p>`:f?p?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <span style="color: #059669; font-weight: 700;">Bebas Deposit (Rp 0)!</span> Pelunasan dapat dibayarkan saat bertemu driver:</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP Rp 200.000 & jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan setelah masa sewa):</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening resmi berikut:</p>`}
                         
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img src="/mandiri.svg" alt="Mandiri" style="height: 24px; object-fit: contain;">
-                                    <div>
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank Mandiri - LALU RENGGANE</div>
-                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">1610017191425</div>
+                            <div class="bank-item tm-bank-card">
+                                <div class="tm-bank-info">
+                                    <img src="/mandiri.svg" alt="Mandiri" class="tm-bank-logo">
+                                    <div class="tm-bank-details">
+                                        <div class="tm-bank-label">Bank Mandiri - LALU RENGGANE</div>
+                                        <div class="tm-bank-number">1610017191425</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="window.copyRekening('1610017191425', 'Mandiri', this);" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                                <button type="button" class="btn-copy-rekening" onclick="window.copyRekening('1610017191425', 'Mandiri', this);">
+                                    <i class="fa-regular fa-copy"></i> Salin
+                                </button>
                             </div>
-                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img src="/bri.svg" alt="BRI" style="height: 24px; object-fit: contain;">
-                                    <div>
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank BRI - LALU RENGGANE</div>
-                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">759801017387536</div>
+                            <div class="bank-item tm-bank-card">
+                                <div class="tm-bank-info">
+                                    <img src="/bri.svg" alt="BRI" class="tm-bank-logo">
+                                    <div class="tm-bank-details">
+                                        <div class="tm-bank-label">Bank BRI - LALU RENGGANE</div>
+                                        <div class="tm-bank-number">759801017387536</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="window.copyRekening('759801017387536', 'BRI', this);" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                                <button type="button" class="btn-copy-rekening" onclick="window.copyRekening('759801017387536', 'BRI', this);">
+                                    <i class="fa-regular fa-copy"></i> Salin
+                                </button>
                             </div>
                         </div>
 
@@ -474,9 +478,9 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
 
         <div style="padding: 22px 20px; background: white; border-top: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; overflow-x: hidden;">
             <!-- Rating Box Header & Quick Interactive Stars -->
-            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 14px; padding: 16px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div style="flex: 1; min-width: 160px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <div class="tm-rating-box">
+                <div class="tm-rating-left">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
                         <h3 style="font-size: 1.05rem; color: #78350f; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                             <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Rating Pelanggan
                         </h3>
@@ -490,7 +494,7 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 </div>
 
                 <!-- 5 Clickable Stars (Hanya bintang aja!) -->
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; min-width: 0;">
+                <div class="tm-rating-right">
                     <div id="star-action-title-${r.id}" style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
                     <div id="star-bar-${r.id}" class="quick-item-stars" style="display: inline-flex; gap: 5px; font-size: clamp(1.2rem, 4.5vw, 1.5rem); cursor: pointer; user-select: none;">
                         <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 1)" onmouseover="window.previewItemStars('${r.id}', 1)" onmouseout="window.resetItemStars('${r.id}')"></i>
@@ -499,7 +503,7 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                         <i class="fa-solid fa-star item-star" data-idx="4" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 4)" onmouseover="window.previewItemStars('${r.id}', 4)" onmouseout="window.resetItemStars('${r.id}')"></i>
                         <i class="fa-solid fa-star item-star" data-idx="5" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${r.id}', 5)" onmouseover="window.previewItemStars('${r.id}', 5)" onmouseout="window.resetItemStars('${r.id}')"></i>
                     </div>
-                    <div id="star-hint-${r.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px; text-align: right;"></div>
+                    <div id="star-hint-${r.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px;"></div>
                 </div>
             </div>
 
@@ -512,25 +516,25 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
             </style>
         </div>
 
-        <div class="tm-footer" style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 25px 20px; border-radius: 0 0 20px 20px; border-top: 1px solid #e2e8f0;">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <div style="width: 45px; height: 45px; background: #dcfce7; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 8px;">
+        <div class="tm-footer" style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 20px; border-radius: 0 0 20px 20px; border-top: 1px solid #e2e8f0;">
+            <div class="tm-benefit-grid">
+                <div class="tm-benefit-card">
+                    <div class="tm-benefit-icon" style="background: #dcfce7; color: #16a34a;">
                         <i class="fa-regular fa-face-smile"></i>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: #334155; line-height: 1.2;">Liburan Nyaman</span>
+                    <span>Liburan Nyaman</span>
                 </div>
-                <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <div style="width: 45px; height: 45px; background: #e0f2fe; color: #0284c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 8px;">
+                <div class="tm-benefit-card">
+                    <div class="tm-benefit-icon" style="background: #e0f2fe; color: #0284c7;">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: #334155; line-height: 1.2;">Aman & Terpercaya</span>
+                    <span>Aman & Terpercaya</span>
                 </div>
-                <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <div style="width: 45px; height: 45px; background: #fef9c3; color: #ca8a04; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 8px;">
+                <div class="tm-benefit-card">
+                    <div class="tm-benefit-icon" style="background: #fef9c3; color: #ca8a04;">
                         <i class="fa-solid fa-user-tie"></i>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: #334155; line-height: 1.2;">Layanan Anti Ribet</span>
+                    <span>Layanan Anti Ribet</span>
                 </div>
             </div>
         </div>

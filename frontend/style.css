@@ -1062,6 +1062,150 @@ ul {
   margin: 0 auto;
 }
 
+.tm-header-floating {
+  margin-top: -80px;
+  position: relative;
+  background: transparent;
+  padding-top: 0;
+  border: none;
+  width: 100%;
+  max-width: 1100px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* Modal Bank Account Cards */
+.tm-bank-card {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+  transition: all 0.2s ease;
+}
+.tm-bank-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+.tm-bank-logo {
+  height: 24px;
+  width: auto;
+  max-width: 60px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+.tm-bank-details {
+  min-width: 0;
+  overflow: hidden;
+}
+.tm-bank-label {
+  font-size: 0.72rem;
+  color: #64748b;
+  font-weight: 700;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tm-bank-number {
+  color: #0284c7;
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  word-break: break-all;
+}
+.btn-copy-rekening {
+  background: #e0f2fe;
+  color: #0284c7;
+  border: none;
+  padding: 7px 14px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-copy-rekening:hover {
+  background: #bae6fd;
+}
+
+/* Modal Rating Header Box */
+.tm-rating-box {
+  background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+  border: 1px solid #fde68a;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tm-rating-left {
+  flex: 1;
+  min-width: 160px;
+}
+.tm-rating-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* Modal Benefits Grid */
+.tm-benefit-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+  width: 100%;
+  box-sizing: border-box;
+}
+.tm-benefit-card {
+  background: white;
+  padding: 15px 10px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-sizing: border-box;
+  transition: transform 0.2s ease;
+}
+.tm-benefit-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  flex-shrink: 0;
+}
+.tm-benefit-card span {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #334155;
+  line-height: 1.2;
+}
+
 .tm-top {
   display: flex;
   justify-content: space-between;
@@ -1339,17 +1483,22 @@ ul {
     overflow-x: hidden !important;
   }
   .tm-header {
-    padding: 18px 16px !important;
+    padding: 14px 16px !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
+  .tm-header-floating {
+    margin-top: -36px !important;
+    padding: 10px 14px !important;
+  }
   .tm-body {
-    padding: 18px 16px !important;
+    padding: 16px 14px !important;
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
     grid-template-columns: 1fr !important;
+    gap: 20px !important;
   }
   .tm-top {
     flex-direction: column !important;
@@ -1365,25 +1514,89 @@ ul {
     box-sizing: border-box !important;
   }
   .tm-title h2 {
-    font-size: clamp(1.35rem, 5vw, 1.8rem) !important;
+    font-size: clamp(1.3rem, 5vw, 1.75rem) !important;
     word-break: break-word !important;
     overflow-wrap: break-word !important;
+    line-height: 1.25 !important;
   }
   .tm-price-box {
     width: 100% !important;
     max-width: 100% !important;
     box-sizing: border-box !important;
   }
+  .tm-day-header {
+    margin-bottom: 12px !important;
+  }
+  .tm-day-badge {
+    min-width: 55px !important;
+    padding: 8px 10px !important;
+    font-size: 0.8rem !important;
+  }
+  .tm-day-title {
+    padding: 8px 14px !important;
+    font-size: 0.88rem !important;
+  }
+  .tm-day-title::after {
+    display: none !important;
+  }
+  .tm-day-list {
+    margin-left: 20px !important;
+    padding-left: 14px !important;
+  }
+  .tm-box {
+    margin-bottom: 16px !important;
+    border-radius: 14px !important;
+  }
+  .tm-box-title {
+    padding: 12px 16px !important;
+    font-size: 0.88rem !important;
+  }
+  .tm-list {
+    padding: 14px 16px !important;
+  }
+  .tm-rating-box {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+    padding: 14px !important;
+  }
+  .tm-rating-right {
+    align-items: flex-start !important;
+    border-top: 1px dashed rgba(180, 83, 9, 0.25) !important;
+    padding-top: 10px !important;
+    width: 100% !important;
+  }
+  .tm-benefit-grid {
+    grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+  .tm-benefit-card {
+    flex-direction: row !important;
+    text-align: left !important;
+    padding: 12px 14px !important;
+    gap: 14px !important;
+    align-items: center !important;
+  }
+  .tm-benefit-icon {
+    width: 40px !important;
+    height: 40px !important;
+    margin-bottom: 0 !important;
+    font-size: 1.05rem !important;
+  }
+  .tm-benefit-card span {
+    font-size: 0.85rem !important;
+    line-height: 1.3 !important;
+  }
   .tm-footer {
     flex-direction: column !important;
-    gap: 15px !important;
-    padding: 16px !important;
+    gap: 12px !important;
+    padding: 16px 14px !important;
   }
   .tour-modal-close {
-    top: max(24px, env(safe-area-inset-top, 24px)) !important;
-    left: 16px !important;
-    padding: 7px 16px !important;
-    font-size: 0.85rem !important;
+    top: max(20px, env(safe-area-inset-top, 20px)) !important;
+    left: 14px !important;
+    padding: 7px 14px !important;
+    font-size: 0.82rem !important;
     border-radius: 20px !important;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18) !important;
   }
@@ -1398,6 +1611,41 @@ ul {
   }
   .modal-booking-actions {
     grid-template-columns: 1fr !important;
+    gap: 10px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .tm-header-floating {
+    margin-top: -24px !important;
+    padding: 6px 10px !important;
+  }
+  .tm-body {
+    padding: 12px 10px !important;
+  }
+  .tm-top.premium-card {
+    padding: 16px 14px !important;
+    border-radius: 16px !important;
+  }
+  .premium-price-box {
+    padding: 16px 14px !important;
+  }
+  .tour-modal-close {
+    top: max(16px, env(safe-area-inset-top, 16px)) !important;
+    left: 10px !important;
+    padding: 6px 12px !important;
+    font-size: 0.8rem !important;
+  }
+  .tm-bank-card {
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+  .tm-bank-number {
+    font-size: 0.95rem !important;
+  }
+  .btn-copy-rekening {
+    padding: 6px 10px !important;
+    font-size: 0.72rem !important;
   }
 }
 
@@ -1856,8 +2104,7 @@ ul {
   align-self: stretch; 
 }
 @media (max-width: 768px) { 
-  .premium-card { padding: 22px 18px !important; border-radius: 20px !important; } 
-  .tm-header { padding: 12px 14px !important; margin-top: -60px !important; } 
+  .premium-card { padding: 20px 16px !important; border-radius: 18px !important; } 
   .premium-price-box { padding: 18px 16px !important; text-align: left; border-radius: 16px !important; margin-top: 16px !important; min-width: auto !important; } 
   .premium-price-box h3 { font-size: clamp(1.75rem, 6vw, 2.1rem) !important; } 
 }

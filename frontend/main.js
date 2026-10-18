@@ -704,12 +704,12 @@ const formatTerms = (termsText) => {
             const num = numMatch[1];
             const sectionTitle = numMatch[2];
             html += `
-            <div style="display: flex; align-items: center; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0;">${num}</span>
-                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a;">${sectionTitle}</span>
+            <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; margin-top: 1px;">${num}</span>
+                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a; line-height: 1.4;">${sectionTitle}</span>
             </div>`;
         } else if (trimmed.startsWith('•') || trimmed.startsWith('-') || trimmed.startsWith('*')) {
-            if (!inList) { html += '<ul style="margin: 2px 0 8px 30px; padding: 0; list-style-type: none;">'; inList = true; }
+            if (!inList) { html += '<ul style="margin: 4px 0 8px 10px; padding: 0 0 0 4px; list-style-type: none;">'; inList = true; }
             const cleanText = trimmed.replace(/^[•\-\*]\s*/, '');
             html += `<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.85rem; line-height: 1.5; padding-left: 14px;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900;">•</span>${cleanText}</li>`;
         } else if (trimmed === '') {
@@ -1128,11 +1128,11 @@ window.openTourModal = (id, carMode = null) => {
     }
 
     modalBody.innerHTML = `
-        <div style="width: 100%; height: clamp(280px, 45vw, 400px); position: relative;">
+        <div style="width: 100%; height: clamp(260px, 42vw, 400px); position: relative; overflow: hidden;">
             <img src="${item.imageUrl}" alt="${item.title}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?auto=format&fit=crop&q=80&w=1200'">
-            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0));"></div>
+            <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0)); pointer-events: none;"></div>
         </div>
-        <div class="tm-header" style="margin-top: -100px; position: relative; background: transparent; padding-top: 0; border: none;">
+        <div class="tm-header tm-header-floating">
             ${isCarCategory ? `
             <div class="car-mode-switcher-bar">
                 <button type="button" class="car-mode-tab-btn ${!isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'lepas_kunci')">
@@ -1202,7 +1202,7 @@ window.openTourModal = (id, carMode = null) => {
                             <div style="font-size: 0.8rem; font-weight: 800; color: ${meta.color}; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; display: inline-flex; align-items: center; gap: 6px; background: ${meta.bgColor}; border: 1px solid ${meta.borderColor}; padding: 4px 14px; border-radius: 20px; box-shadow: 0 2px 6px ${meta.shadow || 'rgba(0,0,0,0.06)'};">
                                 <i class="fa-solid ${meta.icon}"></i> ${typeLabel}
                             </div>
-                            <h2 style="color: #0f172a; font-size: clamp(1.4rem, 5.5vw, 2.2rem); margin: 8px 0 12px 0; line-height: 1.2; font-weight: 900; letter-spacing: -0.02em; word-break: break-word; overflow-wrap: break-word;">${item.title.toUpperCase()}</h2>
+                            <h2 style="color: #0f172a; font-size: clamp(1.35rem, 5vw, 2.2rem); margin: 8px 0 12px 0; line-height: 1.25; font-weight: 900; letter-spacing: -0.02em; word-break: break-word; overflow-wrap: break-word;">${item.title.toUpperCase()}</h2>
                             <div class="tm-badges" style="display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px;">
                                 ${!isCarCategory ? `<span style="background: ${meta.bgColor}; color: ${meta.color}; border: 1px solid ${meta.borderColor}; font-size: 0.78rem; padding: 5px 12px; border-radius: 20px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;"><i class="fa-regular fa-clock"></i> ${durationLabel}</span>` : ''}
                                 ${driverPillsHtml}
@@ -1251,25 +1251,25 @@ window.openTourModal = (id, carMode = null) => {
                             const meta = (typeof window.getItemCategoryMeta === 'function') ? window.getItemCategoryMeta(item) : { key: 'tour' };
                             if (isCarCategory) {
                                 return isDriverMode 
-                                    ? '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Termasuk Unit Mobil, Driver & BBM</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Bebas Deposit Jaminan (Rp 0)</span></span>' 
-                                    : '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Durasi 24 Jam Penuh Setir Sendiri</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Unit Bersih, AC Dingin & Toolkit</span></span>';
+                                    ? '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Termasuk Unit Mobil, Driver & BBM</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Bebas Deposit Jaminan (Rp 0)</span></span>' 
+                                    : '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Durasi 24 Jam Penuh Setir Sendiri</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-check" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Unit Bersih, AC Dingin & Toolkit</span></span>';
                             }
                             if (meta.key === 'honeymoon') {
-                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-heart" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Private Tour Romantis Sepasang (2 Pax)</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Transport Private Full AC + Driver & BBM</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-camera" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Dokumentasi Foto</span></span>';
+                                return '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-heart" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Private Tour Romantis Sepasang (2 Pax)</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Transport Private Full AC + Driver & BBM</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-camera" style="color: #e11d48; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Dokumentasi Foto Liburan</span></span>';
                             }
                             if (meta.key === 'tour') {
-                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Rute Wisata Terbaik & Jadwal Fleksibel</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Transportasi Private Full AC + Driver</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Fasilitas Lengkap Sesuai Rincian Paket</span></span>';
+                                return '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-umbrella-beach" style="color: #16a34a; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Rute Wisata Terbaik & Jadwal Fleksibel</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-car-side" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Transportasi Private Full AC + Driver</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Fasilitas Lengkap Sesuai Rincian Paket</span></span>';
                             }
                             if (meta.key === 'motor' || item.category === 'motorcycle') {
-                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Termasuk 2 Helm SNI & Jas Hujan</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-shield-halved" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Unit Terawat, Bersih & Bebas Ribet</span></span>';
+                                return '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-helmet-safety" style="color: #d97706; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Termasuk 2 Helm SNI & Jas Hujan</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-shield-halved" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Unit Terawat, Bersih & Bebas Ribet</span></span>';
                             }
                             if (meta.key === 'transfer' || item.category === 'transfer') {
-                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Antar Jemput Bandara Tepat Waktu</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Driver Ramah & Bebas Parkir Bandara</span></span>';
+                                return '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-plane-arrival" style="color: #0284c7; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Antar Jemput Bandara Tepat Waktu</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Driver Ramah & Bebas Parkir Bandara</span></span>';
                             }
                             if (meta.key === 'drone' || item.category === 'drone') {
-                                return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-video" style="color: #9333ea; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Pilot Drone Berpengalaman</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-film" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>File Mentah & Hasil Video High-Res</span></span>';
+                                return '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-video" style="color: #9333ea; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Pilot Drone Berpengalaman</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-film" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">File Mentah & Hasil Video High-Res</span></span>';
                             }
-                            return '<span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Layanan Resmi Terpercaya</span></span><span style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-star" style="color: #f59e0b; width: 16px; text-align: center; flex-shrink: 0;"></i> <span>Jaminan Kepuasan Pelanggan</span></span>';
+                            return '<span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-circle-check" style="color: #10b981; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Layanan Resmi Terpercaya</span></span><span style="display: flex; align-items: flex-start; gap: 10px;"><i class="fa-solid fa-star" style="color: #f59e0b; width: 16px; text-align: center; flex-shrink: 0; margin-top: 2px;"></i> <span style="line-height: 1.45;">Jaminan Kepuasan Pelanggan</span></span>';
                         })()}
                     </div>
                 </div>
@@ -1392,25 +1392,29 @@ window.openTourModal = (id, carMode = null) => {
                         })()}
                         
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img src="/mandiri.svg" alt="Mandiri" style="height: 24px; object-fit: contain;">
-                                    <div>
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank Mandiri - LALU RENGGANE</div>
-                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">1610017191425</div>
+                            <div class="bank-item tm-bank-card">
+                                <div class="tm-bank-info">
+                                    <img src="/mandiri.svg" alt="Mandiri" class="tm-bank-logo">
+                                    <div class="tm-bank-details">
+                                        <div class="tm-bank-label">Bank Mandiri - LALU RENGGANE</div>
+                                        <div class="tm-bank-number">1610017191425</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="window.copyRekening('1610017191425', 'Mandiri', this);" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                                <button type="button" class="btn-copy-rekening" onclick="window.copyRekening('1610017191425', 'Mandiri', this);">
+                                    <i class="fa-regular fa-copy"></i> Salin
+                                </button>
                             </div>
-                            <div class="bank-item" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
-                                <div style="display: flex; align-items: center; gap: 12px;">
-                                    <img src="/bri.svg" alt="BRI" style="height: 24px; object-fit: contain;">
-                                    <div>
-                                        <div style="font-size: 0.72rem; color: #64748b; font-weight: 700; text-transform: uppercase;">Bank BRI - LALU RENGGANE</div>
-                                        <div style="color: #0284c7; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.5px;">759801017387536</div>
+                            <div class="bank-item tm-bank-card">
+                                <div class="tm-bank-info">
+                                    <img src="/bri.svg" alt="BRI" class="tm-bank-logo">
+                                    <div class="tm-bank-details">
+                                        <div class="tm-bank-label">Bank BRI - LALU RENGGANE</div>
+                                        <div class="tm-bank-number">759801017387536</div>
                                     </div>
                                 </div>
-                                <button type="button" onclick="window.copyRekening('759801017387536', 'BRI', this);" style="background: #e0f2fe; color: #0284c7; border: none; padding: 6px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='#bae6fd'" onmouseout="this.style.background='#e0f2fe'"><i class="fa-regular fa-copy"></i> Salin</button>
+                                <button type="button" class="btn-copy-rekening" onclick="window.copyRekening('759801017387536', 'BRI', this);">
+                                    <i class="fa-regular fa-copy"></i> Salin
+                                </button>
                             </div>
                         </div>
 
@@ -1451,9 +1455,9 @@ window.openTourModal = (id, carMode = null) => {
 
         <div style="padding: 22px 20px; background: white; border-top: 1px solid #e2e8f0; width: 100%; box-sizing: border-box; overflow-x: hidden;">
             <!-- Rating Box Header & Quick Interactive Stars -->
-            <div style="background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1px solid #fde68a; border-radius: 14px; padding: 16px; margin-bottom: 15px; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; width: 100%; max-width: 100%; box-sizing: border-box;">
-                <div style="flex: 1; min-width: 160px;">
-                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <div class="tm-rating-box">
+                <div class="tm-rating-left">
+                    <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
                         <h3 style="font-size: 1.05rem; color: #78350f; margin: 0; font-weight: 800; display: flex; align-items: center; gap: 6px;">
                             <i class="fa-solid fa-star" style="color: #f59e0b;"></i> Rating Pelanggan
                         </h3>
@@ -1467,7 +1471,7 @@ window.openTourModal = (id, carMode = null) => {
                 </div>
 
                 <!-- 5 Clickable Stars (Hanya bintang aja!) -->
-                <div style="display: flex; flex-direction: column; align-items: flex-end; justify-content: center; min-width: 0;">
+                <div class="tm-rating-right">
                     <div id="star-action-title-${item.id}" style="font-size: 0.78rem; font-weight: 700; color: #92400e; margin-bottom: 5px;">Ketuk Bintang untuk Menilai:</div>
                     <div id="star-bar-${item.id}" class="quick-item-stars" style="display: inline-flex; gap: 5px; font-size: clamp(1.2rem, 4.5vw, 1.5rem); cursor: pointer; user-select: none;">
                         <i class="fa-solid fa-star item-star" data-idx="1" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 1)" onmouseover="window.previewItemStars('${item.id}', 1)" onmouseout="window.resetItemStars('${item.id}')"></i>
@@ -1476,7 +1480,7 @@ window.openTourModal = (id, carMode = null) => {
                         <i class="fa-solid fa-star item-star" data-idx="4" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 4)" onmouseover="window.previewItemStars('${item.id}', 4)" onmouseout="window.resetItemStars('${item.id}')"></i>
                         <i class="fa-solid fa-star item-star" data-idx="5" style="color: #cbd5e1; transition: transform 0.15s ease, color 0.15s ease;" onclick="window.quickRateItem('${item.id}', 5)" onmouseover="window.previewItemStars('${item.id}', 5)" onmouseout="window.resetItemStars('${item.id}')"></i>
                     </div>
-                    <div id="star-hint-${item.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px; text-align: right;"></div>
+                    <div id="star-hint-${item.id}" style="font-size: 0.75rem; font-weight: 600; color: #b45309; min-height: 18px; margin-top: 3px;"></div>
                 </div>
             </div>
 
@@ -1489,25 +1493,25 @@ window.openTourModal = (id, carMode = null) => {
             </style>
         </div>
 
-        <div class="tm-footer" style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 25px 20px; border-radius: 0 0 20px 20px; border-top: 1px solid #e2e8f0;">
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
-                <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <div style="width: 45px; height: 45px; background: #dcfce7; color: #16a34a; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 8px;">
+        <div class="tm-footer" style="background: linear-gradient(to right, #f8fafc, #f1f5f9); padding: 20px; border-radius: 0 0 20px 20px; border-top: 1px solid #e2e8f0;">
+            <div class="tm-benefit-grid">
+                <div class="tm-benefit-card">
+                    <div class="tm-benefit-icon" style="background: #dcfce7; color: #16a34a;">
                         <i class="fa-regular fa-face-smile"></i>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: #334155; line-height: 1.2;">Liburan Nyaman</span>
+                    <span>Liburan Nyaman</span>
                 </div>
-                <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <div style="width: 45px; height: 45px; background: #e0f2fe; color: #0284c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 8px;">
+                <div class="tm-benefit-card">
+                    <div class="tm-benefit-icon" style="background: #e0f2fe; color: #0284c7;">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: #334155; line-height: 1.2;">Aman & Terpercaya</span>
+                    <span>Aman & Terpercaya</span>
                 </div>
-                <div style="background: white; padding: 15px 10px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; display: flex; flex-direction: column; align-items: center; text-align: center;">
-                    <div style="width: 45px; height: 45px; background: #fef9c3; color: #ca8a04; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; margin-bottom: 8px;">
+                <div class="tm-benefit-card">
+                    <div class="tm-benefit-icon" style="background: #fef9c3; color: #ca8a04;">
                         <i class="fa-solid fa-user-tie"></i>
                     </div>
-                    <span style="font-size: 0.8rem; font-weight: 700; color: #334155; line-height: 1.2;">Layanan Anti Ribet</span>
+                    <span>Layanan Anti Ribet</span>
                 </div>
             </div>
         </div>
