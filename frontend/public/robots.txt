@@ -1,18 +1,66 @@
+# ==============================================================================
+# Travel Lombok Airport - Official Robots.txt
+# Website: https://travellombokairport.com
+# Layanan: Sewa Mobil Lombok, Rental Motor, Antar Jemput Bandara BIL & Paket Tour
+# ==============================================================================
+
 User-agent: *
 Allow: /
+Allow: /assets/
+Allow: /images/
+Allow: /*.js$
+Allow: /*.css$
+Allow: /*.png$
+Allow: /*.jpg$
+Allow: /*.jpeg$
+Allow: /*.gif$
+Allow: /*.svg$
+Allow: /*.webp$
+Allow: /*.ico$
 
-# Blokir halaman internal/private
-Disallow: /driver
-Disallow: /driver.html
+# Proteksi Halaman Internal, Otentikasi & Transaksi
 Disallow: /admin
 Disallow: /admin.html
+Disallow: /driver
+Disallow: /driver.html
 Disallow: /login
 Disallow: /login.html
 Disallow: /register
 Disallow: /register.html
 Disallow: /riwayat
 Disallow: /riwayat.html
+Disallow: /profile
+Disallow: /profile.html
 Disallow: /verify
 Disallow: /verify.html
+Disallow: /reset-sandi
+Disallow: /reset-sandi.html
+Disallow: /maintenance
+Disallow: /maintenance.html
+Disallow: /api/
+Disallow: /backend/
 
+# Optimasi Mesin Pencari Utama (Google, Bing, Yandex)
+User-agent: Googlebot
+Allow: /
+Allow: /assets/
+Allow: /*.js$
+Allow: /*.css$
+
+User-agent: Googlebot-Image
+Allow: /
+Allow: /assets/
+Allow: /*.jpg$
+Allow: /*.png$
+Allow: /*.webp$
+
+User-agent: Bingbot
+Allow: /
+Allow: /assets/
+
+# Crawl-Delay Ramah Server
+Crawl-delay: 1
+
+# Host Kanonikal & Peta Situs Resmi (XML Sitemap)
+Host: https://travellombokairport.com
 Sitemap: https://travellombokairport.com/sitemap.xml

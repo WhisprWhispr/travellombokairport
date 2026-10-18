@@ -1,71 +1,150 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Halaman Utama -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <!-- Halaman Beranda (Landing Page Utama) -->
   <url>
     <loc>https://travellombokairport.com/</loc>
-    <lastmod>2026-08-24</lastmod>
+    <lastmod>2026-10-18</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
+    <image:image>
+      <image:loc>https://travellombokairport.com/logo.png</image:loc>
+      <image:title>Travel Lombok Airport - Rental Mobil &amp; Paket Wisata Lombok</image:title>
+      <image:caption>Layanan sewa mobil lepas kunci, include supir, antar jemput bandara BIL, dan paket tour Lombok</image:caption>
+    </image:image>
   </url>
-  <!-- Halaman Publik -->
+
+  <!-- Halaman Blog & Artikel Wisata -->
   <url>
-    <loc>https://travellombokairport.com/tentang-kami</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://travellombokairport.com/galeri</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://travellombokairport.com/drone</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://travellombokairport.com/kontak</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
-  </url>
-  <url>
-    <loc>https://travellombokairport.com/syarat</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
-  </url>
-  <url>
-    <loc>https://travellombokairport.com/kebijakan</loc>
-    <lastmod>2026-08-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.4</priority>
+    <loc>https://travellombokairport.com/blog.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/blog</loc>
     <lastmod>2026-10-18</lastmod>
     <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+
+  <!-- Galeri Foto & Dokumentasi Liburan -->
+  <url>
+    <loc>https://travellombokairport.com/galeri.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://travellombokairport.com/galeri</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.85</priority>
+  </url>
+
+  <!-- Jasa Dokumentasi Drone -->
+  <url>
+    <loc>https://travellombokairport.com/drone.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
+    <loc>https://travellombokairport.com/drone</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <!-- Tentang Kami -->
+  <url>
+    <loc>https://travellombokairport.com/tentang-kami.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://travellombokairport.com/tentang-kami</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Kontak & Layanan Pelanggan 24 Jam -->
+  <url>
+    <loc>https://travellombokairport.com/kontak.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+  <url>
+    <loc>https://travellombokairport.com/kontak</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <!-- Jadwal Sholat Lombok & Sekitarnya -->
+  <url>
+    <loc>https://travellombokairport.com/jadwal-sholat.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://travellombokairport.com/jadwal-sholat</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.7</priority>
+  </url>
+
+  <!-- Syarat & Ketentuan Sewa / Tour -->
+  <url>
+    <loc>https://travellombokairport.com/syarat.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://travellombokairport.com/syarat</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+
+  <!-- Kebijakan Privasi -->
+  <url>
+    <loc>https://travellombokairport.com/kebijakan.html</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://travellombokairport.com/kebijakan</loc>
+    <lastmod>2026-10-18</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <!-- Artikel: 10 Destinasi Wisata Lombok Terbaik 2026: Pantai Eksotis, Alam Memukau, dan Tips Liburan -->
+  <url>
     <loc>https://travellombokairport.com/article.html?id=8zRAxpGbciofLntXjD9H</loc>
     <lastmod>2026-10-07</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
+  <!-- Artikel: 🏍️ MotoGP Mandalika 2026 Segera Hadir! Saatnya Rasakan Sensasi Race in Paradise di Lombok -->
   <url>
     <loc>https://travellombokairport.com/article.html?id=PBMYOrZLHmJSNuFIvABK</loc>
     <lastmod>2026-10-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
+  <!-- Artikel: Paket Honeymoon Lombok: Momen Romantis Tak Terlupakan Bersama Pasangan -->
   <url>
     <loc>https://travellombokairport.com/article.html?id=3Ar94HVMMx24eI3fQVkH</loc>
-    <lastmod>2026-09-04</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
+    <lastmod>2026-10-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
   </url>
 </urlset>

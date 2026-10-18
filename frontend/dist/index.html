@@ -5,27 +5,36 @@
   <link rel="icon" type="image/png" href="/favicon.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <!-- SEO Meta Tags -->
-  <title>Travel Lombok Airport</title>
-  <meta name="description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil lepas kunci/dengan supir murah terpercaya di Lombok.">
-  <meta name="keywords" content="sewa mobil lombok, rental mobil lombok murah, sewa avanza lombok, antar jemput bandara lombok, travel lombok airport, paket wisata lombok, travel agent lombok, sewa mobil mandalika, jemput bandara bil, jasa transport lombok, sewa innova lombok, sewa hiace lombok, wisata gili trawangan, sewa drone lombok, fotografer liburan lombok, tour guide lombok, travel lombok terpercaya, antar jemput hotel senggigi, liburan keluarga lombok">
+  <!-- Professional SEO Meta Tags -->
+  <title>Travel Lombok Airport | Rental Mobil, Sewa Motor &amp; Paket Wisata Lombok</title>
+  <meta name="description" content="Pusat resmi sewa mobil Lombok lepas kunci &amp; include driver, rental motor murah, antar jemput Bandara Lombok (BIL) 24 jam, dan paket wisata tour / honeymoon terbaik.">
+  <meta name="keywords" content="sewa mobil lombok, rental mobil lombok murah, sewa avanza lombok, antar jemput bandara lombok, travel lombok airport, paket wisata lombok, travel agent lombok, sewa mobil mandalika, jemput bandara bil, jasa transport lombok, sewa innova lombok, sewa hiace lombok, wisata gili trawangan, sewa drone lombok, fotografer liburan lombok, tour guide lombok, travel lombok terpercaya, antar jemput hotel senggigi, liburan keluarga lombok, paket honeymoon lombok">
   <meta name="author" content="Travel Lombok Airport">
-  <meta name="robots" content="index, follow">
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://travellombokairport.com/">
+
+  <!-- Local SEO Geo Meta Tags -->
+  <meta name="geo.region" content="ID-NB">
+  <meta name="geo.placename" content="Lombok Tengah, Nusa Tenggara Barat">
+  <meta name="geo.position" content="-8.7612;116.2754">
+  <meta name="ICBM" content="-8.7612, 116.2754">
 
   <!-- Open Graph / Facebook / WhatsApp -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://travellombokairport.com/">
   <meta property="og:site_name" content="Travel Lombok Airport">
-  <meta property="og:title" content="Travel Lombok Airport">
-  <meta property="og:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
+  <meta property="og:locale" content="id_ID">
+  <meta property="og:title" content="Travel Lombok Airport | Rental Mobil, Sewa Motor &amp; Paket Wisata Lombok">
+  <meta property="og:description" content="Pusat resmi sewa mobil Lombok lepas kunci &amp; include driver, antar jemput Bandara Lombok (BIL) 24 jam, dan paket tour / honeymoon terbaik terpercaya.">
   <meta property="og:image" content="https://travellombokairport.com/logo.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
-  <!-- Twitter -->
+  <!-- Twitter Card -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://travellombokairport.com/">
-  <meta property="twitter:title" content="Travel Lombok Airport">
-  <meta property="twitter:description" content="Pusat sewa mobil Lombok, antar jemput bandara BIL, paket wisata Mandalika, dan rental mobil murah terpercaya di Lombok.">
+  <meta property="twitter:title" content="Travel Lombok Airport | Rental Mobil, Sewa Motor &amp; Paket Wisata Lombok">
+  <meta property="twitter:description" content="Pusat resmi sewa mobil Lombok lepas kunci &amp; include driver, antar jemput Bandara Lombok (BIL) 24 jam, dan paket tour / honeymoon terbaik terpercaya.">
   <meta property="twitter:image" content="https://travellombokairport.com/logo.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,7 +44,6 @@
 
   <script>
     // INSTANT MAINTENANCE CHECK (Anti-Flash for PWA)
-    // If maintenance was true last time, hide the body immediately to prevent flashing old cached content.
     if (localStorage.getItem('maintenanceMode') === 'true' && !localStorage.getItem('adminToken')) {
       document.write('<style id="anti-flash">body { opacity: 0 !important; visibility: hidden !important; pointer-events: none !important; }</style>');
     }
@@ -44,14 +52,19 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   
-  <!-- Structured Data (JSON-LD) for Google Search Site Name -->
+  <!-- Structured Data (JSON-LD) for Google Search Site Name & Sitelinks Search -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "WebSite",
     "name": "Travel Lombok Airport",
-    "alternateName": ["Travel Lombok", "TLA"],
-    "url": "https://travellombokairport.com/"
+    "alternateName": ["Travel Lombok", "Rental Mobil Lombok", "TLA"],
+    "url": "https://travellombokairport.com/",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://travellombokairport.com/blog.html?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
   }
   </script>
 
@@ -60,22 +73,26 @@
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#2563eb">
-<script src="/protect.js"></script>
-  <!-- Structured Data (JSON-LD) for Local SEO -->
+  <script src="/protect.js"></script>
+
+  <!-- Structured Data (JSON-LD) for Local Business, Travel Agency & Car Rental with Ratings -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": ["TravelAgency", "AutoRental", "LocalBusiness"],
     "name": "Travel Lombok Airport",
     "image": "https://travellombokairport.com/logo.png",
     "@id": "https://travellombokairport.com/",
     "url": "https://travellombokairport.com/",
     "telephone": "+6289676963255",
+    "priceRange": "Rp 100.000 - Rp 1.500.000",
+    "currenciesAccepted": "IDR",
+    "paymentAccepted": "Cash, QRIS, Virtual Account, Bank Transfer",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "Bandara Internasional Lombok (BIL)",
+      "streetAddress": "Bandara Internasional Lombok (BIL), Jl. Raya Tanak Awu",
       "addressLocality": "Lombok Tengah",
-      "addressRegion": "NTB",
+      "addressRegion": "Nusa Tenggara Barat",
       "postalCode": "83573",
       "addressCountry": "ID"
     },
@@ -92,10 +109,61 @@
       "opens": "00:00",
       "closes": "23:59"
     },
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "528",
+      "bestRating": "5",
+      "worstRating": "1"
+    },
     "sameAs": [
-      "https://instagram.com/travellombokairport"
-    ],
-    "priceRange": "$$"
+      "https://www.instagram.com/travellombokairport",
+      "https://www.tiktok.com/@trevellombokairport",
+      "https://www.facebook.com/share/1F6ViaTuBh/?mibextid=wwXIfr",
+      "https://www.youtube.com/@Travellombokairport"
+    ]
+  }
+  </script>
+
+  <!-- Structured Data (JSON-LD) FAQ Schema for Google Search Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Berapa tarif sewa mobil di Travel Lombok Airport?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tarif sewa mobil di Travel Lombok Airport mulai dari Rp 250.000 per hari untuk paket Lepas Kunci (setir sendiri 24 jam) dan mulai Rp 500.000 per hari untuk paket Include Driver + BBM."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah tersedia layanan antar jemput Bandara Internasional Lombok (BIL)?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ya, kami menyediakan layanan antar jemput bandara BIL tepat waktu 24 jam menuju Mataram, Senggigi, Kuta Mandalika, Pelabuhan Bangsal, dan seluruh hotel di Lombok."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apa saja pilihan paket wisata tour yang tersedia?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tersedia Paket Wisata Mandalika & Pantai Selatan, Tour Gili Trawangan 3 Gili, Sasak Tradisional Tour, Air Terjun Sendang Gile & Tiu Kelep, serta Paket Private Honeymoon Romantis lengkap dokumentasi foto."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Apakah sewa mobil dengan supir memerlukan uang jaminan deposit?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Tidak. Layanan sewa mobil dengan supir (Include Driver) bebas deposit jaminan (Rp 0), sehingga proses pemesanan sangat cepat, mudah, dan aman."
+        }
+      }
+    ]
   }
   </script>
   <script type="module" crossorigin src="/assets/main-BEOCbD03.js"></script>
