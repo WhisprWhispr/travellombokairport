@@ -2194,13 +2194,16 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
   position: relative !important;
   overflow: hidden !important;
   border: 1px solid rgba(226, 232, 240, 0.8) !important;
-  animation: swalPremiumPopIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) !important;
 }
 
-@keyframes swalPremiumPopIn {
+.share-modal-wrapper {
+  animation: shareModalPopIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes shareModalPopIn {
   0% {
     opacity: 0;
-    transform: scale(0.93) translateY(10px);
+    transform: scale(0.95) translateY(6px);
   }
   100% {
     opacity: 1;

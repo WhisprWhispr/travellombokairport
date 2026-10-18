@@ -6327,6 +6327,23 @@ window.copyShareText = (encodedText, badgeId) => {
     }
 };
 
+// Function to close share modal reliably across all devices
+window.closeShareModal = () => {
+    try {
+        if (typeof Swal !== 'undefined' && typeof Swal.close === 'function') {
+            Swal.close();
+        }
+    } catch (err) {
+        console.error('Error closing share modal:', err);
+    }
+    // Hard fallback: immediately remove modal container if still in DOM
+    setTimeout(() => {
+        const containers = document.querySelectorAll('.swal2-container.swal-share-container');
+        containers.forEach(c => c.remove());
+        document.body.classList.remove('swal2-shown', 'swal2-height-auto');
+    }, 120);
+};
+
 // Function for native device sharing (mobile apps)
 window.triggerNativeShare = (title, encodedText, url) => {
     if (navigator.share) {
@@ -6377,97 +6394,99 @@ window.shareItem = (id, title, priceStr) => {
             popup: 'swal-share-popup'
         },
         html: `
-            <div class="share-modal-header">
-                <div class="share-modal-header-left">
-                    <div class="share-modal-header-icon">
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </div>
-                    <div class="share-modal-header-text">
-                        <div class="share-modal-header-badge">
-                            <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+            <div class="share-modal-wrapper">
+                <div class="share-modal-header">
+                    <div class="share-modal-header-left">
+                        <div class="share-modal-header-icon">
+                            <i class="fa-solid fa-share-nodes"></i>
                         </div>
-                        <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                        <div class="share-modal-header-text">
+                            <div class="share-modal-header-badge">
+                                <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                            </div>
+                            <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                        </div>
+                    </div>
+                    <button type="button" class="share-modal-close-arrow" onclick="window.closeShareModal()" aria-label="Kembali" title="Kembali">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <div class="share-preview-card">
+                    <div class="share-preview-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="share-preview-info">
+                        <div class="share-preview-badge">
+                            <span></span> Penawaran Pilihan
+                        </div>
+                        <div class="share-preview-title" title="${safeTitle}">${safeTitle}</div>
+                        <div class="share-preview-price">${safePrice}</div>
                     </div>
                 </div>
-                <button type="button" class="share-modal-close-arrow" onclick="Swal.close()" ontouchend="Swal.close()" aria-label="Kembali" title="Kembali">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-            </div>
 
-            <div class="share-preview-card">
-                <div class="share-preview-icon">
-                    <i class="fa-solid fa-location-dot"></i>
+                <div class="share-actions-list">
+                    <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-wa">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke WhatsApp</div>
+                            <div class="share-btn-desc">Kirim pesan langsung ke chat atau grup</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </a>
+
+                    <a href="${twLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-tw">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-brands fa-twitter"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke Twitter / X</div>
+                            <div class="share-btn-desc">Tweet rekomendasi liburan ke followers</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </a>
+
+                    <a href="${threadsLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-threads">
+                        <div class="share-btn-icon-wrap">
+                            <svg viewBox="0 0 192 192" width="20" height="20" fill="currentColor" style="display:block;">
+                                <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.4619 44.745C97.1852 44.7431 96.9082 44.7422 96.6309 44.7422C81.8286 44.7422 69.8398 51.5284 62.9092 63.8569L78.6946 72.7483C83.2798 64.5959 90.7226 62.5938 96.6309 62.5938C96.7905 62.5938 96.9507 62.5944 97.1113 62.5956C108.625 62.6688 117.29 70.071 118.825 81.385C113.676 80.8931 108.271 80.817 102.779 81.1614C80.252 82.5735 66.8623 95.8454 67.3193 112.59C67.7663 128.966 81.6572 140.548 99.8516 139.697C114.774 139.001 125.758 132.327 131.656 120.938C136.213 129.803 143.702 134.792 154.512 134.792C167.378 134.792 176.441 125.968 176.441 109.847C176.441 73.1979 146.402 36.2152 96.6309 36.2152C53.7715 36.2152 23.3672 65.5593 23.3672 108.571C23.3672 153.284 54.8984 180 96.6309 180C118.232 180 137.607 170.835 147.531 155.656L134.195 144.172C126.969 155.222 112.531 162.148 96.6309 162.148C65.584 162.148 41.2188 141.42 41.2188 108.571C41.2188 74.9216 63.8574 54.0672 96.6309 54.0672C136.93 54.0672 158.59 83.1944 158.59 109.847C158.59 118.423 154.197 122.94 147.609 122.94C140.404 122.94 135.344 118.006 132.84 110.373C137.914 102.392 140.975 93.3082 141.537 88.9883ZM101.656 122.259C90.3125 122.789 83.9902 116.48 83.7422 107.387C83.4727 97.498 91.8027 90.7688 103.885 90.0117C107.568 89.7809 111.199 89.8781 114.725 90.2971C113.141 112.825 106.678 122.025 101.656 122.259Z"/>
+                            </svg>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke Threads</div>
+                            <div class="share-btn-desc">Posting rekomendasi liburan di Threads</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </a>
+
+                    ${canNativeShare ? `
+                    <button type="button" onclick="window.triggerNativeShare('${safeTitle.replace(/'/g, "\\'")}', '${encodeURIComponent(textOther)}', '${encodeURIComponent(url)}')" class="share-btn-item share-btn-native">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke Aplikasi Lain</div>
+                            <div class="share-btn-desc">Instagram, Facebook, Telegram, dll</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </button>
+                    ` : ''}
+
+                    <button type="button" onclick="window.copyShareText('${encodeURIComponent(textOther)}', 'copy-share-badge')" class="share-btn-item share-btn-copy">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Salin Link & Teks Promo</div>
+                            <div class="share-btn-desc">Teks & link siap tempel di mana saja</div>
+                        </div>
+                        <span id="copy-share-badge" class="share-copy-badge">
+                            <i class="fa-solid fa-copy"></i> Salin
+                        </span>
+                    </button>
                 </div>
-                <div class="share-preview-info">
-                    <div class="share-preview-badge">
-                        <span></span> Penawaran Pilihan
-                    </div>
-                    <div class="share-preview-title" title="${safeTitle}">${safeTitle}</div>
-                    <div class="share-preview-price">${safePrice}</div>
-                </div>
-            </div>
-
-            <div class="share-actions-list">
-                <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-wa">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke WhatsApp</div>
-                        <div class="share-btn-desc">Kirim pesan langsung ke chat atau grup</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </a>
-
-                <a href="${twLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-tw">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-brands fa-twitter"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke Twitter / X</div>
-                        <div class="share-btn-desc">Tweet rekomendasi liburan ke followers</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </a>
-
-                <a href="${threadsLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-threads">
-                    <div class="share-btn-icon-wrap">
-                        <svg viewBox="0 0 192 192" width="20" height="20" fill="currentColor" style="display:block;">
-                            <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.4619 44.745C97.1852 44.7431 96.9082 44.7422 96.6309 44.7422C81.8286 44.7422 69.8398 51.5284 62.9092 63.8569L78.6946 72.7483C83.2798 64.5959 90.7226 62.5938 96.6309 62.5938C96.7905 62.5938 96.9507 62.5944 97.1113 62.5956C108.625 62.6688 117.29 70.071 118.825 81.385C113.676 80.8931 108.271 80.817 102.779 81.1614C80.252 82.5735 66.8623 95.8454 67.3193 112.59C67.7663 128.966 81.6572 140.548 99.8516 139.697C114.774 139.001 125.758 132.327 131.656 120.938C136.213 129.803 143.702 134.792 154.512 134.792C167.378 134.792 176.441 125.968 176.441 109.847C176.441 73.1979 146.402 36.2152 96.6309 36.2152C53.7715 36.2152 23.3672 65.5593 23.3672 108.571C23.3672 153.284 54.8984 180 96.6309 180C118.232 180 137.607 170.835 147.531 155.656L134.195 144.172C126.969 155.222 112.531 162.148 96.6309 162.148C65.584 162.148 41.2188 141.42 41.2188 108.571C41.2188 74.9216 63.8574 54.0672 96.6309 54.0672C136.93 54.0672 158.59 83.1944 158.59 109.847C158.59 118.423 154.197 122.94 147.609 122.94C140.404 122.94 135.344 118.006 132.84 110.373C137.914 102.392 140.975 93.3082 141.537 88.9883ZM101.656 122.259C90.3125 122.789 83.9902 116.48 83.7422 107.387C83.4727 97.498 91.8027 90.7688 103.885 90.0117C107.568 89.7809 111.199 89.8781 114.725 90.2971C113.141 112.825 106.678 122.025 101.656 122.259Z"/>
-                        </svg>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke Threads</div>
-                        <div class="share-btn-desc">Posting rekomendasi liburan di Threads</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </a>
-
-                ${canNativeShare ? `
-                <button type="button" onclick="window.triggerNativeShare('${safeTitle.replace(/'/g, "\\'")}', '${encodeURIComponent(textOther)}', '${encodeURIComponent(url)}')" class="share-btn-item share-btn-native">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke Aplikasi Lain</div>
-                        <div class="share-btn-desc">Instagram, Facebook, Telegram, dll</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </button>
-                ` : ''}
-
-                <button type="button" onclick="window.copyShareText('${encodeURIComponent(textOther)}', 'copy-share-badge')" class="share-btn-item share-btn-copy">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-solid fa-link"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Salin Link & Teks Promo</div>
-                        <div class="share-btn-desc">Teks & link siap tempel di mana saja</div>
-                    </div>
-                    <span id="copy-share-badge" class="share-copy-badge">
-                        <i class="fa-solid fa-copy"></i> Salin
-                    </span>
-                </button>
             </div>
         `,
         showConfirmButton: false,

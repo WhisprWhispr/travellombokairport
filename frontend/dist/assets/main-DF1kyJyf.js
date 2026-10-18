@@ -1,4 +1,4 @@
-import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -2031,98 +2031,100 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 <p style="font-size:1rem; color:#b91c1c; margin-bottom: 20px;">${e.message}</p>
                 <button onclick="window.showRiwayatTransaksi(true)" style="background: white; color:#ef4444; border:2px solid #ef4444; padding:10px 25px; border-radius:10px; font-weight:bold; cursor:pointer; font-size: 1rem; transition: background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">Coba Lagi</button>
             </div>
-        `}}},window.checkAuthAndPrompt=()=>localStorage.getItem(`auth_token`)?!0:(typeof window.closeTourModal==`function`&&window.closeTourModal(),typeof window.closeSubPackageModal==`function`&&window.closeSubPackageModal(),window.openAuthModal(),!1),window.submitAuth=async t=>{t.preventDefault();let n=window._authMode===`login`,r=document.getElementById(`auth-email`).value,i=document.getElementById(`auth-password`).value,a=document.getElementById(`auth-name`).value,o=document.getElementById(`btn-auth-submit`);o.disabled=!0,o.innerHTML=`Memproses...`;try{let t=n?`/api/auth/login`:`/api/auth/register`,o={email:r,password:i};n||(o.name=a);let s=await fetch(`${e}${t}`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify(o)}),c=await s.json();if(!s.ok)throw Error(c.error||`Terjadi kesalahan`);localStorage.setItem(`auth_token`,c.token),localStorage.setItem(`auth_user`,JSON.stringify(c.user||c.admin)),window.closeAuthModal(),window.checkAuthUI(),Swal.fire({icon:`success`,title:n?`Berhasil Login`:`Berhasil Mendaftar`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2e3})}catch(e){Swal.fire({icon:`error`,title:`Gagal`,text:e.message,confirmButtonColor:`#1d4ed8`})}finally{o.disabled=!1,o.innerHTML=n?`Login`:`Daftar`}},window.copyShareText=(e,t)=>{let n=decodeURIComponent(e),r=()=>{let e=document.getElementById(t);e&&(e.classList.add(`copied`),e.innerHTML=`<i class="fa-solid fa-check"></i> Tersalin!`,setTimeout(()=>{e.classList.remove(`copied`),e.innerHTML=`<i class="fa-solid fa-copy"></i> Salin`},2500)),Swal.fire({customClass:{container:`swal-high-z`},icon:`success`,title:`Tersalin ke Clipboard!`,text:`Link & detail penawaran siap dibagikan.`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2500})};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(n).then(r).catch(()=>{try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}});else try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}},window.triggerNativeShare=(e,t,n)=>{navigator.share&&navigator.share({title:e,text:decodeURIComponent(t),url:decodeURIComponent(n)}).catch(e=>{e&&e.name!==`AbortError`&&console.warn(e)})},window.shareItem=(e,t,n)=>{e||=``,t||=`Penawaran Spesial Lombok`,n||=``;let r=window.location.origin+window.location.pathname+`?item=`+encodeURIComponent(e),i=`Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${t}*`+(n?`\n💰 *${n}*`:``)+`\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${r}`,a=`Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${t}`+(n?`\n💰 ${n}`:``)+`\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${r}`,o=`https://wa.me/?text=${encodeURIComponent(i)}`,s=`https://twitter.com/intent/tweet?text=${encodeURIComponent(a)}`,c=`https://threads.net/intent/post?text=${encodeURIComponent(a)}`,l=String(t).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]),u=n?String(n).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]):`Penawaran Terbaik`,d=typeof navigator<`u`&&typeof navigator.share==`function`;Swal.fire({customClass:{container:`swal-high-z swal-share-container`,popup:`swal-share-popup`},html:`
-            <div class="share-modal-header">
-                <div class="share-modal-header-left">
-                    <div class="share-modal-header-icon">
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </div>
-                    <div class="share-modal-header-text">
-                        <div class="share-modal-header-badge">
-                            <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+        `}}},window.checkAuthAndPrompt=()=>localStorage.getItem(`auth_token`)?!0:(typeof window.closeTourModal==`function`&&window.closeTourModal(),typeof window.closeSubPackageModal==`function`&&window.closeSubPackageModal(),window.openAuthModal(),!1),window.submitAuth=async t=>{t.preventDefault();let n=window._authMode===`login`,r=document.getElementById(`auth-email`).value,i=document.getElementById(`auth-password`).value,a=document.getElementById(`auth-name`).value,o=document.getElementById(`btn-auth-submit`);o.disabled=!0,o.innerHTML=`Memproses...`;try{let t=n?`/api/auth/login`:`/api/auth/register`,o={email:r,password:i};n||(o.name=a);let s=await fetch(`${e}${t}`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify(o)}),c=await s.json();if(!s.ok)throw Error(c.error||`Terjadi kesalahan`);localStorage.setItem(`auth_token`,c.token),localStorage.setItem(`auth_user`,JSON.stringify(c.user||c.admin)),window.closeAuthModal(),window.checkAuthUI(),Swal.fire({icon:`success`,title:n?`Berhasil Login`:`Berhasil Mendaftar`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2e3})}catch(e){Swal.fire({icon:`error`,title:`Gagal`,text:e.message,confirmButtonColor:`#1d4ed8`})}finally{o.disabled=!1,o.innerHTML=n?`Login`:`Daftar`}},window.copyShareText=(e,t)=>{let n=decodeURIComponent(e),r=()=>{let e=document.getElementById(t);e&&(e.classList.add(`copied`),e.innerHTML=`<i class="fa-solid fa-check"></i> Tersalin!`,setTimeout(()=>{e.classList.remove(`copied`),e.innerHTML=`<i class="fa-solid fa-copy"></i> Salin`},2500)),Swal.fire({customClass:{container:`swal-high-z`},icon:`success`,title:`Tersalin ke Clipboard!`,text:`Link & detail penawaran siap dibagikan.`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2500})};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(n).then(r).catch(()=>{try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}});else try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}},window.closeShareModal=()=>{try{typeof Swal<`u`&&typeof Swal.close==`function`&&Swal.close()}catch(e){console.error(`Error closing share modal:`,e)}setTimeout(()=>{document.querySelectorAll(`.swal2-container.swal-share-container`).forEach(e=>e.remove()),document.body.classList.remove(`swal2-shown`,`swal2-height-auto`)},120)},window.triggerNativeShare=(e,t,n)=>{navigator.share&&navigator.share({title:e,text:decodeURIComponent(t),url:decodeURIComponent(n)}).catch(e=>{e&&e.name!==`AbortError`&&console.warn(e)})},window.shareItem=(e,t,n)=>{e||=``,t||=`Penawaran Spesial Lombok`,n||=``;let r=window.location.origin+window.location.pathname+`?item=`+encodeURIComponent(e),i=`Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${t}*`+(n?`\n💰 *${n}*`:``)+`\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${r}`,a=`Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${t}`+(n?`\n💰 ${n}`:``)+`\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${r}`,o=`https://wa.me/?text=${encodeURIComponent(i)}`,s=`https://twitter.com/intent/tweet?text=${encodeURIComponent(a)}`,c=`https://threads.net/intent/post?text=${encodeURIComponent(a)}`,l=String(t).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]),u=n?String(n).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]):`Penawaran Terbaik`,d=typeof navigator<`u`&&typeof navigator.share==`function`;Swal.fire({customClass:{container:`swal-high-z swal-share-container`,popup:`swal-share-popup`},html:`
+            <div class="share-modal-wrapper">
+                <div class="share-modal-header">
+                    <div class="share-modal-header-left">
+                        <div class="share-modal-header-icon">
+                            <i class="fa-solid fa-share-nodes"></i>
                         </div>
-                        <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                        <div class="share-modal-header-text">
+                            <div class="share-modal-header-badge">
+                                <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                            </div>
+                            <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                        </div>
+                    </div>
+                    <button type="button" class="share-modal-close-arrow" onclick="window.closeShareModal()" aria-label="Kembali" title="Kembali">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </button>
+                </div>
+
+                <div class="share-preview-card">
+                    <div class="share-preview-icon">
+                        <i class="fa-solid fa-location-dot"></i>
+                    </div>
+                    <div class="share-preview-info">
+                        <div class="share-preview-badge">
+                            <span></span> Penawaran Pilihan
+                        </div>
+                        <div class="share-preview-title" title="${l}">${l}</div>
+                        <div class="share-preview-price">${u}</div>
                     </div>
                 </div>
-                <button type="button" class="share-modal-close-arrow" onclick="Swal.close()" ontouchend="Swal.close()" aria-label="Kembali" title="Kembali">
-                    <i class="fa-solid fa-arrow-left"></i>
-                </button>
-            </div>
 
-            <div class="share-preview-card">
-                <div class="share-preview-icon">
-                    <i class="fa-solid fa-location-dot"></i>
+                <div class="share-actions-list">
+                    <a href="${o}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-wa">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-brands fa-whatsapp"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke WhatsApp</div>
+                            <div class="share-btn-desc">Kirim pesan langsung ke chat atau grup</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </a>
+
+                    <a href="${s}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-tw">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-brands fa-twitter"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke Twitter / X</div>
+                            <div class="share-btn-desc">Tweet rekomendasi liburan ke followers</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </a>
+
+                    <a href="${c}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-threads">
+                        <div class="share-btn-icon-wrap">
+                            <svg viewBox="0 0 192 192" width="20" height="20" fill="currentColor" style="display:block;">
+                                <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.4619 44.745C97.1852 44.7431 96.9082 44.7422 96.6309 44.7422C81.8286 44.7422 69.8398 51.5284 62.9092 63.8569L78.6946 72.7483C83.2798 64.5959 90.7226 62.5938 96.6309 62.5938C96.7905 62.5938 96.9507 62.5944 97.1113 62.5956C108.625 62.6688 117.29 70.071 118.825 81.385C113.676 80.8931 108.271 80.817 102.779 81.1614C80.252 82.5735 66.8623 95.8454 67.3193 112.59C67.7663 128.966 81.6572 140.548 99.8516 139.697C114.774 139.001 125.758 132.327 131.656 120.938C136.213 129.803 143.702 134.792 154.512 134.792C167.378 134.792 176.441 125.968 176.441 109.847C176.441 73.1979 146.402 36.2152 96.6309 36.2152C53.7715 36.2152 23.3672 65.5593 23.3672 108.571C23.3672 153.284 54.8984 180 96.6309 180C118.232 180 137.607 170.835 147.531 155.656L134.195 144.172C126.969 155.222 112.531 162.148 96.6309 162.148C65.584 162.148 41.2188 141.42 41.2188 108.571C41.2188 74.9216 63.8574 54.0672 96.6309 54.0672C136.93 54.0672 158.59 83.1944 158.59 109.847C158.59 118.423 154.197 122.94 147.609 122.94C140.404 122.94 135.344 118.006 132.84 110.373C137.914 102.392 140.975 93.3082 141.537 88.9883ZM101.656 122.259C90.3125 122.789 83.9902 116.48 83.7422 107.387C83.4727 97.498 91.8027 90.7688 103.885 90.0117C107.568 89.7809 111.199 89.8781 114.725 90.2971C113.141 112.825 106.678 122.025 101.656 122.259Z"/>
+                            </svg>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke Threads</div>
+                            <div class="share-btn-desc">Posting rekomendasi liburan di Threads</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </a>
+
+                    ${d?`
+                    <button type="button" onclick="window.triggerNativeShare('${l.replace(/'/g,`\\'`)}', '${encodeURIComponent(a)}', '${encodeURIComponent(r)}')" class="share-btn-item share-btn-native">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-solid fa-share-nodes"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Bagikan ke Aplikasi Lain</div>
+                            <div class="share-btn-desc">Instagram, Facebook, Telegram, dll</div>
+                        </div>
+                        <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                    </button>
+                    `:``}
+
+                    <button type="button" onclick="window.copyShareText('${encodeURIComponent(a)}', 'copy-share-badge')" class="share-btn-item share-btn-copy">
+                        <div class="share-btn-icon-wrap">
+                            <i class="fa-solid fa-link"></i>
+                        </div>
+                        <div class="share-btn-content">
+                            <div class="share-btn-title">Salin Link & Teks Promo</div>
+                            <div class="share-btn-desc">Teks & link siap tempel di mana saja</div>
+                        </div>
+                        <span id="copy-share-badge" class="share-copy-badge">
+                            <i class="fa-solid fa-copy"></i> Salin
+                        </span>
+                    </button>
                 </div>
-                <div class="share-preview-info">
-                    <div class="share-preview-badge">
-                        <span></span> Penawaran Pilihan
-                    </div>
-                    <div class="share-preview-title" title="${l}">${l}</div>
-                    <div class="share-preview-price">${u}</div>
-                </div>
-            </div>
-
-            <div class="share-actions-list">
-                <a href="${o}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-wa">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-brands fa-whatsapp"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke WhatsApp</div>
-                        <div class="share-btn-desc">Kirim pesan langsung ke chat atau grup</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </a>
-
-                <a href="${s}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-tw">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-brands fa-twitter"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke Twitter / X</div>
-                        <div class="share-btn-desc">Tweet rekomendasi liburan ke followers</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </a>
-
-                <a href="${c}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-threads">
-                    <div class="share-btn-icon-wrap">
-                        <svg viewBox="0 0 192 192" width="20" height="20" fill="currentColor" style="display:block;">
-                            <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.019 87.8451C137.537 60.5382 122.616 44.905 97.4619 44.745C97.1852 44.7431 96.9082 44.7422 96.6309 44.7422C81.8286 44.7422 69.8398 51.5284 62.9092 63.8569L78.6946 72.7483C83.2798 64.5959 90.7226 62.5938 96.6309 62.5938C96.7905 62.5938 96.9507 62.5944 97.1113 62.5956C108.625 62.6688 117.29 70.071 118.825 81.385C113.676 80.8931 108.271 80.817 102.779 81.1614C80.252 82.5735 66.8623 95.8454 67.3193 112.59C67.7663 128.966 81.6572 140.548 99.8516 139.697C114.774 139.001 125.758 132.327 131.656 120.938C136.213 129.803 143.702 134.792 154.512 134.792C167.378 134.792 176.441 125.968 176.441 109.847C176.441 73.1979 146.402 36.2152 96.6309 36.2152C53.7715 36.2152 23.3672 65.5593 23.3672 108.571C23.3672 153.284 54.8984 180 96.6309 180C118.232 180 137.607 170.835 147.531 155.656L134.195 144.172C126.969 155.222 112.531 162.148 96.6309 162.148C65.584 162.148 41.2188 141.42 41.2188 108.571C41.2188 74.9216 63.8574 54.0672 96.6309 54.0672C136.93 54.0672 158.59 83.1944 158.59 109.847C158.59 118.423 154.197 122.94 147.609 122.94C140.404 122.94 135.344 118.006 132.84 110.373C137.914 102.392 140.975 93.3082 141.537 88.9883ZM101.656 122.259C90.3125 122.789 83.9902 116.48 83.7422 107.387C83.4727 97.498 91.8027 90.7688 103.885 90.0117C107.568 89.7809 111.199 89.8781 114.725 90.2971C113.141 112.825 106.678 122.025 101.656 122.259Z"/>
-                        </svg>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke Threads</div>
-                        <div class="share-btn-desc">Posting rekomendasi liburan di Threads</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </a>
-
-                ${d?`
-                <button type="button" onclick="window.triggerNativeShare('${l.replace(/'/g,`\\'`)}', '${encodeURIComponent(a)}', '${encodeURIComponent(r)}')" class="share-btn-item share-btn-native">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-solid fa-share-nodes"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Bagikan ke Aplikasi Lain</div>
-                        <div class="share-btn-desc">Instagram, Facebook, Telegram, dll</div>
-                    </div>
-                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
-                </button>
-                `:``}
-
-                <button type="button" onclick="window.copyShareText('${encodeURIComponent(a)}', 'copy-share-badge')" class="share-btn-item share-btn-copy">
-                    <div class="share-btn-icon-wrap">
-                        <i class="fa-solid fa-link"></i>
-                    </div>
-                    <div class="share-btn-content">
-                        <div class="share-btn-title">Salin Link & Teks Promo</div>
-                        <div class="share-btn-desc">Teks & link siap tempel di mana saja</div>
-                    </div>
-                    <span id="copy-share-badge" class="share-copy-badge">
-                        <i class="fa-solid fa-copy"></i> Salin
-                    </span>
-                </button>
             </div>
         `,showConfirmButton:!1,showCloseButton:!1})};var y=[];try{let e=localStorage.getItem(`aiChatHistory`);e&&(y=JSON.parse(e))}catch(e){console.error(`Failed to load chat history`,e)}window.renderChatHistory=()=>{if(y.length===0)return;let e=document.getElementById(`chat-messages`);e&&(e.innerHTML=``,y.forEach(t=>{if(t.role===`user`)e.insertAdjacentHTML(`beforeend`,`
                 <div class="message user-message">
