@@ -2033,15 +2033,20 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
             </div>
         `}}},window.checkAuthAndPrompt=()=>localStorage.getItem(`auth_token`)?!0:(typeof window.closeTourModal==`function`&&window.closeTourModal(),typeof window.closeSubPackageModal==`function`&&window.closeSubPackageModal(),window.openAuthModal(),!1),window.submitAuth=async t=>{t.preventDefault();let n=window._authMode===`login`,r=document.getElementById(`auth-email`).value,i=document.getElementById(`auth-password`).value,a=document.getElementById(`auth-name`).value,o=document.getElementById(`btn-auth-submit`);o.disabled=!0,o.innerHTML=`Memproses...`;try{let t=n?`/api/auth/login`:`/api/auth/register`,o={email:r,password:i};n||(o.name=a);let s=await fetch(`${e}${t}`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify(o)}),c=await s.json();if(!s.ok)throw Error(c.error||`Terjadi kesalahan`);localStorage.setItem(`auth_token`,c.token),localStorage.setItem(`auth_user`,JSON.stringify(c.user||c.admin)),window.closeAuthModal(),window.checkAuthUI(),Swal.fire({icon:`success`,title:n?`Berhasil Login`:`Berhasil Mendaftar`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2e3})}catch(e){Swal.fire({icon:`error`,title:`Gagal`,text:e.message,confirmButtonColor:`#1d4ed8`})}finally{o.disabled=!1,o.innerHTML=n?`Login`:`Daftar`}},window.copyShareText=(e,t)=>{let n=decodeURIComponent(e),r=()=>{let e=document.getElementById(t);e&&(e.classList.add(`copied`),e.innerHTML=`<i class="fa-solid fa-check"></i> Tersalin!`,setTimeout(()=>{e.classList.remove(`copied`),e.innerHTML=`<i class="fa-solid fa-copy"></i> Salin`},2500)),Swal.fire({customClass:{container:`swal-high-z`},icon:`success`,title:`Tersalin ke Clipboard!`,text:`Link & detail penawaran siap dibagikan.`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2500})};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(n).then(r).catch(()=>{try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}});else try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}},window.triggerNativeShare=(e,t,n)=>{navigator.share&&navigator.share({title:e,text:decodeURIComponent(t),url:decodeURIComponent(n)}).catch(e=>{e&&e.name!==`AbortError`&&console.warn(e)})},window.shareItem=(e,t,n)=>{e||=``,t||=`Penawaran Spesial Lombok`,n||=``;let r=window.location.origin+window.location.pathname+`?item=`+encodeURIComponent(e),i=`Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${t}*`+(n?`\n💰 *${n}*`:``)+`\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${r}`,a=`Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${t}`+(n?`\n💰 ${n}`:``)+`\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${r}`,o=`https://wa.me/?text=${encodeURIComponent(i)}`,s=`https://twitter.com/intent/tweet?text=${encodeURIComponent(a)}`,c=`https://threads.net/intent/post?text=${encodeURIComponent(a)}`,l=String(t).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]),u=n?String(n).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]):`Penawaran Terbaik`,d=typeof navigator<`u`&&typeof navigator.share==`function`;Swal.fire({customClass:{container:`swal-high-z swal-share-container`,popup:`swal-share-popup`},html:`
             <div class="share-modal-header">
-                <div class="share-modal-header-icon">
-                    <i class="fa-solid fa-share-nodes"></i>
-                </div>
-                <div class="share-modal-header-text">
-                    <div class="share-modal-header-badge">
-                        <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                <div class="share-modal-header-left">
+                    <div class="share-modal-header-icon">
+                        <i class="fa-solid fa-share-nodes"></i>
                     </div>
-                    <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                    <div class="share-modal-header-text">
+                        <div class="share-modal-header-badge">
+                            <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                        </div>
+                        <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                    </div>
                 </div>
+                <button type="button" class="share-modal-close-arrow" onclick="Swal.close()" ontouchend="Swal.close()" aria-label="Kembali" title="Kembali">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
             </div>
 
             <div class="share-preview-card">
@@ -2119,7 +2124,7 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                     </span>
                 </button>
             </div>
-        `,showConfirmButton:!1,showCloseButton:!0,closeButtonHtml:`<i class="fa-solid fa-arrow-left" title="Kembali"></i>`})};var y=[];try{let e=localStorage.getItem(`aiChatHistory`);e&&(y=JSON.parse(e))}catch(e){console.error(`Failed to load chat history`,e)}window.renderChatHistory=()=>{if(y.length===0)return;let e=document.getElementById(`chat-messages`);e&&(e.innerHTML=``,y.forEach(t=>{if(t.role===`user`)e.insertAdjacentHTML(`beforeend`,`
+        `,showConfirmButton:!1,showCloseButton:!1})};var y=[];try{let e=localStorage.getItem(`aiChatHistory`);e&&(y=JSON.parse(e))}catch(e){console.error(`Failed to load chat history`,e)}window.renderChatHistory=()=>{if(y.length===0)return;let e=document.getElementById(`chat-messages`);e&&(e.innerHTML=``,y.forEach(t=>{if(t.role===`user`)e.insertAdjacentHTML(`beforeend`,`
                 <div class="message user-message">
                     ${t.parts[0].text}
                 </div>

@@ -6378,15 +6378,20 @@ window.shareItem = (id, title, priceStr) => {
         },
         html: `
             <div class="share-modal-header">
-                <div class="share-modal-header-icon">
-                    <i class="fa-solid fa-share-nodes"></i>
-                </div>
-                <div class="share-modal-header-text">
-                    <div class="share-modal-header-badge">
-                        <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                <div class="share-modal-header-left">
+                    <div class="share-modal-header-icon">
+                        <i class="fa-solid fa-share-nodes"></i>
                     </div>
-                    <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                    <div class="share-modal-header-text">
+                        <div class="share-modal-header-badge">
+                            <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                        </div>
+                        <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                    </div>
                 </div>
+                <button type="button" class="share-modal-close-arrow" onclick="Swal.close()" ontouchend="Swal.close()" aria-label="Kembali" title="Kembali">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
             </div>
 
             <div class="share-preview-card">
@@ -6466,8 +6471,7 @@ window.shareItem = (id, title, priceStr) => {
             </div>
         `,
         showConfirmButton: false,
-        showCloseButton: true,
-        closeButtonHtml: '<i class="fa-solid fa-arrow-left" title="Kembali"></i>'
+        showCloseButton: false
     });
 };
 

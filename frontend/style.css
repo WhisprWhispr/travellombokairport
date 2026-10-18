@@ -2216,13 +2216,36 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
   overflow: visible !important;
 }
 
-/* Tombol Silang Diganti Jadi Panah yang Rapi & Premium */
+/* Sembunyikan default swal2-close bawaan */
 .swal2-popup.swal-share-popup .swal2-close {
-  position: absolute !important;
-  top: 18px !important;
-  right: 18px !important;
-  width: 38px !important;
-  height: 38px !important;
+  display: none !important;
+}
+
+/* Header Modal Fleksibel dengan Tombol Panah Rapi & Responsif */
+.share-modal-header {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  margin-bottom: 16px !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.share-modal-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+/* Tombol Panah Kembali Premium - Responsif & Pasti Aktif di Desktop & Touch HP */
+.share-modal-close-arrow {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
   border-radius: 50% !important;
   background: #f1f5f9 !important;
   border: 1px solid #e2e8f0 !important;
@@ -2230,22 +2253,29 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  font-size: 0.95rem !important;
+  font-size: 1rem !important;
   cursor: pointer !important;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
   outline: none !important;
-  z-index: 20 !important;
   padding: 0 !important;
+  margin: 0 !important;
+  flex-shrink: 0 !important;
+  position: relative !important;
+  z-index: 50 !important;
+  touch-action: manipulation !important;
+  -webkit-tap-highlight-color: transparent !important;
+  pointer-events: auto !important;
 }
 
-.swal2-popup.swal-share-popup .swal2-close i {
+.share-modal-close-arrow i {
   display: inline-block;
   line-height: 1;
+  pointer-events: none;
   transition: transform 0.25s ease;
 }
 
-.swal2-popup.swal-share-popup .swal2-close:hover {
+.share-modal-close-arrow:hover {
   background: #0284c7 !important;
   color: #ffffff !important;
   border-color: #0284c7 !important;
@@ -2253,21 +2283,14 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
   box-shadow: 0 6px 16px rgba(2, 132, 199, 0.3) !important;
 }
 
-.swal2-popup.swal-share-popup .swal2-close:hover i {
+.share-modal-close-arrow:hover i {
   transform: translateX(-2px);
 }
 
-.swal2-popup.swal-share-popup .swal2-close:active {
-  transform: translateX(-1px) scale(0.96) !important;
-}
-
-/* Header Modal */
-.share-modal-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  padding-right: 46px; /* Memberikan ruang rapi untuk tombol panah di kanan atas */
+.share-modal-close-arrow:active {
+  background: #0369a1 !important;
+  color: #ffffff !important;
+  transform: scale(0.92) !important;
 }
 
 .share-modal-header-icon {
