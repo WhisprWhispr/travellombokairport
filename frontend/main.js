@@ -6269,36 +6269,203 @@ window.submitAuth = async (e) => {
     }
 };
 
+// Function to safely copy share text with feedback
+window.copyShareText = (encodedText, badgeId) => {
+    const text = decodeURIComponent(encodedText);
+    const setSuccessUI = () => {
+        const badge = document.getElementById(badgeId);
+        if (badge) {
+            badge.classList.add('copied');
+            badge.innerHTML = '<i class="fa-solid fa-check"></i> Tersalin!';
+            setTimeout(() => {
+                badge.classList.remove('copied');
+                badge.innerHTML = '<i class="fa-solid fa-copy"></i> Salin';
+            }, 2500);
+        }
+        Swal.fire({
+            customClass: { container: 'swal-high-z' },
+            icon: 'success',
+            title: 'Tersalin ke Clipboard!',
+            text: 'Link & detail penawaran siap dibagikan.',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2500
+        });
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(setSuccessUI).catch(() => {
+            try {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                setSuccessUI();
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    } else {
+        try {
+            const ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand('copy');
+            document.body.removeChild(ta);
+            setSuccessUI();
+        } catch (e) {
+            console.error(e);
+        }
+    }
+};
+
+// Function for native device sharing (mobile apps)
+window.triggerNativeShare = (title, encodedText, url) => {
+    if (navigator.share) {
+        navigator.share({
+            title: title,
+            text: decodeURIComponent(encodedText),
+            url: decodeURIComponent(url)
+        }).catch((err) => {
+            if (err && err.name !== 'AbortError') console.warn(err);
+        });
+    }
+};
+
 window.shareItem = (id, title, priceStr) => {
-    const url = window.location.origin + window.location.pathname + '?item=' + id;
-    const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${title}*\n💰 *${priceStr}*\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
-    const textOther = `Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${title}\n💰 ${priceStr}\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${url}`;
+    id = id || '';
+    title = title || 'Penawaran Spesial Lombok';
+    priceStr = priceStr || '';
+
+    const url = window.location.origin + window.location.pathname + '?item=' + encodeURIComponent(id);
+    const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${title}*` + (priceStr ? `\n💰 *${priceStr}*` : '') + `\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
+    const textOther = `Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${title}` + (priceStr ? `\n💰 ${priceStr}` : '') + `\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${url}`;
     
     const waLink = `https://wa.me/?text=${encodeURIComponent(textWa)}`;
     const twLink = `https://twitter.com/intent/tweet?text=${encodeURIComponent(textOther)}`;
     const threadsLink = `https://threads.net/intent/post?text=${encodeURIComponent(textOther)}`;
 
+    const safeTitle = String(title).replace(/[<>&"']/g, m => ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[m]);
+
+    const safePrice = priceStr ? String(priceStr).replace(/[<>&"']/g, m => ({
+        '<': '&lt;',
+        '>': '&gt;',
+        '&': '&amp;',
+        '"': '&quot;',
+        "'": '&#39;'
+    })[m]) : 'Penawaran Terbaik';
+
+    const canNativeShare = typeof navigator !== 'undefined' && typeof navigator.share === 'function';
+
     Swal.fire({
-        customClass: { container: 'swal-high-z' },
-        title: '<span style="font-size:1.1rem;font-weight:800;">Bagikan Penawaran</span>',
+        customClass: {
+            container: 'swal-high-z swal-share-container',
+            popup: 'swal-share-popup'
+        },
         html: `
-            <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-                <a href="${waLink}" target="_blank" class="btn" style="background:#25D366; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-brands fa-whatsapp" style="font-size:1.2rem;"></i> Bagikan ke WhatsApp
+            <div class="share-modal-header">
+                <div class="share-modal-header-icon">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </div>
+                <div class="share-modal-header-text">
+                    <div class="share-modal-header-badge">
+                        <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                    </div>
+                    <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                </div>
+            </div>
+
+            <div class="share-preview-card">
+                <div class="share-preview-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="share-preview-info">
+                    <div class="share-preview-badge">
+                        <span></span> Penawaran Pilihan
+                    </div>
+                    <div class="share-preview-title" title="${safeTitle}">${safeTitle}</div>
+                    <div class="share-preview-price">${safePrice}</div>
+                </div>
+            </div>
+
+            <div class="share-actions-list">
+                <a href="${waLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-wa">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke WhatsApp</div>
+                        <div class="share-btn-desc">Kirim pesan langsung ke chat atau grup</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
                 </a>
-                <a href="${twLink}" target="_blank" class="btn" style="background:#1DA1F2; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-brands fa-twitter" style="font-size:1.2rem;"></i> Bagikan ke Twitter
+
+                <a href="${twLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-tw">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-brands fa-twitter"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke Twitter / X</div>
+                        <div class="share-btn-desc">Tweet rekomendasi liburan ke followers</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
                 </a>
-                <a href="${threadsLink}" target="_blank" class="btn" style="background:#000000; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-brands fa-threads" style="font-size:1.2rem;"></i> Bagikan ke Threads
+
+                <a href="${threadsLink}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-threads">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-brands fa-threads"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke Threads</div>
+                        <div class="share-btn-desc">Posting rekomendasi liburan di Threads</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
                 </a>
-                <button onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(textOther)}')); Swal.fire({customClass:{container:'swal-high-z'},icon:'success',title:'Disalin!',toast:true,position:'top-end',showConfirmButton:false,timer:2000});" class="btn" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-solid fa-copy" style="font-size:1.2rem;"></i> Salin Link & Teks
+
+                ${canNativeShare ? `
+                <button type="button" onclick="window.triggerNativeShare('${safeTitle.replace(/'/g, "\\'")}', '${encodeURIComponent(textOther)}', '${encodeURIComponent(url)}')" class="share-btn-item share-btn-native">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke Aplikasi Lain</div>
+                        <div class="share-btn-desc">Instagram, Facebook, Telegram, dll</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                </button>
+                ` : ''}
+
+                <button type="button" onclick="window.copyShareText('${encodeURIComponent(textOther)}', 'copy-share-badge')" class="share-btn-item share-btn-copy">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Salin Link & Teks Promo</div>
+                        <div class="share-btn-desc">Teks & link siap tempel di mana saja</div>
+                    </div>
+                    <span id="copy-share-badge" class="share-copy-badge">
+                        <i class="fa-solid fa-copy"></i> Salin
+                    </span>
                 </button>
             </div>
         `,
         showConfirmButton: false,
-        showCloseButton: true
+        showCloseButton: true,
+        closeButtonHtml: '<i class="fa-solid fa-arrow-left" title="Kembali"></i>'
     });
 };
 

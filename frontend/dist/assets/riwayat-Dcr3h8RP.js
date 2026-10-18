@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -2031,22 +2031,93 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 <p style="font-size:1rem; color:#b91c1c; margin-bottom: 20px;">${e.message}</p>
                 <button onclick="window.showRiwayatTransaksi(true)" style="background: white; color:#ef4444; border:2px solid #ef4444; padding:10px 25px; border-radius:10px; font-weight:bold; cursor:pointer; font-size: 1rem; transition: background 0.2s;" onmouseover="this.style.background='#fef2f2'" onmouseout="this.style.background='white'">Coba Lagi</button>
             </div>
-        `}}},window.checkAuthAndPrompt=()=>localStorage.getItem(`auth_token`)?!0:(typeof window.closeTourModal==`function`&&window.closeTourModal(),typeof window.closeSubPackageModal==`function`&&window.closeSubPackageModal(),window.openAuthModal(),!1),window.submitAuth=async t=>{t.preventDefault();let n=window._authMode===`login`,r=document.getElementById(`auth-email`).value,i=document.getElementById(`auth-password`).value,a=document.getElementById(`auth-name`).value,o=document.getElementById(`btn-auth-submit`);o.disabled=!0,o.innerHTML=`Memproses...`;try{let t=n?`/api/auth/login`:`/api/auth/register`,o={email:r,password:i};n||(o.name=a);let s=await fetch(`${e}${t}`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify(o)}),c=await s.json();if(!s.ok)throw Error(c.error||`Terjadi kesalahan`);localStorage.setItem(`auth_token`,c.token),localStorage.setItem(`auth_user`,JSON.stringify(c.user||c.admin)),window.closeAuthModal(),window.checkAuthUI(),Swal.fire({icon:`success`,title:n?`Berhasil Login`:`Berhasil Mendaftar`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2e3})}catch(e){Swal.fire({icon:`error`,title:`Gagal`,text:e.message,confirmButtonColor:`#1d4ed8`})}finally{o.disabled=!1,o.innerHTML=n?`Login`:`Daftar`}},window.shareItem=(e,t,n)=>{let r=window.location.origin+window.location.pathname+`?item=`+e,i=`Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${t}*\n💰 *${n}*\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${r}`,a=`Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${t}\n💰 ${n}\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${r}`,o=`https://wa.me/?text=${encodeURIComponent(i)}`,s=`https://twitter.com/intent/tweet?text=${encodeURIComponent(a)}`,c=`https://threads.net/intent/post?text=${encodeURIComponent(a)}`;Swal.fire({customClass:{container:`swal-high-z`},title:`<span style="font-size:1.1rem;font-weight:800;">Bagikan Penawaran</span>`,html:`
-            <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-                <a href="${o}" target="_blank" class="btn" style="background:#25D366; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-brands fa-whatsapp" style="font-size:1.2rem;"></i> Bagikan ke WhatsApp
+        `}}},window.checkAuthAndPrompt=()=>localStorage.getItem(`auth_token`)?!0:(typeof window.closeTourModal==`function`&&window.closeTourModal(),typeof window.closeSubPackageModal==`function`&&window.closeSubPackageModal(),window.openAuthModal(),!1),window.submitAuth=async t=>{t.preventDefault();let n=window._authMode===`login`,r=document.getElementById(`auth-email`).value,i=document.getElementById(`auth-password`).value,a=document.getElementById(`auth-name`).value,o=document.getElementById(`btn-auth-submit`);o.disabled=!0,o.innerHTML=`Memproses...`;try{let t=n?`/api/auth/login`:`/api/auth/register`,o={email:r,password:i};n||(o.name=a);let s=await fetch(`${e}${t}`,{method:`POST`,headers:{"Content-Type":`application/json`},body:JSON.stringify(o)}),c=await s.json();if(!s.ok)throw Error(c.error||`Terjadi kesalahan`);localStorage.setItem(`auth_token`,c.token),localStorage.setItem(`auth_user`,JSON.stringify(c.user||c.admin)),window.closeAuthModal(),window.checkAuthUI(),Swal.fire({icon:`success`,title:n?`Berhasil Login`:`Berhasil Mendaftar`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2e3})}catch(e){Swal.fire({icon:`error`,title:`Gagal`,text:e.message,confirmButtonColor:`#1d4ed8`})}finally{o.disabled=!1,o.innerHTML=n?`Login`:`Daftar`}},window.copyShareText=(e,t)=>{let n=decodeURIComponent(e),r=()=>{let e=document.getElementById(t);e&&(e.classList.add(`copied`),e.innerHTML=`<i class="fa-solid fa-check"></i> Tersalin!`,setTimeout(()=>{e.classList.remove(`copied`),e.innerHTML=`<i class="fa-solid fa-copy"></i> Salin`},2500)),Swal.fire({customClass:{container:`swal-high-z`},icon:`success`,title:`Tersalin ke Clipboard!`,text:`Link & detail penawaran siap dibagikan.`,toast:!0,position:`top-end`,showConfirmButton:!1,timer:2500})};if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(n).then(r).catch(()=>{try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}});else try{let e=document.createElement(`textarea`);e.value=n,e.style.position=`fixed`,e.style.opacity=`0`,document.body.appendChild(e),e.select(),document.execCommand(`copy`),document.body.removeChild(e),r()}catch(e){console.error(e)}},window.triggerNativeShare=(e,t,n)=>{navigator.share&&navigator.share({title:e,text:decodeURIComponent(t),url:decodeURIComponent(n)}).catch(e=>{e&&e.name!==`AbortError`&&console.warn(e)})},window.shareItem=(e,t,n)=>{e||=``,t||=`Penawaran Spesial Lombok`,n||=``;let r=window.location.origin+window.location.pathname+`?item=`+encodeURIComponent(e),i=`Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${t}*`+(n?`\n💰 *${n}*`:``)+`\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${r}`,a=`Ada rencana liburan ke Lombok? 🌴\n\nCek penawaran seru dari Travel Lombok Airport!\n📌 ${t}`+(n?`\n💰 ${n}`:``)+`\n\nLangsung booking dan lihat detailnya di sini 👇\n📍 ${r}`,o=`https://wa.me/?text=${encodeURIComponent(i)}`,s=`https://twitter.com/intent/tweet?text=${encodeURIComponent(a)}`,c=`https://threads.net/intent/post?text=${encodeURIComponent(a)}`,l=String(t).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]),u=n?String(n).replace(/[<>&"']/g,e=>({"<":`&lt;`,">":`&gt;`,"&":`&amp;`,'"':`&quot;`,"'":`&#39;`})[e]):`Penawaran Terbaik`,d=typeof navigator<`u`&&typeof navigator.share==`function`;Swal.fire({customClass:{container:`swal-high-z swal-share-container`,popup:`swal-share-popup`},html:`
+            <div class="share-modal-header">
+                <div class="share-modal-header-icon">
+                    <i class="fa-solid fa-share-nodes"></i>
+                </div>
+                <div class="share-modal-header-text">
+                    <div class="share-modal-header-badge">
+                        <i class="fa-solid fa-sparkles"></i> Travel Lombok Airport
+                    </div>
+                    <h3 class="share-modal-header-title">Bagikan Penawaran</h3>
+                </div>
+            </div>
+
+            <div class="share-preview-card">
+                <div class="share-preview-icon">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div class="share-preview-info">
+                    <div class="share-preview-badge">
+                        <span></span> Penawaran Pilihan
+                    </div>
+                    <div class="share-preview-title" title="${l}">${l}</div>
+                    <div class="share-preview-price">${u}</div>
+                </div>
+            </div>
+
+            <div class="share-actions-list">
+                <a href="${o}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-wa">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-brands fa-whatsapp"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke WhatsApp</div>
+                        <div class="share-btn-desc">Kirim pesan langsung ke chat atau grup</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
                 </a>
-                <a href="${s}" target="_blank" class="btn" style="background:#1DA1F2; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-brands fa-twitter" style="font-size:1.2rem;"></i> Bagikan ke Twitter
+
+                <a href="${s}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-tw">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-brands fa-twitter"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke Twitter / X</div>
+                        <div class="share-btn-desc">Tweet rekomendasi liburan ke followers</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
                 </a>
-                <a href="${c}" target="_blank" class="btn" style="background:#000000; color:white; border-radius:12px; padding:12px; text-decoration:none; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-brands fa-threads" style="font-size:1.2rem;"></i> Bagikan ke Threads
+
+                <a href="${c}" target="_blank" rel="noopener noreferrer" class="share-btn-item share-btn-threads">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-brands fa-threads"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke Threads</div>
+                        <div class="share-btn-desc">Posting rekomendasi liburan di Threads</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
                 </a>
-                <button onclick="navigator.clipboard.writeText(decodeURIComponent('${encodeURIComponent(a)}')); Swal.fire({customClass:{container:'swal-high-z'},icon:'success',title:'Disalin!',toast:true,position:'top-end',showConfirmButton:false,timer:2000});" class="btn" style="background:#f1f5f9; color:#475569; border:1px solid #cbd5e1; border-radius:12px; padding:12px; display:flex; align-items:center; justify-content:center; gap:10px; font-weight:700;">
-                    <i class="fa-solid fa-copy" style="font-size:1.2rem;"></i> Salin Link & Teks
+
+                ${d?`
+                <button type="button" onclick="window.triggerNativeShare('${l.replace(/'/g,`\\'`)}', '${encodeURIComponent(a)}', '${encodeURIComponent(r)}')" class="share-btn-item share-btn-native">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-solid fa-share-nodes"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Bagikan ke Aplikasi Lain</div>
+                        <div class="share-btn-desc">Instagram, Facebook, Telegram, dll</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right share-btn-arrow"></i>
+                </button>
+                `:``}
+
+                <button type="button" onclick="window.copyShareText('${encodeURIComponent(a)}', 'copy-share-badge')" class="share-btn-item share-btn-copy">
+                    <div class="share-btn-icon-wrap">
+                        <i class="fa-solid fa-link"></i>
+                    </div>
+                    <div class="share-btn-content">
+                        <div class="share-btn-title">Salin Link & Teks Promo</div>
+                        <div class="share-btn-desc">Teks & link siap tempel di mana saja</div>
+                    </div>
+                    <span id="copy-share-badge" class="share-copy-badge">
+                        <i class="fa-solid fa-copy"></i> Salin
+                    </span>
                 </button>
             </div>
-        `,showConfirmButton:!1,showCloseButton:!0})};var y=[];try{let e=localStorage.getItem(`aiChatHistory`);e&&(y=JSON.parse(e))}catch(e){console.error(`Failed to load chat history`,e)}window.renderChatHistory=()=>{if(y.length===0)return;let e=document.getElementById(`chat-messages`);e&&(e.innerHTML=``,y.forEach(t=>{if(t.role===`user`)e.insertAdjacentHTML(`beforeend`,`
+        `,showConfirmButton:!1,showCloseButton:!0,closeButtonHtml:`<i class="fa-solid fa-arrow-left" title="Kembali"></i>`})};var y=[];try{let e=localStorage.getItem(`aiChatHistory`);e&&(y=JSON.parse(e))}catch(e){console.error(`Failed to load chat history`,e)}window.renderChatHistory=()=>{if(y.length===0)return;let e=document.getElementById(`chat-messages`);e&&(e.innerHTML=``,y.forEach(t=>{if(t.role===`user`)e.insertAdjacentHTML(`beforeend`,`
                 <div class="message user-message">
                     ${t.parts[0].text}
                 </div>
