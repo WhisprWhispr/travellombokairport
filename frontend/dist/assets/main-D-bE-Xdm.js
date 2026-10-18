@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<5;e++)t+=`ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz`.charAt(Math.floor(Math.random()*52));return t+=`0123456789`.charAt(Math.floor(Math.random()*10)),t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0},t.eventMode===!0&&t.eventPriceIncrease>0){let e=document.createElement(`div`);e.id=`event-mode-banner`,e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
                         <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
                         🎉 ${t.eventName?`EVENT: <strong>${t.eventName}</strong> —`:`HIGH SEASON!`} 
@@ -115,10 +115,10 @@ TRAVEL LOMBOK AIRPORT 🚙`,l=`🛵 SYARAT & KETENTUAN SEWA MOTOR
 
 TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
 `),n=``,r=!1;return t.forEach(e=>{let t=e.trim();if(t.startsWith(`🚙 SYARAT`)||t.startsWith(`🛵 SYARAT`)||t.toUpperCase().includes(`TRAVEL LOMBOK AIRPORT`))return;t=t.replace(/\b(\d{4,})\b/g,e=>parseInt(e,10).toLocaleString(`id-ID`));let i=t.match(/^(\d+)\.\s*(.*)/);if(i){r&&=(n+=`</ul>`,!1);let e=i[1],t=i[2];n+=`
-            <div style="display: flex; align-items: flex-start; gap: 8px; margin-top: 14px; margin-bottom: 6px;">
-                <span style="display: inline-flex; align-items: center; justify-content: center; width: 22px; height: 22px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0; margin-top: 1px;">${e}</span>
-                <span style="font-weight: 800; font-size: 0.9rem; color: #0f172a; line-height: 1.4;">${t}</span>
-            </div>`}else if(t.startsWith(`•`)||t.startsWith(`-`)||t.startsWith(`*`)){r||=(n+=`<ul style="margin: 4px 0 8px 10px; padding: 0 0 0 4px; list-style-type: none;">`,!0);let e=t.replace(/^[•\-\*]\s*/,``);n+=`<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.85rem; line-height: 1.5; padding-left: 14px;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900;">•</span>${e}</li>`}else t===``?(r&&=(n+=`</ul>`,!1),n+=`<div style="height: 4px;"></div>`):(r&&=(n+=`</ul>`,!1),t.includes(`DEPOSIT`)?n+=`<div style="display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 6px 14px; border-radius: 20px; font-weight: 800; font-size: 0.8rem; margin: 8px 0; border: 1px solid #fde68a;"><i class="fa-solid fa-shield-halved"></i> ${t}</div>`:n+=`<div style="color: #475569; font-size: 0.85rem; margin-bottom: 4px;">${t}</div>`)}),r&&(n+=`</ul>`),n};window.closeGalleryModal=()=>{document.getElementById(`gallery-modal`).classList.remove(`active`)};var d=()=>{document.getElementById(`video-modal`)||document.body.insertAdjacentHTML(`beforeend`,`
+            <div style="display: flex; align-items: center; gap: 8px; margin-top: 12px; margin-bottom: 6px; width: 100%; box-sizing: border-box;">
+                <span style="display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 20px; background: #e0f2fe; color: #0284c7; border-radius: 50%; font-size: 0.72rem; font-weight: 800; flex-shrink: 0;">${e}</span>
+                <span style="font-weight: 800; font-size: 0.88rem; color: #0f172a; line-height: 1.35; word-break: break-word; overflow-wrap: break-word; flex: 1; min-width: 0;">${t}</span>
+            </div>`}else if(t.startsWith(`•`)||t.startsWith(`-`)||t.startsWith(`*`)){r||=(n+=`<ul style="margin: 2px 0 6px 0; padding: 0; list-style-type: none; width: 100%; max-width: 100%; box-sizing: border-box;">`,!0);let e=t.replace(/^[•\-\*]\s*/,``);n+=`<li style="position: relative; margin-bottom: 5px; color: #475569; font-size: 0.83rem; line-height: 1.5; padding-left: 14px; word-break: break-word; overflow-wrap: break-word; box-sizing: border-box;"><span style="position: absolute; left: 0; top: 0; color: #0284c7; font-weight: 900; line-height: 1.5;">•</span>${e}</li>`}else t===``?(r&&=(n+=`</ul>`,!1),n+=`<div style="height: 4px;"></div>`):(r&&=(n+=`</ul>`,!1),t.includes(`DEPOSIT`)?n+=`<div style="display: inline-flex; align-items: center; gap: 6px; background: #fef3c7; color: #92400e; padding: 5px 12px; border-radius: 20px; font-weight: 800; font-size: 0.78rem; margin: 6px 0; border: 1px solid #fde68a; max-width: 100%; box-sizing: border-box; word-break: break-word;"><i class="fa-solid fa-shield-halved" style="flex-shrink: 0;"></i> <span>${t}</span></div>`:n+=`<div style="color: #475569; font-size: 0.83rem; margin-bottom: 4px; padding-left: 14px; line-height: 1.5; word-break: break-word; overflow-wrap: break-word; box-sizing: border-box;">${t}</div>`)}),r&&(n+=`</ul>`),n};window.closeGalleryModal=()=>{document.getElementById(`gallery-modal`).classList.remove(`active`)};var d=()=>{document.getElementById(`video-modal`)||document.body.insertAdjacentHTML(`beforeend`,`
     <div id="video-modal" class="modal-overlay" style="z-index: 9999; display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; flex-direction: column;">
         <div style="position: relative; width: 90%; max-width: 800px; height: 80vh; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
             <button onclick="closeVideoModal()" style="position: absolute; top: 15px; right: 15px; background: rgba(255,255,255,0.2); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; cursor: pointer; z-index: 10; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(4px); transition: all 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.4)'" onmouseout="this.style.background='rgba(255,255,255,0.2)'"><i class="fa-solid fa-xmark"></i></button>
@@ -320,7 +320,7 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 </div>`:``}
                 
                 ${r.category===`package`||v?`
-                <div class="tm-box tm-box-blue mt-4" style="background: #f8fafc; border: 1px solid #cbd5e1;">
+                <div class="tm-box tm-box-blue" style="background: #f8fafc; border: 1px solid #cbd5e1; margin-top: 14px;">
                     <div class="tm-box-title" style="background: var(--text-dark);"><i class="fa-solid fa-shield-halved"></i> KEBIJAKAN PEMBATALAN</div>
                     <ul class="tm-list" style="color:var(--text-dark);">
                         <li><i class="fa-solid fa-hourglass-half" style="color:var(--text-gray);"></i> Pembatalan H-7: 50% deposit dikembalikan.</li>
@@ -330,39 +330,39 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 </div>`:``}
                 
                 ${O?`
-                <div class="tm-box tm-box-blue" style="border-radius: 16px; overflow: hidden; border: 1px solid #bae6fd; box-shadow: 0 4px 20px -4px rgba(2, 132, 199, 0.08); background: #ffffff;">
-                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-file-contract"></i> SYARAT & KETENTUAN
+                <div class="tm-box tm-box-blue">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+                        <span style="display: inline-flex; align-items: center; gap: 8px; flex: 1; min-width: 0; word-break: break-word;">
+                            <i class="fa-solid fa-file-contract" style="flex-shrink: 0;"></i> SYARAT & KETENTUAN
                         </span>
-                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase;">
+                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; text-transform: uppercase; white-space: nowrap; margin-left: auto;">
                             ${f?p?`Dengan Driver`:`Lepas Kunci`:r.category===`motorcycle`?`Rental Motor`:r.category===`drone`?`Sewa Drone`:`Ketentuan Paket`}
                         </span>
                     </div>
-                    <div style="padding: 20px;">
+                    <div class="tm-box-content">
                         ${f?p?`
-                        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                        <div style="background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%); border: 1px solid #a7f3d0; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px;">
                             <div style="width: 36px; height: 36px; border-radius: 50%; background: #059669; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
                                 <i class="fa-solid fa-shield-heart"></i>
                             </div>
-                            <div>
-                                <div style="font-weight: 800; font-size: 0.88rem; color: #065f46;">Bebas Uang Jaminan Deposit (Rp 0)</div>
-                                <div style="font-size: 0.78rem; color: #047857; margin-top: 2px;">Layanan include driver tidak membutuhkan uang jaminan deposit atau jaminan SIM/KTP.</div>
+                            <div style="min-width: 0; flex: 1;">
+                                <div style="font-weight: 800; font-size: 0.88rem; color: #065f46; word-break: break-word;">Bebas Uang Jaminan Deposit (Rp 0)</div>
+                                <div style="font-size: 0.78rem; color: #047857; margin-top: 2px; word-break: break-word;">Layanan include driver tidak membutuhkan uang jaminan deposit atau jaminan SIM/KTP.</div>
                             </div>
                         </div>
                         `:`
-                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px 16px; margin-bottom: 16px; display: flex; align-items: center; gap: 12px;">
+                        <div style="background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%); border: 1px solid #bfdbfe; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; display: flex; align-items: center; gap: 12px;">
                             <div style="width: 36px; height: 36px; border-radius: 50%; background: #0284c7; color: white; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;">
                                 <i class="fa-solid fa-key"></i>
                             </div>
-                            <div>
-                                <div style="font-weight: 800; font-size: 0.88rem; color: #1e40af;">Jaminan Deposit Rp 1.000.000 (100% Refundable)</div>
-                                <div style="font-size: 0.78rem; color: #1d4ed8; margin-top: 2px;">Wajib KTP & SIM A aktif. Uang jaminan dikembalikan penuh setelah sewa selesai dalam kondisi baik.</div>
+                            <div style="min-width: 0; flex: 1;">
+                                <div style="font-weight: 800; font-size: 0.88rem; color: #1e40af; word-break: break-word;">Jaminan Deposit Rp 1.000.000 (100% Refundable)</div>
+                                <div style="font-size: 0.78rem; color: #1d4ed8; margin-top: 2px; word-break: break-word;">Wajib KTP & SIM A aktif. Uang jaminan dikembalikan penuh setelah sewa selesai dalam kondisi baik.</div>
                             </div>
                         </div>
                         `:``}
 
-                        <div style="color: #334155; font-size: 0.88rem; line-height: 1.6;">
+                        <div style="color: #334155; font-size: 0.88rem; line-height: 1.6; word-break: break-word;">
                             ${u(O)}
                         </div>
                     </div>
@@ -371,18 +371,18 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
             
             <div class="tm-right">
                 ${E.length>0?`
-                <div class="tm-box tm-box-green" style="border-radius: 16px; overflow: hidden; border: 1px solid #bbf7d0; box-shadow: 0 4px 20px -4px rgba(16, 185, 129, 0.08); background: #ffffff; margin-bottom: 20px;">
-                    <div class="tm-box-title" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-circle-check"></i> FASILITAS INCLUDE
+                <div class="tm-box tm-box-green">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #059669 0%, #10b981 100%);">
+                        <span style="display: inline-flex; align-items: center; gap: 8px; flex: 1; min-width: 0; word-break: break-word;">
+                            <i class="fa-solid fa-circle-check" style="flex-shrink: 0;"></i> FASILITAS INCLUDE
                         </span>
-                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700;">
+                        <span style="background: rgba(255,255,255,0.22); color: white; font-size: 0.72rem; padding: 3px 10px; border-radius: 12px; font-weight: 700; white-space: nowrap; margin-left: auto;">
                             ${E.length} Fasilitas
                         </span>
                     </div>
-                    <ul class="tm-list" style="padding: 16px 20px; list-style: none; margin: 0;">
+                    <ul class="tm-list">
                         ${E.map(e=>`
-                            <li style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.88rem; font-weight: 600; color: #334155;">
+                            <li>
                                 <i class="fa-solid fa-circle-check" style="color: #10b981; margin-top: 3px; font-size: 0.95rem; flex-shrink: 0;"></i>
                                 <span>${e}</span>
                             </li>
@@ -391,15 +391,15 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                 </div>`:``}
                 
                 ${D.length>0?`
-                <div class="tm-box tm-box-red" style="border-radius: 16px; overflow: hidden; border: 1px solid #fecaca; box-shadow: 0 4px 20px -4px rgba(239, 68, 68, 0.08); background: #ffffff; margin-bottom: 20px;">
-                    <div class="tm-box-title" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; justify-content: space-between;">
-                        <span style="display: flex; align-items: center; gap: 8px;">
-                            <i class="fa-solid fa-circle-xmark"></i> TIDAK TERMASUK (EXCLUDE)
+                <div class="tm-box tm-box-red">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);">
+                        <span style="display: inline-flex; align-items: center; gap: 8px; flex: 1; min-width: 0; word-break: break-word;">
+                            <i class="fa-solid fa-circle-xmark" style="flex-shrink: 0;"></i> TIDAK TERMASUK (EXCLUDE)
                         </span>
                     </div>
-                    <ul class="tm-list" style="padding: 16px 20px; list-style: none; margin: 0;">
+                    <ul class="tm-list">
                         ${D.map(e=>`
-                            <li style="display: flex; align-items: flex-start; gap: 10px; padding: 6px 0; border-bottom: 1px dashed #f1f5f9; font-size: 0.88rem; font-weight: 600; color: #475569;">
+                            <li>
                                 <i class="fa-solid fa-circle-xmark" style="color: #ef4444; margin-top: 3px; font-size: 0.95rem; flex-shrink: 0;"></i>
                                 <span>${e}</span>
                             </li>
@@ -407,12 +407,14 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                     </ul>
                 </div>`:``}
                 
-                <div class="tm-box tm-box-blue" style="border-radius: 16px; overflow: hidden; border: 1px solid #bae6fd; box-shadow: 0 4px 20px -4px rgba(2, 132, 199, 0.08); background: #ffffff;">
-                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%); color: white; padding: 14px 20px; font-size: 0.95rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">
-                        <i class="fa-regular fa-credit-card"></i> CARA RESERVASI & PEMBAYARAN
+                <div class="tm-box tm-box-blue">
+                    <div class="tm-box-title" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+                        <span style="display: inline-flex; align-items: center; gap: 8px; flex: 1; min-width: 0; word-break: break-word;">
+                            <i class="fa-regular fa-credit-card" style="flex-shrink: 0;"></i> CARA RESERVASI & PEMBAYARAN
+                        </span>
                     </div>
-                    <div style="padding: 20px;">
-                        ${r.category===`motorcycle`?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa motor, silakan transfer <strong>DP sebesar Rp 50.000 dan jaminan deposit Rp 500.000</strong> ke rekening resmi berikut:</p>`:f?p?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <span style="color: #059669; font-weight: 700;">Bebas Deposit (Rp 0)!</span> Pelunasan dapat dibayarkan saat bertemu driver:</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal sewa <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP Rp 200.000 & jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan setelah masa sewa):</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening resmi berikut:</p>`}
+                    <div class="tm-box-content">
+                        ${r.category===`motorcycle`?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5; word-break: break-word;">Untuk mengamankan jadwal sewa motor, silakan transfer <strong>DP sebesar Rp 50.000 dan jaminan deposit Rp 500.000</strong> ke rekening resmi berikut:</p>`:f?p?`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5; word-break: break-word;">Untuk mengamankan jadwal <strong>Include Driver (12 Jam)</strong>, silakan transfer <strong>DP sebesar Rp 200.000</strong> ke rekening berikut. <span style="color: #059669; font-weight: 700;">Bebas Deposit (Rp 0)!</span> Pelunasan dapat dibayarkan saat bertemu driver:</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5; word-break: break-word;">Untuk mengamankan jadwal sewa <strong>Lepas Kunci (24 Jam)</strong>, silakan transfer <strong>DP Rp 200.000 & jaminan deposit Rp 1.000.000</strong> ke rekening berikut (Deposit jaminan 100% dikembalikan setelah masa sewa):</p>`:`<p style="color: #475569; font-size: 0.88rem; margin: 0 0 16px 0; line-height: 1.5; word-break: break-word;">Untuk mengamankan jadwal perjalanan, silakan transfer <strong>DP sebesar Rp 500.000</strong> ke rekening resmi berikut:</p>`}
                         
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <div class="bank-item tm-bank-card">
