@@ -1049,6 +1049,9 @@ aiRoutes.get('/ratings', verifyToken, async (c) => {
     } catch (error) {
         console.error('Error fetching ratings:', error);
         return c.json({ success: false, message: 'Gagal mengambil ratings' }, 500);
+    }
+});
+
 // POST Verify AI Chats Access (PIN or Email/Password ridhosandhika18022022@gmail.com)
 aiRoutes.post('/verify-access', async (c) => {
     try {

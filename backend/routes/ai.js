@@ -832,6 +832,8 @@ router.get('/ratings', async (req, res) => {
         console.error('Error fetching ratings:', error);
         res.status(500).json({ success: false, message: 'Gagal mengambil ratings' });
     }
+});
+
 // POST Verify AI Chats Access (PIN or Email/Password ridhosandhika18022022@gmail.com)
 router.post('/verify-access', async (req, res) => {
     try {
