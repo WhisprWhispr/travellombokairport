@@ -3263,8 +3263,7 @@ window.promptAiChatsAuth = async () => {
                     <label style="font-weight: 600; font-size: 0.85rem; color: #334155; display: block; margin-bottom: 6px;">
                         <i class="fa-solid fa-key" style="color: #3b82f6;"></i> Opsi 1: Masukkan PIN Keamanan
                     </label>
-                    <input type="password" id="swal-ai-pin" class="swal2-input" placeholder="Masukkan PIN (Default: 18022022)" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 1rem; letter-spacing: 2px;" autocomplete="off" />
-                    <small style="color: #94a3b8; font-size: 0.75rem; display: block; margin-top: 4px;">PIN Master: 18022022</small>
+                    <input type="password" id="swal-ai-pin" class="swal2-input" placeholder="Masukkan PIN Keamanan..." style="margin: 0; width: 100%; box-sizing: border-box; font-size: 1rem; letter-spacing: 2px;" autocomplete="off" />
                 </div>
                 
                 <div style="text-align: center; margin: 10px 0; color: #94a3b8; font-weight: 600; font-size: 0.8rem;">
@@ -3405,7 +3404,7 @@ window.lockAiChats = () => {
 window.changeAiChatPin = async () => {
     const { value: currentPin } = await Swal.fire({
         title: 'Ubah PIN Riwayat Chat AI',
-        text: 'Masukkan PIN lama (default: 18022022):',
+        text: 'Masukkan PIN saat ini:',
         input: 'password',
         inputPlaceholder: 'PIN Lama',
         showCancelButton: true,
