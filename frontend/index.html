@@ -1136,6 +1136,12 @@
                     <button onclick="window.checkAiraPromoDeals()" class="ai-quick-reply-btn ai-btn-rose-promo">
                         <i class="fa-solid fa-ticket" style="margin-right: 6px; color:#e11d48;"></i> 🎟️ Cek Promo Hari Ini & Klaim Kupon Diskon
                     </button>
+                    <button onclick="window.askAiraQuick('Berapa tarif sewa mobil lepas kunci (tanpa driver / setir sendiri 24 jam) di Lombok dan apa saja syaratnya?')" class="ai-quick-reply-btn ai-btn-blue">
+                        <i class="fa-solid fa-key" style="margin-right: 6px; color:#0284c7;"></i> 🚗 Sewa Mobil Tanpa Driver (Lepas Kunci 24 Jam)
+                    </button>
+                    <button onclick="window.askAiraQuick('Berapa tarif sewa mobil include driver dan BBM 12 jam di Lombok?')" class="ai-quick-reply-btn ai-btn-orange">
+                        <i class="fa-solid fa-user-tie" style="margin-right: 6px; color:#d97706;"></i> 👨‍✈️ Sewa Mobil Include Driver (12 Jam + BBM)
+                    </button>
                     <button onclick="window.showAiraRoadsideEmergencySOS()" class="ai-quick-reply-btn ai-btn-red-sos">
                         <i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px; color:#ef4444;"></i> 🚨 Bantuan Darurat di Jalan & SOS 24/7 (SPBU, Bengkel, RS, CS Siaga)
                     </button>
@@ -1213,8 +1219,11 @@
                         <button type="button" class="aira-chip-btn aira-chip-maps" onclick="window.findNearestLombokFood()">
                             <i class="fa-solid fa-location-crosshairs"></i> Kuliner Dekat Sini
                         </button>
-                        <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif rental mobil lepas kunci dan all-in dengan supir di Lombok?')">
-                            <i class="fa-solid fa-car" style="color:#0284c7;"></i> Sewa Mobil
+                        <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif sewa mobil lepas kunci tanpa driver 24 jam di Lombok?')">
+                            <i class="fa-solid fa-key" style="color:#0284c7;"></i> Mobil Tanpa Driver (24J)
+                        </button>
+                        <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif sewa mobil include supir dan BBM 12 jam di Lombok?')">
+                            <i class="fa-solid fa-user-tie" style="color:#d97706;"></i> Mobil + Driver (12J)
                         </button>
                         <button type="button" class="aira-chip-btn" onclick="window.askAiraQuick('Berapa tarif layanan antar jemput Bandara Lombok ke Senggigi dan Kuta?')">
                             <i class="fa-solid fa-plane-arrival" style="color:#10b981;"></i> Antar Jemput

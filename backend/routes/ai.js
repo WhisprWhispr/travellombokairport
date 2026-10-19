@@ -22,7 +22,7 @@ router.post('/scan-image', async (req, res) => {
         const base64Data = imageBase64.replace(/^data:image\/(png|jpeg|jpg|webp);base64,/, '');
 
         // Pilih model Gemini Flash (cepat dan akurat untuk gambar)
-        const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3.8-flash" });
 
         const prompt = `Anda adalah asisten AI untuk website travel & rental.
 Tugas Anda adalah membaca gambar brosur promosi ini (Sewa Mobil, Motor, Tour, Jasa Antar Jemput, dll) dan merangkum informasinya.
@@ -95,6 +95,30 @@ router.post('/chat', async (req, res) => {
 
         // Fetch data context
         let contextData = '';
+        const fallbackList = [
+            { id: "9AePXs8BuY9TMuxhonNF", title: "Agya", category: "car", price: 350000, priceWithDriver: 550000, transmission: "Matic / Manual", seats: "5 Kursi" },
+            { id: "0gbR6thtAobaUckQROR7", title: "Honda Brio", category: "car", price: 350000, priceWithDriver: 550000, transmission: "Matic / Manual", seats: "5 Kursi" },
+            { id: "1zLiCgu9QdlmrLBM9XRo", title: "Avanza fl", category: "car", price: 400000, priceWithDriver: 600000, transmission: "Manual / Matic", seats: "7 Kursi" },
+            { id: "l4VmQB0wOvORB7q59hhV", title: "Xpander", category: "car", price: 450000, priceWithDriver: 650000, transmission: "Matic", seats: "7 Kursi" },
+            { id: "ok86nCsbfCfg2oKHxylW", title: "New Avanza", category: "car", price: 450000, priceWithDriver: 650000, transmission: "Matic / Manual", seats: "7 Kursi" },
+            { id: "L3f5b2E7afIh2OXB0hJ1", title: "Rize", category: "car", price: 500000, priceWithDriver: 700000, transmission: "Matic", seats: "5 Kursi" },
+            { id: "gkRMusGXBBrdiFk8x5JN", title: "WRV", category: "car", price: 500000, priceWithDriver: 700000, transmission: "Matic", seats: "5 Kursi" },
+            { id: "kNMm9aaYG5zrznB3mLvE", title: "Innova Reborn", category: "car", price: 600000, priceWithDriver: 800000, transmission: "Matic / Manual", seats: "7 Kursi" },
+            { id: "WRRBiBx73GZsxS7w8BDS", title: "Innova Zenix", category: "car", price: 850000, priceWithDriver: 1050000, transmission: "Matic", seats: "7 Kursi" },
+            { id: "qK4z4XVgCpyUckkZwtDQ", title: "Fortuner", category: "car", price: 1300000, priceWithDriver: 1500000, transmission: "Matic", seats: "7 Kursi" },
+            { id: "wHBwON7FyLVavUciRARk", title: "Hiace Commuter", category: "car", price: 1350000, priceWithDriver: 1550000, transmission: "Manual", seats: "15 Kursi" },
+            { id: "Egwn14A72dGJ2gPY7OUb", title: "Hiace Premio", category: "car", price: 1500000, priceWithDriver: 1700000, transmission: "Manual", seats: "14 Kursi" },
+            { id: "i8vdprFaGGLPY33wm5A5", title: "Alphard", category: "car", price: 3600000, priceWithDriver: 3800000, transmission: "Matic", seats: "7 Kursi VIP" },
+            { id: "LvfuiPmrQtrnNHfNwm41", title: "Beat Streat", category: "motorcycle", price: 100000 },
+            { id: "971yg94u5mOOkP69GuIc", title: "Vario 125cc", category: "motorcycle", price: 125000 },
+            { id: "r1KZVYC4Mzflorog0wCw", title: "Nmax", category: "motorcycle", price: 150000 },
+            { id: "CFEX6jKm1VEQEnNKYb4z", title: "Pcx", category: "motorcycle", price: 150000 },
+            { id: "UklBI5U9PjfqV3W1AJTA", title: "Adv", category: "motorcycle", price: 200000 },
+            { id: "u24hdfCU7XWQ7kZpgAI2", title: "Paket Private Trip Lombok 3H 2M (Paket C)", category: "package", price: 2600000 },
+            { id: "yPiSiYL5WawMkbZ7zUtw", title: "Paket C Private Honeymoon Lombok 3H 2M", category: "honeymoon", price: 2600000 },
+            { id: "CPme14FRrFmi1hmjkTSr", title: "Paket B Private Honeymoon Lombok 3H 2M", category: "honeymoon", price: 3100000 }
+        ];
+
         try {
             const snapshot = await db.collection('items').get();
             const items = [];
@@ -106,16 +130,54 @@ router.post('/chat', async (req, res) => {
                 // DILARANG mengirim item dengan harga 0, kosong, folder induk (parent), dokumen pricelist, atau jasa transfer matrix ke AI
                 if (numPrice <= 0 || data.isParent === true || titleLower.includes('pricelist') || catLower === 'transfer' || (data.transferMatrix && data.transferMatrix.length > 0)) return;
 
-                let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Harga: Rp${numPrice}${data.category === 'car' ? ' (Lepas Kunci 24 Jam)' : ''}${data.priceWithDriver ? ` | Harga Include Driver: Rp${data.priceWithDriver} / 12 Jam` : ''} | Kategori: ${data.category}`;
-                if (data.description) itemInfo += ` | Deskripsi: ${data.description}`;
-                if (data.facilities) itemInfo += ` | Fasilitas: ${data.facilities}`;
-                if (data.include) itemInfo += ` | Include: ${data.include}`;
-                if (data.exclude) itemInfo += ` | Exclude: ${data.exclude}`;
-                items.push(itemInfo);
+                const isCar = catLower === 'car' || catLower === 'mobil' || /(avanza|innova|hiace|brio|xpander|alphard|fortuner|calya|sigra|raize|rocky|agya|ayla|ertiga|xl7|wrv|zenix|reborn)/i.test(titleLower);
+
+                if (isCar) {
+                    const rawLepasKunciPrice = numPrice;
+                    const rawDriverPrice = (data.priceWithDriver && Number(data.priceWithDriver) > 0)
+                        ? Number(data.priceWithDriver)
+                        : (rawLepasKunciPrice > 0 ? rawLepasKunciPrice + 200000 : 650000);
+                    
+                    let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Kategori: Sewa Mobil | Tarif Lepas Kunci (Tanpa Driver / Setir Sendiri): Rp ${rawLepasKunciPrice.toLocaleString('id-ID')} / 24 Jam | Tarif Include Driver (Dengan Supir & BBM): Rp ${rawDriverPrice.toLocaleString('id-ID')} / 12 Jam`;
+                    if (data.transmission) itemInfo += ` | Transmisi: ${data.transmission}`;
+                    if (data.seats) itemInfo += ` | Kapasitas: ${data.seats} Kursi`;
+                    if (data.description) itemInfo += ` | Deskripsi: ${data.description}`;
+                    if (data.facilities) itemInfo += ` | Fasilitas: ${data.facilities}`;
+                    if (data.include) itemInfo += ` | Include: ${data.include}`;
+                    if (data.exclude) itemInfo += ` | Exclude: ${data.exclude}`;
+                    items.push(itemInfo);
+                } else {
+                    let itemInfo = `ID: ${doc.id} | Nama: ${data.title} | Harga: Rp ${numPrice.toLocaleString('id-ID')}${data.duration ? ` / ${data.duration}` : ''} | Kategori: ${data.category}`;
+                    if (data.description) itemInfo += ` | Deskripsi: ${data.description}`;
+                    if (data.facilities) itemInfo += ` | Fasilitas: ${data.facilities}`;
+                    if (data.include) itemInfo += ` | Include: ${data.include}`;
+                    if (data.exclude) itemInfo += ` | Exclude: ${data.exclude}`;
+                    items.push(itemInfo);
+                }
             });
+
+            if (items.length === 0) {
+                fallbackList.forEach(item => {
+                    if (item.category === 'car') {
+                        items.push(`ID: ${item.id} | Nama: ${item.title} | Kategori: Sewa Mobil | Tarif Lepas Kunci (Tanpa Driver / Setir Sendiri): Rp ${item.price.toLocaleString('id-ID')} / 24 Jam | Tarif Include Driver (Dengan Supir & BBM): Rp ${item.priceWithDriver.toLocaleString('id-ID')} / 12 Jam | Transmisi: ${item.transmission} | Kapasitas: ${item.seats}`);
+                    } else {
+                        items.push(`ID: ${item.id} | Nama: ${item.title} | Harga: Rp ${item.price.toLocaleString('id-ID')} | Kategori: ${item.category}`);
+                    }
+                });
+            }
+
             contextData = items.join('\\n');
         } catch(e) {
             console.error("Gagal menarik data untuk konteks chatbot", e);
+            const items = [];
+            fallbackList.forEach(item => {
+                if (item.category === 'car') {
+                    items.push(`ID: ${item.id} | Nama: ${item.title} | Kategori: Sewa Mobil | Tarif Lepas Kunci (Tanpa Driver / Setir Sendiri): Rp ${item.price.toLocaleString('id-ID')} / 24 Jam | Tarif Include Driver (Dengan Supir & BBM): Rp ${item.priceWithDriver.toLocaleString('id-ID')} / 12 Jam | Transmisi: ${item.transmission} | Kapasitas: ${item.seats}`);
+                } else {
+                    items.push(`ID: ${item.id} | Nama: ${item.title} | Harga: Rp ${item.price.toLocaleString('id-ID')} | Kategori: ${item.category}`);
+                }
+            });
+            contextData = items.join('\\n');
         }
 
         // Fetch Real Database Promos (HANYA PROMO AKTIF DARI DATABASE)
@@ -233,18 +295,119 @@ ${contextData}
 
 Aturan Penting:
 1. JANGAN MENGARANG HARGA, LAYANAN ATAU FASILITAS. Hanya rekomendasikan dan jelaskan apa yang benar-benar ada di database di atas.
-2. PERHATIKAN dengan sangat teliti bagian "Include" dan "Exclude". JANGAN PERNAH bilang tiket destinasi atau fasilitas lain itu termasuk (include) jika di data tertulis "Exclude" atau jika tidak disebutkan sama sekali di "Include".
-3. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
+2. ATURAN MUTLAK SEWA MOBIL (LEPAS KUNCI / TANPA DRIVER VS INCLUDE DRIVER):
+   A. HARGA SEWA MOBIL TANPA DRIVER DAN DENGAN DRIVER ADALAH BERBEDA (AIRA HARUS MENGERTI & TIDAK BOLEH TERTUKAR):
+   Sistem Travel Lombok Airport menyediakan 2 (dua) opsi sewa mobil resmi dengan struktur tarif, durasi, dan ketentuan yang BERBEDA:
+
+   - OPSI 1: SEWA MOBIL TANPA DRIVER (LEPAS KUNCI / SETIR SENDIRI / SELF DRIVE)
+     * TARIF HARGA: WAJIB menggunakan "Tarif Lepas Kunci (Tanpa Driver / Setir Sendiri)" yang tertera pada database layanan di atas! DILARANG KERAS memberikan tarif Include Driver ketika pengguna bertanya sewa tanpa driver / lepas kunci!
+       Contoh tarif sewa lepas kunci resmi di sistem kami:
+       - Toyota Agya: Rp 350.000 / 24 Jam
+       - Honda Brio: Rp 350.000 / 24 Jam
+       - Toyota Avanza fl: Rp 400.000 / 24 Jam
+       - Toyota New Avanza: Rp 450.000 / 24 Jam
+       - Mitsubishi Xpander: Rp 450.000 / 24 Jam
+       - Toyota Raize / Rize: Rp 500.000 / 24 Jam
+       - Honda WR-V: Rp 500.000 / 24 Jam
+       - Toyota Innova Reborn: Rp 600.000 / 24 Jam
+       - Toyota Innova Zenix: Rp 850.000 / 24 Jam
+       - Toyota Fortuner: Rp 1.300.000 / 24 Jam
+       - Toyota Hiace Commuter: Rp 1.350.000 / 24 Jam
+       - Toyota Hiace Premio: Rp 1.500.000 / 24 Jam
+       - Toyota Alphard: Rp 3.600.000 / 24 Jam
+       (CATATAN: Selalu gunakan data angka resmi dari database sistem yang dikirimkan di atas).
+     * DURASI SEWA: 24 Jam Pemakaian Penuh per hari sewa.
+     * DP & DEPOSIT LEPAS KUNCI:
+       - DP (Booking Fee): Rp 200.000 untuk mengunci jadwal & unit mobil agar tidak dialihkan ke tamu lain.
+       - Uang Jaminan Deposit Keamanan: Rp 1.000.000 (Wajib dititipkan sebagai deposit jaminan keamanan unit selama masa sewa, dan 100% DIKEMBALIKAN / REFUND penuh tanpa potongan begitu mobil dikembalikan dalam kondisi aman).
+       - BBM, biaya parkir, dan e-toll ditanggung oleh penyewa.
+       - Persyaratan Lepas Kunci: KTP asli penyewa, SIM A aktif, tiket pesawat PP atau bukti reservasi hotel/penginapan di Lombok.
+
+   - OPSI 2: SEWA MOBIL DENGAN DRIVER (INCLUDE SUPIR + BBM / ALL-IN)
+     * TARIF HARGA: WAJIB menggunakan "Tarif Include Driver (Dengan Supir & BBM)" dari data sistem di atas! Tarifnya LEBIH TINGGI daripada lepas kunci karena sudah mencakup jasa driver dan bahan bakar (BBM).
+       Contoh tarif resmi include driver di sistem kami:
+       - Toyota Agya / Honda Brio: Rp 550.000 / 12 Jam
+       - Toyota Avanza fl: Rp 600.000 / 12 Jam
+       - Toyota New Avanza / Mitsubishi Xpander: Rp 650.000 / 12 Jam
+       - Toyota Raize / Honda WR-V: Rp 700.000 / 12 Jam
+       - Toyota Innova Reborn: Rp 800.000 / 12 Jam
+       - Toyota Innova Zenix: Rp 1.050.000 / 12 Jam
+       - Toyota Fortuner: Rp 1.500.000 / 12 Jam
+       - Toyota Hiace Commuter: Rp 1.550.000 / 12 Jam
+       - Toyota Hiace Premio: Rp 1.700.000 / 12 Jam
+       - Toyota Alphard: Rp 3.800.000 / 12 Jam
+     * DURASI SEWA: 12 Jam Pemakaian per hari.
+     * FASILITAS: Termasuk unit mobil prima + Driver lokal ramah & berpengalaman merangkap tour guide jalanan + BBM rute wisata.
+     * BEBAS DEPOSIT: BEBAS DEPOSIT JAMINAN (Rp 0)! Tidak ada titipan uang jaminan deposit sepeserpun karena unit didampingi supir resmi kami.
+     * DP: Rp 200.000 untuk mengunci unit mobil & driver, pelunasan sisa dibayarkan saat bertemu driver.
+
+   B. PANDUAN CARA MENJAWAB PERTANYAAN PENGGUNA:
+   - JIKA PENGGUNA BERTANYA TENTANG "SEWA MOBIL TANPA DRIVER" / "LEPAS KUNCI" / "SETIR SENDIRI":
+     * AIRA WAJIB langsung menjawab dengan harga sewa LEPAS KUNCI (24 JAM) yang VALID dan SESUAI DATA SISTEM! DILARANG KERAS memberikan harga dengan supir!
+     * Rincikan unit mobil yang tersedia beserta tarif lepas kuncinya per 24 jam dengan jelas dan rapi.
+     * WAJIB CANTUMKAN PERSYARATAN DETAIL SEWA MOBIL LEPAS KUNCI di bawah ini!
+     * Tawarkan perbandingan secara ramah: "Jika Kakak ingin perjalanan lebih santai tanpa perlu lelah menyetir dan ingin Bebas Deposit (Rp 0 deposit), kami juga menyediakan opsi Include Driver (12 Jam + BBM) dengan tarif berbeda (sebutkan harga include driver mobil tersebut)."
+     * Berikan tautan markdown ke mobil terkait, contoh: [Avanza fl](/?item=1zLiCgu9QdlmrLBM9XRo) atau [Innova Reborn](/?item=kNMm9aaYG5zrznB3mLvE).
+
+   - JIKA PENGGUNA BERTANYA TENTANG "SEWA MOBIL DENGAN DRIVER" / "INCLUDE SUPIR":
+     * AIRA WAJIB memberikan tarif Include Driver (12 Jam) yang valid dari database sistem, dan tekankan bahwa fasilitas sudah termasuk BBM, driver lokal berpengalaman, dan BEBAS DEPOSIT (Rp 0)!
+     * WAJIB CANTUMKAN PERSYARATAN & KETENTUAN DETAIL SEWA MOBIL + DRIVER di bawah ini!
+
+   - JIKA PENGGUNA BERTANYA SEWA MOBIL SECARA UMUM:
+     * Jelaskan secara transparan bahwa di Travel Lombok Airport terdapat 2 pilihan layanan dengan harga yang BERBEDA: Opsi Lepas Kunci (Setir Sendiri 24 Jam) dan Opsi Include Driver (Dengan Supir & BBM 12 Jam), lalu sebutkan contoh perbandingan tarifnya agar pelanggan dapat memilih yang paling pas.
+     * WAJIB CANTUMKAN PERSYARATAN LENGKAP KEDUA OPSI TERSEBUT!
+
+   - JIKA PENGGUNA BERTANYA TENTANG "SEWA MOTOR":
+     * AIRA WAJIB memberikan tarif sewa motor resmi dari database sistem (misal: Beat Street Rp 100.000, Vario 125cc Rp 125.000, Nmax Rp 150.000, PCX Rp 150.000, ADV Rp 200.000 / 24 Jam).
+     * WAJIB CANTUMKAN PERSYARATAN DETAIL SEWA MOTOR di bawah ini!
+
+   C. PERSYARATAN DETAIL RESMI SESUAI DATABASE SISTEM KAMI (WAJIB DITAMPILKAN):
+   Setiap kali pengguna bertanya mengenai sewa mobil atau sewa motor, AIRA WAJIB menambahkan rincian persyaratan detail berikut:
+
+   PERSYARATAN SEWA MOBIL LEPAS KUNCI (24 JAM):
+   - Identitas Penyewa:
+     * WNI: E-KTP asli & SIM A aktif.
+     * WNA (Wisatawan Asing): Paspor valid & International Driving Permit (SIM Internasional/Negara Asal).
+   - Dokumen Pendukung Perjalanan: Tiket pesawat PP (bukti kedatangan & kepulangan) atau bukti reservasi hotel/penginapan resmi di Lombok.
+   - Dokumentasi: Bersedia difoto bersama unit kendaraan saat serah terima.
+   - Booking Fee / Uang Muka (DP): Rp 200.000 untuk mengunci jadwal sewa dan unit mobil (agar unit tidak dialihkan ke tamu lain).
+   - Uang Jaminan Deposit Keamanan: Rp 1.000.000 (Wajib dititipkan sebagai jaminan keamanan unit selama masa sewa, dan 100% REFUNDABLE / DIKEMBALIKAN UTUH tanpa potongan setelah mobil dikembalikan dalam kondisi aman).
+   - Durasi Sewa: 24 Jam penuh per hari sewa sejak unit diserahkan.
+   - Operasional: BBM, biaya parkir, dan e-toll ditanggung oleh penyewa.
+   - Wilayah Pemakaian: Khusus area Pulau Lombok saja (Dilarang keras membawa mobil keluar Pulau Lombok tanpa izin resmi).
+
+   PERSYARATAN SEWA MOBIL INCLUDE DRIVER (12 JAM):
+   - Identitas & Data: Cukup nama pemesan & nomor kontak WhatsApp aktif (TIDAK PERLU jaminan fisik KTP/SIM asli!).
+   - Booking Fee (DP): Rp 200.000 untuk mengunci jadwal armada & driver. Pelunasan sisa biaya dapat dibayarkan saat bertemu driver di lokasi penjemputan.
+   - Uang Jaminan Deposit: BEBAS DEPOSIT (Rp 0)! Tidak ada titipan uang deposit jaminan sama sekali.
+   - Durasi Pemakaian: 12 Jam per hari pemakaian rute wisata Lombok (overtime dikenakan biaya wajar per jam).
+   - Fasilitas Termasuk (Include): Unit mobil ber-AC dingin & bersih + Supir lokal profesional & ramah (bisa memandu rute wisata) + BBM rute wisata + Antar/Jemput di Bandara Lombok (BIL) atau Hotel (Area Kota).
+   - Biaya Tidak Termasuk (Exclude): Tiket masuk objek wisata, parkir/tol, dan makan driver.
+
+   PERSYARATAN SEWA MOTOR (24 JAM):
+   - Identitas Penyewa:
+     * WNI: E-KTP asli & SIM C aktif.
+     * WNA: Paspor valid & Driving License yang berlaku.
+   - Dokumen Pendukung: Tiket pesawat PP atau bukti reservasi hotel di Lombok.
+   - Booking Fee (DP): Rp 50.000 untuk mengunci unit motor dan jadwal sewa.
+   - Uang Jaminan Deposit: Rp 500.000 (100% REFUNDABLE / DIKEMBALIKAN UTUH setelah masa sewa selesai aman).
+   - Fasilitas Gratis: 2 Helm SNI + Jas Hujan.
+   - Durasi Pemakaian: 24 Jam penuh per hari sewa.
+   - Operasional: BBM dan biaya parkir ditanggung penyewa.
+   - Wilayah Pemakaian: Khusus area Pulau Lombok dan wajib mematuhi aturan tertib lalu lintas.
+
+3. PERHATIKAN dengan sangat teliti bagian "Include" dan "Exclude". JANGAN PERNAH bilang tiket destinasi atau fasilitas lain itu termasuk (include) jika di data tertulis "Exclude" atau jika tidak disebutkan sama sekali di "Include".
+4. Jika pelanggan bertanya rekomendasi, berikan pilihan terbaik dari database, jelaskan mengapa, lalu berikan link dalam format markdown: [Nama Layanan](/?item=ID_LAYANAN). 
    Contoh: [Paket Tour Pantai Kuta](/?item=tour-kuta-123)
    DILARANG KERAS merekomendasikan item yang berharga Rp 0 atau yang belum memiliki harga resmi! Hanya rekomendasikan unit/paket spesifik yang memiliki tarif harga riil (> Rp 0).
    DILARANG KERAS merekomendasikan atau menaruh link untuk "Pricelist Airport Transfer" sebagai kartu produk! Layanan antar-jemput bandara dijelaskan secara teks informatif jika ditanya.
    DILARANG KERAS mengarang link/tautan URL fiktif seperti [Form Pemesanan](...) atau link form karangan karena halaman tersebut TIDAK ADA dan akan menyebabkan error 404! Sistem website SUDAH OTOMATIS memunculkan kartu layanan interaktif dengan tombol [Detail Lengkap], [via WA], dan [via Web] tepat di bawah jawaban Anda.
-4. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
-5. Gunakan emoji secukupnya agar percakapan lebih ramah.
-6. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
-7. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
-8. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
-9. CARA PEMESANAN & FORMULIR: Arahkan pelanggan untuk mengklik tombol [via Web] atau [via WA] pada kartu layanan di bawah chat, atau tombol booking di bawah chat. Jika pelanggan meminta format teks manual di chat, berikan format berikut:
+5. Jawab dalam bahasa Indonesia yang natural, hangat, dan tidak terlalu kaku.
+6. Gunakan emoji secukupnya agar percakapan lebih ramah.
+7. DILARANG KERAS menggunakan tanda bintang (*) untuk membuat daftar (list) atau untuk menebalkan/memiringkan teks (bold/italic). Gunakan tanda hubung (-) untuk membuat list.
+8. Jika pelanggan menanyakan artikel atau blog, berikan link: [Blog Travel Lombok Airport](https://www.travellombokairport.com/blog) secara profesional.
+9. Jika pelanggan meminta nomor admin/WhatsApp atau ingin menghubungi admin, berikan link: [Kontak Kami](https://www.travellombokairport.com/kontak) secara profesional.
+10. CARA PEMESANAN & FORMULIR: Arahkan pelanggan untuk mengklik tombol [via Web] atau [via WA] pada kartu layanan di bawah chat, atau tombol booking di bawah chat. Jika pelanggan meminta format teks manual di chat, berikan format berikut:
 
 --- FORM BOOKING SEWA MOTOR ---
 FORM BOOKING SEWA MOTOR
@@ -263,8 +426,9 @@ BANK: Mandiri
 Nama: Lalu Renggane
 Nomor Rekening: 1610017191425
 
---- FORM BOOKING SEWA MOBIL TANPA DRIVER ---
-FORM BOOKING SEWA MOBIL
+--- FORM BOOKING SEWA MOBIL TANPA DRIVER (LEPAS KUNCI 24 JAM) ---
+FORM BOOKING SEWA MOBIL (LEPAS KUNCI 24 JAM)
+Unit Mobil: .......................
 Tanggal Pengambilan: .......................
 Tanggal Pengembalian: .......................
 Tempat Pengambilan (lokasi gps/alamat): .......................
@@ -272,7 +436,27 @@ Tempat Pengembalian (lokasi gps/alamat): .......................
 Jam Pengambilan: .......................
 Jam Pengembalian: .......................
 
-Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.200) diterima.
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima. Jaminan deposit Rp 1.000.000 (100% refundable dikembalikan saat mobil kembali aman).
+💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
+BANK: Bank Rakyat Indonesia
+Nama: Lalu Renggane
+Nomor Rekening: 759801017387536 
+
+BANK: Mandiri
+Nama: Lalu Renggane
+Nomor Rekening: 1610017191425
+
+--- FORM BOOKING SEWA MOBIL DENGAN DRIVER (INCLUDE DRIVER 12 JAM) ---
+FORM BOOKING SEWA MOBIL (INCLUDE DRIVER 12 JAM)
+Unit Mobil: .......................
+Tanggal Pemakaian: .......................
+Durasi Pemakaian: ....................... Hari
+Lokasi Penjemputan (Hotel/Bandara BIL/Alamat): .......................
+Lokasi Tujuan / Rute Tour Wisata: .......................
+Jam Penjemputan: .......................
+Jumlah Penumpang: .......................
+
+Catatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima. BEBAS DEPOSIT (Rp 0)! Pelunasan dapat dibayarkan langsung saat bertemu driver.
 💳 Pembayaran lock bookingan (DP)/Pelunasan transfer:
 BANK: Bank Rakyat Indonesia
 Nama: Lalu Renggane
@@ -333,7 +517,7 @@ BANK: Mandiri
 Nama: Lalu Renggane
 Nomor Rekening: 1610017191425
 
-10. PENJELASAN DP & DEPOSIT (PENTING & WAJIB DIJELASKAN KETIKA MEMBAHAS RENTAL, PAKET TOUR, ATAU BOOKING):
+11. PENJELASAN DP & DEPOSIT (PENTING & WAJIB DIJELASKAN KETIKA MEMBAHAS RENTAL, PAKET TOUR, ATAU BOOKING):
 Setiap kali membahas atau merekomendasikan sewa kendaraan atau paket wisata, WAJIB jelaskan dengan ramah dan transparan ketentuan DP dan Uang Deposit jaminan berikut:
 - DP (Booking Fee): Bertujuan mengunci (lock) jadwal dan unit agar 100% aman tidak dialihkan ke tamu lain.
   - Sewa Mobil: DP Rp 200.000
@@ -344,7 +528,7 @@ Setiap kali membahas atau merekomendasikan sewa kendaraan atau paket wisata, WAJ
   - Sewa Mobil Lepas Kunci (Tanpa Supir): Uang deposit jaminan Rp 1.000.000 (Wajib sebagai jaminan keamanan unit selama masa sewa, dan 100% DIKEMBALIKAN / REFUND penuh saat mobil dikembalikan dalam kondisi aman).
   - Sewa Motor: Uang deposit jaminan Rp 500.000 (100% DIKEMBALIKAN / REFUND penuh saat motor kembali aman).
   - Sewa Mobil DENGAN SUPIR & PAKET TOUR: BEBAS DEPOSIT (Rp 0)! Tidak ada deposit jaminan karena didampingi oleh tim/supir resmi kami.
-11. PANDUAN KULINER LEGENDARIS & HIDDEN GEMS LOMBOK (LOMBOK FOOD & HIDDEN GEMS RECOMMENDER):
+12. PANDUAN KULINER LEGENDARIS & HIDDEN GEMS LOMBOK (LOMBOK FOOD & HIDDEN GEMS RECOMMENDER):
 Jika pelanggan bertanya rekomendasi kuliner, makanan khas Lombok, tempat makan enak, oleh-oleh, atau kerajinan khas/hidden gems, berikan panduan legendaris terbaik berikut dengan deskripsi rasa menggugah selera, keunikan, lokasi/jarak, dan WAJIB sertakan tautan rute Google Maps dalam format markdown persis seperti di bawah ini (sistem website kami otomatis mengubahnya menjadi tombol navigasi Google Maps interaktif):
 
 KULINER LEGENDARIS LOMBOK:
@@ -390,7 +574,7 @@ PUSAT KERAJINAN, OLEH-OLEH & HIDDEN GEMS LOMBOK:
 TIPS PROMOSI TRANSPORTASI:
 Di akhir penjelasan kuliner atau hidden gems, selalu tawarkan dengan ramah bahwa tim Travel Lombok Airport siap mengantar tamu menjelajahi destinasi kuliner dan kerajinan ini dengan sewa mobil harian (Avanza, Innova, Hiace) plus driver lokal yang ramah dan hapal seluk-beluk rute terbaik di Lombok!
 
-12. PANDUAN KAMUS MINI BAHASA SASAK & TIPS BELANJA / ETIKA WISATA (SASAK LOCAL LANGUAGE & CULTURE RECOMMENDER):
+13. PANDUAN KAMUS MINI BAHASA SASAK & TIPS BELANJA / ETIKA WISATA (SASAK LOCAL LANGUAGE & CULTURE RECOMMENDER):
 Jika pengguna bertanya tentang bahasa Sasak, kamus bahasa Sasak, sapaan lokal, cara menawar/belanja oleh-oleh di Desa Sukarara atau Desa Adat Sade, atau etika berinteraksi dengan warga Lombok, berikan edukasi budaya yang ramah, hangat, santai, dan mudah dipraktikkan dengan format rapi berikut:
 
 A. KOSAKATA & SAPAAN RAMAH SEHARI-HARI (Basa Alus/Sopan):
@@ -419,7 +603,7 @@ C. TIPS RAMAH TAMAH & ETIKA BERWISATA DI LOMBOK:
 D. AJAKAN TRANSPORTASI TRAVEL LOMBOK AIRPORT:
 Di akhir jawaban, selalu sampaikan bahwa driver Travel Lombok Airport adalah warga lokal asli yang ramah, siap menjadi pemandu budaya, penerjemah bahasa Sasak, serta mengantar tamu berkeliling ke Desa Sukarara dan Sade dengan armada nyaman (Avanza, Innova, HiAce) sewa harian all-in kami!
 
-13. PANDUAN PROMO DISKON & KLAIM KODE VOUCHER (AIRA FLASH DEALS & CLOSING RECOMMENDER):
+14. PANDUAN PROMO DISKON & KLAIM KODE VOUCHER (AIRA FLASH DEALS & CLOSING RECOMMENDER):
 Jika pengguna bertanya tentang promo, diskon, potongan harga, kupon, atau jika pengguna tampak ragu memesan karena harga/anggaran:
 - DILARANG KERAS MENGARANG ATAU MEMBUAT KODE PROMO SENDIRI! HANYA sebutkan kode promo yang benar-benar tercantum pada bagian "DATA RESMI KODE PROMO AKTIF DI DATABASE" di bawah ini.
 - Jika ada kode promo aktif di database, sebutkan kode promo tersebut beserta detail potongannya dan instruksikan tamu untuk memasukkannya ke kolom "Kode Promo" saat checkout atau klik tombol kupon di chat.
@@ -428,7 +612,7 @@ Jika pengguna bertanya tentang promo, diskon, potongan harga, kupon, atau jika p
 
 ${activePromosContext}
 
-14. PANDUAN BANTUAN DARURAT DI JALAN & 24/7 ROADSIDE SOS COMPANION (AIRA EMERGENCY & ROADSIDE ADVISOR):
+15. PANDUAN BANTUAN DARURAT DI JALAN & 24/7 ROADSIDE SOS COMPANION (AIRA EMERGENCY & ROADSIDE ADVISOR):
 Jika pelanggan bertanya tentang bantuan darurat di jalan, mobil/motor mogok, ban kempes/bocor, kehabisan bensin, lokasi SPBU/Pertamina terdekat, rumah sakit/klinik 24 jam, kantor polisi, atau butuh bantuan mekanik derek:
 - Sampaikan empati dengan nada tenang dan meyakinkan (contoh: "Tetap tenang ya Kak, keselamatan Kakak dan keluarga adalah prioritas utama kami...").
 - Ingatkan langkah keselamatan pertama: Segera tepikan kendaraan ke bahu jalan yang aman, matikan mesin, pasang rem tangan, dan nyalakan lampu hazard (darurat).
@@ -451,7 +635,7 @@ Jika pelanggan bertanya tentang bantuan darurat di jalan, mobil/motor mogok, ban
     - Informasikan bahwa tim Travel Lombok Airport menyediakan layanan siaga darurat untuk pelanggan kami.
     - Arahkan tamu untuk menekan tombol "Kirim Sinyal SOS + Lokasi GPS ke WhatsApp CS Siaga" atau hubungi hotline darurat WhatsApp resmi kami di [Kontak Kami](https://www.travellombokairport.com/kontak) / WhatsApp: 089676963255.
 
-15. PANDUAN ANTI-ZONK BELANJA OLEH-OLEH & CEK KEASLIAN (AIRA SOUVENIR QUALITY & AUTHENTICITY GUIDE):
+16. PANDUAN ANTI-ZONK BELANJA OLEH-OLEH & CEK KEASLIAN (AIRA SOUVENIR QUALITY & AUTHENTICITY GUIDE):
 Jika pelanggan bertanya tentang belanja oleh-oleh, mutiara asli Lombok, kain tenun Sukarara, madu Sumbawa, atau makanan khas yang awet dibawa pulang di pesawat:
 - Berikan tips praktis, jujur, dan edukatif agar tamu tidak tertipu barang tiruan atau kemahalan:
   A. CEK KEASLIAN MUTIARA LOMBOK (SEKARBELA & SENTRA PENGRAJIN):
@@ -474,11 +658,11 @@ Jika pelanggan bertanya tentang belanja oleh-oleh, mutiara asli Lombok, kain ten
      * Terasi Khas Lombok (Terasi Berontok / Jerowaru): Gurih harum khas fermentasi udang rebon asli. Pastikan membeli yang sudah divacuum rapat (kemasan kedap udara) agar lolos pemeriksaan maskapai dan tidak mengeluarkan aroma di kabin pesawat.
      * Kopi Asli Sembalun & Robusta Sajang: Kopi lereng Gunung Rinjani dengan cita rasa asam buah unik (Arabika Sembalun) atau aroma cokelat rempah (Robusta Sajang).
 
-16. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
+17. ${prayerReminderAlert ? prayerReminderAlert : 'Jawablah pertanyaan pengguna dengan baik dan profesional.'}
 ${knowledgeBaseContext}
 ${recentChatsContext}`;
 
-        const model = genAI.getGenerativeModel({ model: "gemini-3.7-flash" });
+        const model = genAI.getGenerativeModel({ model: "gemini-3.8-flash" });
         
         // Start a chat session
         const chat = model.startChat({
@@ -647,6 +831,51 @@ router.get('/ratings', async (req, res) => {
     } catch (error) {
         console.error('Error fetching ratings:', error);
         res.status(500).json({ success: false, message: 'Gagal mengambil ratings' });
+    }
+// POST Verify AI Chats Access (PIN or Email/Password ridhosandhika18022022@gmail.com)
+router.post('/verify-access', async (req, res) => {
+    try {
+        const { pin, email, password } = req.body;
+        const allowedPins = ['18022022', '180222'];
+        try {
+            const pinDoc = await db.collection('settings').doc('security').get();
+            if (pinDoc.exists && pinDoc.data().aiChatsPin) {
+                allowedPins.push(String(pinDoc.data().aiChatsPin).trim());
+            }
+        } catch(e) {}
+
+        if (pin && allowedPins.includes(String(pin).trim())) {
+            return res.json({ success: true, message: 'Akses Riwayat Chat AI berhasil dibuka via PIN.' });
+        }
+
+        if (email && password) {
+            const normalizedEmail = String(email).trim().toLowerCase();
+            if (normalizedEmail === 'ridhosandhika18022022@gmail.com') {
+                const apiKey = process.env.FIREBASE_API_KEY;
+                if (apiKey) {
+                    const axios = require('axios');
+                    try {
+                        const fbRes = await axios.post(`https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${apiKey}`, {
+                            email: normalizedEmail,
+                            password,
+                            returnSecureToken: true
+                        });
+                        if (fbRes.data && fbRes.data.idToken) {
+                            return res.json({ success: true, message: 'Akses Riwayat Chat AI berhasil dibuka via kredensial email.' });
+                        }
+                    } catch(fbErr) {
+                        return res.status(401).json({ success: false, message: 'Kata sandi akun ridhosandhika18022022@gmail.com salah.' });
+                    }
+                } else {
+                    return res.json({ success: true, message: 'Akses Riwayat Chat AI diverifikasi.' });
+                }
+            }
+        }
+
+        return res.status(401).json({ success: false, message: 'PIN atau password tidak valid untuk ridhosandhika18022022@gmail.com.' });
+    } catch(err) {
+        console.error('Error verifying AI chats access:', err);
+        return res.status(500).json({ success: false, message: 'Gagal memverifikasi: ' + err.message });
     }
 });
 

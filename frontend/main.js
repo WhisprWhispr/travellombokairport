@@ -252,19 +252,19 @@ const DEFAULT_ITEMS_FALLBACK = [
     { id: "CFEX6jKm1VEQEnNKYb4z", title: "Pcx", category: "motorcycle", price: 150000, imageUrl: "https://pdftourl.net/images/1787666336366-952b61ef-3795-4d17-814b-6485282e5954.jpg" },
     { id: "UklBI5U9PjfqV3W1AJTA", title: "Adv", category: "motorcycle", price: 200000, imageUrl: "https://pdftourl.net/images/1787666384358-67e0ac79-97b0-42ea-9849-f1e230d8468c.jpg" },
     { id: "alF6YcOxeGy7X3eM2m9l", title: "Pricelist Airport Transfer | Travel Lombok Airport", category: "transfer", price: 180000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791628291/du5jt1ufpwakypfhbplg.png" },
-    { id: "9AePXs8BuY9TMuxhonNF", title: "Agya", category: "car", price: 350000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790903895/ageeuoal2iijfchxg1n3.jpg" },
-    { id: "0gbR6thtAobaUckQROR7", title: "Honda Brio", category: "car", price: 350000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790903796/oyrisbvzwrgeeihzmjfq.webp" },
-    { id: "1zLiCgu9QdlmrLBM9XRo", title: "Avanza fl", category: "car", price: 400000, imageUrl: "https://pdftourl.net/images/1787667131060-f9567cf8-e0c6-4538-9f35-a96b4b5a3969.jpg" },
-    { id: "l4VmQB0wOvORB7q59hhV", title: "Xpander", category: "car", price: 450000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898576/t3lw5gcgxyglbmga6763.jpg" },
-    { id: "ok86nCsbfCfg2oKHxylW", title: "New Avanza", category: "car", price: 450000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898806/k76ir1sgjezdp6lzh204.jpg" },
-    { id: "L3f5b2E7afIh2OXB0hJ1", title: "Rize", category: "car", price: 500000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898703/wgylkctz4pran9vi8xgd.jpg" },
-    { id: "gkRMusGXBBrdiFk8x5JN", title: "WRV", category: "car", price: 500000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-7a447edb-0644-48f0-8f40-e73dd097a8c0.jpg" },
-    { id: "kNMm9aaYG5zrznB3mLvE", title: "Innova Reborn", category: "car", price: 600000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-4bda7fe9-8dc4-40b9-8454-2ea59a5acb3e.jpg" },
-    { id: "WRRBiBx73GZsxS7w8BDS", title: "Innova Zenix", category: "car", price: 850000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-b241e068-085c-4fa9-8db4-632a54dba214.jpg" },
-    { id: "qK4z4XVgCpyUckkZwtDQ", title: "Fortuner", category: "car", price: 1300000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-bcb238f0-9388-4982-937e-a69c11a4cf43.jpg" },
-    { id: "wHBwON7FyLVavUciRARk", title: "Hiace Commuter", category: "car", price: 1350000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898388/sms6mx4ccouyzbsdugb6.jpg" },
-    { id: "Egwn14A72dGJ2gPY7OUb", title: "Hiace Premio", category: "car", price: 1500000, imageUrl: "https://pdftourl.net/images/1787666454044-9eb1ffae-e7da-449e-ab9f-ac00d9739dc0.jpg" },
-    { id: "i8vdprFaGGLPY33wm5A5", title: "Alphard", category: "car", price: 3600000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-790c32ad-1aa6-433f-8742-32a8994e63f3.jpg" },
+    { id: "9AePXs8BuY9TMuxhonNF", title: "Agya", category: "car", price: 350000, priceWithDriver: 550000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790903895/ageeuoal2iijfchxg1n3.jpg" },
+    { id: "0gbR6thtAobaUckQROR7", title: "Honda Brio", category: "car", price: 350000, priceWithDriver: 550000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790903796/oyrisbvzwrgeeihzmjfq.webp" },
+    { id: "1zLiCgu9QdlmrLBM9XRo", title: "Avanza fl", category: "car", price: 400000, priceWithDriver: 600000, imageUrl: "https://pdftourl.net/images/1787667131060-f9567cf8-e0c6-4538-9f35-a96b4b5a3969.jpg" },
+    { id: "l4VmQB0wOvORB7q59hhV", title: "Xpander", category: "car", price: 450000, priceWithDriver: 650000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898576/t3lw5gcgxyglbmga6763.jpg" },
+    { id: "ok86nCsbfCfg2oKHxylW", title: "New Avanza", category: "car", price: 450000, priceWithDriver: 650000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898806/k76ir1sgjezdp6lzh204.jpg" },
+    { id: "L3f5b2E7afIh2OXB0hJ1", title: "Rize", category: "car", price: 500000, priceWithDriver: 700000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898703/wgylkctz4pran9vi8xgd.jpg" },
+    { id: "gkRMusGXBBrdiFk8x5JN", title: "WRV", category: "car", price: 500000, priceWithDriver: 700000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-7a447edb-0644-48f0-8f40-e73dd097a8c0.jpg" },
+    { id: "kNMm9aaYG5zrznB3mLvE", title: "Innova Reborn", category: "car", price: 600000, priceWithDriver: 800000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-4bda7fe9-8dc4-40b9-8454-2ea59a5acb3e.jpg" },
+    { id: "WRRBiBx73GZsxS7w8BDS", title: "Innova Zenix", category: "car", price: 850000, priceWithDriver: 1050000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-b241e068-085c-4fa9-8db4-632a54dba214.jpg" },
+    { id: "qK4z4XVgCpyUckkZwtDQ", title: "Fortuner", category: "car", price: 1300000, priceWithDriver: 1500000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-bcb238f0-9388-4982-937e-a69c11a4cf43.jpg" },
+    { id: "wHBwON7FyLVavUciRARk", title: "Hiace Commuter", category: "car", price: 1350000, priceWithDriver: 1550000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1790898388/sms6mx4ccouyzbsdugb6.jpg" },
+    { id: "Egwn14A72dGJ2gPY7OUb", title: "Hiace Premio", category: "car", price: 1500000, priceWithDriver: 1700000, imageUrl: "https://pdftourl.net/images/1787666454044-9eb1ffae-e7da-449e-ab9f-ac00d9739dc0.jpg" },
+    { id: "i8vdprFaGGLPY33wm5A5", title: "Alphard", category: "car", price: 3600000, priceWithDriver: 3800000, imageUrl: "https://cdn.phototourl.com/member/2026-08-22-790c32ad-1aa6-433f-8742-32a8994e63f3.jpg" },
     { id: "u24hdfCU7XWQ7kZpgAI2", title: "Paket Private Trip Lombok 3H 2M (Paket C)", category: "package", price: 2600000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791629985/scuwan3qaepi5zick1e7.jpg" },
     { id: "yPiSiYL5WawMkbZ7zUtw", title: "Paket C Private Honeymoon Lombok 3H 2M", category: "honeymoon", price: 2600000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1787939859/ilvig5w6gimlkpqirqeg.jpg" },
     { id: "CPme14FRrFmi1hmjkTSr", title: "Paket B Private Honeymoon Lombok 3H 2M", category: "honeymoon", price: 3100000, imageUrl: "https://res.cloudinary.com/mvhjuh83/image/upload/v1791630120/qjawxa9umiqrs9bijhjt.jpg" }
@@ -6572,6 +6572,12 @@ window.clearChatHistory = () => {
                 <button onclick="window.checkAiraPromoDeals()" class="ai-quick-reply-btn ai-btn-rose-promo">
                     <i class="fa-solid fa-ticket" style="margin-right: 6px; color:#e11d48;"></i> 🎟️ Cek Promo Hari Ini & Klaim Kupon Diskon
                 </button>
+                <button onclick="window.askAiraQuick('Berapa tarif sewa mobil lepas kunci (tanpa driver / setir sendiri 24 jam) di Lombok dan apa saja syaratnya?')" class="ai-quick-reply-btn ai-btn-blue">
+                    <i class="fa-solid fa-key" style="margin-right: 6px; color:#0284c7;"></i> 🚗 Sewa Mobil Tanpa Driver (Lepas Kunci 24 Jam)
+                </button>
+                <button onclick="window.askAiraQuick('Berapa tarif sewa mobil include driver dan BBM 12 jam di Lombok?')" class="ai-quick-reply-btn ai-btn-orange">
+                    <i class="fa-solid fa-user-tie" style="margin-right: 6px; color:#d97706;"></i> 👨‍✈️ Sewa Mobil Include Driver (12 Jam + BBM)
+                </button>
                 <button onclick="window.showAiraRoadsideEmergencySOS()" class="ai-quick-reply-btn ai-btn-red-sos">
                     <i class="fa-solid fa-triangle-exclamation" style="margin-right: 6px; color:#ef4444;"></i> 🚨 Bantuan Darurat di Jalan & SOS 24/7 (SPBU, Bengkel, RS, CS Siaga)
                 </button>
@@ -6988,6 +6994,14 @@ function renderAiraMiniCards(items) {
         else if (cat === 'drone') { catIcon = 'fa-plane-up'; catLabel = 'Sewa Drone'; }
         else if (cat === 'transfer' || cat === 'airport') { catIcon = 'fa-plane-departure'; catLabel = 'Antar Jemput'; }
         
+        const isCar = (cat === 'car');
+        const rawLepasPrice = Number(item.price) || 0;
+        const rawDriverPrice = (item.priceWithDriver && Number(item.priceWithDriver) > 0)
+            ? Number(item.priceWithDriver)
+            : (rawLepasPrice > 0 ? rawLepasPrice + 200000 : 650000);
+        const lepasFormatted = typeof formatPrice === 'function' ? formatPrice(rawLepasPrice) : `Rp ${rawLepasPrice.toLocaleString('id-ID')}`;
+        const driverFormatted = typeof formatPrice === 'function' ? formatPrice(rawDriverPrice) : `Rp ${rawDriverPrice.toLocaleString('id-ID')}`;
+        
         const priceFormatted = typeof formatPrice === 'function' ? formatPrice(item.price) : `Rp ${Number(item.price || 0).toLocaleString('id-ID')}`;
         const unit = item.duration ? `/ ${item.duration}` : (cat === 'package' ? '/ paket' : '/ hari');
         const safeTitle = (item.title || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -7002,18 +7016,31 @@ function renderAiraMiniCards(items) {
             <div class="aira-card-info">
                 <h5 class="aira-card-name" title="${safeTitle}">${item.title}</h5>
                 <div class="aira-card-pricing">
+                    ${isCar ? `
+                    <div style="display:flex; flex-direction:column; gap:4px; margin: 4px 0 6px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:#f0fdf4; border:1px solid #bbf7d0; padding:4px 7px; border-radius:6px;">
+                            <span style="font-size:0.7rem; font-weight:700; color:#15803d;"><i class="fa-solid fa-key"></i> Lepas Kunci:</span>
+                            <span style="font-size:0.78rem; font-weight:800; color:#166534;">${lepasFormatted} <small style="font-size:0.65rem; font-weight:600;">/24J</small></span>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1px solid #bfdbfe; padding:4px 7px; border-radius:6px;">
+                            <span style="font-size:0.7rem; font-weight:700; color:#1d4ed8;"><i class="fa-solid fa-user-tie"></i> + Supir & BBM:</span>
+                            <span style="font-size:0.78rem; font-weight:800; color:#1e40af;">${driverFormatted} <small style="font-size:0.65rem; font-weight:600;">/12J</small></span>
+                        </div>
+                    </div>
+                    ` : `
                     <span class="aira-card-price-start">Mulai dari</span>
                     <div class="aira-card-price-val">${priceFormatted} <small>${unit}</small></div>
+                    `}
                 </div>
                 <div class="aira-card-actions">
                     <button type="button" onclick="window.openTourModal('${item.id}')" class="aira-card-btn-detail" title="Lihat Detail & Fasilitas">
-                        <i class="fa-solid fa-circle-info"></i> Detail Lengkap
+                        <i class="fa-solid fa-circle-info"></i> ${isCar ? 'Pilih Opsi & Detail' : 'Detail Lengkap'}
                     </button>
                     <div class="aira-card-actions-row">
-                        <button type="button" onclick="window.openCheckoutModal('${safeTitle}', ${item.price}, 'wa')" class="aira-card-btn-wa" title="Pesan via WhatsApp">
+                        <button type="button" onclick="${isCar ? `window.openTourModal('${item.id}')` : `window.openCheckoutModal('${safeTitle}', ${item.price}, 'wa')`}" class="aira-card-btn-wa" title="Pesan via WhatsApp">
                             <i class="fa-brands fa-whatsapp"></i> via WA
                         </button>
-                        <button type="button" onclick="window.openCheckoutModal('${safeTitle}', ${item.price}, 'web')" class="aira-card-btn-web" title="Pesan Form via Website Langsung">
+                        <button type="button" onclick="${isCar ? `window.openTourModal('${item.id}')` : `window.openCheckoutModal('${safeTitle}', ${item.price}, 'web')`}" class="aira-card-btn-web" title="Pesan Form via Website Langsung">
                             <i class="fa-solid fa-desktop"></i> via Web
                         </button>
                     </div>
@@ -7244,8 +7271,12 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
         }
     }
 
-    // 2. Deteksi item rekomendasi
+    // 2. Deteksi item rekomendasi & klasifikasi layanan
     const items = typeof detectRecommendedItems === 'function' ? detectRecommendedItems(md) : [];
+    const category = getLeadServiceClassification(items, md, lastUserQuery);
+    const withDriver = getIsWithDriver(items, md, lastUserQuery);
+    const terms = getServicePaymentTerms(category, withDriver);
+
     let itemTitle = '';
     let itemPrice = '';
 
@@ -7257,35 +7288,76 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
     }
 
     if (items && items.length > 0) {
-        itemTitle = items.map(i => i.title).join(' / ');
-        const prices = items.map(i => Number(i.price || 0)).filter(p => p > 0);
-        
-        if (prices.length === 1) {
-            const p = prices[0];
-            const pFmt = typeof formatPrice === 'function' ? formatPrice(p) : `Rp ${p.toLocaleString('id-ID')}`;
-            if (durationDays > 1) {
-                const totalP = p * durationDays;
-                const totalFmt = typeof formatPrice === 'function' ? formatPrice(totalP) : `Rp ${totalP.toLocaleString('id-ID')}`;
-                itemPrice = `${pFmt} / hari (Total ${durationDays} Hari: ${totalFmt})`;
+        if (category === 'mobil') {
+            const modeSuffix = withDriver ? ' (Include Driver 12 Jam)' : ' (Lepas Kunci / Tanpa Driver 24 Jam)';
+            itemTitle = items.map(i => `${i.title}${modeSuffix}`).join(' / ');
+            const prices = items.map(i => {
+                const base = Number(i.price || 0);
+                if (withDriver) {
+                    return (i.priceWithDriver && Number(i.priceWithDriver) > 0) ? Number(i.priceWithDriver) : (base > 0 ? base + 200000 : 650000);
+                }
+                return base;
+            }).filter(p => p > 0);
+            
+            const unitLabel = withDriver ? '/ 12 Jam' : '/ 24 Jam';
+            if (prices.length === 1) {
+                const p = prices[0];
+                const pFmt = typeof formatPrice === 'function' ? formatPrice(p) : `Rp ${p.toLocaleString('id-ID')}`;
+                if (durationDays > 1) {
+                    const totalP = p * durationDays;
+                    const totalFmt = typeof formatPrice === 'function' ? formatPrice(totalP) : `Rp ${totalP.toLocaleString('id-ID')}`;
+                    itemPrice = `${pFmt} ${unitLabel} (Total ${durationDays} Hari: ${totalFmt})`;
+                } else {
+                    itemPrice = `${pFmt} ${unitLabel}`;
+                }
+            } else if (prices.length > 1) {
+                const minP = Math.min(...prices);
+                const maxP = Math.max(...prices);
+                const minFmt = typeof formatPrice === 'function' ? formatPrice(minP) : `Rp ${minP.toLocaleString('id-ID')}`;
+                const maxFmt = typeof formatPrice === 'function' ? formatPrice(maxP) : `Rp ${maxP.toLocaleString('id-ID')}`;
+                if (durationDays > 1) {
+                    const totalMin = minP * durationDays;
+                    const totalMax = maxP * durationDays;
+                    const totalMinFmt = typeof formatPrice === 'function' ? formatPrice(totalMin) : `Rp ${totalMin.toLocaleString('id-ID')}`;
+                    const totalMaxFmt = typeof formatPrice === 'function' ? formatPrice(totalMax) : `Rp ${totalMax.toLocaleString('id-ID')}`;
+                    itemPrice = `${minFmt} - ${maxFmt} ${unitLabel} (Total ${durationDays} Hari: ${totalMinFmt} - ${totalMaxFmt})`;
+                } else {
+                    itemPrice = `${minFmt} - ${maxFmt} ${unitLabel}`;
+                }
             } else {
-                itemPrice = `${pFmt} / hari`;
-            }
-        } else if (prices.length > 1) {
-            const minP = Math.min(...prices);
-            const maxP = Math.max(...prices);
-            const minFmt = typeof formatPrice === 'function' ? formatPrice(minP) : `Rp ${minP.toLocaleString('id-ID')}`;
-            const maxFmt = typeof formatPrice === 'function' ? formatPrice(maxP) : `Rp ${maxP.toLocaleString('id-ID')}`;
-            if (durationDays > 1) {
-                const totalMin = minP * durationDays;
-                const totalMax = maxP * durationDays;
-                const totalMinFmt = typeof formatPrice === 'function' ? formatPrice(totalMin) : `Rp ${totalMin.toLocaleString('id-ID')}`;
-                const totalMaxFmt = typeof formatPrice === 'function' ? formatPrice(totalMax) : `Rp ${totalMax.toLocaleString('id-ID')}`;
-                itemPrice = `${minFmt} - ${maxFmt} / hari (Total ${durationDays} Hari: ${totalMinFmt} - ${totalMaxFmt})`;
-            } else {
-                itemPrice = `${minFmt} - ${maxFmt} / hari`;
+                itemPrice = items.map(i => (typeof formatPrice === 'function' ? formatPrice(i.price) : `Rp ${Number(i.price || 0).toLocaleString('id-ID')}`)).join(', ');
             }
         } else {
-            itemPrice = items.map(i => (typeof formatPrice === 'function' ? formatPrice(i.price) : `Rp ${Number(i.price || 0).toLocaleString('id-ID')}`)).join(', ');
+            itemTitle = items.map(i => i.title).join(' / ');
+            const prices = items.map(i => Number(i.price || 0)).filter(p => p > 0);
+            
+            if (prices.length === 1) {
+                const p = prices[0];
+                const pFmt = typeof formatPrice === 'function' ? formatPrice(p) : `Rp ${p.toLocaleString('id-ID')}`;
+                if (durationDays > 1) {
+                    const totalP = p * durationDays;
+                    const totalFmt = typeof formatPrice === 'function' ? formatPrice(totalP) : `Rp ${totalP.toLocaleString('id-ID')}`;
+                    itemPrice = `${pFmt} / hari (Total ${durationDays} Hari: ${totalFmt})`;
+                } else {
+                    itemPrice = `${pFmt} / hari`;
+                }
+            } else if (prices.length > 1) {
+                const minP = Math.min(...prices);
+                const maxP = Math.max(...prices);
+                const minFmt = typeof formatPrice === 'function' ? formatPrice(minP) : `Rp ${minP.toLocaleString('id-ID')}`;
+                const maxFmt = typeof formatPrice === 'function' ? formatPrice(maxP) : `Rp ${maxP.toLocaleString('id-ID')}`;
+                if (durationDays > 1) {
+                    const totalMin = minP * durationDays;
+                    const totalMax = maxP * durationDays;
+                    const totalMinFmt = typeof formatPrice === 'function' ? formatPrice(totalMin) : `Rp ${totalMin.toLocaleString('id-ID')}`;
+                    const totalMaxFmt = typeof formatPrice === 'function' ? formatPrice(totalMax) : `Rp ${totalMax.toLocaleString('id-ID')}`;
+                    itemPrice = `${minFmt} - ${maxFmt} / hari (Total ${durationDays} Hari: ${totalMinFmt} - ${totalMaxFmt})`;
+                } else {
+                    itemPrice = `${minFmt} - ${maxFmt} / hari`;
+                }
+            } else {
+                itemPrice = items.map(i => (typeof formatPrice === 'function' ? formatPrice(i.price) : `Rp ${Number(i.price || 0).toLocaleString('id-ID')}`)).join(', ');
+            }
         }
     } else {
         // Deteksi dari teks bila tidak ada ID eksplisit
@@ -7303,11 +7375,15 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
         else if (combined.includes('tour') || combined.includes('paket')) itemTitle = 'Paket Tour Wisata Lombok';
         else if (combined.includes('antar jemput') || combined.includes('bandara') || combined.includes('transfer')) itemTitle = 'Antar Jemput Bandara BIL (Airport Transfer)';
         else itemTitle = 'Layanan Rekomendasi AIRA';
+
+        if (category === 'mobil') {
+            itemTitle += ` (${withDriver ? 'Include Driver 12 Jam' : 'Lepas Kunci / Tanpa Driver 24 Jam'})`;
+        }
     }
 
     // Ekstraksi estimasi harga dari teks jika itemPrice belum terdeteksi
     if (!itemPrice) {
-        const priceMatch = md.match(/Rp\s?[\d.,]+(?:\/\s?[a-zA-Z]+)?/i);
+        const priceMatch = md.match(/Rp\s?[\d.,]+(?:\/\s?[a-zA-Z0-9]+)?/i);
         if (priceMatch) {
             itemPrice = priceMatch[0];
             if (durationDays > 1 && !itemPrice.includes('Total')) {
@@ -7315,11 +7391,6 @@ window.orderViaWhatsAppFromAira = (btnElem, encodedMarkdown) => {
             }
         }
     }
-
-    // Klasifikasi kategori yang akurat
-    const category = getLeadServiceClassification(items, md, lastUserQuery);
-    const withDriver = getIsWithDriver(items, md, lastUserQuery);
-    const terms = getServicePaymentTerms(category, withDriver);
 
     // Susun pesan WhatsApp yang rapi dan profesional
     let waMsg = `Halo CS Travel Lombok Airport, 👋\n` +
@@ -7381,14 +7452,29 @@ window.orderViaWebFromAira = (btnElem, encodedMarkdown) => {
     const items = typeof detectRecommendedItems === 'function' ? detectRecommendedItems(md) : [];
     if (items && items.length > 0) {
         const first = items[0];
+        if (first.category === 'car') {
+            const withDriver = typeof getIsWithDriver === 'function' ? getIsWithDriver(items, md, lastUserQuery) : false;
+            const lepasPrice = Number(first.price) || 0;
+            const driverPrice = (first.priceWithDriver && Number(first.priceWithDriver) > 0) 
+                ? Number(first.priceWithDriver) 
+                : (lepasPrice > 0 ? lepasPrice + 200000 : 650000);
+            
+            const activeTitle = withDriver ? `${first.title} (Include Driver 12 Jam)` : `${first.title} (Lepas Kunci 24 Jam)`;
+            const activePrice = withDriver ? driverPrice : lepasPrice;
+            window.openCheckoutModal(activeTitle, activePrice, 'web');
+            return;
+        }
         window.openCheckoutModal(first.title, first.price, 'web');
         return;
     }
 
     // Fallback: deteksi kategori layanan
     const category = typeof getLeadServiceClassification === 'function' ? getLeadServiceClassification([], md, lastUserQuery) : 'mobil';
+    const withDriver = typeof getIsWithDriver === 'function' ? getIsWithDriver([], md, lastUserQuery) : false;
     let defaultTitle = 'Sewa Mobil';
-    if (category === 'motor') defaultTitle = 'Sewa Motor';
+    if (category === 'mobil') {
+        defaultTitle = withDriver ? 'Sewa Mobil (Include Driver 12 Jam)' : 'Sewa Mobil (Lepas Kunci 24 Jam)';
+    } else if (category === 'motor') defaultTitle = 'Sewa Motor';
     else if (category === 'tour') defaultTitle = 'Paket Tour';
     else if (category === 'transfer') defaultTitle = 'Airport Transfer';
 
@@ -7419,6 +7505,17 @@ window.handleAiraBookingLinkClick = (text, url) => {
     }
 
     if (matchedItem) {
+        if (matchedItem.category === 'car') {
+            const withDriver = /(dengan supir|dengan driver|include supir|include driver|plus supir|plus driver|12 jam)/i.test(combined);
+            const lepasPrice = Number(matchedItem.price) || 0;
+            const driverPrice = (matchedItem.priceWithDriver && Number(matchedItem.priceWithDriver) > 0)
+                ? Number(matchedItem.priceWithDriver)
+                : (lepasPrice > 0 ? lepasPrice + 200000 : 650000);
+            const activeTitle = withDriver ? `${matchedItem.title} (Include Driver 12 Jam)` : `${matchedItem.title} (Lepas Kunci 24 Jam)`;
+            const activePrice = withDriver ? driverPrice : lepasPrice;
+            window.openCheckoutModal(activeTitle, activePrice, 'web');
+            return;
+        }
         window.openCheckoutModal(matchedItem.title, matchedItem.price, 'web');
     } else {
         const cleanTitle = (text || '').replace(/^(form\s+pemesanan\s+|form\s+booking\s+|form\s+|sewa\s+|rental\s+)/i, '').trim();

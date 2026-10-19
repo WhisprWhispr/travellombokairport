@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-DTrTCx5u.js"></script>
+  <script type="module" crossorigin src="/assets/admin-B1x42smy.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
   <link rel="stylesheet" crossorigin href="/assets/main-BfHEzDuT.css">
@@ -251,7 +251,22 @@
 
         <!-- AI Chat Sessions Section -->
         <section id="ai-chats-section" class="admin-content glass-panel mt-4" style="display: none;">
-          <h2>Riwayat Chat AI</h2>
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <h2 style="margin: 0;"><i class="fa-solid fa-comments" style="color: var(--primary-blue);"></i> Riwayat Chat AI</h2>
+              <span style="display: inline-flex; align-items: center; gap: 5px; background: #ecfdf5; color: #059669; border: 1px solid #a7f3d0; padding: 4px 10px; border-radius: 999px; font-size: 0.75rem; font-weight: 600;">
+                <i class="fa-solid fa-lock"></i> Terproteksi PIN
+              </span>
+            </div>
+            <div style="display: flex; gap: 8px;">
+              <button type="button" class="btn btn-sm" onclick="lockAiChats()" style="background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-lock"></i> Kunci Akses
+              </button>
+              <button type="button" class="btn btn-sm" onclick="changeAiChatPin()" style="background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-key"></i> Atur PIN
+              </button>
+            </div>
+          </div>
           <div class="table-responsive mt-4">
             <table class="admin-table">
               <thead>

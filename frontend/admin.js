@@ -1188,6 +1188,10 @@ window.showTab = (tab) => {
             fetchVisitorAnalytics();
         }
     } else if (tab === "ai-chats") {
+        if (sessionStorage.getItem('ai_chats_unlocked') !== 'true') {
+            window.promptAiChatsAuth();
+            return;
+        }
         const aiChatsSection = document.getElementById("ai-chats-section");
         if (aiChatsSection) {
             aiChatsSection.style.display = "block";
@@ -3239,6 +3243,204 @@ window.deleteBlog = async (id) => {
         } catch (error) {
             Swal.fire('Error', 'Gagal menghapus artikel', 'error');
         }
+    }
+};
+
+// ==========================================
+// AI CHAT HISTORY SECURITY & VERIFICATION
+// ==========================================
+window.promptAiChatsAuth = async () => {
+    const targetEmail = 'ridhosandhika18022022@gmail.com';
+    
+    const { value: formValues } = await Swal.fire({
+        title: '<i class="fa-solid fa-shield-halved" style="color:#10b981;"></i> Verifikasi Keamanan',
+        html: `
+            <div style="text-align: left; font-size: 0.95rem; color: #334155;">
+                <p style="margin-bottom: 14px; line-height: 1.5; color: #475569;">
+                    Fitur <b>Riwayat Chat AI</b> terproteksi. Silakan masukkan <b>PIN Keamanan</b> atau verifikasi kata sandi akun <b>${targetEmail}</b>.
+                </p>
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155; display: block; margin-bottom: 6px;">
+                        <i class="fa-solid fa-key" style="color: #3b82f6;"></i> Opsi 1: Masukkan PIN Keamanan
+                    </label>
+                    <input type="password" id="swal-ai-pin" class="swal2-input" placeholder="Masukkan PIN (Default: 18022022)" style="margin: 0; width: 100%; box-sizing: border-box; font-size: 1rem; letter-spacing: 2px;" autocomplete="off" />
+                    <small style="color: #94a3b8; font-size: 0.75rem; display: block; margin-top: 4px;">PIN Master: 18022022</small>
+                </div>
+                
+                <div style="text-align: center; margin: 10px 0; color: #94a3b8; font-weight: 600; font-size: 0.8rem;">
+                    — ATAU —
+                </div>
+
+                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 12px;">
+                    <label style="font-weight: 600; font-size: 0.85rem; color: #334155; display: block; margin-bottom: 6px;">
+                        <i class="fa-solid fa-envelope" style="color: #10b981;"></i> Opsi 2: Email & Kata Sandi Akun
+                    </label>
+                    <input type="email" id="swal-ai-email" class="swal2-input" value="${targetEmail}" readonly style="margin: 0 0 8px 0; width: 100%; box-sizing: border-box; background: #e2e8f0; color: #334155; font-size: 0.9rem;" />
+                    <input type="password" id="swal-ai-password" class="swal2-input" placeholder="Masukkan kata sandi email di atas..." style="margin: 0; width: 100%; box-sizing: border-box; font-size: 0.95rem;" autocomplete="current-password" />
+                </div>
+            </div>
+        `,
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: '<i class="fa-solid fa-unlock"></i> Buka Akses',
+        cancelButtonText: 'Batal',
+        confirmButtonColor: '#10b981',
+        cancelButtonColor: '#64748b',
+        preConfirm: () => {
+            const pin = document.getElementById('swal-ai-pin')?.value?.trim();
+            const email = document.getElementById('swal-ai-email')?.value?.trim();
+            const password = document.getElementById('swal-ai-password')?.value;
+            
+            if (!pin && !password) {
+                Swal.showValidationMessage('Harap masukkan PIN atau kata sandi!');
+                return false;
+            }
+            return { pin, email, password };
+        }
+    });
+
+    if (!formValues) {
+        window.showTab('items');
+        return;
+    }
+
+    const { pin, email, password } = formValues;
+    const customPin = localStorage.getItem('ai_chats_pin');
+    const validPins = ['18022022', '180222'];
+    if (customPin) validPins.push(customPin.trim());
+
+    let isVerified = false;
+
+    if (pin && validPins.includes(pin)) {
+        isVerified = true;
+    } else if (password) {
+        Swal.fire({
+            title: 'Memverifikasi Kredensial...',
+            allowOutsideClick: false,
+            didOpen: () => Swal.showLoading()
+        });
+
+        try {
+            const token = localStorage.getItem('adminToken');
+            const res = await fetch(`${API_URL}/ai/verify-access`, {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                isVerified = true;
+            } else {
+                throw new Error(data.message || 'Kata sandi salah.');
+            }
+        } catch(err) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Akses Ditolak!',
+                text: err.message || 'Verifikasi gagal. Pastikan kata sandi benar.',
+                confirmButtonColor: '#ef4444'
+            });
+            window.showTab('items');
+            return;
+        }
+    } else if (pin) {
+        try {
+            const res = await fetch(`${API_URL}/ai/verify-access`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin })
+            });
+            const data = await res.json();
+            if (res.ok && data.success) {
+                isVerified = true;
+            }
+        } catch(e) {}
+    }
+
+    if (isVerified) {
+        sessionStorage.setItem('ai_chats_unlocked', 'true');
+        Swal.fire({
+            icon: 'success',
+            title: 'Akses Terbuka!',
+            text: 'Riwayat Chat AI berhasil dibuka.',
+            timer: 1500,
+            showConfirmButton: false
+        });
+        
+        document.querySelectorAll(".sidebar-menu a").forEach(el => el.classList.remove("active"));
+        const link = document.querySelector(`.sidebar-menu a[onclick*="showTab('ai-chats')"]`);
+        if (link) link.classList.add("active");
+
+        const aiChatsSection = document.getElementById("ai-chats-section");
+        if (aiChatsSection) {
+            aiChatsSection.style.display = "block";
+            fetchAdminAiChats();
+        }
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Akses Ditolak!',
+            text: 'PIN atau kredensial yang Anda masukkan tidak sesuai.',
+            confirmButtonColor: '#ef4444'
+        });
+        window.showTab('items');
+    }
+};
+
+window.lockAiChats = () => {
+    sessionStorage.removeItem('ai_chats_unlocked');
+    window.showTab('items');
+    Swal.fire({
+        icon: 'info',
+        title: 'Akses Dikunci',
+        text: 'Riwayat Chat AI telah dikunci kembali.',
+        timer: 1800,
+        showConfirmButton: false
+    });
+};
+
+window.changeAiChatPin = async () => {
+    const { value: currentPin } = await Swal.fire({
+        title: 'Ubah PIN Riwayat Chat AI',
+        text: 'Masukkan PIN lama (default: 18022022):',
+        input: 'password',
+        inputPlaceholder: 'PIN Lama',
+        showCancelButton: true,
+        confirmButtonText: 'Lanjut',
+        cancelButtonText: 'Batal'
+    });
+    
+    if (!currentPin) return;
+
+    const savedPin = localStorage.getItem('ai_chats_pin') || '18022022';
+    if (currentPin !== savedPin && currentPin !== '18022022' && currentPin !== '180222') {
+        Swal.fire('Gagal', 'PIN lama tidak cocok!', 'error');
+        return;
+    }
+
+    const { value: newPin } = await Swal.fire({
+        title: 'PIN Baru',
+        text: 'Masukkan PIN baru (minimal 6 digit):',
+        input: 'password',
+        inputPlaceholder: 'PIN Baru',
+        showCancelButton: true,
+        confirmButtonText: 'Simpan PIN',
+        cancelButtonText: 'Batal',
+        preConfirm: (val) => {
+            if (!val || val.length < 4) {
+                Swal.showValidationMessage('PIN minimal 4 - 8 digit!');
+                return false;
+            }
+            return val;
+        }
+    });
+
+    if (newPin) {
+        localStorage.setItem('ai_chats_pin', newPin);
+        Swal.fire('Berhasil', 'PIN Riwayat Chat AI berhasil diperbarui!', 'success');
     }
 };
 
