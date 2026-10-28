@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-DV14qayh.js"></script>
+  <script type="module" crossorigin src="/assets/admin-qgZUf_Tq.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
   <link rel="stylesheet" crossorigin href="/assets/main-BfHEzDuT.css">
@@ -950,6 +950,127 @@
         <!-- Reviews Section -->
         <section id="reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
           <h2>Kelola Ulasan Web Utama</h2>
+
+          <!-- ═══ AI Google Maps Sync Panel ═══ -->
+          <div id="gmaps-sync-panel" style="
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
+            border: 1px solid rgba(66, 200, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+          ">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+              <div style="
+                width: 48px; height: 48px;
+                background: linear-gradient(135deg, #4285F4, #34A853);
+                border-radius: 12px;
+                display: flex; align-items: center; justify-content: center;
+                font-size: 1.4rem; flex-shrink: 0;
+              ">🤖</div>
+              <div>
+                <h3 style="color: #fff; margin: 0; font-size: 1.1rem;">AI Google Maps Review Sync</h3>
+                <p style="color: rgba(255,255,255,0.55); margin: 2px 0 0; font-size: 0.82rem;">
+                  Otomatis cek & impor ulasan baru dari Google Maps ke website
+                </p>
+              </div>
+              <div style="margin-left: auto;">
+                <span id="gmaps-configured-badge" style="
+                  background: #ef4444; color: #fff;
+                  padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600;
+                ">⚙️ URL Belum Diset</span>
+              </div>
+            </div>
+
+            <!-- URL Input -->
+            <div style="margin-bottom: 16px;">
+              <label style="color: rgba(255,255,255,0.6); font-size: 0.8rem; display: block; margin-bottom: 6px;">
+                <i class="fa-brands fa-google" style="color:#4285F4"></i> URL Google Maps Bisnis Kamu
+              </label>
+              <div style="display: flex; gap: 8px;">
+                <input id="gmaps-url-input" type="url"
+                  placeholder="https://www.google.com/maps/place/Travel+Lombok+Airport/..."
+                  style="flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+                  border-radius: 8px; padding: 9px 14px; color: #fff; font-size: 0.85rem; outline: none;"
+                />
+                <button onclick="saveGmapsUrl()" style="background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; padding: 9px 14px; cursor: pointer; font-size: 0.82rem; white-space: nowrap;">
+                  <i class="fa-solid fa-save"></i> Simpan
+                </button>
+              </div>
+              <p style="color: rgba(255,255,255,0.35); font-size: 0.75rem; margin: 5px 0 0;">
+                💡 Buka Google Maps → cari bisnis kamu → copy URL dari browser
+              </p>
+            </div>
+
+            <!-- Status Cards -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin-bottom: 20px;">
+              <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; text-align: center;">
+                <div id="gmaps-overall-rating" style="font-size: 1.8rem; font-weight: 700; color: #fbbf24;">—</div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">⭐ Rating Google</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; text-align: center;">
+                <div id="gmaps-total-ratings" style="font-size: 1.8rem; font-weight: 700; color: #60a5fa;">—</div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">💬 Total Ulasan</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; text-align: center;">
+                <div id="gmaps-last-added" style="font-size: 1.8rem; font-weight: 700; color: #34d399;">—</div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">✅ Ditambahkan</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.07); border-radius: 12px; padding: 14px; text-align: center;">
+                <div id="gmaps-last-sync-time" style="font-size: 0.85rem; font-weight: 600; color: #a78bfa; line-height: 1.4;">Belum<br>pernah</div>
+                <div style="color: rgba(255,255,255,0.5); font-size: 0.75rem;">🕐 Terakhir Sync</div>
+              </div>
+            </div>
+
+            <!-- Cron Info -->
+            <div style="
+              background: rgba(66,133,244,0.15);
+              border: 1px solid rgba(66,133,244,0.3);
+              border-radius: 10px; padding: 10px 14px;
+              margin-bottom: 16px;
+              display: flex; align-items: center; gap: 8px;
+            ">
+              <i class="fa-solid fa-robot" style="color: #60a5fa;"></i>
+              <span style="color: rgba(255,255,255,0.7); font-size: 0.82rem;">
+                AI buka Google Maps pakai <strong style="color:#60a5fa">Puppeteer</strong> (browser otomatis), baca ulasan, lalu simpan — <strong style="color:#60a5fa">tanpa API Key apapun!</strong> Auto sync setiap <strong style="color:#60a5fa">6 jam</strong>
+              </span>
+            </div>
+
+            <!-- Action Buttons -->
+            <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+              <button id="gmaps-sync-btn" onclick="runGmapsSync()" style="
+                background: linear-gradient(135deg, #4285F4, #34A853);
+                color: #fff; border: none; border-radius: 10px;
+                padding: 10px 20px; cursor: pointer; font-weight: 600;
+                display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+                transition: opacity 0.2s;
+              ">
+                <i class="fa-solid fa-rotate"></i> Sync Sekarang
+              </button>
+              <button id="gmaps-preview-btn" onclick="previewGmapsReviews()" style="
+                background: rgba(255,255,255,0.1); color: #fff;
+                border: 1px solid rgba(255,255,255,0.2); border-radius: 10px;
+                padding: 10px 20px; cursor: pointer; font-weight: 600;
+                display: flex; align-items: center; gap: 8px; font-size: 0.9rem;
+                transition: background 0.2s;
+              ">
+                <i class="fa-solid fa-eye"></i> Preview Google Maps
+              </button>
+              <button onclick="loadGmapsSyncStatus()" style="
+                background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.6);
+                border: 1px solid rgba(255,255,255,0.1); border-radius: 10px;
+                padding: 10px 16px; cursor: pointer; font-size: 0.85rem;
+                transition: background 0.2s;
+              ">
+                <i class="fa-solid fa-refresh"></i> Refresh Status
+              </button>
+            </div>
+
+            <!-- Result / Preview Area -->
+            <div id="gmaps-result-area" style="display: none; margin-top: 18px;"></div>
+          </div>
+          <!-- ═══ End AI Sync Panel ═══ -->
+
           <div class="table-responsive mt-4">
             <table class="admin-table">
               <thead>
@@ -967,6 +1088,7 @@
             </table>
           </div>
         </section>
+
 
         <!-- Item Reviews Section -->
         <section id="item-reviews-section" class="admin-content glass-panel mt-4" style="display: none;">
