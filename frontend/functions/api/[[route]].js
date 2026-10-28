@@ -12,6 +12,7 @@ import aiRoutes from './routes/ai.js';
 import analyticsRoutes from './routes/analytics.js';
 import reportsRoutes from './routes/reports.js';
 import cronRoutes from './routes/cron.js';
+import gmapsSyncRoutes from './routes/gmaps-sync.js';
 
 
 const app = new Hono().basePath('/api');
@@ -38,6 +39,7 @@ app.route('/ai', aiRoutes);
 app.route('/analytics', analyticsRoutes);
 app.route('/reports', reportsRoutes);
 app.route('/cron', cronRoutes);
+app.route('/gmaps-sync', gmapsSyncRoutes);
 
 app.get('/cron-test', (c) => c.json({ status: 'ok', message: 'Hono router is working' }));
 

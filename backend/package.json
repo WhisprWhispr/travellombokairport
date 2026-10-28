@@ -20,6 +20,10 @@
     "firebase-admin": "^14.2.0",
     "multer": "^2.2.0",
     "node-cron": "^4.6.0",
-    "nodemailer": "^9.0.5"
+    "nodemailer": "^9.0.5",
+    "puppeteer": "^25.16.0"
+  },
+  "allowScripts": {
+    "puppeteer@25.16.0": true
   }
 }

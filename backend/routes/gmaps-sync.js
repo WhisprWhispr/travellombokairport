@@ -33,8 +33,24 @@ async function scrapeGoogleMapsReviews(mapsUrl) {
         const page = await browser.newPage();
         await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
         await page.setExtraHTTPHeaders({ 'Accept-Language': 'id-ID,id;q=0.9' });
-        console.log('[GMaps Scraper] Membuka:', mapsUrl);
-        await page.goto(mapsUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+
+        // Auto-resolve short URL (share.google, goo.gl, maps.app.goo.gl, dll)
+        let finalUrl = mapsUrl;
+        if (!mapsUrl.includes('google.com/maps')) {
+            console.log('[GMaps Scraper] Resolve short URL:', mapsUrl);
+            try {
+                const resp = await fetch(mapsUrl, { method: 'HEAD', redirect: 'follow' });
+                finalUrl = resp.url || mapsUrl;
+                console.log('[GMaps Scraper] Resolved to:', finalUrl);
+            } catch {
+                // fallback: biarkan Puppeteer handle redirect sendiri
+                finalUrl = mapsUrl;
+            }
+        }
+
+        console.log('[GMaps Scraper] Membuka:', finalUrl);
+        await page.goto(finalUrl, { waitUntil: 'networkidle2', timeout: 30000 });
+
         await page.waitForSelector('h1', { timeout: 15000 }).catch(() => {});
         await new Promise(r => setTimeout(r, 2000));
         const placeInfo = await page.evaluate(() => {

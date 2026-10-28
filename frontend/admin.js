@@ -1340,7 +1340,15 @@ window.runGmapsSync = async function() {
             headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
             body: JSON.stringify({ mapsUrl })
         });
-        const data = await resp.json();
+        
+        let data;
+        const ct = resp.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+            data = await resp.json();
+        } else {
+            const txt = await resp.text();
+            throw new Error(txt || `Server error (${resp.status})`);
+        }
 
         if (!resp.ok) throw new Error(data.message || 'Gagal sync');
 
@@ -1349,15 +1357,16 @@ window.runGmapsSync = async function() {
             resultArea.style.display = 'block';
             const isSuccess = data.addedCount > 0;
             let reviewsHtml = '';
-            if (data.addedReviews && data.addedReviews.length > 0) {
+            const list = data.addedReviews || data.reviews || [];
+            if (list.length > 0) {
                 reviewsHtml = '<div style="margin-top:10px">' +
-                    data.addedReviews.map(r => `
+                    list.map(r => `
                         <div style="display:flex;align-items:flex-start;gap:10px;padding:8px;background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:6px">
-                            <img src="${r.photoUrl || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.name)+'&background=4285F4&color=fff&size=32'}" 
+                            <img src="${r.photoUrl || r.profile_photo_url || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.name || r.author_name || 'U')+'&background=4285F4&color=fff&size=32'}" 
                                  style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.src='https://ui-avatars.com/api/?name=G&background=4285F4&color=fff&size=32'">
                             <div style="flex:1;min-width:0">
-                                <div style="color:#fff;font-weight:600;font-size:0.82rem">${r.name} <span style="color:#fbbf24">${'⭐'.repeat(r.rating)}</span></div>
-                                <div style="color:rgba(255,255,255,0.55);font-size:0.78rem;margin-top:2px">${r.comment || '<em>Tanpa teks</em>'}</div>
+                                <div style="color:#fff;font-weight:600;font-size:0.82rem">${r.name || r.author_name} <span style="color:#fbbf24">${'⭐'.repeat(r.rating || 5)}</span></div>
+                                <div style="color:rgba(255,255,255,0.55);font-size:0.78rem;margin-top:2px">${r.comment || r.text || '<em>Tanpa teks</em>'}</div>
                             </div>
                         </div>
                     `).join('') + '</div>';
@@ -1399,9 +1408,23 @@ window.previewGmapsReviews = async function() {
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengambil...'; }
     if (resultArea) { resultArea.style.display = 'none'; resultArea.innerHTML = ''; }
 
+    const urlInput = document.getElementById('gmaps-url-input');
+    const mapsUrl = urlInput?.value?.trim() || localStorage.getItem('gmaps_maps_url') || '';
+
     try {
-        const resp = await fetch(`${API_URL}/gmaps-sync/preview`, { headers: getAuthHeaders() });
-        const data = await resp.json();
+        const resp = await fetch(`${API_URL}/gmaps-sync/preview`, {
+            method: 'POST',
+            headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mapsUrl })
+        });
+        let data;
+        const ct = resp.headers.get('content-type') || '';
+        if (ct.includes('application/json')) {
+            data = await resp.json();
+        } else {
+            const txt = await resp.text();
+            throw new Error(txt || `Server error (${resp.status})`);
+        }
         if (!resp.ok) throw new Error(data.message || 'Gagal preview');
 
         if (resultArea) {

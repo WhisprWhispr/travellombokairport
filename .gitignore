@@ -3,3 +3,4 @@ node_modules/
 backend/config/serviceAccountKey.json
 .DS_Store
 frontend/.dev.vars
+scratch/
