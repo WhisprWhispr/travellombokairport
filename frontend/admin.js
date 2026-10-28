@@ -1217,6 +1217,7 @@ window.showTab = (tab) => {
         const reviewsSection = document.getElementById("reviews-section");
         if (reviewsSection) reviewsSection.style.display = "block";
         fetchAdminReviews();
+        loadGmapsSyncStatus(); // auto-load status panel
     } else if (tab === "item-reviews") {
         const itemReviewsSection = document.getElementById("item-reviews-section");
         if (itemReviewsSection) itemReviewsSection.style.display = "block";
@@ -1255,6 +1256,161 @@ window.showTab = (tab) => {
         const cronSection = document.getElementById("cron-section");
         if (cronSection) cronSection.style.display = "block";
         fetchAdminCronJobs();
+    }
+};
+
+// ═══════════════════════════════════════════════════════
+// AI Google Maps Review Sync
+// ═══════════════════════════════════════════════════════
+window.loadGmapsSyncStatus = async function() {
+    try {
+        const resp = await fetch(`${API_URL}/gmaps-sync/status`, { headers: getAuthHeaders() });
+        if (!resp.ok) return;
+        const data = await resp.json();
+
+        // Badge konfigurasi
+        const badge = document.getElementById('gmaps-configured-badge');
+        const guide = document.getElementById('gmaps-setup-guide');
+        if (badge) {
+            if (data.configured) {
+                badge.textContent = '✅ Terhubung';
+                badge.style.background = '#10b981';
+                if (guide) guide.style.display = 'none';
+            } else {
+                badge.textContent = '⚙️ Belum Dikonfigurasi';
+                badge.style.background = '#ef4444';
+                if (guide) guide.style.display = 'block';
+            }
+        }
+
+        // Cards
+        const ratingEl = document.getElementById('gmaps-overall-rating');
+        const totalEl  = document.getElementById('gmaps-total-ratings');
+        const addedEl  = document.getElementById('gmaps-last-added');
+        const syncEl   = document.getElementById('gmaps-last-sync-time');
+
+        if (ratingEl) ratingEl.textContent = data.overallRating ? `${data.overallRating} ⭐` : '—';
+        if (totalEl)  totalEl.textContent  = data.totalRatings  ? data.totalRatings.toLocaleString('id-ID') : '—';
+        if (addedEl)  addedEl.textContent  = data.lastAdded != null ? data.lastAdded : '—';
+        if (syncEl) {
+            if (data.lastSync) {
+                const d = new Date(data.lastSync);
+                syncEl.innerHTML = d.toLocaleDateString('id-ID', { day:'numeric', month:'short' })
+                    + '<br>' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+            } else {
+                syncEl.innerHTML = 'Belum<br>pernah';
+            }
+        }
+    } catch(e) {
+        console.warn('[GMaps Sync] Status load error:', e.message);
+    }
+};
+
+window.runGmapsSync = async function() {
+    const btn = document.getElementById('gmaps-sync-btn');
+    const resultArea = document.getElementById('gmaps-result-area');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sedang Sync...'; }
+    if (resultArea) { resultArea.style.display = 'none'; resultArea.innerHTML = ''; }
+
+    try {
+        const resp = await fetch(`${API_URL}/gmaps-sync/run`, {
+            method: 'POST',
+            headers: getAuthHeaders()
+        });
+        const data = await resp.json();
+
+        if (!resp.ok) throw new Error(data.message || 'Gagal sync');
+
+        // Tampilkan hasil
+        if (resultArea) {
+            resultArea.style.display = 'block';
+            const isSuccess = data.addedCount > 0;
+            let reviewsHtml = '';
+            if (data.addedReviews && data.addedReviews.length > 0) {
+                reviewsHtml = '<div style="margin-top:10px">' +
+                    data.addedReviews.map(r => `
+                        <div style="display:flex;align-items:flex-start;gap:10px;padding:8px;background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:6px">
+                            <img src="${r.photoUrl || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.name)+'&background=4285F4&color=fff&size=32'}" 
+                                 style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.src='https://ui-avatars.com/api/?name=G&background=4285F4&color=fff&size=32'">
+                            <div style="flex:1;min-width:0">
+                                <div style="color:#fff;font-weight:600;font-size:0.82rem">${r.name} <span style="color:#fbbf24">${'⭐'.repeat(r.rating)}</span></div>
+                                <div style="color:rgba(255,255,255,0.55);font-size:0.78rem;margin-top:2px">${r.comment || '<em>Tanpa teks</em>'}</div>
+                            </div>
+                        </div>
+                    `).join('') + '</div>';
+            }
+            resultArea.innerHTML = `
+                <div style="
+                    background: ${isSuccess ? 'rgba(52,211,153,0.15)' : 'rgba(251,191,36,0.15)'};
+                    border: 1px solid ${isSuccess ? 'rgba(52,211,153,0.4)' : 'rgba(251,191,36,0.4)'};
+                    border-radius: 10px; padding: 14px;
+                ">
+                    <p style="color:${isSuccess ? '#34d399' : '#fbbf24'};font-weight:600;margin:0 0 4px;font-size:0.9rem">${data.message}</p>
+                    ${data.placeName ? `<p style="color:rgba(255,255,255,0.5);font-size:0.78rem;margin:0">📍 ${data.placeName} &bull; ⭐ ${data.overallRating} (${(data.totalRatings||0).toLocaleString('id-ID')} ulasan)</p>` : ''}
+                    ${reviewsHtml}
+                </div>`;
+        }
+
+        // Refresh status cards
+        await loadGmapsSyncStatus();
+        // Refresh table ulasan
+        fetchAdminReviews();
+
+        Swal.fire({ icon: 'success', title: 'Sync Berhasil!', text: data.message, timer: 3000, showConfirmButton: false });
+    } catch(e) {
+        if (resultArea) {
+            resultArea.style.display = 'block';
+            resultArea.innerHTML = `<div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:14px">
+                <p style="color:#f87171;font-weight:600;margin:0">❌ Error: ${e.message}</p>
+            </div>`;
+        }
+        Swal.fire({ icon: 'error', title: 'Gagal Sync', text: e.message });
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Sync Sekarang'; }
+    }
+};
+
+window.previewGmapsReviews = async function() {
+    const btn = document.getElementById('gmaps-preview-btn');
+    const resultArea = document.getElementById('gmaps-result-area');
+    if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Mengambil...'; }
+    if (resultArea) { resultArea.style.display = 'none'; resultArea.innerHTML = ''; }
+
+    try {
+        const resp = await fetch(`${API_URL}/gmaps-sync/preview`, { headers: getAuthHeaders() });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.message || 'Gagal preview');
+
+        if (resultArea) {
+            resultArea.style.display = 'block';
+            const reviewsHtml = (data.reviews || []).map(r => `
+                <div style="display:flex;align-items:flex-start;gap:10px;padding:8px;background:rgba(255,255,255,0.05);border-radius:8px;margin-bottom:6px">
+                    <img src="${r.profile_photo_url || 'https://ui-avatars.com/api/?name='+encodeURIComponent(r.author_name)+'&background=4285F4&color=fff&size=32'}" 
+                         style="width:32px;height:32px;border-radius:50%;object-fit:cover;flex-shrink:0" onerror="this.src='https://ui-avatars.com/api/?name=G&background=4285F4&color=fff&size=32'">
+                    <div style="flex:1;min-width:0">
+                        <div style="color:#fff;font-weight:600;font-size:0.82rem">${r.author_name} <span style="color:#fbbf24">${'⭐'.repeat(r.rating)}</span> <span style="color:rgba(255,255,255,0.35);font-size:0.72rem">${r.relative_time_description||''}</span></div>
+                        <div style="color:rgba(255,255,255,0.55);font-size:0.78rem;margin-top:2px">${r.text || '<em>Tanpa teks</em>'}</div>
+                    </div>
+                </div>
+            `).join('');
+
+            resultArea.innerHTML = `
+                <div style="background:rgba(66,133,244,0.15);border:1px solid rgba(66,133,244,0.35);border-radius:10px;padding:14px">
+                    <p style="color:#60a5fa;font-weight:600;margin:0 0 8px;font-size:0.9rem">👁️ Preview: ${data.reviews.length} ulasan terbaru dari Google Maps</p>
+                    <p style="color:rgba(255,255,255,0.45);font-size:0.78rem;margin:0 0 10px">📍 ${data.placeName} &bull; ⭐ ${data.overallRating} (${(data.totalRatings||0).toLocaleString('id-ID')} total ulasan)</p>
+                    ${reviewsHtml}
+                    <p style="color:rgba(255,255,255,0.35);font-size:0.75rem;margin:8px 0 0">⚠️ Ini hanya preview. Klik "Sync Sekarang" untuk menyimpan ulasan baru ke website.</p>
+                </div>`;
+        }
+    } catch(e) {
+        if (resultArea) {
+            resultArea.style.display = 'block';
+            resultArea.innerHTML = `<div style="background:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);border-radius:10px;padding:14px">
+                <p style="color:#f87171;font-weight:600;margin:0">❌ Error: ${e.message}</p>
+            </div>`;
+        }
+    } finally {
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-eye"></i> Preview Google Maps'; }
     }
 };
 

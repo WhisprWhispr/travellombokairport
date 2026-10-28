@@ -21,6 +21,7 @@ const promosRoutes = require('./routes/promos');
 const blogsRoutes = require('./routes/blogs');
 const analyticsRoutes = require('./routes/analytics');
 const reportsRoutes = require('./routes/reports');
+const gmapsSyncRoutes = require('./routes/gmaps-sync');
 app.use('/api', apiRoutes);
 app.use('/api/payment', paymentRoutes);
 app.use('/api/bookings', bookingsRoutes);
@@ -31,6 +32,7 @@ app.use('/api/promos', promosRoutes);
 app.use('/api/blogs', blogsRoutes);
 app.use('/api/analytics', analyticsRoutes);
 app.use('/api/reports', reportsRoutes);
+app.use('/api/gmaps-sync', gmapsSyncRoutes);
 
 // Base route
 app.get('/', (req, res) => {
@@ -66,5 +68,87 @@ cron.schedule('0 8 * * *', async () => {
         });
     } catch (error) {
         console.error('Error running cron job for reminders:', error);
+    }
+});
+
+// ─── Cron Job: Sync Google Maps Reviews setiap 6 jam ───────────────────────
+const { GoogleGenerativeAI } = require('@google/generative-ai');
+cron.schedule('0 */6 * * *', async () => {
+    console.log('[GMaps Sync] Running scheduled Google Maps review sync...');
+    try {
+        const GOOGLE_PLACES_API_KEY = process.env.GOOGLE_PLACES_API_KEY || '';
+        const PLACE_ID = process.env.GOOGLE_PLACE_ID || '';
+        if (!GOOGLE_PLACES_API_KEY || !PLACE_ID) {
+            console.log('[GMaps Sync] Skipped: GOOGLE_PLACES_API_KEY atau GOOGLE_PLACE_ID belum diset.');
+            return;
+        }
+
+        const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${PLACE_ID}&fields=name,rating,user_ratings_total,reviews&language=id&key=${GOOGLE_PLACES_API_KEY}`;
+        const resp = await fetch(url);
+        const data = await resp.json();
+        if (data.status !== 'OK') {
+            throw new Error(`Google Places API: ${data.status}`);
+        }
+
+        const googleReviews = data.result.reviews || [];
+        const existingSnap = await db.collection('reviews').where('source', '==', 'google_maps').get();
+        const existingKeys = new Set();
+        existingSnap.forEach(doc => {
+            const d = doc.data();
+            existingKeys.add(`${d.authorName}_${d.publishTime}`);
+        });
+
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+        let addedCount = 0;
+        for (const review of googleReviews) {
+            const key = `${review.author_name}_${review.time}`;
+            if (existingKeys.has(key)) continue;
+
+            let cleanedText = review.text || '';
+            if (cleanedText && process.env.GEMINI_API_KEY) {
+                try {
+                    const model = genAI.getGenerativeModel({ model: 'gemini-2.0-flash' });
+                    const prompt = `Terjemahkan ulasan ini ke Bahasa Indonesia jika bukan Bahasa Indonesia, atau kembalikan apa adanya jika sudah Bahasa Indonesia. Jangan tambahkan komentar apapun: "${cleanedText}"`;
+                    const result = await model.generateContent(prompt);
+                    cleanedText = result.response.text().trim();
+                } catch {}
+            }
+
+            await db.collection('reviews').add({
+                name: review.author_name,
+                rating: review.rating,
+                comment: cleanedText,
+                photoUrl: review.profile_photo_url || null,
+                createdAt: new Date(review.time * 1000).toISOString(),
+                publishTime: review.time,
+                authorName: review.author_name,
+                relativeTime: review.relative_time_description || '',
+                source: 'google_maps',
+                status: 'approved',
+                itemId: null,
+                userId: null
+            });
+            addedCount++;
+        }
+
+        await db.collection('settings').doc('gmaps_sync').set({
+            lastSync: new Date().toISOString(),
+            lastStatus: 'success',
+            lastAdded: addedCount,
+            overallRating: data.result.rating,
+            totalRatings: data.result.user_ratings_total,
+            placeName: data.result.name
+        }, { merge: true });
+
+        console.log(`[GMaps Sync] Done. ${addedCount} ulasan baru ditambahkan.`);
+    } catch (error) {
+        console.error('[GMaps Sync] Error:', error.message);
+        try {
+            await db.collection('settings').doc('gmaps_sync').set({
+                lastSync: new Date().toISOString(),
+                lastStatus: 'error',
+                lastError: error.message
+            }, { merge: true });
+        } catch {}
     }
 });
