@@ -1268,18 +1268,20 @@ window.loadGmapsSyncStatus = async function() {
         if (!resp.ok) return;
         const data = await resp.json();
 
+        // Isi input URL dari localStorage jika ada
+        const savedUrl = localStorage.getItem('gmaps_maps_url') || '';
+        const urlInput = document.getElementById('gmaps-url-input');
+        if (urlInput && savedUrl) urlInput.value = savedUrl;
+
         // Badge konfigurasi
         const badge = document.getElementById('gmaps-configured-badge');
-        const guide = document.getElementById('gmaps-setup-guide');
         if (badge) {
-            if (data.configured) {
-                badge.textContent = '✅ Terhubung';
+            if (data.configured || savedUrl) {
+                badge.textContent = '✅ Siap Digunakan';
                 badge.style.background = '#10b981';
-                if (guide) guide.style.display = 'none';
             } else {
-                badge.textContent = '⚙️ Belum Dikonfigurasi';
+                badge.textContent = '⚙️ URL Belum Diset';
                 badge.style.background = '#ef4444';
-                if (guide) guide.style.display = 'block';
             }
         }
 
@@ -1306,16 +1308,37 @@ window.loadGmapsSyncStatus = async function() {
     }
 };
 
+window.saveGmapsUrl = function() {
+    const urlInput = document.getElementById('gmaps-url-input');
+    const url = urlInput?.value?.trim();
+    if (!url) { Swal.fire({ icon: 'warning', title: 'URL kosong!', text: 'Masukkan URL Google Maps bisnis kamu dulu.' }); return; }
+    localStorage.setItem('gmaps_maps_url', url);
+    const badge = document.getElementById('gmaps-configured-badge');
+    if (badge) { badge.textContent = '✅ Siap Digunakan'; badge.style.background = '#10b981'; }
+    Swal.fire({ icon: 'success', title: 'URL Disimpan!', text: 'URL Google Maps berhasil disimpan. Sekarang klik "Sync Sekarang".', timer: 2500, showConfirmButton: false });
+};
+
+
 window.runGmapsSync = async function() {
     const btn = document.getElementById('gmaps-sync-btn');
     const resultArea = document.getElementById('gmaps-result-area');
     if (btn) { btn.disabled = true; btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sedang Sync...'; }
     if (resultArea) { resultArea.style.display = 'none'; resultArea.innerHTML = ''; }
 
+    // Ambil URL dari input atau localStorage
+    const urlInput = document.getElementById('gmaps-url-input');
+    const mapsUrl = urlInput?.value?.trim() || localStorage.getItem('gmaps_maps_url') || '';
+    if (!mapsUrl) {
+        Swal.fire({ icon: 'warning', title: 'URL Belum Diisi', text: 'Masukkan URL Google Maps bisnis kamu di kolom di atas dulu, lalu klik Simpan.' });
+        if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rotate"></i> Sync Sekarang'; }
+        return;
+    }
+
     try {
         const resp = await fetch(`${API_URL}/gmaps-sync/run`, {
             method: 'POST',
-            headers: getAuthHeaders()
+            headers: { ...getAuthHeaders(), 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mapsUrl })
         });
         const data = await resp.json();
 
