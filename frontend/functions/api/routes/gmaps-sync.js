@@ -47,34 +47,82 @@ async function resolveShortUrl(rawUrl) {
 // Fallback pool of high quality authentic reviews for Travel Lombok Airport
 const DEFAULT_FALLBACK_REVIEWS = [
     {
-        name: 'Hendra Gunawan',
+        name: 'Eva Rahma',
         rating: 5,
-        comment: 'Sangat puas dengan pelayanan Travel Lombok Airport! Driver sudah standby di pintu kedatangan sebelum flight landing. Mobil Innova Reborn sangat bersih dan nyaman.',
-        relativeDate: '2 hari lalu'
+        comment: 'I’m very satisfied with the service! Everything was well organized, from the facilities to the service. The vehicle was clean and comfortable, and the staff were friendly, helpful, and professional. Overall, I had a great experience and would definitely use this service again. Highly recommended!🥺🫶🫶',
+        relativeDate: '4 minggu lalu'
     },
     {
-        name: 'Dian Permatasari',
+        name: 'Hadi Maulana Harjadinata',
         rating: 5,
-        comment: 'Recommended banget buat yang baru pertama ke Lombok. Driver mas Irwan sangat ramah, ngasih rekomendasi kuliner ayam taliwang enak dalam perjalanan ke Senggigi.',
-        relativeDate: '4 hari lalu'
+        comment: 'pesen airport transfer disini super worth it, abangnya ramah banget, harga kompetitiff dan ga ada scamm harga, semua harga jelass mantaplah pokonya pasti bakal order ini lg kalau ke lombok',
+        relativeDate: '2 bulan lalu'
     },
     {
-        name: 'Rian Pratama',
+        name: 'L sapwan Hakim',
         rating: 5,
-        comment: 'Booking dari web gampang dan fast response via WhatsApp. Harga transparan all in tanpa ada tambahan aneh-aneh. Tepat waktu jemput subuh ke bandara.',
-        relativeDate: '1 minggu lalu'
+        comment: 'ini sangat membantu, harga juga terjangkau. Ramah, aman, dan nyaman skali🤗 buat yg mau jasa travel ini rekomend banget sih🙏🙏🙏',
+        relativeDate: '2 bulan lalu'
     },
     {
-        name: 'Jessica Tan',
-        rating: 4,
-        comment: 'Pelayanan jemputan bandara bagus dan profesional. AC mobil dingin dan supir mengemudi dengan sangat hati-hati dan aman.',
+        name: 'Firmansyah Wifananda',
+        rating: 5,
+        comment: 'Pengalaman berkendara nyaman, sangat direkomendasikan untuk travelling,',
         relativeDate: '2 minggu lalu'
     },
     {
-        name: 'Bambang Sudiro',
+        name: 'Lalu Mam',
         rating: 5,
-        comment: 'Langganan tiap tugas dinas ke Lombok. Mobil selalu bersih, driver tepat waktu di Bandara Internasional Lombok dan rute perjalanan sangat hafal.',
-        relativeDate: '3 minggu lalu'
+        comment: 'Bener bener amanah. Good service.wort it banget buat kalian yang butuh jasa transportasi area lombok',
+        relativeDate: '1 bulan lalu'
+    },
+    {
+        name: 'Terrence Jessindran Anthony',
+        rating: 5,
+        comment: 'Rented a car here and the agent was very flexible with the arrangement. We had a smooth experience throughout our trip in Lombok.',
+        relativeDate: '1 bulan lalu'
+    },
+    {
+        name: 'Nabila Salma',
+        rating: 5,
+        comment: 'Pelayanan sangat ramah, respon cepat dan tepat waktu jemput di Bandara. Mobil bersih dan wangi.',
+        relativeDate: '2 bulan lalu'
+    },
+    {
+        name: 'Bagas',
+        rating: 5,
+        comment: 'Pelayanan Oke, mantap, rekomendasi skli buat jalan-jalan di Lombok.',
+        relativeDate: '2 bulan lalu'
+    },
+    {
+        name: 'Almira',
+        rating: 5,
+        comment: 'Harga murah, but service yang mahal. Keren banget layanannya!',
+        relativeDate: '3 bulan lalu'
+    },
+    {
+        name: 'Uncle',
+        rating: 5,
+        comment: 'Terimakasih atas pelayanan sangat puas, supir ramah dan perjalanan sangat aman.',
+        relativeDate: '3 bulan lalu'
+    },
+    {
+        name: 'Rafi Zb store.',
+        rating: 5,
+        comment: 'Pelayanan memuaskan, recommended pokoknya! Bakal langganan terus.',
+        relativeDate: '3 bulan lalu'
+    },
+    {
+        name: 'Azka',
+        rating: 5,
+        comment: 'Rekomendasi banget sih.! Service terbaik dan profesional.',
+        relativeDate: '3 bulan lalu'
+    },
+    {
+        name: 'Aye Trans',
+        rating: 5,
+        comment: 'Mantap pelayanan bagus recommended 🙏🏻',
+        relativeDate: '4 bulan lalu'
     }
 ];
 
@@ -134,8 +182,10 @@ gmapsSyncRoutes.get('/status', verifyToken, async (c) => {
         const db = getDb(c);
         let statusData = {
             configured: true,
-            overallRating: 4.9,
-            totalRatings: 128,
+            overallRating: 5.0,
+            totalRatings: 41,
+            placeName: 'Travel Lombok Airport',
+            businessName: 'Travel Lombok Airport',
             lastAdded: 0,
             lastSync: null
         };
@@ -157,7 +207,7 @@ gmapsSyncRoutes.get('/status', verifyToken, async (c) => {
 gmapsSyncRoutes.post('/preview', verifyToken, async (c) => {
     try {
         const body = await c.req.json().catch(() => ({}));
-        const mapsUrl = body.mapsUrl || 'https://share.google/CGJ8p52gVjWiR7Lz3';
+        const mapsUrl = body.mapsUrl || 'https://www.google.com/maps/place/Travel+Lombok+Airport/@-8.7607069,116.2754775,15z/data=!3m1!4b1!4m6!3m5!1s0x2dcdaf1bbcf03245:0xb1f30bf532f6dec2!8m2!3d-8.7607069!4d116.2754775!16s%2Fg%2F11zwz1v7wb';
         const apiKey = c.env.GEMINI_API_KEY || '';
 
         const resolvedUrl = await resolveShortUrl(mapsUrl);
@@ -176,8 +226,8 @@ gmapsSyncRoutes.post('/preview', verifyToken, async (c) => {
             success: true,
             placeName: 'Travel Lombok Airport',
             businessName: 'Travel Lombok Airport',
-            overallRating: 4.9,
-            totalRatings: 128,
+            overallRating: 5.0,
+            totalRatings: 41,
             reviews: normalizedReviews
         });
     } catch (err) {
@@ -190,7 +240,7 @@ gmapsSyncRoutes.post('/run', verifyToken, async (c) => {
     try {
         const db = getDb(c);
         const body = await c.req.json().catch(() => ({}));
-        const mapsUrl = body.mapsUrl || 'https://share.google/CGJ8p52gVjWiR7Lz3';
+        const mapsUrl = body.mapsUrl || 'https://www.google.com/maps/place/Travel+Lombok+Airport/@-8.7607069,116.2754775,15z/data=!3m1!4b1!4m6!3m5!1s0x2dcdaf1bbcf03245:0xb1f30bf532f6dec2!8m2!3d-8.7607069!4d116.2754775!16s%2Fg%2F11zwz1v7wb';
         const apiKey = c.env.GEMINI_API_KEY || '';
 
         // 1. Resolve short link
@@ -247,14 +297,16 @@ gmapsSyncRoutes.post('/run', verifyToken, async (c) => {
         const syncMeta = {
             configured: true,
             mapsUrl: resolvedUrl,
-            overallRating: 4.9,
-            totalRatings: 128 + savedReviews.length,
+            placeName: 'Travel Lombok Airport',
+            businessName: 'Travel Lombok Airport',
+            overallRating: 5.0,
+            totalRatings: 41,
             lastAdded: savedReviews.length,
             lastSync: now
         };
 
         try {
-            await db.collection('settings').doc('gmaps_sync').set(syncMeta);
+            await db.collection('settings').doc('gmaps_sync').set(syncMeta, { merge: true });
         } catch (metaErr) {
             console.warn('Failed to save gmaps_sync settings:', metaErr.message);
         }
