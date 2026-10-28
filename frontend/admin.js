@@ -54,6 +54,7 @@ const orderInput = document.getElementById("item-order");
 const descriptionInput = document.getElementById("item-description");
 const priceInput = document.getElementById("item-price");
 const priceLabel = document.getElementById("item-price-label");
+const carLepasKunciHint = document.getElementById("car-lepas-kunci-hint");
 const priceWithDriverInput = document.getElementById("item-price-with-driver");
 const carDriverPriceGroup = document.getElementById("car-driver-price-group");
 const imageInput = document.getElementById("item-image");
@@ -98,6 +99,9 @@ const toggleCarPriceVisibility = () => {
     const isCar = categoryInput && categoryInput.value === 'car';
     if (carDriverPriceGroup) {
         carDriverPriceGroup.style.display = isCar ? 'block' : 'none';
+    }
+    if (carLepasKunciHint) {
+        carLepasKunciHint.style.display = isCar ? 'block' : 'none';
     }
     if (priceLabel) {
         priceLabel.textContent = isCar ? "Harga Lepas Kunci (Otomatis titik)" : "Harga (Otomatis titik)";
@@ -1040,15 +1044,17 @@ window.editItem = async (id) => {
         if(parentIdInput) parentIdInput.value = item.parentId || "";
         
         // Format price with dots for display in form
-        if (item.price) {
-            priceInput.value = parseInt(item.price.toString().replace(/\D/g, ''), 10).toLocaleString('id-ID');
+        if (item.price !== undefined && item.price !== null && item.price !== '') {
+            const rawP = item.price.toString().replace(/\D/g, '');
+            priceInput.value = rawP ? parseInt(rawP, 10).toLocaleString('id-ID') : '0';
         } else {
             priceInput.value = "";
         }
 
         if (priceWithDriverInput) {
-            if (item.priceWithDriver) {
-                priceWithDriverInput.value = parseInt(item.priceWithDriver.toString().replace(/\D/g, ''), 10).toLocaleString('id-ID');
+            if (item.priceWithDriver !== undefined && item.priceWithDriver !== null && item.priceWithDriver !== '') {
+                const rawD = item.priceWithDriver.toString().replace(/\D/g, '');
+                priceWithDriverInput.value = rawD ? parseInt(rawD, 10).toLocaleString('id-ID') : '0';
             } else {
                 priceWithDriverInput.value = "";
             }

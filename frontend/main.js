@@ -806,9 +806,21 @@ window.openCarChoiceModal = (id) => {
     const item = globalItems.find(i => i.id === id);
     if (!item) return;
 
-    // Jika harga include driver 0 / kosong / tidak diset, langsung buka tour modal lepas kunci tanpa pilihan
+    const hasLepasKunci = Boolean(item.price && Number(item.price) > 0);
     const hasDriverOption = Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
-    if (!hasDriverOption) {
+
+    // Jika hanya Lepas Kunci yang aktif (Include Driver = 0)
+    if (hasLepasKunci && !hasDriverOption) {
+        window.openTourModal(id, 'lepas_kunci');
+        return;
+    }
+    // Jika hanya Include Driver yang aktif (Lepas Kunci = 0)
+    if (!hasLepasKunci && hasDriverOption) {
+        window.openTourModal(id, 'include_driver');
+        return;
+    }
+    // Jika dua-duanya tidak ada harga valid (>0)
+    if (!hasLepasKunci && !hasDriverOption) {
         window.openTourModal(id, 'lepas_kunci');
         return;
     }
@@ -823,7 +835,7 @@ window.openCarChoiceModal = (id) => {
     if (subtitleEl) subtitleEl.textContent = `Tersedia opsi Lepas Kunci (Setir Sendiri) atau Include Driver (Dengan Supir & BBM)`;
 
     const rawLepasKunciPrice = Number(item.price) || 0;
-    const rawDriverPrice = Number(item.priceWithDriver);
+    const rawDriverPrice = Number(item.priceWithDriver) || 0;
 
     const lepasKunciFormatted = formatPrice(rawLepasKunciPrice);
     const driverFormatted = formatPrice(rawDriverPrice);
@@ -1010,22 +1022,33 @@ window.openTourModal = (id, carMode = null) => {
     if (!item) return;
 
     const isCarCategory = (item.category === 'car');
+    const hasLepasKunci = Boolean(item.price && Number(item.price) > 0);
     const hasDriverOption = isCarCategory && Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
 
     // Khusus Sewa Mobil: jika belum ada mode layanan yang dipilih
     if (isCarCategory && !carMode) {
-        if (!hasDriverOption) {
-            // Jika harga include driver 0 / kosong, langsung buka Lepas Kunci tanpa modal pilihan 2 opsi
+        if (hasLepasKunci && hasDriverOption) {
+            // Kedua opsi tersedia, buka modal pilihan
+            window.openCarChoiceModal(id);
+            return;
+        } else if (!hasLepasKunci && hasDriverOption) {
+            // Lepas Kunci diisi 0 (TIDAK ADA LEPAS KUNCI), langsung buka Include Driver
+            window.openTourModal(id, 'include_driver');
+            return;
+        } else {
+            // Include Driver diisi 0 (TIDAK ADA INCLUDE DRIVER), langsung buka Lepas Kunci
             window.openTourModal(id, 'lepas_kunci');
             return;
         }
-        window.openCarChoiceModal(id);
-        return;
     }
 
-    // Jika dipanggil dengan mode include_driver tapi mobil tidak memiliki opsi driver (harga 0), paksa ke lepas_kunci
-    if (isCarCategory && carMode === 'include_driver' && !hasDriverOption) {
-        carMode = 'lepas_kunci';
+    // Jika dipanggil dengan mode yang tidak didukung, arahkan ke mode yang valid
+    if (isCarCategory) {
+        if (carMode === 'lepas_kunci' && !hasLepasKunci && hasDriverOption) {
+            carMode = 'include_driver';
+        } else if (carMode === 'include_driver' && !hasDriverOption && hasLepasKunci) {
+            carMode = 'lepas_kunci';
+        }
     }
 
     // Sembunyikan floating widget Tanya AIRA saat modal detail dibuka agar tidak menutupi tampilan
@@ -1035,15 +1058,18 @@ window.openTourModal = (id, carMode = null) => {
     const modalBody = document.getElementById('tour-modal-body');
 
     // Penentuan kalkulasi khusus Sewa Mobil (Lepas Kunci vs Include Driver)
-    const isDriverMode = isCarCategory && hasDriverOption && (carMode === 'include_driver');
-    const rawLepasKunciPrice = Number(item.price) || 0;
+    const isDriverMode = isCarCategory && (carMode === 'include_driver' || (!hasLepasKunci && hasDriverOption));
+    const rawLepasKunciPrice = hasLepasKunci ? Number(item.price) : 0;
     const rawDriverPrice = hasDriverOption ? Number(item.priceWithDriver) : 0;
 
-    const activeItemPrice = isCarCategory ? (isDriverMode ? rawDriverPrice : rawLepasKunciPrice) : (Number(item.price) || 0);
+    const activeItemPrice = isCarCategory 
+        ? (isDriverMode ? rawDriverPrice : rawLepasKunciPrice) 
+        : (Number(item.price) || 0);
+
     const activeItemTitle = isCarCategory 
-        ? (hasDriverOption 
+        ? (hasLepasKunci && hasDriverOption 
             ? `${item.title} (${isDriverMode ? 'Include Driver 12 Jam' : 'Lepas Kunci 24 Jam'})` 
-            : `${item.title} (Lepas Kunci 24 Jam)`) 
+            : (hasDriverOption ? `${item.title} (Include Driver 12 Jam)` : `${item.title} (Lepas Kunci 24 Jam)`)) 
         : item.title;
 
     // Parse itineraries
@@ -1152,7 +1178,7 @@ window.openTourModal = (id, carMode = null) => {
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0)); pointer-events: none;"></div>
         </div>
         <div class="tm-header tm-header-floating">
-            ${isCarCategory && hasDriverOption ? `
+            ${isCarCategory && hasLepasKunci && hasDriverOption ? `
             <div class="car-mode-switcher-bar">
                 <button type="button" class="car-mode-tab-btn ${!isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'lepas_kunci')">
                     <div class="car-tab-header">
@@ -2243,19 +2269,43 @@ const createFleetCard = (item, index = 0) => {
             <h3 class="notranslate">${item.title}</h3>
             ${featureTags ? `<div class="fleet-tags-row">${featureTags}</div>` : ''}
             ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
-            <div class="price-row">
-                  <div class="price" style="flex: 1; min-width: 0;">
-                      <div style="display: flex; flex-direction: column; gap: 2px;">
-                                  <div style="font-size: 0.7rem; color: #64748b;">Mulai dari</div>
-                                  <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(item.price)}</div>
-                                  <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${item.duration || 'hari'}</div>
+            ${(() => {
+                const isCar = (item.category === 'car');
+                const hasLepas = Boolean(item.price && Number(item.price) > 0);
+                const hasDriver = isCar && Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
+                
+                let displayPrice = item.price;
+                let displayUnit = item.duration || 'hari';
+                let priceLabel = 'Mulai dari';
+                
+                if (isCar) {
+                    if (!hasLepas && hasDriver) {
+                        displayPrice = item.priceWithDriver;
+                        displayUnit = '12 Jam';
+                        priceLabel = 'Tarif + Supir & BBM';
+                    } else if (hasLepas && !hasDriver) {
+                        displayPrice = item.price;
+                        displayUnit = '24 Jam';
+                        priceLabel = 'Tarif Lepas Kunci';
+                    }
+                }
+                
+                return `
+                <div class="price-row">
+                      <div class="price" style="flex: 1; min-width: 0;">
+                          <div style="display: flex; flex-direction: column; gap: 2px;">
+                                      <div style="font-size: 0.7rem; color: #64748b;">${priceLabel}</div>
+                                      <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(displayPrice)}</div>
+                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${displayUnit}</div>
+                          </div>
                       </div>
-                  </div>
-                <div class="action-buttons">
-                    <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
-                    <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${item.price}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
+                    <div class="action-buttons">
+                        <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
+                        <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${Number(displayPrice) || 0}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
+                    </div>
                 </div>
-            </div>
+                `;
+            })()}
 
         </div>
     </div>
