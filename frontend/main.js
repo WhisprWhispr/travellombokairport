@@ -806,6 +806,13 @@ window.openCarChoiceModal = (id) => {
     const item = globalItems.find(i => i.id === id);
     if (!item) return;
 
+    // Jika harga include driver 0 / kosong / tidak diset, langsung buka tour modal lepas kunci tanpa pilihan
+    const hasDriverOption = Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
+    if (!hasDriverOption) {
+        window.openTourModal(id, 'lepas_kunci');
+        return;
+    }
+
     const modal = document.getElementById('car-choice-modal');
     const titleEl = document.getElementById('car-choice-title');
     const subtitleEl = document.getElementById('car-choice-subtitle');
@@ -816,9 +823,7 @@ window.openCarChoiceModal = (id) => {
     if (subtitleEl) subtitleEl.textContent = `Tersedia opsi Lepas Kunci (Setir Sendiri) atau Include Driver (Dengan Supir & BBM)`;
 
     const rawLepasKunciPrice = Number(item.price) || 0;
-    const rawDriverPrice = (item.priceWithDriver && Number(item.priceWithDriver) > 0)
-        ? Number(item.priceWithDriver)
-        : (rawLepasKunciPrice > 0 ? rawLepasKunciPrice + 200000 : 650000);
+    const rawDriverPrice = Number(item.priceWithDriver);
 
     const lepasKunciFormatted = formatPrice(rawLepasKunciPrice);
     const driverFormatted = formatPrice(rawDriverPrice);
@@ -1004,10 +1009,23 @@ window.openTourModal = (id, carMode = null) => {
     const item = globalItems.find(i => i.id === id);
     if (!item) return;
 
-    // Khusus Sewa Mobil: jika belum ada mode layanan yang dipilih, tampilkan modal pilihan 2 opsi
-    if (item.category === 'car' && !carMode) {
+    const isCarCategory = (item.category === 'car');
+    const hasDriverOption = isCarCategory && Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
+
+    // Khusus Sewa Mobil: jika belum ada mode layanan yang dipilih
+    if (isCarCategory && !carMode) {
+        if (!hasDriverOption) {
+            // Jika harga include driver 0 / kosong, langsung buka Lepas Kunci tanpa modal pilihan 2 opsi
+            window.openTourModal(id, 'lepas_kunci');
+            return;
+        }
         window.openCarChoiceModal(id);
         return;
+    }
+
+    // Jika dipanggil dengan mode include_driver tapi mobil tidak memiliki opsi driver (harga 0), paksa ke lepas_kunci
+    if (isCarCategory && carMode === 'include_driver' && !hasDriverOption) {
+        carMode = 'lepas_kunci';
     }
 
     // Sembunyikan floating widget Tanya AIRA saat modal detail dibuka agar tidak menutupi tampilan
@@ -1017,15 +1035,16 @@ window.openTourModal = (id, carMode = null) => {
     const modalBody = document.getElementById('tour-modal-body');
 
     // Penentuan kalkulasi khusus Sewa Mobil (Lepas Kunci vs Include Driver)
-    const isCarCategory = (item.category === 'car');
-    const isDriverMode = isCarCategory && (carMode === 'include_driver');
+    const isDriverMode = isCarCategory && hasDriverOption && (carMode === 'include_driver');
     const rawLepasKunciPrice = Number(item.price) || 0;
-    const rawDriverPrice = (item.priceWithDriver && Number(item.priceWithDriver) > 0)
-        ? Number(item.priceWithDriver)
-        : (rawLepasKunciPrice > 0 ? rawLepasKunciPrice + 200000 : 650000);
+    const rawDriverPrice = hasDriverOption ? Number(item.priceWithDriver) : 0;
 
     const activeItemPrice = isCarCategory ? (isDriverMode ? rawDriverPrice : rawLepasKunciPrice) : (Number(item.price) || 0);
-    const activeItemTitle = isCarCategory ? `${item.title} (${isDriverMode ? 'Include Driver 12 Jam' : 'Lepas Kunci 24 Jam'})` : item.title;
+    const activeItemTitle = isCarCategory 
+        ? (hasDriverOption 
+            ? `${item.title} (${isDriverMode ? 'Include Driver 12 Jam' : 'Lepas Kunci 24 Jam'})` 
+            : `${item.title} (Lepas Kunci 24 Jam)`) 
+        : item.title;
 
     // Parse itineraries
     let itineraryHTML = '';
@@ -1133,7 +1152,7 @@ window.openTourModal = (id, carMode = null) => {
             <div style="position: absolute; bottom: 0; left: 0; right: 0; height: 120px; background: linear-gradient(to top, rgba(255,255,255,1), rgba(255,255,255,0)); pointer-events: none;"></div>
         </div>
         <div class="tm-header tm-header-floating">
-            ${isCarCategory ? `
+            ${isCarCategory && hasDriverOption ? `
             <div class="car-mode-switcher-bar">
                 <button type="button" class="car-mode-tab-btn ${!isDriverMode ? 'active' : ''}" onclick="window.openTourModal('${item.id}', 'lepas_kunci')">
                     <div class="car-tab-header">
@@ -6995,10 +7014,9 @@ function renderAiraMiniCards(items) {
         else if (cat === 'transfer' || cat === 'airport') { catIcon = 'fa-plane-departure'; catLabel = 'Antar Jemput'; }
         
         const isCar = (cat === 'car');
+        const hasDriver = isCar && Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
         const rawLepasPrice = Number(item.price) || 0;
-        const rawDriverPrice = (item.priceWithDriver && Number(item.priceWithDriver) > 0)
-            ? Number(item.priceWithDriver)
-            : (rawLepasPrice > 0 ? rawLepasPrice + 200000 : 650000);
+        const rawDriverPrice = hasDriver ? Number(item.priceWithDriver) : 0;
         const lepasFormatted = typeof formatPrice === 'function' ? formatPrice(rawLepasPrice) : `Rp ${rawLepasPrice.toLocaleString('id-ID')}`;
         const driverFormatted = typeof formatPrice === 'function' ? formatPrice(rawDriverPrice) : `Rp ${rawDriverPrice.toLocaleString('id-ID')}`;
         
@@ -7022,10 +7040,12 @@ function renderAiraMiniCards(items) {
                             <span style="font-size:0.7rem; font-weight:700; color:#15803d;"><i class="fa-solid fa-key"></i> Lepas Kunci:</span>
                             <span style="font-size:0.78rem; font-weight:800; color:#166534;">${lepasFormatted} <small style="font-size:0.65rem; font-weight:600;">/24J</small></span>
                         </div>
+                        ${hasDriver ? `
                         <div style="display:flex; justify-content:space-between; align-items:center; background:#eff6ff; border:1px solid #bfdbfe; padding:4px 7px; border-radius:6px;">
                             <span style="font-size:0.7rem; font-weight:700; color:#1d4ed8;"><i class="fa-solid fa-user-tie"></i> + Supir & BBM:</span>
                             <span style="font-size:0.78rem; font-weight:800; color:#1e40af;">${driverFormatted} <small style="font-size:0.65rem; font-weight:600;">/12J</small></span>
                         </div>
+                        ` : ''}
                     </div>
                     ` : `
                     <span class="aira-card-price-start">Mulai dari</span>
@@ -7453,11 +7473,11 @@ window.orderViaWebFromAira = (btnElem, encodedMarkdown) => {
     if (items && items.length > 0) {
         const first = items[0];
         if (first.category === 'car') {
-            const withDriver = typeof getIsWithDriver === 'function' ? getIsWithDriver(items, md, lastUserQuery) : false;
+            const hasDriver = Boolean(first.priceWithDriver && Number(first.priceWithDriver) > 0);
+            const wantDriver = typeof getIsWithDriver === 'function' ? getIsWithDriver(items, md, lastUserQuery) : false;
+            const withDriver = hasDriver && wantDriver;
             const lepasPrice = Number(first.price) || 0;
-            const driverPrice = (first.priceWithDriver && Number(first.priceWithDriver) > 0) 
-                ? Number(first.priceWithDriver) 
-                : (lepasPrice > 0 ? lepasPrice + 200000 : 650000);
+            const driverPrice = hasDriver ? Number(first.priceWithDriver) : lepasPrice;
             
             const activeTitle = withDriver ? `${first.title} (Include Driver 12 Jam)` : `${first.title} (Lepas Kunci 24 Jam)`;
             const activePrice = withDriver ? driverPrice : lepasPrice;
@@ -7506,11 +7526,11 @@ window.handleAiraBookingLinkClick = (text, url) => {
 
     if (matchedItem) {
         if (matchedItem.category === 'car') {
-            const withDriver = /(dengan supir|dengan driver|include supir|include driver|plus supir|plus driver|12 jam)/i.test(combined);
+            const hasDriver = Boolean(matchedItem.priceWithDriver && Number(matchedItem.priceWithDriver) > 0);
+            const wantDriver = /(dengan supir|dengan driver|include supir|include driver|plus supir|plus driver|12 jam)/i.test(combined);
+            const withDriver = hasDriver && wantDriver;
             const lepasPrice = Number(matchedItem.price) || 0;
-            const driverPrice = (matchedItem.priceWithDriver && Number(matchedItem.priceWithDriver) > 0)
-                ? Number(matchedItem.priceWithDriver)
-                : (lepasPrice > 0 ? lepasPrice + 200000 : 650000);
+            const driverPrice = hasDriver ? Number(matchedItem.priceWithDriver) : lepasPrice;
             const activeTitle = withDriver ? `${matchedItem.title} (Include Driver 12 Jam)` : `${matchedItem.title} (Lepas Kunci 24 Jam)`;
             const activePrice = withDriver ? driverPrice : lepasPrice;
             window.openCheckoutModal(activeTitle, activePrice, 'web');
