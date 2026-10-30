@@ -215,33 +215,155 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
 
 
 
+// ====== TRAFFIC ATTRIBUTION TRACKING ======
+(function initTrafficAttribution() {
+    try {
+        const STORAGE_KEY = 'tl_traffic_attribution';
+        
+        let existing = null;
+        try {
+            const rawSession = sessionStorage.getItem(STORAGE_KEY);
+            const rawLocal = localStorage.getItem(STORAGE_KEY);
+            existing = rawSession ? JSON.parse(rawSession) : (rawLocal ? JSON.parse(rawLocal) : null);
+        } catch (e) {}
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const utmSource = (urlParams.get('utm_source') || '').toLowerCase();
+        const utmMedium = (urlParams.get('utm_medium') || '').toLowerCase();
+        const utmCampaign = (urlParams.get('utm_campaign') || '').toLowerCase();
+        const refParam = (urlParams.get('ref') || urlParams.get('source') || '').toLowerCase();
+        const fbclid = urlParams.get('fbclid');
+        const gclid = urlParams.get('gclid');
+        const ttclid = urlParams.get('ttclid');
+        const igsh = urlParams.get('igsh');
+
+        const rawReferrer = document.referrer || '';
+        let referrerHost = '';
+        try {
+            if (rawReferrer) referrerHost = new URL(rawReferrer).hostname.toLowerCase();
+        } catch (e) {}
+
+        const currentHost = window.location.hostname.toLowerCase();
+        const isInternalReferrer = referrerHost === currentHost || (referrerHost && referrerHost.endsWith('.' + currentHost));
+
+        const hasCampaignParams = !!(utmSource || refParam || fbclid || gclid || ttclid || igsh);
+
+        if (!existing || (hasCampaignParams && !isInternalReferrer)) {
+            let channel = 'Direct / Langsung';
+            let sourceType = 'direct';
+
+            // 1. Cek parameter campaign / URL khusus
+            if (utmSource.includes('instagram') || refParam.includes('instagram') || refParam === 'sosmed' || igsh) {
+                channel = 'Instagram / Sosmed';
+                sourceType = 'social';
+            } else if (utmSource.includes('tiktok') || refParam.includes('tiktok') || ttclid) {
+                channel = 'TikTok';
+                sourceType = 'social';
+            } else if (utmSource.includes('facebook') || refParam.includes('facebook') || fbclid) {
+                channel = 'Facebook';
+                sourceType = 'social';
+            } else if (gclid || utmMedium === 'cpc' || utmSource.includes('google_ads')) {
+                channel = 'Google Ads';
+                sourceType = 'cpc';
+            } else if (utmSource) {
+                channel = `Kampanye (${utmSource})`;
+                sourceType = 'campaign';
+            } else if (refParam) {
+                channel = `Referral (${refParam})`;
+                sourceType = 'referral';
+            }
+            // 2. Cek Referrer jika bukan internal
+            else if (rawReferrer && !isInternalReferrer) {
+                if (referrerHost.includes('google.')) {
+                    channel = 'Google Search (Organik)';
+                    sourceType = 'organic';
+                } else if (referrerHost.includes('bing.') || referrerHost.includes('yahoo.') || referrerHost.includes('duckduckgo.') || referrerHost.includes('yandex.')) {
+                    channel = 'Mesin Pencari (' + referrerHost.replace(/^www\./, '') + ')';
+                    sourceType = 'organic';
+                } else if (referrerHost.includes('instagram.com')) {
+                    channel = 'Instagram / Sosmed';
+                    sourceType = 'social';
+                } else if (referrerHost.includes('tiktok.com')) {
+                    channel = 'TikTok';
+                    sourceType = 'social';
+                } else if (referrerHost.includes('facebook.com') || referrerHost.includes('fb.com')) {
+                    channel = 'Facebook';
+                    sourceType = 'social';
+                } else if (referrerHost.includes('t.co') || referrerHost.includes('twitter.com') || referrerHost.includes('x.com')) {
+                    channel = 'Twitter / X';
+                    sourceType = 'social';
+                } else if (referrerHost.includes('whatsapp') || referrerHost.includes('wa.me')) {
+                    channel = 'WhatsApp';
+                    sourceType = 'social';
+                } else {
+                    channel = `Referral (${referrerHost.replace(/^www\./, '')})`;
+                    sourceType = 'referral';
+                }
+            }
+
+            const attributionData = {
+                channel,
+                sourceType,
+                referrer: rawReferrer,
+                referrerHost: referrerHost || '-',
+                landingPage: window.location.pathname + window.location.search,
+                utmSource: utmSource || null,
+                utmMedium: utmMedium || null,
+                utmCampaign: utmCampaign || null,
+                capturedAt: new Date().toISOString()
+            };
+
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(attributionData));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(attributionData));
+        }
+    } catch (err) {
+        console.warn('Traffic attribution init error:', err);
+    }
+})();
+
+window.getTrafficAttribution = function() {
+    try {
+        const stored = sessionStorage.getItem('tl_traffic_attribution') || localStorage.getItem('tl_traffic_attribution');
+        if (stored) return JSON.parse(stored);
+    } catch (e) {}
+    return {
+        channel: 'Direct / Langsung',
+        sourceType: 'direct',
+        referrer: document.referrer || '',
+        landingPage: window.location.pathname,
+        capturedAt: new Date().toISOString()
+    };
+};
+
 // ====== ANALYTICS TRACKING ======
 if (!window.location.pathname.includes("admin") && !window.location.pathname.includes("driver")) {
     const trackVisitor = async () => {
         try {
-            // Generate a simple pseudo-hash for the IP/session using User-Agent + Date
-            // In a real app, the backend usually gets the IP, but here we can pass a session ID
             let sessionId = localStorage.getItem('visitor_session_id');
             if (!sessionId) {
                 sessionId = Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
                 localStorage.setItem('visitor_session_id', sessionId);
             }
             
+            const attr = window.getTrafficAttribution ? window.getTrafficAttribution() : null;
+
             await fetch(`${API_URL}/analytics/track`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     path: window.location.pathname + window.location.hash,
                     userAgent: navigator.userAgent,
-                    ipHash: sessionId, // Using session ID as proxy for unique IP
-                    screenWidth: window.innerWidth || screen.width
+                    ipHash: sessionId,
+                    screenWidth: window.innerWidth || screen.width,
+                    referrer: document.referrer || '',
+                    trafficSource: attr ? attr.channel : 'Direct / Langsung',
+                    sourceType: attr ? attr.sourceType : 'direct'
                 })
             });
         } catch (e) {
             console.error('Failed to track visitor:', e);
         }
     };
-    // Run after a short delay so it doesn't block main render
     setTimeout(trackVisitor, 2000);
 }
 // Pre-populated fallback catalog so AIRA and checkout have item data available instantly from millisecond 0
@@ -4977,6 +5099,11 @@ window.processCheckout = async (itemName, price, method = 'web') => {
             if (promoInfoText) waText += promoInfoText;
         }
 
+        const attr = window.getTrafficAttribution ? window.getTrafficAttribution() : null;
+        if (attr && attr.channel) {
+            waText += `\n\n📌 *Sumber Referensi:* ${attr.channel}`;
+        }
+
         return waText;
     };
 
@@ -5045,6 +5172,7 @@ window.processCheckout = async (itemName, price, method = 'web') => {
 
     paymentAmount += depositAmount; // Selalu tambahkan deposit ke pembayaran saat ini
 
+    const attr = window.getTrafficAttribution ? window.getTrafficAttribution() : null;
     const bookingData = {
         itemName,
         customerName: name,
@@ -5059,6 +5187,8 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         customerEmail,
         promoCode: promoCode,
         promoDiscount: promoDiscount,
+        trafficSource: attr ? attr.channel : 'Direct / Langsung',
+        trafficDetails: attr || null,
         turnstileToken: method !== 'wa' ? (window._checkoutTurnstileToken || document.querySelector('#checkout-modal [name="cf-turnstile-response"]')?.value || '') : '',
         details: {
             pickup: pickupLoc,

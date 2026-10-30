@@ -28,7 +28,7 @@ const hashIp = (ip) => {
 // POST /api/analytics/track - Track page view
 router.post('/track', async (req, res) => {
     try {
-        const { path, userAgent, screenWidth } = req.body;
+        const { path, userAgent, screenWidth, referrer, trafficSource, sourceType } = req.body;
         const ip = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
         const ipHash = hashIp(ip);
         
@@ -37,6 +37,9 @@ router.post('/track', async (req, res) => {
             userAgent: userAgent || 'Unknown',
             screenWidth: screenWidth || 0,
             ipHash,
+            referrer: referrer || '',
+            trafficSource: trafficSource || 'Direct / Langsung',
+            sourceType: sourceType || 'direct',
             timestamp: new Date().toISOString(),
         };
 

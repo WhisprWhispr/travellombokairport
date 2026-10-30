@@ -1599,6 +1599,40 @@ const fetchAdminBookings = async () => {
         window.adminWebOrders = webOrders;
         const webBookings = allBookings.filter(b => !b.transactionId || b.transactionId.startsWith('BKG-'));
         
+        window.renderTrafficSourceBadge = (b) => {
+            const src = (b.trafficSource || '').trim();
+            if (!src) {
+                if (b.transactionId && b.transactionId.startsWith('MANUAL')) {
+                    return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:600; padding:2px 7px; border-radius:12px; background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd;"><i class="fa-solid fa-user-pen"></i> Input Manual</span>`;
+                }
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; color:#94a3b8;" title="Booking masuk sebelum pelacakan sumber aktif"><i class="fa-regular fa-circle-question"></i> Sumber: -</span>`;
+            }
+
+            const lower = src.toLowerCase();
+            const refHost = b.trafficDetails?.referrerHost || b.trafficDetails?.referrer || '';
+            const tooltip = `Sumber: ${src}${refHost && refHost !== '-' ? ` (${refHost})` : ''}${b.trafficDetails?.landingPage ? `\nLanding: ${b.trafficDetails.landingPage}` : ''}`;
+
+            if (lower.includes('google')) {
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:12px; background:#ecfdf5; color:#047857; border:1px solid #a7f3d0;" title="${tooltip}"><i class="fa-brands fa-google" style="color:#059669;"></i> Google Search</span>`;
+            }
+            if (lower.includes('instagram') || lower.includes('sosmed') || lower.includes('ig')) {
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:12px; background:#fdf2f8; color:#be185d; border:1px solid #fbcfe8;" title="${tooltip}"><i class="fa-brands fa-instagram" style="color:#e1306c;"></i> Sosmed (Instagram)</span>`;
+            }
+            if (lower.includes('tiktok')) {
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:12px; background:#0f172a; color:#f8fafc; border:1px solid #334155;" title="${tooltip}"><i class="fa-brands fa-tiktok"></i> TikTok</span>`;
+            }
+            if (lower.includes('facebook') || lower.includes('fb')) {
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:12px; background:#eff6ff; color:#1d4ed8; border:1px solid #bfdbfe;" title="${tooltip}"><i class="fa-brands fa-facebook"></i> Facebook</span>`;
+            }
+            if (lower.includes('whatsapp') || lower.includes('wa')) {
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:12px; background:#f0fdf4; color:#15803d; border:1px solid #bbf7d0;" title="${tooltip}"><i class="fa-brands fa-whatsapp"></i> WhatsApp</span>`;
+            }
+            if (lower.includes('direct') || lower.includes('langsung')) {
+                return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:600; padding:2px 8px; border-radius:12px; background:#f1f5f9; color:#475569; border:1px solid #cbd5e1;" title="${tooltip}"><i class="fa-solid fa-compass"></i> Direct / Langsung</span>`;
+            }
+            return `<span style="display:inline-flex; align-items:center; gap:4px; font-size:0.72rem; font-weight:600; padding:2px 8px; border-radius:12px; background:#f8fafc; color:#334155; border:1px solid #e2e8f0;" title="${tooltip}"><i class="fa-solid fa-arrow-up-right-from-square"></i> ${src}</span>`;
+        };
+
         // Helper renderer
         const renderRows = (bookingsArray, emptyMsg, tableElem) => {
             window.adminRenderRows = window.adminRenderRows || renderRows;
@@ -1665,6 +1699,9 @@ Salam hangat,
                             <strong style="color:var(--primary-blue); font-size: 0.9rem;">${trxId}</strong>
                             <i class="fa-regular fa-copy" onclick="window.copyTextToClipboard('${trxId}', 'ID disalin!')" style="cursor:pointer; color:#94a3b8; transition:color 0.2s; margin-left:4px;" onmouseover="this.style.color='var(--primary-blue)'" onmouseout="this.style.color='#94a3b8'" title="Salin ID"></i>
                             <br><small>${startDateStr} - ${new Date(b.endDate).toLocaleDateString('id-ID')}</small>
+                            <div style="margin-top: 5px;">
+                                ${window.renderTrafficSourceBadge(b)}
+                            </div>
                         </td>
                         <td>
                             <div style="display:inline-flex; align-items:center; gap:4px; font-size:0.7rem; font-weight:700; color:${meta.color}; background:${meta.bgColor}; padding:2px 8px; border-radius:6px; border:1px solid ${meta.borderColor}; margin-bottom:4px;">
@@ -4260,9 +4297,33 @@ if (authToken) {
 }
 
 
-window.filterAdminOrders = (status, btnElem) => {
+window.adminCurrentStatusFilter = 'all';
+window.adminCurrentSourceFilter = 'all';
+
+window.applyCombinedOrderFilters = () => {
     if (!window.adminWebOrders || !window.adminRenderRows) return;
-    // Update active button styles
+    let filtered = window.adminWebOrders;
+
+    if (window.adminCurrentStatusFilter && window.adminCurrentStatusFilter !== 'all') {
+        filtered = filtered.filter(b => b.status === window.adminCurrentStatusFilter);
+    }
+
+    if (window.adminCurrentSourceFilter && window.adminCurrentSourceFilter !== 'all') {
+        filtered = filtered.filter(b => {
+            const src = (b.trafficSource || '').toLowerCase();
+            if (window.adminCurrentSourceFilter === 'google') return src.includes('google');
+            if (window.adminCurrentSourceFilter === 'sosmed') return src.includes('instagram') || src.includes('sosmed') || src.includes('tiktok') || src.includes('facebook');
+            if (window.adminCurrentSourceFilter === 'direct') return src.includes('direct') || src.includes('langsung');
+            return true;
+        });
+    }
+
+    const tableElem = document.getElementById('admin-orders-table');
+    window.adminRenderRows(filtered, 'Tidak ada pesanan yang sesuai filter.', tableElem);
+};
+
+window.filterAdminOrders = (status, btnElem) => {
+    window.adminCurrentStatusFilter = status;
     const buttons = document.querySelectorAll('.order-filter-btn');
     buttons.forEach(btn => {
         btn.classList.remove('active');
@@ -4273,13 +4334,22 @@ window.filterAdminOrders = (status, btnElem) => {
     btnElem.style.background = btnElem.style.borderColor;
     btnElem.style.color = 'white';
 
-    let filtered = window.adminWebOrders;
-    if (status !== 'all') {
-        filtered = window.adminWebOrders.filter(b => b.status === status);
-    }
+    window.applyCombinedOrderFilters();
+};
 
-    const tableElem = document.getElementById('admin-orders-table');
-    window.adminRenderRows(filtered, 'Tidak ada pesanan dengan status ' + status, tableElem);
+window.filterAdminOrderBySource = (source, btnElem) => {
+    window.adminCurrentSourceFilter = source;
+    const buttons = document.querySelectorAll('.order-src-filter-btn');
+    buttons.forEach(btn => {
+        btn.classList.remove('active');
+        btn.style.background = 'transparent';
+        btn.style.color = btn.getAttribute('data-src') === 'google' ? '#059669' : (btn.getAttribute('data-src') === 'sosmed' ? '#db2777' : (btn.getAttribute('data-src') === 'direct' ? '#64748b' : 'var(--primary-blue)'));
+    });
+    btnElem.classList.add('active');
+    btnElem.style.background = btnElem.style.borderColor;
+    btnElem.style.color = 'white';
+
+    window.applyCombinedOrderFilters();
 };
 
 // --- AI BUG REPORTS ---

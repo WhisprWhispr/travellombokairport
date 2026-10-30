@@ -205,6 +205,13 @@
               <button type="button" class="btn order-filter-btn" data-filter="COMPLETED" onclick="filterAdminOrders('COMPLETED', this)" style="border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; border: 1px solid #475569; color: #475569; background: transparent; transition: all 0.2s;">TUTUP</button>
               <button type="button" class="btn order-filter-btn" data-filter="KADALUARSA" onclick="filterAdminOrders('KADALUARSA', this)" style="border-radius: 20px; padding: 6px 15px; font-size: 0.85rem; border: 1px solid #ef4444; color: #ef4444; background: transparent; transition: all 0.2s;">KADALUARSA</button>
           </div>
+          <div style="display: flex; gap: 8px; margin-top: 10px; margin-bottom: 5px; flex-wrap: wrap; align-items: center;" id="order-source-filters-container">
+              <span style="font-size: 0.8rem; font-weight: 600; color: #64748b; margin-right: 4px;"><i class="fa-solid fa-filter"></i> Asal Sumber:</span>
+              <button type="button" class="btn order-src-filter-btn active" data-src="all" onclick="filterAdminOrderBySource('all', this)" style="border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; border: 1px solid var(--primary-blue); background: var(--primary-blue); color: white; transition: all 0.2s;">Semua Sumber</button>
+              <button type="button" class="btn order-src-filter-btn" data-src="google" onclick="filterAdminOrderBySource('google', this)" style="border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; border: 1px solid #059669; color: #059669; background: transparent; transition: all 0.2s;"><i class="fa-brands fa-google"></i> Google Search</button>
+              <button type="button" class="btn order-src-filter-btn" data-src="sosmed" onclick="filterAdminOrderBySource('sosmed', this)" style="border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; border: 1px solid #db2777; color: #db2777; background: transparent; transition: all 0.2s;"><i class="fa-brands fa-instagram"></i> Sosmed (IG/TikTok)</button>
+              <button type="button" class="btn order-src-filter-btn" data-src="direct" onclick="filterAdminOrderBySource('direct', this)" style="border-radius: 20px; padding: 4px 12px; font-size: 0.8rem; border: 1px solid #64748b; color: #64748b; background: transparent; transition: all 0.2s;"><i class="fa-solid fa-compass"></i> Direct / Langsung</button>
+          </div>
           <div class="table-responsive mt-4">
             <table class="admin-table">
               <thead>

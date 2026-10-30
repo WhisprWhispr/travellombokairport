@@ -5,7 +5,7 @@
   <!-- Halaman Beranda (Landing Page Utama) -->
   <url>
     <loc>https://travellombokairport.com/</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
     <image:image>
@@ -18,13 +18,13 @@
   <!-- Halaman Blog & Artikel Wisata -->
   <url>
     <loc>https://travellombokairport.com/blog.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/blog</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.9</priority>
   </url>
@@ -32,13 +32,13 @@
   <!-- Galeri Foto & Dokumentasi Liburan -->
   <url>
     <loc>https://travellombokairport.com/galeri.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/galeri</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.85</priority>
   </url>
@@ -46,13 +46,13 @@
   <!-- Jasa Dokumentasi Drone -->
   <url>
     <loc>https://travellombokairport.com/drone.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/drone</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
@@ -60,13 +60,13 @@
   <!-- Tentang Kami -->
   <url>
     <loc>https://travellombokairport.com/tentang-kami.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/tentang-kami</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -74,13 +74,13 @@
   <!-- Kontak & Layanan Pelanggan 24 Jam -->
   <url>
     <loc>https://travellombokairport.com/kontak.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/kontak</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.75</priority>
   </url>
@@ -88,13 +88,13 @@
   <!-- Jadwal Sholat Lombok & Sekitarnya -->
   <url>
     <loc>https://travellombokairport.com/jadwal-sholat.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/jadwal-sholat</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.7</priority>
   </url>
@@ -102,13 +102,13 @@
   <!-- Syarat & Ketentuan Sewa / Tour -->
   <url>
     <loc>https://travellombokairport.com/syarat.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/syarat</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
@@ -116,35 +116,14 @@
   <!-- Kebijakan Privasi -->
   <url>
     <loc>https://travellombokairport.com/kebijakan.html</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
     <loc>https://travellombokairport.com/kebijakan</loc>
-    <lastmod>2026-10-28</lastmod>
+    <lastmod>2026-10-30</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
-  </url>
-  <!-- Artikel: 10 Destinasi Wisata Lombok Terbaik 2026: Pantai Eksotis, Alam Memukau, dan Tips Liburan -->
-  <url>
-    <loc>https://travellombokairport.com/article.html?id=8zRAxpGbciofLntXjD9H</loc>
-    <lastmod>2026-10-07</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Artikel: 🏍️ MotoGP Mandalika 2026 Segera Hadir! Saatnya Rasakan Sensasi Race in Paradise di Lombok -->
-  <url>
-    <loc>https://travellombokairport.com/article.html?id=PBMYOrZLHmJSNuFIvABK</loc>
-    <lastmod>2026-10-04</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <!-- Artikel: Paket Honeymoon Lombok: Momen Romantis Tak Terlupakan Bersama Pasangan -->
-  <url>
-    <loc>https://travellombokairport.com/article.html?id=3Ar94HVMMx24eI3fQVkH</loc>
-    <lastmod>2026-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>

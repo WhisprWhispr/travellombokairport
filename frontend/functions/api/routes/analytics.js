@@ -27,7 +27,7 @@ const verifyToken = async (c, next) => {
 analyticsRoutes.post('/track', async (c) => {
     try {
         const db = getDb(c);
-        const { path, userAgent, ipHash, screenWidth } = await c.req.json();
+        const { path, userAgent, ipHash, screenWidth, referrer, trafficSource, sourceType } = await c.req.json();
         
         // Simpan ke koleksi visitor_logs
         await db.collection('visitor_logs').add({
@@ -35,6 +35,9 @@ analyticsRoutes.post('/track', async (c) => {
             userAgent: userAgent || 'Unknown',
             ipHash: ipHash || 'Unknown',
             screenWidth: screenWidth || 0,
+            referrer: referrer || '',
+            trafficSource: trafficSource || 'Direct / Langsung',
+            sourceType: sourceType || 'direct',
             timestamp: admin.firestore.FieldValue.serverTimestamp()
         });
         
