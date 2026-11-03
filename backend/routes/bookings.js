@@ -145,15 +145,18 @@ router.get('/check/:transactionId', async (req, res) => {
             const collections = ['bookings', 'orders'];
             for (const col of collections) {
                 try {
-                    const recentSnap = await db.collection(col).orderBy('createdAt', 'desc').limit(250).get();
-                    const matchedDoc = recentSnap.docs.find(d => {
-                        const tid = (d.data().transactionId || d.id || '').toUpperCase();
-                        return tid === txUpper;
-                    });
-                    if (matchedDoc) {
-                        snapshot = { empty: false, docs: [matchedDoc] };
-                        collectionName = col;
-                        break;
+                    const allSnap = await db.collection(col).get();
+                    if (allSnap && allSnap.docs && allSnap.docs.length > 0) {
+                        const matchedDoc = allSnap.docs.find(d => {
+                            const dData = typeof d.data === 'function' ? d.data() : d;
+                            const tid = (dData.transactionId || d.id || '').trim().toUpperCase();
+                            return tid === txUpper;
+                        });
+                        if (matchedDoc) {
+                            snapshot = { empty: false, docs: [matchedDoc] };
+                            collectionName = col;
+                            break;
+                        }
                     }
                 } catch (e) {
                     console.warn(`Backend check case-insensitive error on ${col}:`, e);

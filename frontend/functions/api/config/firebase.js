@@ -103,6 +103,7 @@ class FirestoreCollection {
         this.colName = colName;
         this.filters = [];
         this.orders = [];
+        this.limitVal = null;
     }
 
     where(field, op, val) {
@@ -132,8 +133,13 @@ class FirestoreCollection {
         return this;
     }
 
+    limit(num) {
+        this.limitVal = num;
+        return this;
+    }
+
     async get() {
-        if (this.filters.length > 0 || this.orders.length > 0) {
+        if (this.filters.length > 0 || this.orders.length > 0 || this.limitVal !== null) {
             const query = {
                 from: [{ collectionId: this.colName }]
             };
@@ -151,6 +157,9 @@ class FirestoreCollection {
             }
             if (this.orders.length > 0) {
                 query.orderBy = this.orders;
+            }
+            if (this.limitVal !== null) {
+                query.limit = this.limitVal;
             }
 
             const results = await this.client.runQuery(query);

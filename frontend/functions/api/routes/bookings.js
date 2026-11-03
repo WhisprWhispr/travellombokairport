@@ -503,15 +503,18 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             const collections = ['bookings', 'orders', 'orderan'];
             for (const col of collections) {
                 try {
-                    const recentSnap = await db.collection(col).orderBy('createdAt', 'desc').limit(250).get();
-                    const matchedDoc = recentSnap.docs.find(d => {
-                        const tid = (d.data().transactionId || d.id || '').toUpperCase();
-                        return tid === txUpper;
-                    });
-                    if (matchedDoc) {
-                        snap = { empty: false, docs: [matchedDoc] };
-                        collectionType = col;
-                        break;
+                    const allDocsSnap = await db.collection(col).get();
+                    if (allDocsSnap && allDocsSnap.docs && allDocsSnap.docs.length > 0) {
+                        const matchedDoc = allDocsSnap.docs.find(d => {
+                            const dData = typeof d.data === 'function' ? d.data() : d;
+                            const tid = (dData.transactionId || d.id || '').trim().toUpperCase();
+                            return tid === txUpper;
+                        });
+                        if (matchedDoc) {
+                            snap = { empty: false, docs: [matchedDoc] };
+                            collectionType = col;
+                            break;
+                        }
                     }
                 } catch (e) {
                     console.warn(`Case-insensitive search error on ${col}:`, e);
