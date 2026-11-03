@@ -28,13 +28,12 @@ window.forcePaymentSuccess = async (txId, btnElement) => {
 };
 
 window.generateTicketId = (prefix) => {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
-    const nums = '0123456789';
+    // Gunakan huruf kapital dan angka saja agar mudah diketik & tidak ambigu
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
     let res = prefix;
-    for (let i = 0; i < 5; i++) {
+    for (let i = 0; i < 6; i++) {
         res += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-    res += nums.charAt(Math.floor(Math.random() * nums.length));
     return res;
 };
 

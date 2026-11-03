@@ -473,20 +473,21 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
     try {
         const db = getDb(c);
         const transactionId = c.req.param('transactionId').trim();
+        const txUpper = transactionId.toUpperCase();
 
         // Deteksi tipe berdasarkan prefix ID
-        const isBKG = transactionId.startsWith('BKG-');
-        const isORD = transactionId.startsWith('ORD-');
+        const isBKG = txUpper.startsWith('BKG-');
+        const isORD = txUpper.startsWith('ORD-');
 
         if (!isBKG && !isORD) {
             return c.json({ message: 'Format ID tidak valid. Gunakan BKG-... untuk Booking atau ORD-... untuk Order.' }, 400);
         }
 
-        // Cari di collection 'bookings' terlebih dahulu (karena frontend POST /bookings untuk ORD- dan BKG-)
+        // 1. Cari exact match terlebih dahulu
         let snap = await db.collection('bookings').where('transactionId', '==', transactionId).get();
         let collectionType = 'bookings';
         
-        // Jika tidak ditemukan di 'bookings', coba cari di 'orders' atau 'orderan'
+        // 2. Jika tidak ditemukan di 'bookings', coba cari di 'orders' atau 'orderan'
         if (snap.empty) {
             snap = await db.collection('orders').where('transactionId', '==', transactionId).get();
             collectionType = 'orders';
@@ -494,6 +495,27 @@ bookingsRoutes.get('/check/:transactionId', async (c) => {
             if (snap.empty) {
                 snap = await db.collection('orderan').where('transactionId', '==', transactionId).get();
                 collectionType = 'orderan';
+            }
+        }
+
+        // 3. Fallback: Pencarian case-insensitive (misal user mengetik huruf kapital semua)
+        if (snap.empty) {
+            const collections = ['bookings', 'orders', 'orderan'];
+            for (const col of collections) {
+                try {
+                    const recentSnap = await db.collection(col).orderBy('createdAt', 'desc').limit(250).get();
+                    const matchedDoc = recentSnap.docs.find(d => {
+                        const tid = (d.data().transactionId || d.id || '').toUpperCase();
+                        return tid === txUpper;
+                    });
+                    if (matchedDoc) {
+                        snap = { empty: false, docs: [matchedDoc] };
+                        collectionType = col;
+                        break;
+                    }
+                } catch (e) {
+                    console.warn(`Case-insensitive search error on ${col}:`, e);
+                }
             }
         }
 

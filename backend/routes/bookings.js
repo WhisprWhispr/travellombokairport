@@ -127,11 +127,40 @@ router.delete('/:id', verifyToken, async (req, res) => {
 router.get('/check/:transactionId', async (req, res) => {
     try {
         const { transactionId } = req.params;
-        const isORD = transactionId.toUpperCase().startsWith('ORD-');
-        const collectionName = isORD ? 'orders' : 'bookings';
+        const txClean = (transactionId || '').trim();
+        const txUpper = txClean.toUpperCase();
+        const isORD = txUpper.startsWith('ORD-');
         
-        const snapshot = await db.collection(collectionName).where('transactionId', '==', transactionId.toUpperCase()).get();
-        
+        // 1. Cari exact di bookings dahulu, kemudian orders
+        let snapshot = await db.collection('bookings').where('transactionId', '==', txClean).get();
+        let collectionName = 'bookings';
+
+        if (snapshot.empty) {
+            snapshot = await db.collection('orders').where('transactionId', '==', txClean).get();
+            collectionName = 'orders';
+        }
+
+        // 2. Fallback: Case-insensitive search (agar ketik huruf kapital semua tetap ketemu)
+        if (snapshot.empty) {
+            const collections = ['bookings', 'orders'];
+            for (const col of collections) {
+                try {
+                    const recentSnap = await db.collection(col).orderBy('createdAt', 'desc').limit(250).get();
+                    const matchedDoc = recentSnap.docs.find(d => {
+                        const tid = (d.data().transactionId || d.id || '').toUpperCase();
+                        return tid === txUpper;
+                    });
+                    if (matchedDoc) {
+                        snapshot = { empty: false, docs: [matchedDoc] };
+                        collectionName = col;
+                        break;
+                    }
+                } catch (e) {
+                    console.warn(`Backend check case-insensitive error on ${col}:`, e);
+                }
+            }
+        }
+
         if (snapshot.empty) {
             return res.status(404).json({ message: 'Transaksi tidak ditemukan. Pastikan ID yang Anda masukkan benar.' });
         }
