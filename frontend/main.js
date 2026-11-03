@@ -3901,8 +3901,8 @@ window.updateSubLayanan = () => {
 
     if (layanan === "Sewa Mobil") {
         options = globalItems.filter(item => {
-            const cat = item.category.toLowerCase();
-            return cat.includes("rental") || cat.includes("armada") || cat.includes("sewa") || cat === "car";
+            const cat = (item.category || '').toLowerCase();
+            return (cat.includes("rental") || cat.includes("armada") || cat.includes("sewa") || cat === "car" || cat === "mobil") && !cat.includes("motor");
         });
 
         // Fallback mock data jika tidak ada data dari backend
@@ -3911,6 +3911,22 @@ window.updateSubLayanan = () => {
                 { title: "Toyota Avanza" },
                 { title: "Toyota Innova Reborn" },
                 { title: "Toyota Hiace Commuter" }
+            ];
+        }
+    } else if (layanan === "Sewa Motor") {
+        options = globalItems.filter(item => {
+            const cat = (item.category || '').toLowerCase();
+            const t = (item.title || '').toLowerCase();
+            return cat.includes("motor") || cat === "motorcycle" || t.includes("beat") || t.includes("vario") || t.includes("nmax") || t.includes("pcx") || t.includes("adv") || t.includes("scoopy") || t.includes("aerox");
+        });
+
+        if (options.length === 0) {
+            options = [
+                { title: "Honda Beat Streat" },
+                { title: "Honda Vario 125cc" },
+                { title: "Yamaha NMAX" },
+                { title: "Honda PCX" },
+                { title: "Honda ADV" }
             ];
         }
     } else if (layanan === "Paket Tour") {
@@ -4058,7 +4074,7 @@ window.submitBooking = (method) => {
 
     let estimatedPrice = 0;
     if (subLayanan && subLayanan !== "-") {
-        if (layanan === "Sewa Mobil" || layanan === "Paket Tour") {
+        if (layanan === "Sewa Mobil" || layanan === "Sewa Motor" || layanan === "Paket Tour") {
             const matched = window.globalItems ? window.globalItems.find(i => i.title === subLayanan) : null;
             if (matched && matched.price) {
                 estimatedPrice = matched.price;
@@ -4212,19 +4228,33 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     const matchDays = itemName.match(/(\d+)\s*H/i);
     const durationDays = matchDays ? parseInt(matchDays[1]) : 0;
 
+    // Robust category detection
     let category = "other";
-    if (matchedItem && matchedItem.category) {
-        if (matchedItem.category === 'car') category = 'mobil';
-        else if (matchedItem.category === 'motorcycle') category = 'motor';
-        else if (matchedItem.category === 'package') category = 'tour';
-        else if (matchedItem.category === 'airport') category = 'airport';
+    const itemCat = (matchedItem?.category || '').toLowerCase();
+    if (itemCat === 'car' || itemCat === 'mobil' || itemCat.includes('rental') || itemCat.includes('armada')) {
+        category = 'mobil';
+    } else if (itemCat === 'motorcycle' || itemCat === 'motor' || itemCat.includes('motor')) {
+        category = 'motor';
+    } else if (itemCat === 'package' || itemCat === 'tour' || itemCat.includes('tour') || itemCat.includes('honeymoon') || itemCat.includes('hanimun')) {
+        category = 'tour';
+    } else if (itemCat === 'airport' || itemCat === 'transfer' || itemCat.includes('transfer')) {
+        category = 'airport';
     }
+
     const nameLower = itemName.toLowerCase();
     if (category === "other") {
-        if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
-        else if (nameLower.includes("motor")) category = "motor";
-        else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner")) category = "mobil";
-        else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+        if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) {
+            category = "airport";
+        } else if (nameLower.includes("motor") || nameLower.includes("beat") || nameLower.includes("vario") || nameLower.includes("scoopy") || nameLower.includes("nmax") || nameLower.includes("pcx") || nameLower.includes("adv") || nameLower.includes("aerox") || nameLower.includes("fazzio") || nameLower.includes("genio") || nameLower.includes("vespa") || nameLower.includes("klx")) {
+            category = "motor";
+        } else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner") || nameLower.includes("agya") || nameLower.includes("ayla") || nameLower.includes("sigra") || nameLower.includes("calya")) {
+            category = "mobil";
+        } else if (nameLower.includes("paket") || nameLower.includes("tour") || nameLower.includes("hanimun") || nameLower.includes("honeymoon")) {
+            category = "tour";
+        } else {
+            // Default rental fallback: always treat as mobil/motor rental so location fields ALWAYS appear!
+            category = "mobil";
+        }
     }
 
     const is12HourDriver = (category === 'mobil' && (nameLower.includes("12 jam") || nameLower.includes("include driver")));
@@ -4347,18 +4377,24 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <strong><i class="fa-solid fa-triangle-exclamation"></i> Maaf, rentang tanggal yang Anda pilih bentrok dengan jadwal yang sudah dipesan! Silakan pilih tanggal lain.</strong>
             </div>`;
 
-    if (category === 'motor' || category === 'mobil') {
+    if (category === 'motor' || category === 'mobil' || category === 'other') {
         html += `
-            <div style="background: #f1f5f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
-                <h4 style="font-size: 0.95rem; margin-bottom: 10px; color: #334155;"><i class="fa-solid fa-location-dot"></i> ${is12HourDriver ? 'Detail Lokasi Penjemputan' : 'Detail Lokasi & Waktu'}</h4>
+            <div style="background: #f8fafc; padding: 16px; border-radius: 12px; margin-bottom: 16px; border: 1.5px solid #e2e8f0;">
+                <h4 style="font-size: 0.95rem; margin-bottom: 12px; color: #1e293b; display: flex; align-items: center; gap: 8px; font-weight: 700;">
+                    <i class="fa-solid fa-location-dot" style="color: var(--primary-blue);"></i>
+                    <span>${is12HourDriver ? 'Detail Lokasi Penjemputan & Pengantaran' : 'Detail Lokasi Penjemputan & Pengembalian'}</span>
+                </h4>
                 <div class="form-group mb-3">
                     <div style="display: flex; gap: 8px;">
                         <div style="flex: 1;">
-                            <label>${is12HourDriver ? 'Lokasi Penjemputan (Hotel / Bandara / Alamat)' : 'Tempat Pengambilan (GPS/Alamat)'}</label>
-                            <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="width: 100%;">
+                            <label style="font-weight: 700; color: #334155; font-size: 0.88rem; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-map-pin" style="color: #0284c7;"></i>
+                                ${is12HourDriver ? 'Lokasi Penjemputan (Hotel / Bandara / Alamat)' : 'Lokasi Penjemputan / Pengambilan (Hotel / Bandara / Alamat)'}
+                            </label>
+                            <input type="text" id="co-pickup-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel di Senggigi / Mataram / Kuta" style="width: 100%;">
                         </div>
                         <div>
-                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center; margin-bottom: 6px;">GPS Saya</label>
                             <button type="button" onclick="window.getCurrentLocation('co-pickup-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
                         </div>
                     </div>
@@ -4366,27 +4402,30 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
                 <div class="form-group mb-3">
                     <div style="display: flex; gap: 8px;">
                         <div style="flex: 1;">
-                            <label>${is12HourDriver ? 'Lokasi Pengantaran / Selesai Tour (Hotel / Bandara / Alamat)' : 'Tempat Pengembalian (GPS/Alamat)'}</label>
-                            <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel X" style="width: 100%;">
+                            <label style="font-weight: 700; color: #334155; font-size: 0.88rem; display: flex; align-items: center; gap: 6px; margin-bottom: 6px;">
+                                <i class="fa-solid fa-flag-checkered" style="color: #ef4444;"></i>
+                                ${is12HourDriver ? 'Lokasi Pengantaran / Selesai (Hotel / Bandara / Alamat)' : 'Lokasi Pengantaran / Pengembalian (Hotel / Bandara / Alamat)'}
+                            </label>
+                            <input type="text" id="co-dropoff-loc" class="form-control" required placeholder="Contoh: Bandara LOP / Hotel di Senggigi / Mataram / Kuta" style="width: 100%;">
                         </div>
                         <div>
-                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center;">Lokasi Anda</label>
+                            <label style="font-size: 0.75rem; color: #64748b; display: block; text-align: center; margin-bottom: 6px;">GPS Saya</label>
                             <button type="button" onclick="window.getCurrentLocation('co-dropoff-loc', event)" class="btn" style="background: #e2e8f0; color: #334155; border: 1px solid #cbd5e1; border-radius: 8px; padding: 0 15px; height: 38px; display: flex; align-items: center; justify-content: center;" title="Gunakan Lokasi Terkini"><i class="fa-solid fa-location-crosshairs"></i></button>
                         </div>
                     </div>
                 </div>
                 <div style="display: ${is12HourDriver ? 'none' : 'flex'}; gap: 15px;">
                     <div class="form-group mb-0" style="flex: 1;">
-                        <label>Jam Pengambilan</label>
+                        <label style="font-weight: 600; color: #334155; font-size: 0.85rem; margin-bottom: 6px;"><i class="fa-regular fa-clock" style="color: #0284c7;"></i> Jam Pengambilan / Mulai</label>
                         <input type="time" id="co-pickup-time" class="form-control" ${is12HourDriver ? '' : 'required'} value="${is12HourDriver ? '08:00' : ''}">
                     </div>
                     <div class="form-group mb-0" style="flex: 1;">
-                        <label>Jam Pengembalian</label>
+                        <label style="font-weight: 600; color: #334155; font-size: 0.85rem; margin-bottom: 6px;"><i class="fa-regular fa-clock" style="color: #ef4444;"></i> Jam Pengembalian / Selesai</label>
                         <input type="time" id="co-dropoff-time" class="form-control" ${is12HourDriver ? '' : 'required'} value="${is12HourDriver ? '20:00' : ''}">
                     </div>
                 </div>
                 ${is12HourDriver ? `
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 9px 12px; font-size: 0.8rem; color: #166534; display: flex; align-items: center; gap: 8px;">
+                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 9px 12px; font-size: 0.8rem; color: #166534; display: flex; align-items: center; gap: 8px; margin-top: 10px;">
                     <i class="fa-solid fa-circle-check" style="color: #16a34a; font-size: 0.95rem;"></i>
                     <span>Paket Include Driver berlaku <strong>12 Jam pemakaian</strong> per hari (Sudah termasuk Unit Mobil, Supir & BBM). Jam penjemputan fleksibel disesuaikan dengan driver saat di lokasi.</span>
                 </div>
@@ -4976,19 +5015,37 @@ window.processCheckout = async (itemName, price, method = 'web') => {
     const modalBody = document.getElementById("checkout-modal-body");
 
     let category = "other";
-    const matchedItemForCat = window.globalItems ? window.globalItems.find(i => i.title === itemName) : null;
-    if (matchedItemForCat && matchedItemForCat.category) {
-        if (matchedItemForCat.category === 'car') category = 'mobil';
-        else if (matchedItemForCat.category === 'motorcycle') category = 'motor';
-        else if (matchedItemForCat.category === 'package') category = 'tour';
-        else if (matchedItemForCat.category === 'airport') category = 'airport';
+    const matchedItemForCat = window.globalItems ? window.globalItems.find(i => {
+        if (!i || !i.title) return false;
+        const it = i.title.toLowerCase().trim();
+        const nt = itemName.toLowerCase().trim();
+        return it === nt || nt.includes(it) || it.includes(nt);
+    }) : null;
+
+    const procCat = (matchedItemForCat?.category || '').toLowerCase();
+    if (procCat === 'car' || procCat === 'mobil' || procCat.includes('rental') || procCat.includes('armada')) {
+        category = 'mobil';
+    } else if (procCat === 'motorcycle' || procCat === 'motor' || procCat.includes('motor')) {
+        category = 'motor';
+    } else if (procCat === 'package' || procCat === 'tour' || procCat.includes('tour') || procCat.includes('honeymoon') || procCat.includes('hanimun')) {
+        category = 'tour';
+    } else if (procCat === 'airport' || procCat === 'transfer' || procCat.includes('transfer')) {
+        category = 'airport';
     }
+
     const nameLower = itemName.toLowerCase();
     if (category === "other") {
-        if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) category = "airport";
-        else if (nameLower.includes("motor")) category = "motor";
-        else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner")) category = "mobil";
-        else if (nameLower.includes("paket") || nameLower.includes("tour")) category = "tour";
+        if (nameLower.includes("airport") || nameLower.includes("jemput") || nameLower.includes("antar") || nameLower.includes("transfer")) {
+            category = "airport";
+        } else if (nameLower.includes("motor") || nameLower.includes("beat") || nameLower.includes("vario") || nameLower.includes("scoopy") || nameLower.includes("nmax") || nameLower.includes("pcx") || nameLower.includes("adv") || nameLower.includes("aerox") || nameLower.includes("fazzio") || nameLower.includes("genio") || nameLower.includes("vespa") || nameLower.includes("klx")) {
+            category = "motor";
+        } else if (nameLower.includes("mobil") || nameLower.includes("avanza") || nameLower.includes("innova") || nameLower.includes("hiace") || nameLower.includes("brio") || nameLower.includes("xpander") || nameLower.includes("alphard") || nameLower.includes("fortuner") || nameLower.includes("agya") || nameLower.includes("ayla") || nameLower.includes("sigra") || nameLower.includes("calya")) {
+            category = "mobil";
+        } else if (nameLower.includes("paket") || nameLower.includes("tour") || nameLower.includes("hanimun") || nameLower.includes("honeymoon")) {
+            category = "tour";
+        } else {
+            category = "mobil";
+        }
     }
 
     const pickupLoc = document.getElementById("co-pickup-loc")?.value || "";
@@ -5077,14 +5134,14 @@ window.processCheckout = async (itemName, price, method = 'web') => {
         let introText = isManual ? "Saya telah melakukan Booking via Website dengan rincian:" : "Saya ingin melakukan pesanan (Booking) dengan rincian sebagai berikut:";
 
         if (category === 'motor') {
-            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 50.000) dan Deposit (Rp 500.000) diterima.\n💳 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
+            waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOTOR\n📍 Lokasi Penjemputan / Pengambilan: ${pickupLoc || '-'}\n📍 Lokasi Pengantaran / Pengembalian: ${dropoffLoc || '-'}\n⏰ Jam Pengambilan: ${pickupTime || '-'}\n⏰ Jam Pengembalian: ${dropoffTime || '-'}\nNama: ${name}\nLayanan: ${itemName}\nTgl Mulai: ${startDate}\nTgl Selesai: ${endDate}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 50.000) dan Deposit (Rp 500.000) diterima.\n💳 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
         } else if (category === 'mobil') {
             const is12HourDriverWA = nameLower.includes("12 jam") || nameLower.includes("include driver");
             if (is12HourDriverWA) {
                 const durStr = diffDays === 1 ? '12 Jam' : `${diffDays}x 12 Jam (${diffDays} Hari)`;
                 waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL (INCLUDE DRIVER 12 JAM)\nTanggal Pemakaian: ${startDate}${startDate !== endDate ? ` s/d ${endDate}` : ''}\nDurasi: ${durStr}\nLokasi Penjemputan: ${pickupLoc}\nLokasi Pengantaran: ${dropoffLoc}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) diterima (Bebas Deposit Jaminan Rp 0).\n👇 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
             } else {
-                waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\nTempat Pengambilan (lokasi gps/alamat): ${pickupLoc}\nTempat Pengembalian (lokasi gps/alamat): ${dropoffLoc}\nJam Pengambilan: ${pickupTime}\nJam Pengembalian: ${dropoffTime}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) dan Deposit (Rp 1.000.000) diterima.\n👇 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
+                waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING SEWA MOBIL (LEPAS KUNCI)\nTanggal Pengambilan: ${startDate}\nTanggal Pengembalian: ${endDate}\n📍 Lokasi Penjemputan / Pengambilan: ${pickupLoc || '-'}\n📍 Lokasi Pengantaran / Pengembalian: ${dropoffLoc || '-'}\n⏰ Jam Pengambilan: ${pickupTime || '-'}\n⏰ Jam Pengembalian: ${dropoffTime || '-'}\nNama: ${name}\nLayanan: ${itemName}\nNo HP/WA: ${phone}\nEmail: ${customerEmail || '-'}\n\nCatatan: Booking dinyatakan terkonfirmasi setelah pembayaran booking fee (DP Rp 200.000) dan Deposit (Rp 1.000.000) diterima.\n👇 Pembayaran dilakukan melalui tautan Midtrans (QRIS/Virtual Account) yang tersedia di halaman riwayat pesanan Anda.`;
             }
         } else if (category === 'airport') {
             waText = `Halo Admin Travel Lombok Airport,\n\n${introText}\n\nFORM BOOKING AIRPORT TRANSFER\nNama: ${name}\nNomor WA: ${phone}\nEmail: ${customerEmail || '-'}\nLokasi penjemputan (gps lokasi/alamat): ${pickupLoc}\nAlamat Tujuan (gps lokasi/alamat): ${dropoffLoc}\nNomor penerbangan: ${flightNum}\nTanggal: ${startDate}\nJam penjemputan: ${pickupTime}\nJumlah penumpang: ${pax}\nCatatan: ${notes}\n\n${paymentInfo}`;
