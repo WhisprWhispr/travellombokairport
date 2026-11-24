@@ -139,40 +139,37 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     let priceNotice = '';
                     if (priceInc > 0) {
                         priceNotice = `
-                            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:1px solid rgba(255,255,255,0.3);">
-                                <i class="fa-solid fa-arrow-trend-up"></i> Penyesuaian Tarif: +Rp ${priceInc.toLocaleString('id-ID')}
+                            <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #fde68a;">
+                                <i class="fa-solid fa-arrow-trend-up" style="color:#d97706;"></i> Penyesuaian Tarif: +Rp ${priceInc.toLocaleString('id-ID')}
                             </span>
-                            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:1px solid rgba(255,255,255,0.3);">
-                                <i class="fa-solid fa-calendar-days"></i> Min. Sewa: ${minDays} Hari
+                            <span style="display:inline-flex;align-items:center;gap:6px;background:#fef3c7;color:#92400e;padding:4px 10px;border-radius:20px;font-size:0.75rem;font-weight:700;border:1px solid #fde68a;">
+                                <i class="fa-solid fa-calendar-days" style="color:#d97706;"></i> Min. Sewa: ${minDays} Hari
                             </span>
                         `;
                     }
 
                     if (bannerImg) {
                         bannerContainer.innerHTML = `
-                            <div class="high-season-hero-banner" style="position:relative;border-radius:18px;overflow:hidden;box-shadow:0 12px 30px -8px rgba(245,158,11,0.35);border:2px solid #f59e0b;background:#0f172a;" data-aos="fade-up">
-                                <div style="position:relative;width:100%;min-height:220px;max-height:360px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
-                                    <img src="${bannerImg}" alt="${evtTitle}" style="width:100%;height:100%;min-height:220px;max-height:360px;object-fit:cover;display:block;">
-                                    <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.45) 50%, rgba(0,0,0,0.1) 100%);"></div>
-                                    <div style="position:absolute;bottom:0;left:0;right:0;padding:22px 26px;color:#fff;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;">
-                                        <div style="max-width:700px;">
-                                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
-                                                <span style="background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;font-weight:800;font-size:0.75rem;padding:4px 12px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;box-shadow:0 2px 8px rgba(239,68,68,0.4);">
-                                                    <i class="fa-solid fa-fire"></i> HIGH SEASON SPESIAL
-                                                </span>
-                                                ${priceNotice}
-                                            </div>
-                                            <h2 style="font-size:1.55rem;font-weight:900;margin:0 0 6px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.4);line-height:1.25;">
-                                                ${evtTitle}
-                                            </h2>
-                                            <p style="margin:0;font-size:0.92rem;color:rgba(255,255,255,0.92);line-height:1.45;text-shadow:0 1px 2px rgba(0,0,0,0.5);">
-                                                ${evtDesc}
-                                            </p>
+                            <div class="high-season-hero-banner" style="border-radius: 18px; overflow: hidden; box-shadow: 0 10px 30px -5px rgba(245,158,11,0.25); border: 2px solid #f59e0b; background: white;" data-aos="fade-up">
+                                <!-- Flyer Gambar Penuh (100% natural, tidak terpotong) -->
+                                <a href="#booking" style="display: block; cursor: pointer; text-decoration: none; background: #fff; text-align: center;">
+                                    <img src="${bannerImg}" alt="${evtTitle}" style="width: 100%; height: auto; max-height: 480px; object-fit: contain; display: block; margin: 0 auto;">
+                                </a>
+                                <!-- Strip Informasi & Tombol Booking -->
+                                <div style="padding: 14px 22px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border-top: 1px solid #fde68a; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px;">
+                                    <div style="flex: 1; min-width: 260px;">
+                                        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px; flex-wrap: wrap;">
+                                            <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: white; font-weight: 800; font-size: 0.72rem; padding: 3px 10px; border-radius: 20px; text-transform: uppercase;">
+                                                <i class="fa-solid fa-fire"></i> HIGH SEASON
+                                            </span>
+                                            <strong style="color: #92400e; font-size: 0.95rem;">${evtTitle}</strong>
+                                            ${priceNotice}
                                         </div>
-                                        <a href="#booking" class="btn" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-weight:800;padding:12px 24px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(245,158,11,0.5);transition:transform .2s;white-space:nowrap;">
-                                            <i class="fa-solid fa-calendar-check"></i> ${btnText}
-                                        </a>
+                                        <p style="margin: 0; font-size: 0.84rem; color: #78350f; line-height: 1.45;">${evtDesc}</p>
                                     </div>
+                                    <a href="#booking" class="btn" style="background: linear-gradient(135deg, #f59e0b, #ea580c); color: white; font-weight: 800; padding: 10px 22px; border-radius: 10px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(245,158,11,0.35); white-space: nowrap; font-size: 0.88rem;">
+                                        <i class="fa-solid fa-calendar-check"></i> ${btnText}
+                                    </a>
                                 </div>
                             </div>
                         `;
@@ -203,19 +200,20 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     }
                 }
 
-                // 2. Bottom Floating Announcement Bar
+                // 2. Bottom Floating Announcement Bar (Sleek Dark Theme)
                 const eventBanner = document.createElement('div');
                 eventBanner.id = 'event-mode-banner';
-                const bannerThumb = data.eventBannerImage ? `<img src="${data.eventBannerImage}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;margin-right:8px;vertical-align:middle;display:inline-block;border:1px solid rgba(255,255,255,0.4);">` : '';
+                const bannerThumb = data.eventBannerImage ? `<img src="${data.eventBannerImage}" style="width:24px;height:24px;border-radius:5px;object-fit:cover;margin-right:8px;vertical-align:middle;display:inline-block;border:1px solid rgba(255,255,255,0.4);">` : '';
                 const priceText = parseInt(data.eventPriceIncrease) > 0 ? `| Kenaikan Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')} (Min. ${parseInt(data.eventMinDays) || 4} Hari)` : '';
                 eventBanner.innerHTML = `
-                    <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
+                    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-top: 2px solid #f59e0b; color: white; text-align: center; padding: 9px 52px 9px 16px; font-size: 0.82rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 990; box-shadow: 0 -4px 15px rgba(0,0,0,0.3); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
                         ${bannerThumb}
-                        <i class="fa-solid fa-fire" style="margin-right: 4px;"></i>
-                        🎉 <strong>${data.eventName || 'HIGH SEASON!'}</strong> ${priceText} &nbsp;|&nbsp;
-                        <a href="#booking" style="color:#fff;text-decoration:underline;font-weight:700;">Booking Sekarang &rarr;</a>
-                        <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman">
-                            <i class="fa-solid fa-chevron-right"></i>
+                        <span style="background: #f59e0b; color: #0f172a; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 800;"><i class="fa-solid fa-fire"></i> HIGH SEASON</span>
+                        <span style="color: #f1f5f9;">${data.eventName || 'Periode High Season'}</span>
+                        ${priceText ? `<span style="color: #cbd5e1; font-size: 0.78rem;">${priceText}</span>` : ''}
+                        <a href="#booking" style="color: #f59e0b; text-decoration: underline; font-weight: 700; margin-left: 6px;">Booking Sekarang &rarr;</a>
+                        <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
+                            <i class="fa-solid fa-xmark"></i>
                         </button>
                     </div>
                 `;
@@ -234,6 +232,38 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     @media (max-width: 480px) {
                         #ai-chat-btn { bottom: 60px !important; }
                     }
+                    .high-season-popup-clean {
+                        max-height: 90vh !important;
+                        overflow-y: auto !important;
+                        border-radius: 18px !important;
+                        box-shadow: 0 20px 45px rgba(0,0,0,0.3) !important;
+                        padding: 20px !important;
+                        box-sizing: border-box !important;
+                    }
+                    .high-season-popup-clean::-webkit-scrollbar {
+                        width: 5px;
+                    }
+                    .high-season-popup-clean::-webkit-scrollbar-thumb {
+                        background: #cbd5e1;
+                        border-radius: 8px;
+                    }
+                    @media (max-width: 600px) {
+                        .high-season-popup-clean {
+                            width: 94% !important;
+                            padding: 15px 12px 18px !important;
+                            margin: 10px auto !important;
+                        }
+                        .high-season-popup-clean h3 {
+                            font-size: 1.05rem !important;
+                        }
+                        #event-mode-banner {
+                            font-size: 0.74rem !important;
+                            padding: 8px 36px 8px 10px !important;
+                        }
+                        #event-mode-banner img {
+                            display: none !important;
+                        }
+                    }
                 `;
                 document.head.appendChild(styleObj);
 
@@ -241,7 +271,7 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     const banner = document.getElementById('event-mode-banner');
                     if (banner) {
                         banner.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
-                        banner.style.transform = 'translateX(100%)';
+                        banner.style.transform = 'translateY(100%)';
                         banner.style.opacity = '0';
                         setTimeout(() => {
                             banner.remove();
@@ -260,11 +290,29 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                         const priceInc = parseInt(data.eventPriceIncrease) || 0;
                         const minDays = parseInt(data.eventMinDays) || 4;
 
+                        let headerHtml = `
+                            <div style="text-align: center; margin-bottom: 12px;">
+                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px;">
+                                    <i class="fa-solid fa-fire"></i> PENGUMUMAN HIGH SEASON
+                                </span>
+                                <h3 style="font-size: 1.18rem; font-weight: 800; color: #1e293b; margin: 8px 0 0; line-height: 1.35;">${evtName}</h3>
+                            </div>
+                        `;
+
                         let imgHtml = '';
                         if (bannerImg) {
                             imgHtml = `
-                                <div style="margin:-1.25em -1.25em 14px -1.25em;overflow:hidden;border-radius:16px 16px 0 0;max-height:220px;background:#000;">
-                                    <img src="${bannerImg}" alt="${evtName}" style="width:100%;height:100%;max-height:220px;object-fit:cover;display:block;">
+                                <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border: 1.5px solid #fed7aa; background: #fff; margin-bottom: 12px;">
+                                    <img src="${bannerImg}" alt="${evtName}" style="width: 100%; height: auto; max-height: 400px; display: block; object-fit: contain; margin: 0 auto;">
+                                </div>
+                            `;
+                        }
+
+                        let descHtml = '';
+                        if (evtDesc) {
+                            descHtml = `
+                                <div style="background: #f8fafc; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 12px 14px; font-size: 0.85rem; color: #334155; line-height: 1.55; text-align: left; max-height: 120px; overflow-y: auto; margin-bottom: 10px; box-sizing: border-box;">
+                                    ${evtDesc}
                                 </div>
                             `;
                         }
@@ -272,45 +320,39 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                         let highlightsHtml = '';
                         if (priceInc > 0) {
                             highlightsHtml = `
-                                <div style="display:flex;align-items:center;gap:12px;background:#fffbeb;padding:12px 14px;border-radius:12px;margin-bottom:10px;border:1px solid #fde68a;">
-                                    <div style="background:#f59e0b;color:white;width:38px;height:38px;border-radius:10px;display:flex;justify-content:center;align-items:center;flex-shrink:0;font-size:1.1rem;">
-                                        <i class="fa-solid fa-car"></i>
+                                <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
+                                    <div style="flex: 1; min-width: 170px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-arrow-trend-up" style="color: #f59e0b; font-size: 1rem;"></i>
+                                        <div>Tarif: <strong>+Rp ${priceInc.toLocaleString('id-ID')}</strong>/unit</div>
                                     </div>
-                                    <div style="font-size:0.85rem;line-height:1.4;">
-                                        <div style="font-weight:800;color:#b45309;">Sewa Mobil & Motor</div>
-                                        <div>Penyesuaian tarif <strong>+Rp ${priceInc.toLocaleString('id-ID')}</strong>/unit. Min. sewa <strong>${minDays} Hari</strong>.</div>
+                                    <div style="flex: 1; min-width: 170px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; color: #92400e; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fa-solid fa-calendar-days" style="color: #f59e0b; font-size: 1rem;"></i>
+                                        <div>Min. Sewa: <strong>${minDays} Hari</strong></div>
                                     </div>
                                 </div>
                             `;
                         }
 
                         Swal.fire({
-                            title: `<span style="color:#b45309;font-size:1.25rem;"><i class="fa-solid fa-fire" style="color:#f59e0b;"></i> ${evtName}</span>`,
-                            html: `
-                                <div style="text-align: left; color: #334155; margin-top: 5px;">
-                                    ${imgHtml}
-                                    <p style="font-size:0.9rem;color:#475569;margin-bottom:14px;line-height:1.5;">${evtDesc}</p>
-                                    ${highlightsHtml}
-                                    <div style="display: flex; align-items: center; gap: 12px; background: #f0f9ff; padding: 12px 14px; border-radius: 12px; border: 1px solid #bae6fd;">
-                                        <div style="background: #0ea5e9; color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.1rem;">
-                                            <i class="fa-solid fa-circle-check"></i>
-                                        </div>
-                                        <div style="font-size:0.85rem;line-height:1.4;">
-                                            <div style="font-weight:800;color:#0369a1;">Pesan Lebih Awal</div>
-                                            <div>Dapatkan kepastian ketersediaan unit terbaik selama masa liburan ini.</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            `,
+                            width: '560px',
+                            padding: '18px 20px 20px',
+                            showCloseButton: true,
                             showConfirmButton: true,
-                            confirmButtonText: '<i class="fa-solid fa-calendar-check"></i> Booking Sekarang',
+                            confirmButtonText: '<i class="fa-solid fa-calendar-check"></i> ' + (data.eventBtnText || 'Booking Sekarang'),
                             showCancelButton: true,
                             cancelButtonText: 'Tutup',
                             confirmButtonColor: '#f59e0b',
                             cancelButtonColor: '#94a3b8',
-                            width: '490px',
-                            customClass: { popup: 'modern-popup-radius' },
-                            backdrop: `rgba(15,23,42,0.8)`
+                            customClass: { popup: 'high-season-popup-clean' },
+                            backdrop: `rgba(15,23,42,0.8)`,
+                            html: `
+                                <div style="text-align: left;">
+                                    ${headerHtml}
+                                    ${imgHtml}
+                                    ${descHtml}
+                                    ${highlightsHtml}
+                                </div>
+                            `
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 const bookingEl = document.getElementById('booking') || document.getElementById('quick-booking-form');
