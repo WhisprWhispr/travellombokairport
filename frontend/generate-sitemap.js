@@ -137,14 +137,28 @@ async function generateSitemap() {
 `;
 
   try {
-    const res = await fetch('https://travellombokairport.com/api/blogs?list=true');
-    if (res.ok) {
-      const blogs = await res.json();
+    let blogs = [];
+    try {
+      const localRes = await fetch('http://127.0.0.1:5000/api/blogs?list=true');
+      if (localRes.ok) {
+        blogs = await localRes.json();
+      }
+    } catch (_) {}
+
+    if (!blogs || blogs.length === 0) {
+      const res = await fetch('https://travellombokairport.com/api/blogs?list=true');
+      if (res.ok) {
+        blogs = await res.json();
+      }
+    }
+
+    if (blogs && blogs.length > 0) {
       blogs.forEach(blog => {
         const date = blog.updatedAt ? new Date(blog.updatedAt).toISOString().split('T')[0] : (blog.createdAt ? new Date(blog.createdAt).toISOString().split('T')[0] : today);
-        const imageTag = blog.imageUrl ? `
+        const imageSrc = blog.coverImage || blog.imageUrl || blog.image;
+        const imageTag = imageSrc ? `
     <image:image>
-      <image:loc>${blog.imageUrl}</image:loc>
+      <image:loc>${imageSrc}</image:loc>
       <image:title>${(blog.title || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')}</image:title>
     </image:image>` : '';
 
@@ -161,7 +175,7 @@ async function generateSitemap() {
       console.warn("API blogs response not OK, skipping dynamic blog URLs.");
     }
   } catch (e) {
-    console.warn("Could not fetch remote blogs during build:", e.message);
+    console.warn("Could not fetch blogs during build:", e.message);
   }
 
   sitemap += `</urlset>\n`;

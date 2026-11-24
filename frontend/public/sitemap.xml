@@ -126,12 +126,27 @@
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
+  <!-- Artikel: Informasi Kenaikan Harga High Season 2026–2027 -->
+  <url>
+    <loc>https://travellombokairport.com/article.html?id=t5OaDKYEAQxTXiQRfFmb</loc>
+    <lastmod>2026-11-24</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/mvhjuh83/image/upload/v1795522318/xqwiojxohvzsgrlvblft.png</image:loc>
+      <image:title>Informasi Kenaikan Harga High Season 2026–2027</image:title>
+    </image:image>
+  </url>
   <!-- Artikel: 10 Destinasi Wisata Lombok Terbaik 2026: Pantai Eksotis, Alam Memukau, dan Tips Liburan -->
   <url>
     <loc>https://travellombokairport.com/article.html?id=8zRAxpGbciofLntXjD9H</loc>
     <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/mvhjuh83/image/upload/v1791363376/kqfkrwajpzqqsmygrgnt.png</image:loc>
+      <image:title>10 Destinasi Wisata Lombok Terbaik 2026: Pantai Eksotis, Alam Memukau, dan Tips Liburan</image:title>
+    </image:image>
   </url>
   <!-- Artikel: 🏍️ MotoGP Mandalika 2026 Segera Hadir! Saatnya Rasakan Sensasi Race in Paradise di Lombok -->
   <url>
@@ -139,6 +154,10 @@
     <lastmod>2026-10-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/mvhjuh83/image/upload/v1789030775/c9ctszoh9rctlzciwvnh.jpg</image:loc>
+      <image:title>🏍️ MotoGP Mandalika 2026 Segera Hadir! Saatnya Rasakan Sensasi Race in Paradise di Lombok</image:title>
+    </image:image>
   </url>
   <!-- Artikel: Paket Honeymoon Lombok: Momen Romantis Tak Terlupakan Bersama Pasangan -->
   <url>
@@ -146,5 +165,9 @@
     <lastmod>2026-10-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
+    <image:image>
+      <image:loc>https://res.cloudinary.com/mvhjuh83/image/upload/v1791695689/v4hyinczdpu4dlho90tl.png</image:loc>
+      <image:title>Paket Honeymoon Lombok: Momen Romantis Tak Terlupakan Bersama Pasangan</image:title>
+    </image:image>
   </url>
 </urlset>
