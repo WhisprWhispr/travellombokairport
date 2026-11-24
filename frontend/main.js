@@ -125,23 +125,45 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
 
             // Inject High Season (Popup Modal & Floating Bar) jika aktif
             if (data.eventMode === true) {
-                // 1. Bottom Floating Announcement Bar (Sleek Dark Theme)
+                // 1. Bottom Floating Announcement Bar (Sleek Dark Theme, Rapih & Responsive)
                 const eventBanner = document.createElement('div');
                 eventBanner.id = 'event-mode-banner';
-                const bannerThumb = data.eventBannerImage ? `<img src="${data.eventBannerImage}" style="width:24px;height:24px;border-radius:5px;object-fit:cover;margin-right:8px;vertical-align:middle;display:inline-block;border:1px solid rgba(255,255,255,0.4);">` : '';
-                const priceText = parseInt(data.eventPriceIncrease) > 0 ? `| Kenaikan Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')} (Min. ${parseInt(data.eventMinDays) || 4} Hari)` : '';
+                const bannerThumb = data.eventBannerImage ? `<img src="${data.eventBannerImage}" style="width:26px;height:26px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,0.4);">` : '';
+                const priceText = parseInt(data.eventPriceIncrease) > 0 ? `| +Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')} (Min. ${parseInt(data.eventMinDays) || 4} Hari)` : '';
+                
                 eventBanner.innerHTML = `
-                    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-top: 2px solid #f59e0b; color: white; text-align: center; padding: 9px 52px 9px 16px; font-size: 0.82rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 990; box-shadow: 0 -4px 15px rgba(0,0,0,0.3); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1); display: flex; align-items: center; justify-content: center; gap: 8px; flex-wrap: wrap;">
-                        ${bannerThumb}
-                        <span style="background: #f59e0b; color: #0f172a; padding: 2px 8px; border-radius: 12px; font-size: 0.72rem; font-weight: 800;"><i class="fa-solid fa-fire"></i> HIGH SEASON</span>
-                        <span style="color: #f1f5f9;">${data.eventName || 'Periode High Season'}</span>
-                        ${priceText ? `<span style="color: #cbd5e1; font-size: 0.78rem;">${priceText}</span>` : ''}
-                        <a href="#booking" style="color: #f59e0b; text-decoration: underline; font-weight: 700; margin-left: 6px;">Booking Sekarang &rarr;</a>
-                        <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman" style="position: absolute; right: 14px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem;">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
+                    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-top: 2px solid #f59e0b; color: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9980; box-shadow: 0 -4px 20px rgba(0,0,0,0.45); font-family: 'Outfit', sans-serif;">
+                        <div style="max-width: 1200px; margin: 0 auto; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+                            <!-- Sisi Kiri: Badge + Judul Rapi (Ellipsis, tidak pecah baris di HP) -->
+                            <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
+                                ${bannerThumb}
+                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: #fff; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.4px; box-shadow: 0 2px 6px rgba(239,68,68,0.35);">
+                                    <i class="fa-solid fa-fire"></i> HIGH SEASON
+                                </span>
+                                <div style="min-width: 0; flex: 1; overflow: hidden;">
+                                    <div style="color: #f8fafc; font-weight: 700; font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                                        ${data.eventName || 'Periode High Season & Liburan'}
+                                    </div>
+                                    ${priceText ? `<div style="color: #cbd5e1; font-size: 0.71rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${priceText}</div>` : ''}
+                                </div>
+                            </div>
+
+                            <!-- Sisi Kanan: Tombol Aksi + Tombol Close (X) -->
+                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                                <a href="#booking" style="background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; text-decoration: none; font-size: 0.76rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 8px rgba(245,158,11,0.3); display: inline-flex; align-items: center; gap: 5px;">
+                                    <span>Booking</span> <i class="fa-solid fa-arrow-right" style="font-size: 0.65rem;"></i>
+                                </a>
+                                <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Tutup Pengumuman" aria-label="Tutup Pengumuman" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; transition: all 0.2s ease;">
+                                    <i class="fa-solid fa-xmark"></i>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 `;
+                
+                // Tambahkan class agar tombol Tanya AIRA terangkat ke atas
+                document.body.classList.add('has-event-banner');
+
                 // Insert at top of body
                 if (document.body.firstChild) {
                     document.body.insertBefore(eventBanner, document.body.firstChild);
@@ -149,41 +171,20 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     document.body.appendChild(eventBanner);
                 }
                 
-                // Fix overlay chat widget
+                // Fix layout & overlay chat widget (angkat Tanya AIRA di atas banner)
                 const styleObj = document.createElement('style');
                 styleObj.id = 'event-chat-fix';
                 styleObj.innerHTML = `
-                    #ai-chat-widget { bottom: 65px !important; }
-                    @media (max-width: 480px) {
-                        #ai-chat-btn { bottom: 60px !important; }
+                    body.has-event-banner #ai-chat-widget,
+                    body.has-event-banner #ai-chat-btn {
+                        bottom: 75px !important;
+                        transition: bottom 0.3s ease !important;
                     }
-                    .high-season-popup-clean {
-                        max-height: 90vh !important;
-                        overflow-y: auto !important;
-                        border-radius: 18px !important;
-                        box-shadow: 0 20px 45px rgba(0,0,0,0.3) !important;
-                        padding: 20px !important;
-                        box-sizing: border-box !important;
-                    }
-                    .high-season-popup-clean::-webkit-scrollbar {
-                        width: 5px;
-                    }
-                    .high-season-popup-clean::-webkit-scrollbar-thumb {
-                        background: #cbd5e1;
-                        border-radius: 8px;
-                    }
-                    @media (max-width: 600px) {
-                        .high-season-popup-clean {
-                            width: 94% !important;
-                            padding: 15px 12px 18px !important;
-                            margin: 10px auto !important;
-                        }
-                        .high-season-popup-clean h3 {
-                            font-size: 1.05rem !important;
-                        }
-                        #event-mode-banner {
-                            font-size: 0.74rem !important;
-                            padding: 8px 36px 8px 10px !important;
+                    @media (max-width: 768px) {
+                        body.has-event-banner #ai-chat-widget,
+                        body.has-event-banner #ai-chat-btn {
+                            bottom: 75px !important;
+                            right: 16px !important;
                         }
                         #event-mode-banner img {
                             display: none !important;
@@ -194,6 +195,7 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
 
                 window.dismissEventBanner = () => {
                     const banner = document.getElementById('event-mode-banner');
+                    document.body.classList.remove('has-event-banner');
                     if (banner) {
                         banner.style.transition = 'all 0.35s cubic-bezier(0.4, 0, 0.2, 1)';
                         banner.style.transform = 'translateY(100%)';
