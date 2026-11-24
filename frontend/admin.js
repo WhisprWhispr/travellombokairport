@@ -2672,6 +2672,13 @@ window.fetchGlobalSettings = async () => {
             const eventModeToggle = document.getElementById('setting-event-mode');
             const eventNameInput = document.getElementById('setting-event-name');
             const eventPriceIncreaseInput = document.getElementById('setting-event-price-increase');
+            const eventDescInput = document.getElementById('setting-event-desc');
+            const eventMinDaysInput = document.getElementById('setting-event-min-days');
+            const eventBtnTextInput = document.getElementById('setting-event-btn-text');
+            const eventBannerUrlInput = document.getElementById('setting-event-banner-url');
+            const eventBannerPreview = document.getElementById('event-banner-img-preview');
+            const eventBannerActions = document.getElementById('event-banner-actions');
+
             if (eventModeToggle) {
                 eventModeToggle.checked = data.eventMode === true;
                 // Update UI visibility
@@ -2680,9 +2687,24 @@ window.fetchGlobalSettings = async () => {
             if (eventNameInput && data.eventName) {
                 eventNameInput.value = data.eventName;
             }
-            if (eventPriceIncreaseInput && data.eventPriceIncrease) {
-                // Format with thousand separator
-                eventPriceIncreaseInput.value = parseInt(data.eventPriceIncrease).toLocaleString('id-ID');
+            if (eventPriceIncreaseInput) {
+                eventPriceIncreaseInput.value = data.eventPriceIncrease ? parseInt(data.eventPriceIncrease).toLocaleString('id-ID') : '';
+            }
+            if (eventDescInput && data.eventDesc) {
+                eventDescInput.value = data.eventDesc;
+            }
+            if (eventMinDaysInput) {
+                eventMinDaysInput.value = data.eventMinDays || 4;
+            }
+            if (eventBtnTextInput && data.eventBtnText) {
+                eventBtnTextInput.value = data.eventBtnText;
+            }
+            if (eventBannerUrlInput && data.eventBannerImage) {
+                eventBannerUrlInput.value = data.eventBannerImage;
+                if (eventBannerPreview) {
+                    eventBannerPreview.innerHTML = `<img src="${data.eventBannerImage}" style="width:100%; height:100%; object-fit:cover;">`;
+                }
+                if (eventBannerActions) eventBannerActions.style.display = 'block';
             }
             // ====== END EVENT MODE ======
 
@@ -2919,6 +2941,56 @@ window.addGlobalCopyPasteButtons = () => {
 // Start watching for inputs
 setTimeout(window.addGlobalCopyPasteButtons, 1000);
 
+// Helper upload file (Cloudinary direct + backend fallback)
+async function uploadAdminFileToCloudinary(file) {
+    try {
+        const cloudName = 'mvhjuh83';
+        const apiKey = '636819913243949';
+        const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
+        const timestamp = Math.round(Date.now() / 1000);
+        const strToSign = `timestamp=${timestamp}${apiSecret}`;
+
+        const encoder = new TextEncoder();
+        const data = encoder.encode(strToSign);
+        const hashBuffer = await crypto.subtle.digest('SHA-1', data);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+        const resourceType = (file.type && file.type.startsWith('video/')) ? 'video' : 'image';
+        const cloudinaryFormData = new FormData();
+        cloudinaryFormData.append('file', file);
+        cloudinaryFormData.append('api_key', apiKey);
+        cloudinaryFormData.append('timestamp', timestamp);
+        cloudinaryFormData.append('signature', signature);
+
+        const cloudinaryRes = await fetch(
+            `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+            { method: 'POST', body: cloudinaryFormData }
+        );
+        if (cloudinaryRes.ok) {
+            const result = await cloudinaryRes.json();
+            return result.secure_url;
+        }
+    } catch (e) {
+        console.warn('Direct Cloudinary upload fallback to backend upload:', e);
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    const uploadRes = await fetch(`${API_URL}/upload`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${authToken}`
+        },
+        body: formData
+    });
+    if (uploadRes.ok) {
+        const uploadData = await uploadRes.json();
+        return uploadData.url;
+    }
+    throw new Error('Gagal mengunggah file gambar.');
+}
+
 // Preview Image for Coming Soon
 window.previewComingSoonImage = (input) => {
     if (input.files && input.files[0]) {
@@ -2933,6 +3005,35 @@ window.previewComingSoonImage = (input) => {
     }
 };
 
+// Preview Image for High Season Event Banner
+window.previewEventBannerImage = (input) => {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('event-banner-img-preview');
+            if (preview) {
+                preview.innerHTML = `<img src="${e.target.result}" style="width:100%; height:100%; object-fit:cover;">`;
+            }
+            const actions = document.getElementById('event-banner-actions');
+            if (actions) actions.style.display = 'block';
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+};
+
+window.removeEventBanner = () => {
+    const input = document.getElementById('setting-event-banner-image');
+    if (input) input.value = '';
+    const urlInput = document.getElementById('setting-event-banner-url');
+    if (urlInput) urlInput.value = '';
+    const preview = document.getElementById('event-banner-img-preview');
+    if (preview) {
+        preview.innerHTML = `<span style="color: #b45309; font-size: 0.8rem; text-align: center; padding: 10px;"><i class="fa-solid fa-cloud-arrow-up" style="font-size:1.5rem; display:block; margin-bottom:5px; opacity:0.6;"></i>Belum ada banner</span>`;
+    }
+    const actions = document.getElementById('event-banner-actions');
+    if (actions) actions.style.display = 'none';
+};
+
 window.saveGlobalSettings = async () => {
     const droneStatus = document.getElementById('setting-drone-status').value;
     const dronePriceRaw = document.getElementById('setting-drone-price').value || "";
@@ -2943,13 +3044,18 @@ window.saveGlobalSettings = async () => {
     const vaMaintenanceMode = document.getElementById('setting-va-maintenance') ? document.getElementById('setting-va-maintenance').checked : false;
     const manualMaintenanceMode = document.getElementById('setting-manual-maintenance') ? document.getElementById('setting-manual-maintenance').checked : false;
 
-    // ====== EVENT MODE ======
+    // ====== EVENT MODE / HIGH SEASON ======
     const eventModeEl = document.getElementById('setting-event-mode');
     const eventMode = eventModeEl ? eventModeEl.checked : false;
     const eventNameEl = document.getElementById('setting-event-name');
     const eventName = eventNameEl ? eventNameEl.value.trim() : '';
     const eventPriceIncreaseEl = document.getElementById('setting-event-price-increase');
     const eventPriceIncrease = eventPriceIncreaseEl ? parseInt(eventPriceIncreaseEl.value.replace(/\./g, '').replace(/,/g, '')) || 0 : 0;
+    const eventDesc = document.getElementById('setting-event-desc') ? document.getElementById('setting-event-desc').value.trim() : '';
+    const eventMinDays = document.getElementById('setting-event-min-days') ? (parseInt(document.getElementById('setting-event-min-days').value) || 4) : 4;
+    const eventBtnText = document.getElementById('setting-event-btn-text') ? document.getElementById('setting-event-btn-text').value.trim() : '';
+    let eventBannerImage = document.getElementById('setting-event-banner-url') ? document.getElementById('setting-event-banner-url').value : '';
+    const eventBannerImageInput = document.getElementById('setting-event-banner-image');
     // ====== END EVENT MODE ======
     
     // ====== COMING SOON EVENT ======
@@ -2959,32 +3065,26 @@ window.saveGlobalSettings = async () => {
     const comingSoonDate = document.getElementById('setting-coming-soon-date') ? document.getElementById('setting-coming-soon-date').value : '';
     const comingSoonDesc = document.getElementById('setting-coming-soon-desc') ? document.getElementById('setting-coming-soon-desc').value.trim() : '';
     let comingSoonImage = document.getElementById('setting-coming-soon-image-url') ? document.getElementById('setting-coming-soon-image-url').value : '';
-    
     const comingSoonImageInput = document.getElementById('setting-coming-soon-image');
     
     try {
         Swal.fire({title: 'Menyimpan...', allowOutsideClick: false, didOpen: () => {Swal.showLoading()}});
         
-        // Upload image if a new one is selected
+        // Upload High Season Banner if selected
+        if (eventBannerImageInput && eventBannerImageInput.files.length > 0) {
+            Swal.update({title: 'Mengunggah banner High Season...'});
+            eventBannerImage = await uploadAdminFileToCloudinary(eventBannerImageInput.files[0]);
+            if (document.getElementById('setting-event-banner-url')) {
+                document.getElementById('setting-event-banner-url').value = eventBannerImage;
+            }
+        }
+
+        // Upload Coming Soon image if selected
         if (comingSoonImageInput && comingSoonImageInput.files.length > 0) {
-            Swal.update({title: 'Mengunggah gambar...'});
-            const formData = new FormData();
-            formData.append('file', comingSoonImageInput.files[0]);
-            
-            const uploadRes = await fetch(`${API_URL}/upload`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${authToken}`
-                    // Do not set Content-Type, browser will set it to multipart/form-data with the correct boundary
-                },
-                body: formData
-            });
-            
-            if (uploadRes.ok) {
-                const uploadData = await uploadRes.json();
-                comingSoonImage = uploadData.url;
-            } else {
-                throw new Error('Gagal mengunggah gambar event.');
+            Swal.update({title: 'Mengunggah gambar Coming Soon...'});
+            comingSoonImage = await uploadAdminFileToCloudinary(comingSoonImageInput.files[0]);
+            if (document.getElementById('setting-coming-soon-image-url')) {
+                document.getElementById('setting-coming-soon-image-url').value = comingSoonImage;
             }
         }
 
@@ -3003,18 +3103,20 @@ window.saveGlobalSettings = async () => {
                 eventMode: eventMode,
                 eventName: eventName,
                 eventPriceIncrease: eventPriceIncrease,
+                eventDesc: eventDesc,
+                eventMinDays: eventMinDays,
+                eventBtnText: eventBtnText,
+                eventBannerImage: eventBannerImage,
                 comingSoonEnabled: comingSoonEnabled,
                 comingSoonTitle: comingSoonTitle,
                 comingSoonDate: comingSoonDate,
                 comingSoonDesc: comingSoonDesc,
                 comingSoonImage: comingSoonImage
-
             })
         });
         if (res.ok) {
-            const icon = eventMode ? 'success' : 'success';
             const eventMsg = eventMode 
-                ? `🔥 Event "${eventName || 'Event'}" AKTIF! Harga motor & mobil naik Rp ${parseInt(eventPriceIncrease).toLocaleString('id-ID')}.` 
+                ? `🔥 Mode High Season "${eventName || 'High Season'}" AKTIF! Banner tampil di web utama.` 
                 : 'Pengaturan berhasil disimpan.';
             Swal.fire({icon: 'success', title: 'Berhasil', text: eventMsg, confirmButtonColor: '#22c55e'});
         } else {

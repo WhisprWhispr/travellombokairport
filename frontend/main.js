@@ -116,19 +116,104 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
             window.globalEventSettings = {
                 eventMode: data.eventMode === true,
                 eventName: data.eventName || '',
-                eventPriceIncrease: parseInt(data.eventPriceIncrease) || 0
+                eventPriceIncrease: parseInt(data.eventPriceIncrease) || 0,
+                eventDesc: data.eventDesc || '',
+                eventMinDays: parseInt(data.eventMinDays) || 4,
+                eventBtnText: data.eventBtnText || '',
+                eventBannerImage: data.eventBannerImage || ''
             };
 
-            // Inject event banner jika event aktif
-            if (data.eventMode === true && data.eventPriceIncrease > 0) {
+            // Inject High Season Banner di Web Utama jika aktif
+            if (data.eventMode === true) {
+                // 1. Render Banner Card di Web Utama
+                const bannerContainer = document.getElementById('high-season-banner-container');
+                if (bannerContainer) {
+                    bannerContainer.style.display = 'block';
+                    const bannerImg = data.eventBannerImage;
+                    const evtTitle = data.eventName || 'Periode High Season & Liburan';
+                    const evtDesc = data.eventDesc || 'Pemesanan transportasi dan rental meningkat pesat selama musim liburan. Amankan unit dan paket tour Anda lebih awal sebelum armada penuh!';
+                    const priceInc = parseInt(data.eventPriceIncrease) || 0;
+                    const minDays = parseInt(data.eventMinDays) || 4;
+                    const btnText = data.eventBtnText || 'Booking Armada Sekarang';
+
+                    let priceNotice = '';
+                    if (priceInc > 0) {
+                        priceNotice = `
+                            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:1px solid rgba(255,255,255,0.3);">
+                                <i class="fa-solid fa-arrow-trend-up"></i> Penyesuaian Tarif: +Rp ${priceInc.toLocaleString('id-ID')}
+                            </span>
+                            <span style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.2);backdrop-filter:blur(6px);padding:5px 12px;border-radius:20px;font-size:0.8rem;font-weight:600;border:1px solid rgba(255,255,255,0.3);">
+                                <i class="fa-solid fa-calendar-days"></i> Min. Sewa: ${minDays} Hari
+                            </span>
+                        `;
+                    }
+
+                    if (bannerImg) {
+                        bannerContainer.innerHTML = `
+                            <div class="high-season-hero-banner" style="position:relative;border-radius:18px;overflow:hidden;box-shadow:0 12px 30px -8px rgba(245,158,11,0.35);border:2px solid #f59e0b;background:#0f172a;" data-aos="fade-up">
+                                <div style="position:relative;width:100%;min-height:220px;max-height:360px;overflow:hidden;display:flex;align-items:center;justify-content:center;">
+                                    <img src="${bannerImg}" alt="${evtTitle}" style="width:100%;height:100%;min-height:220px;max-height:360px;object-fit:cover;display:block;">
+                                    <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(15,23,42,0.92) 0%, rgba(15,23,42,0.45) 50%, rgba(0,0,0,0.1) 100%);"></div>
+                                    <div style="position:absolute;bottom:0;left:0;right:0;padding:22px 26px;color:#fff;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px;">
+                                        <div style="max-width:700px;">
+                                            <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                                                <span style="background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;font-weight:800;font-size:0.75rem;padding:4px 12px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;box-shadow:0 2px 8px rgba(239,68,68,0.4);">
+                                                    <i class="fa-solid fa-fire"></i> HIGH SEASON SPESIAL
+                                                </span>
+                                                ${priceNotice}
+                                            </div>
+                                            <h2 style="font-size:1.55rem;font-weight:900;margin:0 0 6px;color:#fff;text-shadow:0 2px 4px rgba(0,0,0,0.4);line-height:1.25;">
+                                                ${evtTitle}
+                                            </h2>
+                                            <p style="margin:0;font-size:0.92rem;color:rgba(255,255,255,0.92);line-height:1.45;text-shadow:0 1px 2px rgba(0,0,0,0.5);">
+                                                ${evtDesc}
+                                            </p>
+                                        </div>
+                                        <a href="#booking" class="btn" style="background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;font-weight:800;padding:12px 24px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(245,158,11,0.5);transition:transform .2s;white-space:nowrap;">
+                                            <i class="fa-solid fa-calendar-check"></i> ${btnText}
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        bannerContainer.innerHTML = `
+                            <div class="high-season-hero-banner" style="position:relative;border-radius:18px;overflow:hidden;box-shadow:0 12px 30px -8px rgba(245,158,11,0.35);border:2px solid #f59e0b;background:linear-gradient(135deg,#b45309 0%,#ea580c 50%,#b91c1c 100%);padding:24px 28px;color:#fff;" data-aos="fade-up">
+                                <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px;">
+                                    <div style="max-width:700px;">
+                                        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+                                            <span style="background:rgba(255,255,255,0.25);backdrop-filter:blur(6px);color:#fff;font-weight:800;font-size:0.75rem;padding:4px 12px;border-radius:20px;letter-spacing:0.5px;text-transform:uppercase;">
+                                                <i class="fa-solid fa-fire"></i> HIGH SEASON SPESIAL
+                                            </span>
+                                            ${priceNotice}
+                                        </div>
+                                        <h2 style="font-size:1.55rem;font-weight:900;margin:0 0 6px;color:#fff;line-height:1.25;">
+                                            ${evtTitle}
+                                        </h2>
+                                        <p style="margin:0;font-size:0.92rem;color:rgba(255,255,255,0.92);line-height:1.45;">
+                                            ${evtDesc}
+                                        </p>
+                                    </div>
+                                    <a href="#booking" class="btn" style="background:#fff;color:#b45309;font-weight:800;padding:12px 24px;border-radius:12px;text-decoration:none;display:inline-flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,0.15);transition:transform .2s;white-space:nowrap;">
+                                        <i class="fa-solid fa-calendar-check"></i> ${btnText}
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    }
+                }
+
+                // 2. Bottom Floating Announcement Bar
                 const eventBanner = document.createElement('div');
                 eventBanner.id = 'event-mode-banner';
+                const bannerThumb = data.eventBannerImage ? `<img src="${data.eventBannerImage}" style="width:28px;height:28px;border-radius:6px;object-fit:cover;margin-right:8px;vertical-align:middle;display:inline-block;border:1px solid rgba(255,255,255,0.4);">` : '';
+                const priceText = parseInt(data.eventPriceIncrease) > 0 ? `| Kenaikan Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')} (Min. ${parseInt(data.eventMinDays) || 4} Hari)` : '';
                 eventBanner.innerHTML = `
                     <div style="background: linear-gradient(135deg, #f59e0b, #ef4444); color: white; text-align: center; padding: 12px 52px 12px 16px; font-size: 0.85rem; font-weight: 600; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999; box-shadow: 0 -4px 15px rgba(0,0,0,0.2); transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);">
-                        <i class="fa-solid fa-fire" style="margin-right: 6px;"></i>
-                        🎉 ${data.eventName ? `EVENT: <strong>${data.eventName}</strong> —` : 'HIGH SEASON!'} 
-                        Harga Motor & Mobil naik <strong>Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')}</strong>/unit &nbsp;|&nbsp; 
-                        <i class="fa-solid fa-calendar-days"></i> Min. sewa <strong>4 Hari</strong>
+                        ${bannerThumb}
+                        <i class="fa-solid fa-fire" style="margin-right: 4px;"></i>
+                        🎉 <strong>${data.eventName || 'HIGH SEASON!'}</strong> ${priceText} &nbsp;|&nbsp;
+                        <a href="#booking" style="color:#fff;text-decoration:underline;font-weight:700;">Booking Sekarang &rarr;</a>
                         <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman">
                             <i class="fa-solid fa-chevron-right"></i>
                         </button>
@@ -165,41 +250,72 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     }
                 };
 
-                // Show professional popup for event
+                // 3. Show professional popup modal for event
                 if (!sessionStorage.getItem('eventPopupShown')) {
                     sessionStorage.setItem('eventPopupShown', 'true');
                     setTimeout(() => {
-                        const evtName = data.eventName || 'High Season';
-                        Swal.fire({
-                            title: `🔥 Info Event: ${evtName}`,
-                            html: `
-                                <div style="text-align: left; color: #334155; margin-top: 10px;">
-                                    <div style="display: flex; align-items: center; gap: 15px; background: #fffbeb; padding: 15px; border-radius: 16px; margin-bottom: 12px; border: 1px solid #fde68a;">
-                                        <div style="background: #f59e0b; color: white; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.3rem;">
-                                            <i class="fa-solid fa-car"></i>
-                                        </div>
-                                        <div>
-                                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #b45309;">Sewa Mobil & Motor</h4>
-                                            <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.4;">Terdapat penyesuaian harga khusus event. Minimum sewa <strong>4 Hari</strong>.</p>
-                                        </div>
+                        const bannerImg = data.eventBannerImage;
+                        const evtName = data.eventName || 'High Season & Liburan Spesial';
+                        const evtDesc = data.eventDesc || 'Musim liburan telah tiba! Booking armada kendaraan dan paket tour Anda lebih awal untuk memastikan ketersediaan unit terbaik di Lombok.';
+                        const priceInc = parseInt(data.eventPriceIncrease) || 0;
+                        const minDays = parseInt(data.eventMinDays) || 4;
+
+                        let imgHtml = '';
+                        if (bannerImg) {
+                            imgHtml = `
+                                <div style="margin:-1.25em -1.25em 14px -1.25em;overflow:hidden;border-radius:16px 16px 0 0;max-height:220px;background:#000;">
+                                    <img src="${bannerImg}" alt="${evtName}" style="width:100%;height:100%;max-height:220px;object-fit:cover;display:block;">
+                                </div>
+                            `;
+                        }
+
+                        let highlightsHtml = '';
+                        if (priceInc > 0) {
+                            highlightsHtml = `
+                                <div style="display:flex;align-items:center;gap:12px;background:#fffbeb;padding:12px 14px;border-radius:12px;margin-bottom:10px;border:1px solid #fde68a;">
+                                    <div style="background:#f59e0b;color:white;width:38px;height:38px;border-radius:10px;display:flex;justify-content:center;align-items:center;flex-shrink:0;font-size:1.1rem;">
+                                        <i class="fa-solid fa-car"></i>
                                     </div>
-                                    <div style="display: flex; align-items: center; gap: 15px; background: #f0f9ff; padding: 15px; border-radius: 16px; border: 1px solid #bae6fd;">
-                                        <div style="background: #0ea5e9; color: white; width: 45px; height: 45px; border-radius: 12px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.3rem;">
-                                            <i class="fa-solid fa-umbrella-beach"></i>
+                                    <div style="font-size:0.85rem;line-height:1.4;">
+                                        <div style="font-weight:800;color:#b45309;">Sewa Mobil & Motor</div>
+                                        <div>Penyesuaian tarif <strong>+Rp ${priceInc.toLocaleString('id-ID')}</strong>/unit. Min. sewa <strong>${minDays} Hari</strong>.</div>
+                                    </div>
+                                </div>
+                            `;
+                        }
+
+                        Swal.fire({
+                            title: `<span style="color:#b45309;font-size:1.25rem;"><i class="fa-solid fa-fire" style="color:#f59e0b;"></i> ${evtName}</span>`,
+                            html: `
+                                <div style="text-align: left; color: #334155; margin-top: 5px;">
+                                    ${imgHtml}
+                                    <p style="font-size:0.9rem;color:#475569;margin-bottom:14px;line-height:1.5;">${evtDesc}</p>
+                                    ${highlightsHtml}
+                                    <div style="display: flex; align-items: center; gap: 12px; background: #f0f9ff; padding: 12px 14px; border-radius: 12px; border: 1px solid #bae6fd;">
+                                        <div style="background: #0ea5e9; color: white; width: 38px; height: 38px; border-radius: 10px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; font-size: 1.1rem;">
+                                            <i class="fa-solid fa-circle-check"></i>
                                         </div>
-                                        <div>
-                                            <h4 style="margin: 0; font-size: 0.95rem; font-weight: 800; color: #0369a1;">Paket Wisata</h4>
-                                            <p style="margin: 4px 0 0; font-size: 0.85rem; line-height: 1.4;">Harga paket tour/honeymoon dapat berubah. Hubungi <strong>Admin</strong> untuk info final.</p>
+                                        <div style="font-size:0.85rem;line-height:1.4;">
+                                            <div style="font-weight:800;color:#0369a1;">Pesan Lebih Awal</div>
+                                            <div>Dapatkan kepastian ketersediaan unit terbaik selama masa liburan ini.</div>
                                         </div>
                                     </div>
                                 </div>
                             `,
                             showConfirmButton: true,
-                            confirmButtonText: '<i class="fa-solid fa-check"></i> Saya Mengerti',
-                            confirmButtonColor: '#0ea5e9',
-                            width: '480px',
+                            confirmButtonText: '<i class="fa-solid fa-calendar-check"></i> Booking Sekarang',
+                            showCancelButton: true,
+                            cancelButtonText: 'Tutup',
+                            confirmButtonColor: '#f59e0b',
+                            cancelButtonColor: '#94a3b8',
+                            width: '490px',
                             customClass: { popup: 'modern-popup-radius' },
                             backdrop: `rgba(15,23,42,0.8)`
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                const bookingEl = document.getElementById('booking') || document.getElementById('quick-booking-form');
+                                if (bookingEl) bookingEl.scrollIntoView({ behavior: 'smooth' });
+                            }
                         });
                     }, 1000); // delay 1 second after load
                 }
@@ -4264,7 +4380,7 @@ window.openCheckoutModal = async (itemName, price, method = 'web') => {
     const isEventActive = evtSettings.eventMode && evtSettings.eventPriceIncrease > 0;
     const isRentalItem = (category === 'motor' || category === 'mobil');
     const eventPriceIncrease = (isEventActive && isRentalItem && !is12HourDriver) ? evtSettings.eventPriceIncrease : 0;
-    const EVENT_MIN_DAYS = 4; // Minimum sewa saat event
+    const EVENT_MIN_DAYS = evtSettings.eventMinDays || 4; // Minimum sewa saat event
     // ====== END EVENT MODE ======
 
 

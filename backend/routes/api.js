@@ -114,6 +114,50 @@ router.put('/settings', verifyToken, async (req, res) => {
     }
 });
 
+// POST upload file (multer + Cloudinary)
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 * 1024 * 1024 } });
+const axios = require('axios');
+const crypto = require('crypto');
+
+router.post('/upload', upload.single('file'), async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ error: 'No file uploaded' });
+        }
+        const cloudName = 'mvhjuh83';
+        const apiKey = '636819913243949';
+        const apiSecret = 'Klov4BCszxgMpPmr_PUD9GFvgJw';
+        const timestamp = Math.round(Date.now() / 1000);
+        const strToSign = `timestamp=${timestamp}${apiSecret}`;
+        const signature = crypto.createHash('sha1').update(strToSign).digest('hex');
+
+        let resourceType = 'auto';
+        if (req.file.mimetype && req.file.mimetype.startsWith('video/')) resourceType = 'video';
+        else if (req.file.mimetype && req.file.mimetype.startsWith('image/')) resourceType = 'image';
+
+        const base64Data = `data:${req.file.mimetype};base64,${req.file.buffer.toString('base64')}`;
+        const cloudinaryRes = await axios.post(
+            `https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`,
+            {
+                file: base64Data,
+                api_key: apiKey,
+                timestamp: timestamp,
+                signature: signature
+            }
+        );
+
+        res.json({
+            success: true,
+            url: cloudinaryRes.data.secure_url,
+            public_id: cloudinaryRes.data.public_id
+        });
+    } catch (error) {
+        console.error('Upload error in backend:', error?.response?.data || error.message);
+        res.status(500).json({ error: 'Failed to upload to Cloudinary', details: error.message });
+    }
+});
+
 // GET single item (public)
 router.get('/items/:id', async (req, res) => {
     try {

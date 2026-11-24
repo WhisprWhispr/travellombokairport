@@ -15,7 +15,7 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-slqJKzki.js"></script>
+  <script type="module" crossorigin src="/assets/admin-B-Iq0CnR.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
   <link rel="stylesheet" crossorigin href="/assets/main-BfHEzDuT.css">
@@ -481,8 +481,8 @@
                     <i class="fa-solid fa-fire" style="color: white; font-size: 1.1rem;"></i>
                   </div>
                   <div style="min-width: 0;">
-                    <div style="font-weight: 700; color: #92400e; font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px;">Mode Event / High Season</div>
-                    <div style="font-size: 0.8rem; color: #78350f; line-height: 1.4;">Aktifkan untuk menaikkan harga motor & mobil saat event</div>
+                    <div style="font-weight: 700; color: #92400e; font-size: 1.1rem; line-height: 1.2; margin-bottom: 4px;">Mode High Season / Event Spesial</div>
+                    <div style="font-size: 0.8rem; color: #78350f; line-height: 1.4;">Aktifkan untuk menampilkan banner High Season di web utama dan menyesuaikan harga/durasi sewa</div>
                   </div>
                 </div>
                 <label class="switch" style="flex-shrink: 0; margin-top: 4px;">
@@ -492,34 +492,78 @@
               </div>
 
               <div id="event-mode-details" style="display: none; margin-top: 15px; border-top: 1px dashed #f59e0b; padding-top: 15px;">
+                <!-- Upload Banner Image -->
+                <div class="form-group mb-3">
+                  <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-image"></i> Gambar Banner High Season (Tampil di Web Utama)</label>
+                  <div style="margin-top: 8px; display: flex; align-items: flex-start; gap: 15px; flex-wrap: wrap;">
+                    <div id="event-banner-img-preview" style="width: 240px; height: 120px; flex-shrink: 0; border-radius: 10px; border: 2px dashed #f59e0b; display: flex; align-items: center; justify-content: center; background: #fff; overflow: hidden; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                      <span style="color: #b45309; font-size: 0.8rem; text-align: center; padding: 10px;"><i class="fa-solid fa-cloud-arrow-up" style="font-size:1.5rem; display:block; margin-bottom:5px; opacity:0.6;"></i>Belum ada banner</span>
+                    </div>
+                    <div style="flex: 1; min-width: 220px;">
+                      <input type="file" id="setting-event-banner-image" accept="image/*" class="form-control" style="border: 1px solid #f59e0b; background: white; padding: 7px; width: 100%; box-sizing: border-box;" onchange="window.previewEventBannerImage(this)">
+                      <p style="font-size: 0.78rem; color: #78350f; margin-top: 6px; line-height: 1.4;">
+                        Pilih file gambar banner (Rekomendasi rasio landscape 16:9 atau 21:9 banner lebar). Gambar akan otomatis diupload saat menekan tombol "Simpan Pengaturan High Season".
+                      </p>
+                      <input type="hidden" id="setting-event-banner-url">
+                      <div id="event-banner-actions" style="margin-top: 8px; display: none;">
+                        <button type="button" class="btn btn-sm" onclick="window.removeEventBanner()" style="font-size: 0.75rem; padding: 4px 10px; color: #dc2626; border: 1px solid #dc2626; border-radius: 6px; background: white; cursor: pointer; font-weight: 600;">
+                          <i class="fa-solid fa-trash"></i> Hapus Banner Gambar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; margin-bottom: 12px;">
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-tag"></i> Judul Event / High Season</label>
+                    <input type="text" id="setting-event-name" placeholder="Contoh: Liburan Tahun Baru & Natal / MotoGP Mandalika" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
+                  </div>
+                  <div class="form-group mb-0">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-arrow-up"></i> Kenaikan Harga (Rp) - Opsional</label>
+                    <input type="text" id="setting-event-price-increase" placeholder="0 jika tanpa kenaikan harga" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;"
+                      oninput="let v=this.value.replace(/\D/g,''); this.value=v?parseInt(v).toLocaleString('id-ID'):'';">
+                    <p style="font-size: 0.78rem; color: #78350f; margin-top: 4px;">Tambahan per unit motor/mobil. Kosongkan / 0 jika hanya ingin pasang banner promosi.</p>
+                  </div>
+                </div>
+
+                <div class="form-group mb-3">
+                  <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-align-left"></i> Deskripsi / Pengumuman Banner</label>
+                  <textarea id="setting-event-desc" rows="2" placeholder="Contoh: Musim liburan tiba! Booking transportasi dan rental kendaraan Anda lebih awal untuk jaminan ketersediaan armada terbaik di Lombok." class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white; resize: vertical;"></textarea>
+                </div>
+
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 12px;">
                   <div class="form-group mb-0">
-                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-tag"></i> Nama Event</label>
-                    <input type="text" id="setting-event-name" placeholder="Contoh: Bau Nyale 2025, Lebaran, dll." class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-calendar-days"></i> Min. Durasi Sewa (Hari)</label>
+                    <input type="number" id="setting-event-min-days" placeholder="4" min="1" max="30" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
+                    <p style="font-size: 0.78rem; color: #78350f; margin-top: 4px;">Minimum hari sewa saat event (default 4 hari).</p>
                   </div>
                   <div class="form-group mb-0">
-                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-arrow-up"></i> Kenaikan Harga (Rp)</label>
-                    <input type="text" id="setting-event-price-increase" placeholder="Contoh: 400000" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;"
-                      oninput="let v=this.value.replace(/\D/g,''); this.value=v?parseInt(v).toLocaleString('id-ID'):'';">
-                    <p style="font-size: 0.78rem; color: #78350f; margin-top: 4px;">Masukkan angka saja. Contoh: 400000 = Rp 400.000</p>
+                    <label style="font-weight: 600; color: #92400e; font-size: 0.9rem;"><i class="fa-solid fa-arrow-pointer"></i> Teks Tombol Aksi</label>
+                    <input type="text" id="setting-event-btn-text" placeholder="Contoh: Booking Sekarang" class="form-control" style="margin-top: 5px; border: 1px solid #f59e0b; background: white;">
                   </div>
                 </div>
+
                 <div style="background: #fff8e1; border: 1px solid #f59e0b; border-radius: 8px; padding: 12px; margin-top: 5px;">
-                  <p style="margin: 0; font-size: 0.85rem; color: #78350f;"><i class="fa-solid fa-circle-info"></i> <strong>Efek saat Event aktif:</strong></p>
+                  <p style="margin: 0; font-size: 0.85rem; color: #78350f;"><i class="fa-solid fa-circle-info"></i> <strong>Efek saat High Season Aktif:</strong></p>
                   <ul style="margin: 8px 0 0 0; padding-left: 18px; font-size: 0.82rem; color: #92400e; line-height: 1.6;">
-                    <li>Semua harga <strong>motor & mobil</strong> akan naik sebesar nominal di atas</li>
-                    <li>Minimum sewa menjadi <strong>4 hari</strong> untuk motor & mobil</li>
-                    <li>Harga asli tidak berubah di database, hanya ditambah saat ditampilkan</li>
-                    <li>Banner Event akan muncul di halaman utama website</li>
+                    <li><strong>Banner visual High Season</strong> (dengan gambar & info) langsung tampil di halaman depan website utama</li>
+                    <li>Pengunjung website akan melihat popup promosi / pengumuman banner High Season</li>
+                    <li>Bar pengumuman melayang tetap aktif di bagian bawah layar</li>
+                    <li>Jika kenaikan harga diisi (> 0), sistem otomatis menyesuaikan harga sewa motor & mobil dengan minimal sewa sesuai ketentuan di atas</li>
                   </ul>
                 </div>
+
+                <button type="button" class="btn btn-primary" onclick="window.saveGlobalSettings()" style="width: 100%; background: #f59e0b; border-color: #f59e0b; border-radius: 8px; font-weight: bold; padding: 12px; margin-top: 15px;">
+                  <i class="fa-solid fa-save"></i> Simpan Pengaturan High Season
+                </button>
               </div>
 
               <div id="event-mode-off-info" style="margin-top: 10px;">
-                <p style="margin: 0; font-size: 0.85rem; color: #92400e; font-weight: 500;">Status Saat Ini: <span id="event-mode-status-text" style="color: #ef4444; font-weight: 700;">Tidak Aktif (Harga Normal)</span></p>
+                <p style="margin: 0; font-size: 0.85rem; color: #92400e; font-weight: 500;">Status Saat Ini: <span id="event-mode-status-text" style="color: #ef4444; font-weight: 700;">Tidak Aktif (Harga Normal & Banner Nonaktif)</span></p>
               </div>
-              <div id="event-mode-on-info" style="display: none; margin-top: 10px; background: #ef4444; color: white; padding: 10px 15px; border-radius: 8px;">
-                <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-fire"></i> <strong>EVENT AKTIF!</strong> Harga motor & mobil sedang naik. Minimum sewa 4 hari.</p>
+              <div id="event-mode-on-info" style="display: none; margin-top: 10px; background: #f59e0b; color: white; padding: 10px 15px; border-radius: 8px;">
+                <p style="margin: 0; font-size: 0.85rem;"><i class="fa-solid fa-fire"></i> <strong>HIGH SEASON AKTIF!</strong> Banner tampil di web utama dan pengaturan tarif berlaku.</p>
               </div>
             </div>
 
