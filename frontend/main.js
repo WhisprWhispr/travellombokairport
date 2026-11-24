@@ -1917,7 +1917,9 @@ window.openTourModal = (id, carMode = null) => {
 
             <!-- List of Ratings given -->
             <div id="item-reviews-container-${item.id}" style="display: flex; gap: 10px; overflow-x: auto; overscroll-behavior-x: contain; width: 100%; max-width: 100%; box-sizing: border-box; padding: 8px 4px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; scrollbar-width: none; margin-bottom: 5px;">
-                <p style="font-size: 0.85rem; color: #64748b; text-align: center; padding: 12px 0; width: 100%;"><i class="fa-solid fa-spinner fa-spin"></i> Memuat rating...</p>
+                <div class="skeleton-shimmer" style="min-width: 170px; height: 75px; border-radius: 12px; flex-shrink: 0;"></div>
+                <div class="skeleton-shimmer" style="min-width: 170px; height: 75px; border-radius: 12px; flex-shrink: 0;"></div>
+                <div class="skeleton-shimmer" style="min-width: 170px; height: 75px; border-radius: 12px; flex-shrink: 0;"></div>
             </div>
             <style>
                 #item-reviews-container-${item.id}::-webkit-scrollbar { display: none; }
@@ -6245,9 +6247,31 @@ window.showRiwayatTransaksi = async (isPage = false) => {
     }
 
     container.innerHTML = `
-        <div style="text-align:center; padding:60px 20px; color:#64748b; background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-            <i class="fa-solid fa-spinner fa-spin" style="font-size:2.5rem; margin-bottom:15px; display:block; color:#3b82f6;"></i>
-            <p style="font-size: 1rem;">Sedang mengambil data riwayat transaksi Anda...</p>
+        <div style="display: flex; flex-direction: column; gap: 15px;">
+            <div class="skeleton-card" style="padding: 20px; border-radius: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="skeleton-shimmer skeleton-line" style="width: 140px; height: 18px; margin: 0;"></div>
+                    <div class="skeleton-shimmer" style="width: 80px; height: 24px; border-radius: 20px;"></div>
+                </div>
+                <div class="skeleton-shimmer skeleton-line" style="width: 70%; height: 14px; margin-bottom: 8px;"></div>
+                <div class="skeleton-shimmer skeleton-line sm" style="width: 40%; margin-bottom: 16px;"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+                    <div class="skeleton-shimmer skeleton-line" style="width: 110px; height: 20px; margin: 0;"></div>
+                    <div class="skeleton-shimmer" style="width: 90px; height: 32px; border-radius: 8px;"></div>
+                </div>
+            </div>
+            <div class="skeleton-card" style="padding: 20px; border-radius: 16px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <div class="skeleton-shimmer skeleton-line" style="width: 120px; height: 18px; margin: 0;"></div>
+                    <div class="skeleton-shimmer" style="width: 80px; height: 24px; border-radius: 20px;"></div>
+                </div>
+                <div class="skeleton-shimmer skeleton-line" style="width: 65%; height: 14px; margin-bottom: 8px;"></div>
+                <div class="skeleton-shimmer skeleton-line sm" style="width: 35%; margin-bottom: 16px;"></div>
+                <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid #f1f5f9;">
+                    <div class="skeleton-shimmer skeleton-line" style="width: 110px; height: 20px; margin: 0;"></div>
+                    <div class="skeleton-shimmer" style="width: 90px; height: 32px; border-radius: 8px;"></div>
+                </div>
+            </div>
         </div>
     `;
 

@@ -62,8 +62,8 @@
 </script>
   <script type="module" crossorigin src="/assets/modulepreload-polyfill-P2Xu9kJm.js"></script>
   <script type="module" crossorigin src="/assets/pwa-so6uG9fO.js"></script>
-  <script type="module" crossorigin src="/assets/main-3pNtA5rG.js"></script>
-  <link rel="stylesheet" crossorigin href="/assets/main-CTx51V7b.css">
+  <script type="module" crossorigin src="/assets/main-CI_DZP3s.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/main-DaKRhEOP.css">
 </head>
 <body>
   <!-- Navbar -->
@@ -202,9 +202,18 @@
             <button onclick="window.requestPrayerLocation(true)" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);">Izinkan Sekarang</button>
         </div>
 
-        <div id="prayer-loading" style="text-align: center; padding: 40px 0;">
-            <i class="fa-solid fa-circle-notch fa-spin" style="font-size: 3rem; color: #34d399; margin-bottom: 20px;"></i>
-            <p style="color: #94a3b8;">Menghitung jadwal sholat presisi...</p>
+        <div id="prayer-loading" style="padding: 20px 0;">
+            <div style="background: rgba(255,255,255,0.05); padding: 25px; border-radius: 20px; text-align: center; margin-bottom: 25px; border: 1px solid rgba(255,255,255,0.05);">
+                <div class="skeleton-shimmer-dark skeleton-line sm" style="width: 140px; margin: 0 auto 12px;"></div>
+                <div class="skeleton-shimmer-dark" style="width: 220px; height: 50px; border-radius: 12px; margin: 0 auto;"></div>
+            </div>
+            <div style="display: flex; gap: 12px; overflow-x: auto; padding-bottom: 10px;">
+                <div class="skeleton-shimmer-dark" style="min-width: 130px; height: 140px; border-radius: 16px; flex-shrink: 0;"></div>
+                <div class="skeleton-shimmer-dark" style="min-width: 130px; height: 140px; border-radius: 16px; flex-shrink: 0;"></div>
+                <div class="skeleton-shimmer-dark" style="min-width: 130px; height: 140px; border-radius: 16px; flex-shrink: 0;"></div>
+                <div class="skeleton-shimmer-dark" style="min-width: 130px; height: 140px; border-radius: 16px; flex-shrink: 0;"></div>
+                <div class="skeleton-shimmer-dark" style="min-width: 130px; height: 140px; border-radius: 16px; flex-shrink: 0;"></div>
+            </div>
         </div>
 
         <div id="prayer-content" style="display: none;">

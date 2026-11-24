@@ -4950,4 +4950,77 @@ body:has(#checkout-modal.active) #ai-chat-widget {
   }
 }
 
+/* ========================================================
+   SKELETON SHIMMER LOADING SYSTEM
+   ======================================================== */
+@keyframes skeletonShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(90deg, #f1f5f9 25%, #e2e8f0 50%, #f1f5f9 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-shimmer-dark {
+  background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.12) 50%, rgba(255,255,255,0.04) 75%);
+  background-size: 200% 100%;
+  animation: skeletonShimmer 1.5s ease-in-out infinite;
+}
+
+.skeleton-card {
+  background: #ffffff;
+  border-radius: var(--radius-md, 14px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+  border: 1px solid #f1f5f9;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: none;
+  pointer-events: none;
+}
+
+.skeleton-card-dark {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius-md, 14px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+}
+
+.skeleton-line {
+  display: block;
+  height: 14px;
+  border-radius: 6px;
+  margin-bottom: 8px;
+}
+
+.skeleton-line.sm {
+  height: 10px;
+  border-radius: 4px;
+}
+
+.skeleton-line.lg {
+  height: 20px;
+  border-radius: 8px;
+}
+
+.skeleton-circle {
+  border-radius: 50% !important;
+}
+
+.skeleton-btn {
+  height: 38px;
+  border-radius: 20px;
+}
+
 
