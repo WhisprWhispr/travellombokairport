@@ -2892,4 +2892,4 @@ Mohon bantuan darurat dan arahan tim siaga sesegera mungkin! 🙏`,u=`
                         </button>
                     </div>
                 </div>
-            `,e.scrollTop=e.scrollHeight)},3e5)});
+            `,e.scrollTop=e.scrollHeight)},3e5),document.addEventListener(`click`,e=>{let t=document.querySelector(`.nav-links`),n=document.querySelector(`.mobile-menu-btn`);t&&t.classList.contains(`active`)&&!t.contains(e.target)&&!n?.contains(e.target)&&t.classList.remove(`active`)})});

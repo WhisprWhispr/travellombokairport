@@ -9829,4 +9829,15 @@ document.addEventListener('DOMContentLoaded', () => {
             msgs.scrollTop = msgs.scrollHeight;
         }
     }, 5 * 60 * 1000);
+
+    // Auto-close mobile navbar menu when clicking outside or clicking a nav link
+    document.addEventListener('click', (e) => {
+        const navLinks = document.querySelector('.nav-links');
+        const menuBtn = document.querySelector('.mobile-menu-btn');
+        if (navLinks && navLinks.classList.contains('active')) {
+            if (!navLinks.contains(e.target) && !menuBtn?.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        }
+    });
 });
