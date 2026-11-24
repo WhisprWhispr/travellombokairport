@@ -169,11 +169,72 @@
   </script>
 </head>
 <body>
-  <!-- Tsunami Alert Banner (Hidden by default) -->
-  <div id="tsunami-alert-banner" style="display: none; background: #dc2626; color: white; text-align: center; padding: 12px 20px; font-weight: 700; font-size: 0.9rem; z-index: 10000; position: relative;">
-    <i class="fa-solid fa-triangle-exclamation fa-beat" style="margin-right: 8px;"></i>
-    <span id="tsunami-alert-text">PERINGATAN DINI TSUNAMI - Segera Jauhi Pantai!</span>
-    <button onclick="this.parentElement.style.display='none'" style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: white; width: 28px; height: 28px; border-radius: 50%; cursor: pointer; font-size: 0.85rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Sembunyikan Pengumuman" aria-label="Sembunyikan Pengumuman"><i class="fa-solid fa-chevron-right"></i></button>
+  <!-- Tsunami / Disaster Alert Banner (Running Text / Marquee) -->
+  <style>
+    @keyframes alertRunningText {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+    .alert-marquee-box {
+      overflow: hidden;
+      white-space: nowrap;
+      position: relative;
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      mask-image: linear-gradient(90deg, transparent 0%, #000 12px, #000 calc(100% - 12px), transparent 100%);
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 12px, #000 calc(100% - 12px), transparent 100%);
+    }
+    .alert-marquee-track {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      animation: alertRunningText 45s linear infinite;
+      font-size: 0.82rem;
+      color: #fff;
+      font-weight: 600;
+    }
+    .alert-marquee-box:hover .alert-marquee-track,
+    .alert-marquee-box:active .alert-marquee-track {
+      animation-play-state: paused;
+    }
+    @media (max-width: 768px) {
+      .alert-marquee-track {
+        font-size: 0.74rem !important;
+        animation-duration: 40s !important;
+      }
+    }
+  </style>
+  <div id="tsunami-alert-banner" style="display: none; background: linear-gradient(135deg, #b91c1c 0%, #dc2626 50%, #991b1b 100%); color: white; padding: 7px 12px; font-weight: 700; font-size: 0.85rem; z-index: 10000; position: relative; border-bottom: 2px solid #f87171; box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);">
+    <div style="max-width: 1400px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+      
+      <!-- Sisi Kiri: Badge Peringatan Pinned -->
+      <div style="flex-shrink: 0; display: flex; align-items: center;">
+        <span style="background: rgba(0, 0, 0, 0.35); border: 1px solid rgba(255, 255, 255, 0.35); color: #fff; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 5px;">
+          <i class="fa-solid fa-triangle-exclamation fa-beat" style="color: #fef08a;"></i> <span>PERINGATAN</span>
+        </span>
+      </div>
+
+      <!-- Bagian Tengah: Smooth Running Text (Marquee) -->
+      <div class="alert-marquee-box" onclick="document.getElementById('gempa-modal')?.classList.add('active')" style="cursor: pointer;" title="Klik untuk rincian gempa">
+        <div class="alert-marquee-track">
+          <span id="tsunami-alert-text-1">PERINGATAN DINI TSUNAMI - Segera Jauhi Pantai! &nbsp;&bull;&nbsp;&nbsp;&nbsp;</span>
+          <span id="tsunami-alert-text-2">PERINGATAN DINI TSUNAMI - Segera Jauhi Pantai! &nbsp;&bull;&nbsp;&nbsp;&nbsp;</span>
+        </div>
+      </div>
+
+      <!-- Sisi Kanan: Tombol Cek Detail + Tombol Close (X) -->
+      <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+        <button onclick="document.getElementById('gempa-modal')?.classList.add('active')" style="background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.4); color: white; padding: 4px 10px; border-radius: 20px; font-size: 0.72rem; font-weight: 700; cursor: pointer; white-space: nowrap; display: inline-flex; align-items: center; gap: 4px;">
+          <i class="fa-solid fa-circle-info"></i> Detail
+        </button>
+        <button onclick="document.getElementById('tsunami-alert-banner').style.display='none'" style="background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.3); color: white; width: 26px; height: 26px; border-radius: 50%; cursor: pointer; font-size: 0.72rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Tutup Peringatan" aria-label="Tutup Peringatan">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+    </div>
   </div>
 
   <!-- Navbar -->
@@ -1371,7 +1432,11 @@
                 const alertBanner = document.getElementById('tsunami-alert-banner');
                 if(alertBanner) {
                     alertBanner.style.display = 'block';
-                    document.getElementById('tsunami-alert-text').innerText = "PERINGATAN DINI TSUNAMI: " + gempa.Wilayah + " (" + gempa.Magnitude + " SR)";
+                    const alertMsg = "PERINGATAN DINI TSUNAMI: " + gempa.Wilayah + " (" + gempa.Magnitude + " SR, Kedalaman: " + gempa.Kedalaman + ") — " + gempa.Tanggal + " " + gempa.Jam + " — Harap waspada dan ikuti instruksi evakuasi BMKG setempat!";
+                    const t1 = document.getElementById('tsunami-alert-text-1');
+                    const t2 = document.getElementById('tsunami-alert-text-2');
+                    if (t1) t1.innerHTML = alertMsg + " &nbsp;&bull;&nbsp;&nbsp;&nbsp;";
+                    if (t2) t2.innerHTML = alertMsg + " &nbsp;&bull;&nbsp;&nbsp;&nbsp;";
                 }
                 const gempaHeader = document.getElementById('gempa-header');
                 if(gempaHeader) {
