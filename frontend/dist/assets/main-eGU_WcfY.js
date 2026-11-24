@@ -49,7 +49,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";!window.l
                         display: inline-flex;
                         align-items: center;
                         white-space: nowrap;
-                        animation: hsRunningText 55s linear infinite;
+                        animation: hsRunningText 95s linear infinite;
                         font-size: 0.8rem;
                         color: #e2e8f0;
                         font-weight: 500;
@@ -75,7 +75,7 @@ import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";!window.l
                         }
                         .hs-marquee-track {
                             font-size: 0.74rem !important;
-                            animation-duration: 50s !important;
+                            animation-duration: 90s !important;
                         }
                     }
                     @media (max-width: 420px) {
