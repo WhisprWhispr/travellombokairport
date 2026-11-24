@@ -283,9 +283,17 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                                     <h2 id="high-season-modal-title" class="hs-title-clamp" style="margin:0 0 8px;color:#f1f5f9;font-size:1.1rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">
                                                         ${evtName}
                                                     </h2>
-                                                    <p id="high-season-modal-desc-preview" class="hs-desc-preview" style="margin:0 0 12px;color:#94a3b8;font-size:0.8rem;line-height:1.6;">
+                                                    <p id="high-season-modal-desc-preview" class="hs-desc-preview" style="margin:0 0 8px;color:#94a3b8;font-size:0.8rem;line-height:1.6;">
                                                         ${evtDesc}
                                                     </p>
+                                                    <!-- Trigger Tombol Lihat Selengkapnya Inline -->
+                                                    <div id="hs-readmore-trigger-container" style="margin-bottom:12px;">
+                                                        <button type="button" onclick="window._hsExpandDetail()" style="background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.38);color:#fbbf24;font-size:0.78rem;font-weight:700;border-radius:20px;padding:5px 13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s ease;">
+                                                            <i class="fa-solid fa-book-open" style="font-size:0.7rem;"></i>
+                                                            Lihat Selengkapnya
+                                                            <i class="fa-solid fa-chevron-down" style="font-size:0.6rem;"></i>
+                                                        </button>
+                                                    </div>
 
                                                     <!-- Highlight Cards if priceInc > 0 -->
                                                     ${priceInc > 0 ? `
@@ -318,16 +326,19 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                                     <button class="hs-btn-secondary" onclick="window.closeHighSeasonModal(true)" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;">
                                                         Lihat Nanti
                                                     </button>
-                                                    <!-- Selengkapnya / Booking Sekarang -->
+                                                    <!-- Tombol Utama: Lihat Selengkapnya -->
                                                     <button class="hs-btn-primary" id="hs-see-now-btn" onclick="window._hsExpandDetail()" style="flex:2;position:relative;overflow:hidden;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none;padding:12px 8px;border-radius:50px;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(245,158,11,0.4);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:7px;">
-                                                        <i class="fa-solid fa-calendar-check" style="font-size:0.8rem;"></i>
-                                                        ${btnText}
+                                                        <i class="fa-solid fa-book-open" style="font-size:0.8rem;"></i>
+                                                        Lihat Selengkapnya
                                                         <div style="position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);animation:hsShimmer 2.5s ease-in-out infinite;"></div>
                                                     </button>
                                                 </div>
-                                                <!-- After expand: booking button -->
-                                                <div id="hs-btn-group-expanded" style="display:none;">
-                                                    <button class="hs-btn-primary" onclick="window.highSeasonBookingAction()" style="width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none;padding:13px 8px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;gap:8px;">
+                                                <!-- After expand: booking button + close button -->
+                                                <div id="hs-btn-group-expanded" style="display:none;gap:10px;">
+                                                    <button class="hs-btn-secondary" onclick="window.closeHighSeasonModal()" style="flex:1;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.7);border:1px solid rgba(255,255,255,0.15);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;">
+                                                        Tutup
+                                                    </button>
+                                                    <button class="hs-btn-primary" onclick="window.highSeasonBookingAction()" style="flex:2;position:relative;overflow:hidden;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none;padding:12px 10px;border-radius:50px;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;gap:8px;">
                                                         <i class="fa-solid fa-calendar-check"></i>
                                                         ${btnText} &rarr;
                                                     </button>
@@ -349,32 +360,42 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                     const expanded = document.getElementById('hs-btn-group-expanded');
                                     const scroller = document.getElementById('hs-scrollable');
                                     const fullDesc = document.getElementById('high-season-modal-desc-full');
+                                    const preview = document.getElementById('high-season-modal-desc-preview');
+                                    const triggerContainer = document.getElementById('hs-readmore-trigger-container');
 
                                     if (panel) panel.style.display = 'block';
+                                    if (preview) preview.style.display = 'none';
+                                    if (triggerContainer) triggerContainer.style.display = 'none';
                                     if (compact) compact.style.display = 'none';
-                                    if (expanded) expanded.style.display = 'block';
+                                    if (expanded) expanded.style.display = 'flex';
 
                                     if (fullDesc && window._hsFullText && !window._hsTyped) {
                                         window._hsTyped = true;
-                                        fullDesc.innerHTML = '<span class="hs-typewriter-cursor">|</span>';
+                                        fullDesc.innerHTML = '';
+                                        const cursor = document.createElement('span');
+                                        cursor.className = 'hs-typewriter-cursor';
+                                        cursor.textContent = '|';
+                                        fullDesc.appendChild(cursor);
+
                                         let i = 0;
                                         const text = window._hsFullText;
                                         const speed = 12;
 
                                         function typeWriter() {
                                             if (i < text.length) {
-                                                fullDesc.innerHTML = text.substring(0, i + 1) + '<span class="hs-typewriter-cursor">|</span>';
+                                                fullDesc.textContent = text.substring(0, i + 1);
+                                                fullDesc.appendChild(cursor);
                                                 i++;
                                                 setTimeout(typeWriter, speed);
                                                 if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'auto' });
                                             } else {
-                                                fullDesc.innerHTML = text;
+                                                fullDesc.textContent = text;
                                                 if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
                                             }
                                         }
-                                        setTimeout(typeWriter, 80);
+                                        setTimeout(typeWriter, 50);
                                     } else {
-                                        setTimeout(() => { if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' }); }, 80);
+                                        setTimeout(() => { if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' }); }, 50);
                                     }
                                 };
 
