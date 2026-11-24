@@ -35,10 +35,24 @@ body {
   background-color: var(--bg-white);
   line-height: 1.6;
   overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
 }
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Mencegah animasi horizontal (seperti fade-left / fade-right dari luar layar) 
+   membuat layar HP melar atau menggoyang posisi modal popup */
+@media (max-width: 768px) {
+  [data-aos="fade-left"],
+  [data-aos="fade-right"] {
+    transform: none !important;
+    transition-property: opacity !important;
+  }
 }
 
 a {

@@ -85,13 +85,30 @@
                     }
                 `,document.head.appendChild(r),window.dismissEventBanner=()=>{let e=document.getElementById(`event-mode-banner`);document.body.classList.remove(`has-event-banner`),e&&(e.style.transition=`all 0.35s cubic-bezier(0.4, 0, 0.2, 1)`,e.style.transform=`translateY(100%)`,e.style.opacity=`0`,setTimeout(()=>{e.remove(),document.getElementById(`event-chat-fix`)?.remove()},350))},!window.location.pathname.includes(`/admin`)){let e=localStorage.getItem(`hs_hide_until`);(!e||Date.now()>parseInt(e))&&!sessionStorage.getItem(`hs_session_closed`)&&setTimeout(()=>{if(!document.getElementById(`high-season-modal`)){let e=t.eventBannerImage||``,n=t.eventName||`High Season & Liburan Spesial`,r=t.eventDesc||`Musim liburan telah tiba! Booking armada kendaraan dan paket tour Anda lebih awal untuk memastikan ketersediaan unit terbaik di Lombok.`,i=parseInt(t.eventPriceIncrease)||0,a=parseInt(t.eventMinDays)||4,o=t.eventBtnText||`Booking Sekarang`,s=`
                                     <style>
-                                        @keyframes hsModalIn { 0%{opacity:0;transform:scale(0.88) translateY(28px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+                                        @keyframes hsModalIn { 0%{opacity:0;transform:scale(0.96)} 100%{opacity:1;transform:scale(1)} }
                                         @keyframes hsOverlayIn { 0%{opacity:0} 100%{opacity:1} }
                                         @keyframes hsPulseGlow { 0%,100%{box-shadow:0 0 0 1px rgba(245,158,11,0.3),0 0 20px rgba(245,158,11,0.15)} 50%{box-shadow:0 0 0 1px rgba(245,158,11,0.6),0 0 28px rgba(245,158,11,0.3)} }
                                         @keyframes hsShimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
                                         @keyframes hsExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
-                                        #high-season-modal { animation: hsOverlayIn 0.3s ease-out both; }
-                                        #high-season-modal .hs-card { animation: hsModalIn 0.4s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
+                                        #high-season-modal { 
+                                            animation: hsOverlayIn 0.3s ease-out both !important;
+                                            position: fixed !important;
+                                            inset: 0 !important;
+                                            width: 100vw !important;
+                                            height: 100% !important;
+                                            max-width: 100vw !important;
+                                            box-sizing: border-box !important;
+                                            display: flex !important;
+                                            justify-content: center !important;
+                                            align-items: center !important;
+                                            transform: none !important;
+                                            z-index: 999999 !important;
+                                        }
+                                        #high-season-modal .hs-card { 
+                                            animation: hsModalIn 0.35s ease-out both !important;
+                                            transform-origin: center center !important;
+                                            margin: auto !important;
+                                        }
                                         #high-season-modal .hs-close-btn:hover { background:rgba(255,255,255,0.18)!important; transform:rotate(90deg) scale(1.08); }
                                         #high-season-modal .hs-btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(245,158,11,0.45)!important; }
                                         #high-season-modal .hs-btn-primary:active { transform:scale(0.97); }
@@ -102,12 +119,12 @@
                                         .hs-typewriter-cursor { font-weight: bold; color: #f59e0b; animation: hsBlink 1s step-end infinite; }
                                         @keyframes hsBlink { 50% { opacity: 0; } }
                                         @media (max-width: 600px) {
-                                            #high-season-modal { padding: 8px !important; align-items: flex-end !important; }
-                                            #high-season-modal .hs-card { border-radius: 20px 20px 16px 16px !important; max-height: 94vh !important; }
+                                            #high-season-modal { padding: 12px !important; align-items: center !important; justify-content: center !important; }
+                                            #high-season-modal .hs-card { border-radius: 20px !important; max-height: 90vh !important; }
                                         }
                                     </style>
-                                    <div id="high-season-modal" style="z-index:10002;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:flex;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
-                                        <div class="hs-card" style="background:linear-gradient(160deg,#0f172a 0%,#181a30 60%,#0f172a 100%);border-radius:24px;width:100%;max-width:440px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(245,158,11,0.25);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
+                                    <div id="high-season-modal" style="z-index:999999;position:fixed;inset:0;width:100vw;height:100%;background:rgba(2,6,23,0.92);display:flex;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transform:none;">
+                                        <div class="hs-card" style="background:linear-gradient(160deg,#0f172a 0%,#181a30 60%,#0f172a 100%);border-radius:24px;width:100%;max-width:440px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(245,158,11,0.25);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;margin:auto;">
 
                                             <!-- Glow accents -->
                                             <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(245,158,11,0.2),transparent 70%);pointer-events:none;z-index:0;"></div>
@@ -983,14 +1000,31 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                     </div>
                 `;return}if(t.droneAvailable===`unavailable`){window.isDroneAvailable=!1;let e=document.getElementById(`drone-main-book-btn`);e&&(e.removeAttribute(`href`),e.style.background=`#cbd5e1`,e.style.cursor=`not-allowed`,e.style.borderColor=`#cbd5e1`,e.innerHTML=`<i class="fa-solid fa-lock"></i> LAYANAN BELUM TERSEDIA`)}if(t.dronePrice){let e=document.getElementById(`drone-base-price`);e&&(e.innerText=i(t.dronePrice).replace(`Rp `,``))}t.comingSoonEnabled===!0&&!window.location.pathname.includes(`/admin`)&&setTimeout(()=>{let e=document.getElementById(`coming-soon-modal`);if(e||(document.body.insertAdjacentHTML(`beforeend`,`
                             <style>
-                                @keyframes csModalIn { 0%{opacity:0;transform:scale(0.88) translateY(28px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+                                @keyframes csModalIn { 0%{opacity:0;transform:scale(0.96)} 100%{opacity:1;transform:scale(1)} }
                                 @keyframes csOverlayIn { 0%{opacity:0} 100%{opacity:1} }
                                 @keyframes csPulseGlow { 0%,100%{box-shadow:0 0 0 1px rgba(99,102,241,0.3),0 0 20px rgba(99,102,241,0.1)} 50%{box-shadow:0 0 0 1px rgba(99,102,241,0.5),0 0 28px rgba(99,102,241,0.22)} }
                                 @keyframes csShimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
                                 @keyframes csCountPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
                                 @keyframes csExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
-                                #coming-soon-modal { animation: csOverlayIn 0.3s ease-out both; }
-                                #coming-soon-modal .cs-card { animation: csModalIn 0.4s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
+                                #coming-soon-modal { 
+                                    animation: csOverlayIn 0.3s ease-out both !important;
+                                    position: fixed !important;
+                                    inset: 0 !important;
+                                    width: 100vw !important;
+                                    height: 100% !important;
+                                    max-width: 100vw !important;
+                                    box-sizing: border-box !important;
+                                    display: none;
+                                    justify-content: center !important;
+                                    align-items: center !important;
+                                    transform: none !important;
+                                    z-index: 999999 !important;
+                                }
+                                #coming-soon-modal .cs-card { 
+                                    animation: csModalIn 0.35s ease-out both !important;
+                                    transform-origin: center center !important;
+                                    margin: auto !important;
+                                }
                                 #coming-soon-modal .cs-close-btn:hover { background:rgba(255,255,255,0.18)!important; transform:rotate(90deg) scale(1.08); }
                                 #coming-soon-modal .cs-btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(79,70,229,0.45)!important; }
                                 #coming-soon-modal .cs-btn-primary:active { transform:scale(0.97); }
@@ -1000,9 +1034,13 @@ TRAVEL LOMBOK AIRPORT 🛵`,u=e=>{if(!e)return``;let t=e.split(`
                                 #cs-detail-panel { animation: csExpandIn 0.4s ease-out both; overflow:hidden; }
                                 .cs-typewriter-cursor { font-weight: bold; color: #a78bfa; animation: csBlink 1s step-end infinite; }
                                 @keyframes csBlink { 50% { opacity: 0; } }
+                                @media (max-width: 600px) {
+                                    #coming-soon-modal { padding: 12px !important; align-items: center !important; justify-content: center !important; }
+                                    #coming-soon-modal .cs-card { border-radius: 20px !important; max-height: 90vh !important; }
+                                }
                             </style>
-                            <div id="coming-soon-modal" style="z-index:10001;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:flex-end;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
-                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px 24px 20px 20px;width:100%;max-width:430px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
+                            <div id="coming-soon-modal" style="z-index:999999;position:fixed;inset:0;width:100vw;height:100%;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transform:none;">
+                                <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px;width:100%;max-width:430px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;margin:auto;">
 
                                     <!-- Glow accents -->
                                     <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(99,102,241,0.16),transparent 70%);pointer-events:none;z-index:0;"></div>
