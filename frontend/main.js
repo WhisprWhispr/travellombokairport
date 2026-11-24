@@ -280,86 +280,200 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     }
                 };
 
-                // 3. Show professional popup modal for event
-                if (!sessionStorage.getItem('eventPopupShown')) {
-                    sessionStorage.setItem('eventPopupShown', 'true');
-                    setTimeout(() => {
-                        const bannerImg = data.eventBannerImage;
-                        const evtName = data.eventName || 'High Season & Liburan Spesial';
-                        const evtDesc = data.eventDesc || 'Musim liburan telah tiba! Booking armada kendaraan dan paket tour Anda lebih awal untuk memastikan ketersediaan unit terbaik di Lombok.';
-                        const priceInc = parseInt(data.eventPriceIncrease) || 0;
-                        const minDays = parseInt(data.eventMinDays) || 4;
+                // 3. Show custom High Season modal (Styled EXACTLY like Coming Soon Event Popup)
+                if (!window.location.pathname.includes('/admin')) {
+                    const hsHideUntil = localStorage.getItem('hs_hide_until');
+                    const shouldShowModal = !hsHideUntil || Date.now() > parseInt(hsHideUntil);
 
-                        let headerHtml = `
-                            <div style="text-align: center; margin-bottom: 12px;">
-                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: white; padding: 4px 14px; border-radius: 20px; font-size: 0.76rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; display: inline-flex; align-items: center; gap: 6px;">
-                                    <i class="fa-solid fa-fire"></i> PENGUMUMAN HIGH SEASON
-                                </span>
-                                <h3 style="font-size: 1.18rem; font-weight: 800; color: #1e293b; margin: 8px 0 0; line-height: 1.35;">${evtName}</h3>
-                            </div>
-                        `;
+                    if (shouldShowModal && !sessionStorage.getItem('hs_session_closed')) {
+                        setTimeout(() => {
+                            let hsModal = document.getElementById('high-season-modal');
+                            if (!hsModal) {
+                                const bannerImg = data.eventBannerImage || '';
+                                const evtName = data.eventName || 'High Season & Liburan Spesial';
+                                const evtDesc = data.eventDesc || 'Musim liburan telah tiba! Booking armada kendaraan dan paket tour Anda lebih awal untuk memastikan ketersediaan unit terbaik di Lombok.';
+                                const priceInc = parseInt(data.eventPriceIncrease) || 0;
+                                const minDays = parseInt(data.eventMinDays) || 4;
+                                const btnText = data.eventBtnText || 'Booking Sekarang';
 
-                        let imgHtml = '';
-                        if (bannerImg) {
-                            imgHtml = `
-                                <div style="border-radius: 12px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.08); border: 1.5px solid #fed7aa; background: #fff; margin-bottom: 12px;">
-                                    <img src="${bannerImg}" alt="${evtName}" style="width: 100%; height: auto; max-height: 400px; display: block; object-fit: contain; margin: 0 auto;">
-                                </div>
-                            `;
-                        }
+                                const modalHTML = `
+                                    <style>
+                                        @keyframes hsModalIn { 0%{opacity:0;transform:scale(0.88) translateY(28px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
+                                        @keyframes hsOverlayIn { 0%{opacity:0} 100%{opacity:1} }
+                                        @keyframes hsPulseGlow { 0%,100%{box-shadow:0 0 0 1px rgba(245,158,11,0.3),0 0 20px rgba(245,158,11,0.15)} 50%{box-shadow:0 0 0 1px rgba(245,158,11,0.6),0 0 28px rgba(245,158,11,0.3)} }
+                                        @keyframes hsShimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
+                                        @keyframes hsExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
+                                        #high-season-modal { animation: hsOverlayIn 0.3s ease-out both; }
+                                        #high-season-modal .hs-card { animation: hsModalIn 0.4s cubic-bezier(0.34,1.4,0.64,1) 0.05s both; }
+                                        #high-season-modal .hs-close-btn:hover { background:rgba(255,255,255,0.18)!important; transform:rotate(90deg) scale(1.08); }
+                                        #high-season-modal .hs-btn-primary:hover { transform:translateY(-2px); box-shadow:0 12px 28px rgba(245,158,11,0.45)!important; }
+                                        #high-season-modal .hs-btn-primary:active { transform:scale(0.97); }
+                                        #high-season-modal .hs-btn-secondary:hover { background:rgba(255,255,255,0.1)!important; }
+                                        .hs-title-clamp { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+                                        .hs-desc-preview { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+                                        #hs-detail-panel { animation: hsExpandIn 0.4s ease-out both; overflow:hidden; }
+                                        .hs-typewriter-cursor { font-weight: bold; color: #f59e0b; animation: hsBlink 1s step-end infinite; }
+                                        @keyframes hsBlink { 50% { opacity: 0; } }
+                                        @media (max-width: 600px) {
+                                            #high-season-modal { padding: 8px !important; align-items: flex-end !important; }
+                                            #high-season-modal .hs-card { border-radius: 20px 20px 16px 16px !important; max-height: 94vh !important; }
+                                        }
+                                    </style>
+                                    <div id="high-season-modal" style="z-index:10002;position:fixed;inset:0;background:rgba(2,6,23,0.92);display:flex;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);">
+                                        <div class="hs-card" style="background:linear-gradient(160deg,#0f172a 0%,#181a30 60%,#0f172a 100%);border-radius:24px;width:100%;max-width:440px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(245,158,11,0.25);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;">
 
-                        let descHtml = '';
-                        if (evtDesc) {
-                            descHtml = `
-                                <div style="background: #f8fafc; border-left: 4px solid #f59e0b; border-radius: 8px; padding: 12px 14px; font-size: 0.85rem; color: #334155; line-height: 1.55; text-align: left; max-height: 120px; overflow-y: auto; margin-bottom: 10px; box-sizing: border-box;">
-                                    ${evtDesc}
-                                </div>
-                            `;
-                        }
+                                            <!-- Glow accents -->
+                                            <div style="position:absolute;top:-40px;right:-40px;width:150px;height:150px;background:radial-gradient(circle,rgba(245,158,11,0.2),transparent 70%);pointer-events:none;z-index:0;"></div>
+                                            <div style="position:absolute;bottom:-20px;left:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(239,68,68,0.15),transparent 70%);pointer-events:none;z-index:0;"></div>
 
-                        let highlightsHtml = '';
-                        if (priceInc > 0) {
-                            highlightsHtml = `
-                                <div style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;">
-                                    <div style="flex: 1; min-width: 170px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; color: #92400e; display: flex; align-items: center; gap: 8px;">
-                                        <i class="fa-solid fa-arrow-trend-up" style="color: #f59e0b; font-size: 1rem;"></i>
-                                        <div>Tarif: <strong>+Rp ${priceInc.toLocaleString('id-ID')}</strong>/unit</div>
+                                            <!-- Close X -->
+                                            <button class="hs-close-btn" onclick="window.closeHighSeasonModal()" style="position:absolute;top:11px;right:11px;z-index:20;background:rgba(0,0,0,0.55);border:1px solid rgba(255,255,255,0.15);width:32px;height:32px;border-radius:50%;color:rgba(255,255,255,0.8);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </button>
+
+                                            <!-- Scrollable content -->
+                                            <div id="hs-scrollable" style="overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
+
+                                                <!-- Flyer Image: Contain, natural ratio, never cropped -->
+                                                ${bannerImg ? `
+                                                <div style="width:100%;max-height:220px;flex-shrink:0;overflow:hidden;position:relative;background:#020617;display:flex;align-items:center;justify-content:center;">
+                                                    <img id="high-season-modal-img" src="${bannerImg}" alt="${evtName}" style="width:100%;height:auto;max-height:220px;object-fit:contain;display:block;">
+                                                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(15,23,42,0.92) 100%);pointer-events:none;"></div>
+                                                    <div style="position:absolute;bottom:10px;left:18px;z-index:3;">
+                                                        <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;padding:4px 11px;border-radius:50px;font-size:0.63rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 12px rgba(239,68,68,0.45);border:1px solid rgba(255,255,255,0.2);">
+                                                            <i class="fa-solid fa-fire" style="font-size:0.55rem;"></i> HIGH SEASON
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                ` : `
+                                                <div style="width:100%;padding:22px 20px 14px;background:linear-gradient(135deg,#b45309,#ea580c);position:relative;">
+                                                    <span style="display:inline-flex;align-items:center;gap:5px;background:rgba(255,255,255,0.2);color:#fff;padding:4px 11px;border-radius:50px;font-size:0.63rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;">
+                                                        <i class="fa-solid fa-fire"></i> HIGH SEASON SPESIAL
+                                                    </span>
+                                                </div>
+                                                `}
+
+                                                <!-- Main compact content -->
+                                                <div style="padding:16px 20px 0;position:relative;z-index:1;">
+                                                    <h2 id="high-season-modal-title" class="hs-title-clamp" style="margin:0 0 8px;color:#f1f5f9;font-size:1.1rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">
+                                                        ${evtName}
+                                                    </h2>
+                                                    <p id="high-season-modal-desc-preview" class="hs-desc-preview" style="margin:0 0 12px;color:#94a3b8;font-size:0.8rem;line-height:1.6;">
+                                                        ${evtDesc}
+                                                    </p>
+
+                                                    <!-- Highlight Cards if priceInc > 0 -->
+                                                    ${priceInc > 0 ? `
+                                                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px;">
+                                                        <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:8px 10px;text-align:left;">
+                                                            <div style="font-size:0.65rem;color:#f59e0b;text-transform:uppercase;font-weight:700;"><i class="fa-solid fa-arrow-trend-up"></i> Penyesuaian Tarif</div>
+                                                            <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-top:2px;">+Rp ${priceInc.toLocaleString('id-ID')}</div>
+                                                        </div>
+                                                        <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.25);border-radius:12px;padding:8px 10px;text-align:left;">
+                                                            <div style="font-size:0.65rem;color:#f59e0b;text-transform:uppercase;font-weight:700;"><i class="fa-solid fa-calendar-days"></i> Min. Durasi Sewa</div>
+                                                            <div style="font-size:0.95rem;font-weight:800;color:#fff;margin-top:2px;">${minDays} Hari</div>
+                                                        </div>
+                                                    </div>
+                                                    ` : ''}
+                                                </div>
+
+                                                <!-- Expanded detail panel with typewriter effect -->
+                                                <div id="hs-detail-panel" style="display:none;padding:0 20px;z-index:1;position:relative;">
+                                                    <div style="height:1px;background:linear-gradient(90deg,transparent,rgba(245,158,11,0.25),transparent);margin-bottom:12px;"></div>
+                                                    <p id="high-season-modal-desc-full" style="margin:0 0 14px;color:#cbd5e1;font-size:0.84rem;line-height:1.75;white-space:pre-wrap;">-</p>
+                                                </div>
+
+                                                <div style="height:4px;"></div>
+                                            </div>
+
+                                            <!-- Sticky action buttons at bottom -->
+                                            <div style="padding:14px 20px 16px;background:linear-gradient(180deg,transparent,rgba(15,23,42,0.98) 30%);position:relative;z-index:10;flex-shrink:0;">
+                                                <div id="hs-btn-group-compact" style="display:flex;gap:10px;">
+                                                    <!-- Lihat Nanti (blokir 5 jam) -->
+                                                    <button class="hs-btn-secondary" onclick="window.closeHighSeasonModal(true)" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;">
+                                                        Lihat Nanti
+                                                    </button>
+                                                    <!-- Selengkapnya / Booking Sekarang -->
+                                                    <button class="hs-btn-primary" id="hs-see-now-btn" onclick="window._hsExpandDetail()" style="flex:2;position:relative;overflow:hidden;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none;padding:12px 8px;border-radius:50px;font-size:0.88rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(245,158,11,0.4);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:7px;">
+                                                        <i class="fa-solid fa-calendar-check" style="font-size:0.8rem;"></i>
+                                                        ${btnText}
+                                                        <div style="position:absolute;top:0;left:-100%;width:55%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.2),transparent);animation:hsShimmer 2.5s ease-in-out infinite;"></div>
+                                                    </button>
+                                                </div>
+                                                <!-- After expand: booking button -->
+                                                <div id="hs-btn-group-expanded" style="display:none;">
+                                                    <button class="hs-btn-primary" onclick="window.highSeasonBookingAction()" style="width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff;border:none;padding:13px 8px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(245,158,11,0.4);display:flex;align-items:center;justify-content:center;gap:8px;">
+                                                        <i class="fa-solid fa-calendar-check"></i>
+                                                        ${btnText} &rarr;
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                        </div>
                                     </div>
-                                    <div style="flex: 1; min-width: 170px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 8px 12px; font-size: 0.8rem; color: #92400e; display: flex; align-items: center; gap: 8px;">
-                                        <i class="fa-solid fa-calendar-days" style="color: #f59e0b; font-size: 1rem;"></i>
-                                        <div>Min. Sewa: <strong>${minDays} Hari</strong></div>
-                                    </div>
-                                </div>
-                            `;
-                        }
+                                `;
 
-                        Swal.fire({
-                            width: '560px',
-                            padding: '18px 20px 20px',
-                            showCloseButton: true,
-                            showConfirmButton: true,
-                            confirmButtonText: '<i class="fa-solid fa-calendar-check"></i> ' + (data.eventBtnText || 'Booking Sekarang'),
-                            showCancelButton: true,
-                            cancelButtonText: 'Tutup',
-                            confirmButtonColor: '#f59e0b',
-                            cancelButtonColor: '#94a3b8',
-                            customClass: { popup: 'high-season-popup-clean' },
-                            backdrop: `rgba(15,23,42,0.8)`,
-                            html: `
-                                <div style="text-align: left;">
-                                    ${headerHtml}
-                                    ${imgHtml}
-                                    ${descHtml}
-                                    ${highlightsHtml}
-                                </div>
-                            `
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                const bookingEl = document.getElementById('booking') || document.getElementById('quick-booking-form');
-                                if (bookingEl) bookingEl.scrollIntoView({ behavior: 'smooth' });
+                                document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+                                window._hsFullText = evtDesc;
+                                window._hsTyped = false;
+
+                                window._hsExpandDetail = () => {
+                                    const panel = document.getElementById('hs-detail-panel');
+                                    const compact = document.getElementById('hs-btn-group-compact');
+                                    const expanded = document.getElementById('hs-btn-group-expanded');
+                                    const scroller = document.getElementById('hs-scrollable');
+                                    const fullDesc = document.getElementById('high-season-modal-desc-full');
+
+                                    if (panel) panel.style.display = 'block';
+                                    if (compact) compact.style.display = 'none';
+                                    if (expanded) expanded.style.display = 'block';
+
+                                    if (fullDesc && window._hsFullText && !window._hsTyped) {
+                                        window._hsTyped = true;
+                                        fullDesc.innerHTML = '<span class="hs-typewriter-cursor">|</span>';
+                                        let i = 0;
+                                        const text = window._hsFullText;
+                                        const speed = 12;
+
+                                        function typeWriter() {
+                                            if (i < text.length) {
+                                                fullDesc.innerHTML = text.substring(0, i + 1) + '<span class="hs-typewriter-cursor">|</span>';
+                                                i++;
+                                                setTimeout(typeWriter, speed);
+                                                if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'auto' });
+                                            } else {
+                                                fullDesc.innerHTML = text;
+                                                if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' });
+                                            }
+                                        }
+                                        setTimeout(typeWriter, 80);
+                                    } else {
+                                        setTimeout(() => { if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' }); }, 80);
+                                    }
+                                };
+
+                                window.closeHighSeasonModal = (hide5Hours = false) => {
+                                    const modal = document.getElementById('high-season-modal');
+                                    if (modal) {
+                                        modal.style.transition = 'opacity 0.25s ease';
+                                        modal.style.opacity = '0';
+                                        setTimeout(() => { modal.style.display = 'none'; }, 250);
+                                    }
+                                    sessionStorage.setItem('hs_session_closed', 'true');
+                                    if (hide5Hours) {
+                                        localStorage.setItem('hs_hide_until', Date.now() + 5 * 60 * 60 * 1000);
+                                    }
+                                };
+
+                                window.highSeasonBookingAction = () => {
+                                    window.closeHighSeasonModal();
+                                    const bookingEl = document.getElementById('booking') || document.getElementById('quick-booking-form');
+                                    if (bookingEl) bookingEl.scrollIntoView({ behavior: 'smooth' });
+                                };
                             }
-                        });
-                    }, 1000); // delay 1 second after load
+                        }, 800);
+                    }
                 }
             }
             // ====== END EVENT MODE ======
