@@ -305,16 +305,10 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                             <!-- Scrollable content -->
                                             <div id="hs-scrollable" style="overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;">
 
-                                                <!-- Flyer Image: Contain, natural ratio, never cropped -->
+                                                <!-- Flyer Image: 100% Full Width Edge-to-Edge, pas presisi dengan kartu modal -->
                                                 ${bannerImg ? `
-                                                <div style="width:100%;max-height:220px;flex-shrink:0;overflow:hidden;position:relative;background:#020617;display:flex;align-items:center;justify-content:center;">
-                                                    <img id="high-season-modal-img" src="${bannerImg}" alt="${evtName}" style="width:100%;height:auto;max-height:220px;object-fit:contain;display:block;">
-                                                    <div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,0.05) 0%,rgba(15,23,42,0.92) 100%);pointer-events:none;"></div>
-                                                    <div style="position:absolute;bottom:10px;left:18px;z-index:3;">
-                                                        <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;padding:4px 11px;border-radius:50px;font-size:0.63rem;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;box-shadow:0 4px 12px rgba(239,68,68,0.45);border:1px solid rgba(255,255,255,0.2);">
-                                                            <i class="fa-solid fa-fire" style="font-size:0.55rem;"></i> HIGH SEASON
-                                                        </span>
-                                                    </div>
+                                                <div style="width:100%;flex-shrink:0;overflow:hidden;position:relative;background:#0f172a;line-height:0;">
+                                                    <img id="high-season-modal-img" src="${bannerImg}" alt="${evtName}" style="width:100%;height:auto;display:block;">
                                                 </div>
                                                 ` : `
                                                 <div style="width:100%;padding:22px 20px 14px;background:linear-gradient(135deg,#b45309,#ea580c);position:relative;">
@@ -326,6 +320,11 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
 
                                                 <!-- Main compact content -->
                                                 <div style="padding:16px 20px 0;position:relative;z-index:1;">
+                                                    <div style="margin-bottom:8px;">
+                                                        <span style="display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,#ef4444,#f59e0b);color:#fff;padding:4px 12px;border-radius:50px;font-size:0.65rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;box-shadow:0 3px 8px rgba(239,68,68,0.35);">
+                                                            <i class="fa-solid fa-fire" style="font-size:0.55rem;"></i> HIGH SEASON
+                                                        </span>
+                                                    </div>
                                                     <h2 id="high-season-modal-title" class="hs-title-clamp" style="margin:0 0 8px;color:#f1f5f9;font-size:1.1rem;font-weight:800;line-height:1.35;letter-spacing:-0.015em;">
                                                         ${evtName}
                                                     </h2>
