@@ -1,48 +1,89 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<6;e++)t+=`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`.charAt(Math.floor(Math.random()*32));return t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0,eventDesc:t.eventDesc||``,eventMinDays:parseInt(t.eventMinDays)||4,eventBtnText:t.eventBtnText||``,eventBannerImage:t.eventBannerImage||``},t.eventMode===!0){let e=document.createElement(`div`);e.id=`event-mode-banner`;let n=t.eventBannerImage?`<img src="${t.eventBannerImage}" style="width:26px;height:26px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,0.4);">`:``,r=parseInt(t.eventPriceIncrease)>0?`| +Rp ${parseInt(t.eventPriceIncrease).toLocaleString(`id-ID`)} (Min. ${parseInt(t.eventMinDays)||4} Hari)`:``;e.innerHTML=`
-                    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-top: 2px solid #f59e0b; color: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9980; box-shadow: 0 -4px 20px rgba(0,0,0,0.45); font-family: 'Outfit', sans-serif;">
-                        <div style="max-width: 1200px; margin: 0 auto; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                            <!-- Sisi Kiri: Badge + Judul Rapi (Ellipsis, tidak pecah baris di HP) -->
-                            <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-                                ${n}
-                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: #fff; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.4px; box-shadow: 0 2px 6px rgba(239,68,68,0.35);">
-                                    <i class="fa-solid fa-fire"></i> HIGH SEASON
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<6;e++)t+=`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`.charAt(Math.floor(Math.random()*32));return t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0,eventDesc:t.eventDesc||``,eventMinDays:parseInt(t.eventMinDays)||4,eventBtnText:t.eventBtnText||``,eventBannerImage:t.eventBannerImage||``},t.eventMode===!0){let e=document.createElement(`div`);e.id=`event-mode-banner`;let n=`<strong>${t.eventName||`Periode High Season & Liburan Spesial`}</strong> ${parseInt(t.eventPriceIncrease)>0?`• Penyesuaian Tarif: +Rp ${parseInt(t.eventPriceIncrease).toLocaleString(`id-ID`)} (Min. ${parseInt(t.eventMinDays)||4} Hari)`:``} ${t.eventDesc?`• ${t.eventDesc.replace(/[\r\n]+/g,` `)}`:`• Amankan unit kendaraan dan paket tour liburan Anda lebih awal!`} • Silakan lakukan reservasi lebih awal sebelum armada penuh!`;e.innerHTML=`
+                    <div style="background: linear-gradient(135deg, #0b1120 0%, #171f38 100%); border-top: 2px solid #f59e0b; color: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9980; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); font-family: 'Outfit', sans-serif;">
+                        <div style="max-width: 1400px; margin: 0 auto; padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            
+                            <!-- Sisi Kiri: Badge Diam -->
+                            <div style="flex-shrink: 0; display: flex; align-items: center;">
+                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: #fff; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; letter-spacing: 0.4px; box-shadow: 0 2px 6px rgba(239,68,68,0.35); display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-fire"></i> <span class="hs-badge-text">HIGH SEASON</span>
                                 </span>
-                                <div style="min-width: 0; flex: 1; overflow: hidden;">
-                                    <div style="color: #f8fafc; font-weight: 700; font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        ${t.eventName||`Periode High Season & Liburan`}
-                                    </div>
-                                    ${r?`<div style="color: #cbd5e1; font-size: 0.71rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${r}</div>`:``}
+                            </div>
+
+                            <!-- Bagian Tengah: Smooth Running Text (Marquee) -->
+                            <div class="hs-marquee-box" onclick="window.highSeasonBookingAction()" style="cursor: pointer;" title="Klik untuk booking">
+                                <div class="hs-marquee-track">
+                                    <span class="hs-marquee-chunk">${n} &nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;</span>
+                                    <span class="hs-marquee-chunk">${n} &nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;</span>
                                 </div>
                             </div>
 
-                            <!-- Sisi Kanan: Tombol Aksi + Tombol Close (X) -->
-                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                                <a href="#booking" style="background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; text-decoration: none; font-size: 0.76rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 8px rgba(245,158,11,0.3); display: inline-flex; align-items: center; gap: 5px;">
-                                    <span>Booking</span> <i class="fa-solid fa-arrow-right" style="font-size: 0.65rem;"></i>
+                            <!-- Sisi Kanan: Tombol Aksi + Tombol Close (X) Diam -->
+                            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                                <a href="#booking" style="background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; text-decoration: none; font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 8px rgba(245,158,11,0.3); display: inline-flex; align-items: center; gap: 4px;">
+                                    <span>Booking</span> <i class="fa-solid fa-arrow-right" style="font-size: 0.6rem;"></i>
                                 </a>
-                                <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Tutup Pengumuman" aria-label="Tutup Pengumuman" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; transition: all 0.2s ease;">
+                                <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Tutup Pengumuman" aria-label="Tutup Pengumuman" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; transition: all 0.2s ease;">
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
                             </div>
+
                         </div>
                     </div>
-                `,document.body.classList.add(`has-event-banner`),document.body.firstChild?document.body.insertBefore(e,document.body.firstChild):document.body.appendChild(e);let i=document.createElement(`style`);if(i.id=`event-chat-fix`,i.innerHTML=`
+                `,document.body.classList.add(`has-event-banner`),document.body.firstChild?document.body.insertBefore(e,document.body.firstChild):document.body.appendChild(e);let r=document.createElement(`style`);if(r.id=`event-chat-fix`,r.innerHTML=`
+                    @keyframes hsRunningText {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-50%); }
+                    }
+                    .hs-marquee-box {
+                        overflow: hidden;
+                        white-space: nowrap;
+                        position: relative;
+                        flex: 1;
+                        min-width: 0;
+                        display: flex;
+                        align-items: center;
+                        mask-image: linear-gradient(90deg, transparent 0%, #000 14px, #000 calc(100% - 14px), transparent 100%);
+                        -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14px, #000 calc(100% - 14px), transparent 100%);
+                    }
+                    .hs-marquee-track {
+                        display: inline-flex;
+                        align-items: center;
+                        white-space: nowrap;
+                        animation: hsRunningText 26s linear infinite;
+                        font-size: 0.8rem;
+                        color: #e2e8f0;
+                        font-weight: 500;
+                    }
+                    .hs-marquee-track strong {
+                        color: #f59e0b;
+                        font-weight: 700;
+                    }
+                    .hs-marquee-box:hover .hs-marquee-track,
+                    .hs-marquee-box:active .hs-marquee-track {
+                        animation-play-state: paused;
+                    }
                     body.has-event-banner #ai-chat-widget,
                     body.has-event-banner #ai-chat-btn {
-                        bottom: 75px !important;
+                        bottom: 72px !important;
                         transition: bottom 0.3s ease !important;
                     }
                     @media (max-width: 768px) {
                         body.has-event-banner #ai-chat-widget,
                         body.has-event-banner #ai-chat-btn {
-                            bottom: 75px !important;
-                            right: 16px !important;
+                            bottom: 72px !important;
+                            right: 14px !important;
                         }
-                        #event-mode-banner img {
+                        .hs-marquee-track {
+                            font-size: 0.74rem !important;
+                            animation-duration: 22s !important;
+                        }
+                    }
+                    @media (max-width: 420px) {
+                        .hs-badge-text {
                             display: none !important;
                         }
                     }
-                `,document.head.appendChild(i),window.dismissEventBanner=()=>{let e=document.getElementById(`event-mode-banner`);document.body.classList.remove(`has-event-banner`),e&&(e.style.transition=`all 0.35s cubic-bezier(0.4, 0, 0.2, 1)`,e.style.transform=`translateY(100%)`,e.style.opacity=`0`,setTimeout(()=>{e.remove(),document.getElementById(`event-chat-fix`)?.remove()},350))},!window.location.pathname.includes(`/admin`)){let e=localStorage.getItem(`hs_hide_until`);(!e||Date.now()>parseInt(e))&&!sessionStorage.getItem(`hs_session_closed`)&&setTimeout(()=>{if(!document.getElementById(`high-season-modal`)){let e=t.eventBannerImage||``,n=t.eventName||`High Season & Liburan Spesial`,r=t.eventDesc||`Musim liburan telah tiba! Booking armada kendaraan dan paket tour Anda lebih awal untuk memastikan ketersediaan unit terbaik di Lombok.`,i=parseInt(t.eventPriceIncrease)||0,a=parseInt(t.eventMinDays)||4,o=t.eventBtnText||`Booking Sekarang`,s=`
+                `,document.head.appendChild(r),window.dismissEventBanner=()=>{let e=document.getElementById(`event-mode-banner`);document.body.classList.remove(`has-event-banner`),e&&(e.style.transition=`all 0.35s cubic-bezier(0.4, 0, 0.2, 1)`,e.style.transform=`translateY(100%)`,e.style.opacity=`0`,setTimeout(()=>{e.remove(),document.getElementById(`event-chat-fix`)?.remove()},350))},!window.location.pathname.includes(`/admin`)){let e=localStorage.getItem(`hs_hide_until`);(!e||Date.now()>parseInt(e))&&!sessionStorage.getItem(`hs_session_closed`)&&setTimeout(()=>{if(!document.getElementById(`high-season-modal`)){let e=t.eventBannerImage||``,n=t.eventName||`High Season & Liburan Spesial`,r=t.eventDesc||`Musim liburan telah tiba! Booking armada kendaraan dan paket tour Anda lebih awal untuk memastikan ketersediaan unit terbaik di Lombok.`,i=parseInt(t.eventPriceIncrease)||0,a=parseInt(t.eventMinDays)||4,o=t.eventBtnText||`Booking Sekarang`,s=`
                                     <style>
                                         @keyframes hsModalIn { 0%{opacity:0;transform:scale(0.88) translateY(28px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
                                         @keyframes hsOverlayIn { 0%{opacity:0} 100%{opacity:1} }

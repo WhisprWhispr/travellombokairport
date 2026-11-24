@@ -125,38 +125,44 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
 
             // Inject High Season (Popup Modal & Floating Bar) jika aktif
             if (data.eventMode === true) {
-                // 1. Bottom Floating Announcement Bar (Sleek Dark Theme, Rapih & Responsive)
+                // 1. Bottom Floating Announcement Bar (Modern Running Text / Marquee)
                 const eventBanner = document.createElement('div');
                 eventBanner.id = 'event-mode-banner';
-                const bannerThumb = data.eventBannerImage ? `<img src="${data.eventBannerImage}" style="width:26px;height:26px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid rgba(255,255,255,0.4);">` : '';
-                const priceText = parseInt(data.eventPriceIncrease) > 0 ? `| +Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')} (Min. ${parseInt(data.eventMinDays) || 4} Hari)` : '';
                 
+                const evtTitle = data.eventName || 'Periode High Season & Liburan Spesial';
+                const priceNote = parseInt(data.eventPriceIncrease) > 0 ? `• Penyesuaian Tarif: +Rp ${parseInt(data.eventPriceIncrease).toLocaleString('id-ID')} (Min. ${parseInt(data.eventMinDays) || 4} Hari)` : '';
+                const evtDescSnippet = data.eventDesc ? `• ${data.eventDesc.replace(/[\r\n]+/g, ' ')}` : '• Amankan unit kendaraan dan paket tour liburan Anda lebih awal!';
+                const marqueeMsg = `<strong>${evtTitle}</strong> ${priceNote} ${evtDescSnippet} • Silakan lakukan reservasi lebih awal sebelum armada penuh!`;
+
                 eventBanner.innerHTML = `
-                    <div style="background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%); border-top: 2px solid #f59e0b; color: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9980; box-shadow: 0 -4px 20px rgba(0,0,0,0.45); font-family: 'Outfit', sans-serif;">
-                        <div style="max-width: 1200px; margin: 0 auto; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-                            <!-- Sisi Kiri: Badge + Judul Rapi (Ellipsis, tidak pecah baris di HP) -->
-                            <div style="display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1;">
-                                ${bannerThumb}
-                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: #fff; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; flex-shrink: 0; letter-spacing: 0.4px; box-shadow: 0 2px 6px rgba(239,68,68,0.35);">
-                                    <i class="fa-solid fa-fire"></i> HIGH SEASON
+                    <div style="background: linear-gradient(135deg, #0b1120 0%, #171f38 100%); border-top: 2px solid #f59e0b; color: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9980; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); font-family: 'Outfit', sans-serif;">
+                        <div style="max-width: 1400px; margin: 0 auto; padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                            
+                            <!-- Sisi Kiri: Badge Diam -->
+                            <div style="flex-shrink: 0; display: flex; align-items: center;">
+                                <span style="background: linear-gradient(135deg, #ef4444, #f59e0b); color: #fff; padding: 3px 9px; border-radius: 20px; font-size: 0.68rem; font-weight: 800; white-space: nowrap; letter-spacing: 0.4px; box-shadow: 0 2px 6px rgba(239,68,68,0.35); display: inline-flex; align-items: center; gap: 4px;">
+                                    <i class="fa-solid fa-fire"></i> <span class="hs-badge-text">HIGH SEASON</span>
                                 </span>
-                                <div style="min-width: 0; flex: 1; overflow: hidden;">
-                                    <div style="color: #f8fafc; font-weight: 700; font-size: 0.82rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                                        ${data.eventName || 'Periode High Season & Liburan'}
-                                    </div>
-                                    ${priceText ? `<div style="color: #cbd5e1; font-size: 0.71rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${priceText}</div>` : ''}
+                            </div>
+
+                            <!-- Bagian Tengah: Smooth Running Text (Marquee) -->
+                            <div class="hs-marquee-box" onclick="window.highSeasonBookingAction()" style="cursor: pointer;" title="Klik untuk booking">
+                                <div class="hs-marquee-track">
+                                    <span class="hs-marquee-chunk">${marqueeMsg} &nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;</span>
+                                    <span class="hs-marquee-chunk">${marqueeMsg} &nbsp;&nbsp;&bull;&nbsp;&nbsp;&nbsp;</span>
                                 </div>
                             </div>
 
-                            <!-- Sisi Kanan: Tombol Aksi + Tombol Close (X) -->
-                            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-                                <a href="#booking" style="background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; text-decoration: none; font-size: 0.76rem; font-weight: 700; padding: 6px 14px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 8px rgba(245,158,11,0.3); display: inline-flex; align-items: center; gap: 5px;">
-                                    <span>Booking</span> <i class="fa-solid fa-arrow-right" style="font-size: 0.65rem;"></i>
+                            <!-- Sisi Kanan: Tombol Aksi + Tombol Close (X) Diam -->
+                            <div style="display: flex; align-items: center; gap: 6px; flex-shrink: 0;">
+                                <a href="#booking" style="background: linear-gradient(135deg, #f59e0b, #ea580c); color: #fff; text-decoration: none; font-size: 0.75rem; font-weight: 700; padding: 5px 12px; border-radius: 20px; white-space: nowrap; box-shadow: 0 2px 8px rgba(245,158,11,0.3); display: inline-flex; align-items: center; gap: 4px;">
+                                    <span>Booking</span> <i class="fa-solid fa-arrow-right" style="font-size: 0.6rem;"></i>
                                 </a>
-                                <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Tutup Pengumuman" aria-label="Tutup Pengumuman" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); width: 28px; height: 28px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; transition: all 0.2s ease;">
+                                <button onclick="window.dismissEventBanner()" class="event-banner-close-btn" title="Tutup Pengumuman" aria-label="Tutup Pengumuman" style="background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); color: rgba(255,255,255,0.85); width: 26px; height: 26px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; flex-shrink: 0; transition: all 0.2s ease;">
                                     <i class="fa-solid fa-xmark"></i>
                                 </button>
                             </div>
+
                         </div>
                     </div>
                 `;
@@ -171,22 +177,60 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     document.body.appendChild(eventBanner);
                 }
                 
-                // Fix layout & overlay chat widget (angkat Tanya AIRA di atas banner)
+                // Fix layout, smooth running text animation & overlay chat widget
                 const styleObj = document.createElement('style');
                 styleObj.id = 'event-chat-fix';
                 styleObj.innerHTML = `
+                    @keyframes hsRunningText {
+                        0% { transform: translateX(0); }
+                        100% { transform: translateX(-50%); }
+                    }
+                    .hs-marquee-box {
+                        overflow: hidden;
+                        white-space: nowrap;
+                        position: relative;
+                        flex: 1;
+                        min-width: 0;
+                        display: flex;
+                        align-items: center;
+                        mask-image: linear-gradient(90deg, transparent 0%, #000 14px, #000 calc(100% - 14px), transparent 100%);
+                        -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 14px, #000 calc(100% - 14px), transparent 100%);
+                    }
+                    .hs-marquee-track {
+                        display: inline-flex;
+                        align-items: center;
+                        white-space: nowrap;
+                        animation: hsRunningText 26s linear infinite;
+                        font-size: 0.8rem;
+                        color: #e2e8f0;
+                        font-weight: 500;
+                    }
+                    .hs-marquee-track strong {
+                        color: #f59e0b;
+                        font-weight: 700;
+                    }
+                    .hs-marquee-box:hover .hs-marquee-track,
+                    .hs-marquee-box:active .hs-marquee-track {
+                        animation-play-state: paused;
+                    }
                     body.has-event-banner #ai-chat-widget,
                     body.has-event-banner #ai-chat-btn {
-                        bottom: 75px !important;
+                        bottom: 72px !important;
                         transition: bottom 0.3s ease !important;
                     }
                     @media (max-width: 768px) {
                         body.has-event-banner #ai-chat-widget,
                         body.has-event-banner #ai-chat-btn {
-                            bottom: 75px !important;
-                            right: 16px !important;
+                            bottom: 72px !important;
+                            right: 14px !important;
                         }
-                        #event-mode-banner img {
+                        .hs-marquee-track {
+                            font-size: 0.74rem !important;
+                            animation-duration: 22s !important;
+                        }
+                    }
+                    @media (max-width: 420px) {
+                        .hs-badge-text {
                             display: none !important;
                         }
                     }
