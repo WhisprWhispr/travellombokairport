@@ -136,6 +136,19 @@ async function generateSitemap() {
   </url>
 `;
 
+  // Read existing articles from public/sitemap.xml as fallback in case network/API is unreachable
+  const publicPath = path.resolve(import.meta.dirname, 'public', 'sitemap.xml');
+  let existingArticlesFallback = '';
+  if (fs.existsSync(publicPath)) {
+    try {
+      const prevContent = fs.readFileSync(publicPath, 'utf-8');
+      const articleMatches = prevContent.match(/(<!-- Artikel:[\s\S]*?<\/url>)/g);
+      if (articleMatches && articleMatches.length > 0) {
+        existingArticlesFallback = '  ' + articleMatches.join('\n  ') + '\n';
+      }
+    } catch (_) {}
+  }
+
   try {
     let blogs = [];
     try {
@@ -171,17 +184,24 @@ async function generateSitemap() {
   </url>\n`;
       });
       console.log(`Successfully added ${blogs.length} dynamic blog articles to sitemap.`);
+    } else if (existingArticlesFallback) {
+      console.log("Preserved existing blog articles in sitemap.");
+      sitemap += existingArticlesFallback;
     } else {
       console.warn("API blogs response not OK, skipping dynamic blog URLs.");
     }
   } catch (e) {
-    console.warn("Could not fetch blogs during build:", e.message);
+    if (existingArticlesFallback) {
+      console.log("Preserved existing blog articles in sitemap after error.");
+      sitemap += existingArticlesFallback;
+    } else {
+      console.warn("Could not fetch blogs during build:", e.message);
+    }
   }
 
   sitemap += `</urlset>\n`;
   
   // Write to public/sitemap.xml
-  const publicPath = path.resolve(import.meta.dirname, 'public', 'sitemap.xml');
   fs.writeFileSync(publicPath, sitemap, 'utf-8');
   console.log("Sitemap written to", publicPath);
 

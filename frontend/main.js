@@ -251,6 +251,47 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                     }
                 };
 
+                // Close & Action handlers for High Season Modal (Defined globally so always accessible)
+                window.closeHighSeasonModal = (hide5Hours = false) => {
+                    sessionStorage.setItem('hs_session_closed', 'true');
+                    if (hide5Hours) {
+                        localStorage.setItem('hs_hide_until', Date.now() + 5 * 60 * 60 * 1000);
+                    }
+                    const modal = document.getElementById('high-season-modal');
+                    if (modal) {
+                        modal.classList.add('hs-closing');
+                        modal.style.setProperty('opacity', '0', 'important');
+                        modal.style.setProperty('pointer-events', 'none', 'important');
+                        setTimeout(() => {
+                            modal.classList.add('hs-hidden');
+                            modal.style.setProperty('display', 'none', 'important');
+                            modal.remove();
+                        }, 250);
+                    }
+                };
+
+                window.highSeasonBookingAction = () => {
+                    window.closeHighSeasonModal();
+                    setTimeout(() => {
+                        const bookingEl = document.getElementById('booking') || document.getElementById('quick-booking-form');
+                        if (bookingEl) {
+                            bookingEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            const formCard = document.querySelector('.booking-card') || bookingEl;
+                            if (formCard) {
+                                formCard.style.transition = 'box-shadow 0.4s ease, transform 0.4s ease';
+                                formCard.style.boxShadow = '0 0 0 3px rgba(245, 158, 11, 0.6), 0 10px 30px rgba(245, 158, 11, 0.2)';
+                                formCard.style.transform = 'scale(1.01)';
+                                setTimeout(() => {
+                                    formCard.style.boxShadow = '';
+                                    formCard.style.transform = '';
+                                }, 1800);
+                            }
+                        } else {
+                            window.location.href = '/#booking';
+                        }
+                    }, 120);
+                };
+
                 // 3. Show custom High Season modal (Styled EXACTLY like Coming Soon Event Popup)
                 if (!window.location.pathname.includes('/admin')) {
                     const hsHideUntil = localStorage.getItem('hs_hide_until');
@@ -275,18 +316,26 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                         @keyframes hsShimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(200%)} }
                                         @keyframes hsExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
                                         #high-season-modal { 
-                                            animation: hsOverlayIn 0.3s ease-out both !important;
+                                            animation: hsOverlayIn 0.3s ease-out;
                                             position: fixed !important;
                                             inset: 0 !important;
                                             width: 100vw !important;
                                             height: 100% !important;
                                             max-width: 100vw !important;
                                             box-sizing: border-box !important;
-                                            display: flex !important;
+                                            display: flex;
                                             justify-content: center !important;
                                             align-items: center !important;
                                             transform: none !important;
                                             z-index: 999999 !important;
+                                            transition: opacity 0.25s ease;
+                                        }
+                                        #high-season-modal.hs-closing {
+                                            opacity: 0 !important;
+                                            pointer-events: none !important;
+                                        }
+                                        #high-season-modal.hs-hidden {
+                                            display: none !important;
                                         }
                                         #high-season-modal .hs-card { 
                                             animation: hsModalIn 0.35s ease-out both !important;
@@ -307,7 +356,7 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                             #high-season-modal .hs-card { border-radius: 20px !important; max-height: 90vh !important; }
                                         }
                                     </style>
-                                    <div id="high-season-modal" style="z-index:999999;position:fixed;inset:0;width:100vw;height:100%;background:rgba(2,6,23,0.92);display:flex;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transform:none;">
+                                    <div id="high-season-modal" onclick="if(event.target===this)window.closeHighSeasonModal()" style="z-index:999999;position:fixed;inset:0;width:100vw;height:100%;background:rgba(2,6,23,0.92);display:flex;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transform:none;">
                                         <div class="hs-card" style="background:linear-gradient(160deg,#0f172a 0%,#181a30 60%,#0f172a 100%);border-radius:24px;width:100%;max-width:440px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.6),0 0 0 1px rgba(245,158,11,0.25);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;margin:auto;">
 
                                             <!-- Glow accents -->
@@ -459,25 +508,6 @@ window.copyText = (text, btnElement, successHtml, defaultHtml, event) => {
                                     } else {
                                         setTimeout(() => { if (scroller) scroller.scrollTo({ top: scroller.scrollHeight, behavior: 'smooth' }); }, 50);
                                     }
-                                };
-
-                                window.closeHighSeasonModal = (hide5Hours = false) => {
-                                    const modal = document.getElementById('high-season-modal');
-                                    if (modal) {
-                                        modal.style.transition = 'opacity 0.25s ease';
-                                        modal.style.opacity = '0';
-                                        setTimeout(() => { modal.style.display = 'none'; }, 250);
-                                    }
-                                    sessionStorage.setItem('hs_session_closed', 'true');
-                                    if (hide5Hours) {
-                                        localStorage.setItem('hs_hide_until', Date.now() + 5 * 60 * 60 * 1000);
-                                    }
-                                };
-
-                                window.highSeasonBookingAction = () => {
-                                    window.closeHighSeasonModal();
-                                    const bookingEl = document.getElementById('booking') || document.getElementById('quick-booking-form');
-                                    if (bookingEl) bookingEl.scrollIntoView({ behavior: 'smooth' });
                                 };
                             }
                         }, 800);
@@ -2803,14 +2833,19 @@ const createDroneCard = (item, index = 0) => {
 };
 
 // Close Coming Soon Modal
-window.closeComingSoonModal = () => {
+window.closeComingSoonModal = (hide5Hours = false) => {
+    if (hide5Hours) {
+        localStorage.setItem('cs_hide_until', Date.now() + 5 * 60 * 60 * 1000);
+    }
+    sessionStorage.setItem('cs_session_closed', 'true');
     const modal = document.getElementById('coming-soon-modal');
     if (modal) {
-        modal.style.animation = 'reviewFadeOut 0.2s cubic-bezier(0.34,1.56,0.64,1) forwards';
+        modal.style.transition = 'opacity 0.25s ease';
+        modal.style.opacity = '0';
+        modal.style.pointerEvents = 'none';
         setTimeout(() => {
             modal.style.display = 'none';
-            modal.style.animation = ''; // Reset for next time if needed
-        }, 200);
+        }, 250);
     }
 };
 
@@ -2969,7 +3004,7 @@ const init = async () => {
                                 @keyframes csCountPop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.1)} }
                                 @keyframes csExpandIn { 0%{opacity:0;max-height:0} 100%{opacity:1;max-height:600px} }
                                 #coming-soon-modal { 
-                                    animation: csOverlayIn 0.3s ease-out both !important;
+                                    animation: csOverlayIn 0.3s ease-out;
                                     position: fixed !important;
                                     inset: 0 !important;
                                     width: 100vw !important;
@@ -2981,6 +3016,7 @@ const init = async () => {
                                     align-items: center !important;
                                     transform: none !important;
                                     z-index: 999999 !important;
+                                    transition: opacity 0.25s ease;
                                 }
                                 #coming-soon-modal .cs-card { 
                                     animation: csModalIn 0.35s ease-out both !important;
@@ -3001,7 +3037,7 @@ const init = async () => {
                                     #coming-soon-modal .cs-card { border-radius: 20px !important; max-height: 90vh !important; }
                                 }
                             </style>
-                            <div id="coming-soon-modal" style="z-index:999999;position:fixed;inset:0;width:100vw;height:100%;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transform:none;">
+                            <div id="coming-soon-modal" onclick="if(event.target===this)window.closeComingSoonModal()" style="z-index:999999;position:fixed;inset:0;width:100vw;height:100%;background:rgba(2,6,23,0.92);display:none;justify-content:center;align-items:center;padding:12px;-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);transform:none;">
                                 <div class="cs-card" style="background:linear-gradient(160deg,#0f172a,#171f38);border-radius:24px;width:100%;max-width:430px;position:relative;box-shadow:0 -8px 40px rgba(0,0,0,0.5),0 0 0 1px rgba(255,255,255,0.07);overflow:hidden;max-height:92vh;display:flex;flex-direction:column;margin:auto;">
 
                                     <!-- Glow accents -->
@@ -3009,7 +3045,7 @@ const init = async () => {
                                     <div style="position:absolute;bottom:-20px;left:-20px;width:120px;height:120px;background:radial-gradient(circle,rgba(16,185,129,0.09),transparent 70%);pointer-events:none;z-index:0;"></div>
 
                                     <!-- Close X -->
-                                    <button class="cs-close-btn" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="position:absolute;top:11px;right:11px;z-index:20;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.1);width:32px;height:32px;border-radius:50%;color:rgba(255,255,255,0.7);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;">
+                                    <button class="cs-close-btn" onclick="window.closeComingSoonModal()" style="position:absolute;top:11px;right:11px;z-index:20;background:rgba(0,0,0,0.45);border:1px solid rgba(255,255,255,0.1);width:32px;height:32px;border-radius:50%;color:rgba(255,255,255,0.7);font-size:0.8rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.25s ease;">
                                         <i class="fa-solid fa-xmark"></i>
                                     </button>
 
@@ -3070,7 +3106,7 @@ const init = async () => {
                                     <div style="padding:14px 20px 16px;background:linear-gradient(180deg,transparent,rgba(15,23,42,0.98) 30%);position:relative;z-index:10;flex-shrink:0;">
                                         <div id="cs-btn-group-compact" style="display:flex;gap:10px;">
                                             <!-- Lihat Nanti (blokir 5 jam) -->
-                                            <button class="cs-btn-secondary" onclick="localStorage.setItem('cs_hide_until', Date.now() + 5*60*60*1000); document.getElementById('coming-soon-modal').style.display='none';" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.1px;">
+                                            <button class="cs-btn-secondary" onclick="window.closeComingSoonModal(true)" style="flex:1;background:rgba(255,255,255,0.07);color:rgba(255,255,255,0.65);border:1px solid rgba(255,255,255,0.1);padding:12px 8px;border-radius:50px;font-size:0.83rem;font-weight:600;cursor:pointer;transition:all 0.2s ease;letter-spacing:0.1px;">
                                                 Lihat Nanti
                                             </button>
                                             <!-- Lihat Sekarang -->
@@ -3082,7 +3118,7 @@ const init = async () => {
                                         </div>
                                         <!-- After expand: single close button -->
                                         <div id="cs-btn-group-expanded" style="display:none;">
-                                            <button class="cs-btn-primary" onclick="document.getElementById('coming-soon-modal').style.display='none'" style="width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:13px 8px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(79,70,229,0.32);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:8px;">
+                                            <button class="cs-btn-primary" onclick="window.closeComingSoonModal()" style="width:100%;position:relative;overflow:hidden;background:linear-gradient(135deg,#4f46e5,#7c3aed);color:#fff;border:none;padding:13px 8px;border-radius:50px;font-size:0.9rem;font-weight:700;cursor:pointer;box-shadow:0 6px 18px rgba(79,70,229,0.32);transition:all 0.3s ease;display:flex;align-items:center;justify-content:center;gap:8px;">
                                                 <i class="fa-solid fa-check"></i>
                                                 Oke, Siap!
                                             </button>
