@@ -1,4 +1,4 @@
-!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<6;e++)t+=`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`.charAt(Math.floor(Math.random()*32));return t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0,eventDesc:t.eventDesc||``,eventMinDays:parseInt(t.eventMinDays)||4,eventBtnText:t.eventBtnText||``,eventBannerImage:t.eventBannerImage||``},t.eventMode===!0){let e=document.createElement(`div`);e.id=`event-mode-banner`;let n=`<strong>${t.eventName||`Periode High Season & Liburan Spesial`}</strong> ${parseInt(t.eventPriceIncrease)>0?`• Penyesuaian Tarif: +Rp ${parseInt(t.eventPriceIncrease).toLocaleString(`id-ID`)} (Min. ${parseInt(t.eventMinDays)||4} Hari)`:``} ${t.eventDesc?`• ${t.eventDesc.replace(/[\r\n]+/g,` `)}`:`• Amankan unit kendaraan dan paket tour liburan Anda lebih awal!`} • Silakan lakukan reservasi lebih awal sebelum armada penuh!`;e.innerHTML=`
+import"./modulepreload-polyfill-P2Xu9kJm.js";import"./pwa-so6uG9fO.js";/* empty css              */!window.location.pathname.includes(`admin`)&&!window.location.pathname.includes(`driver`)&&(document.addEventListener(`contextmenu`,e=>e.preventDefault()),document.addEventListener(`keydown`,e=>{e.ctrlKey&&(e.key===`c`||e.key===`u`||e.key===`s`||e.key===`p`)&&e.preventDefault(),e.key===`F12`&&e.preventDefault()}));var e=(window.location.hostname===`localhost`||window.location.hostname,`/api`);window.forcePaymentSuccess=async(t,n)=>{let r=n.innerHTML;n.disabled=!0,n.innerHTML=`<i class="fa-solid fa-spinner fa-spin"></i> MENGECEK...`;let i=document.getElementById(`manual-check-msg`);i&&(i.innerHTML=``);try{let n=await(await fetch(`${e}/payment/status/${t}`)).json();n.success&&[`PAID`,`SUCCESS`,`SETTLEMENT`,`COMPLETED`].includes(n.data.status?.toUpperCase())?(window.activePollInterval&&clearInterval(window.activePollInterval),window.simulateQrisSuccess(!1,t)):i&&(i.innerHTML=`<i class="fa-solid fa-clock"></i> Sistem masih memproses/menunggu pembayaran Anda. Jika Anda sudah membayar, harap tunggu beberapa saat atau periksa di <a href="/riwayat.html" style="color: inherit; text-decoration: underline;">Riwayat Transaksi</a>.`)}catch{i&&(i.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i> Terjadi kesalahan jaringan. Gagal mengecek.`)}finally{n.disabled=!1,n.innerHTML=r}},window.generateTicketId=e=>{let t=e;for(let e=0;e<6;e++)t+=`ABCDEFGHJKLMNPQRSTUVWXYZ23456789`.charAt(Math.floor(Math.random()*32));return t},window.copyText=(e,t,n,r,i)=>{i&&i.stopPropagation();let a=()=>{t?(t.innerHTML=n,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=`#10b981`),setTimeout(()=>{t.innerHTML=r,t.tagName===`BUTTON`&&!n.includes(`fa-check`)&&(t.style.background=``)},2e3)):Swal.fire({icon:`success`,title:`Tersalin!`,toast:!0,position:`top`,showConfirmButton:!1,timer:1500})};if(navigator.clipboard)navigator.clipboard.writeText(e).then(a).catch(e=>{console.error(`Gagal menyalin:`,e)});else{let t=document.createElement(`textarea`);t.value=e,document.body.appendChild(t),t.select();try{document.execCommand(`copy`),a()}catch(e){console.error(`Gagal menyalin:`,e)}document.body.removeChild(t)}},(async()=>{let e=window.location.pathname;if(![`/admin`,`/maintenance`,`/login`,`/register`,`/verify`,`/driver`].some(t=>e.includes(t)))try{let e=await fetch(`/api/settings`,{cache:`no-store`});if(e.ok){let t=await e.json(),n=localStorage.getItem(`adminToken`);if(t.maintenanceMode===!0&&!n){localStorage.setItem(`maintenanceMode`,`true`),window.location.replace(`/maintenance.html`);return}if(!n){localStorage.setItem(`maintenanceMode`,`false`);let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}else if(n){let e=document.getElementById(`anti-flash`);e&&e.remove(),document.body.style.opacity=`1`,document.body.style.visibility=`visible`,document.body.style.pointerEvents=`auto`}if(window.globalEventSettings={eventMode:t.eventMode===!0,eventName:t.eventName||``,eventPriceIncrease:parseInt(t.eventPriceIncrease)||0,eventDesc:t.eventDesc||``,eventMinDays:parseInt(t.eventMinDays)||4,eventBtnText:t.eventBtnText||``,eventBannerImage:t.eventBannerImage||``},t.eventMode===!0){let e=document.createElement(`div`);e.id=`event-mode-banner`;let n=`<strong>${t.eventName||`Periode High Season & Liburan Spesial`}</strong> ${parseInt(t.eventPriceIncrease)>0?`• Penyesuaian Tarif: +Rp ${parseInt(t.eventPriceIncrease).toLocaleString(`id-ID`)} (Min. ${parseInt(t.eventMinDays)||4} Hari)`:``} ${t.eventDesc?`• ${t.eventDesc.replace(/[\r\n]+/g,` `)}`:`• Amankan unit kendaraan dan paket tour liburan Anda lebih awal!`} • Silakan lakukan reservasi lebih awal sebelum armada penuh!`;e.innerHTML=`
                     <div style="background: linear-gradient(135deg, #0b1120 0%, #171f38 100%); border-top: 2px solid #f59e0b; color: white; position: fixed; bottom: 0; left: 0; right: 0; z-index: 9980; box-shadow: 0 -4px 20px rgba(0,0,0,0.5); font-family: 'Outfit', sans-serif;">
                         <div style="max-width: 1400px; margin: 0 auto; padding: 7px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
                             
@@ -2962,35 +2962,108 @@ Mohon bantuan darurat dan arahan tim siaga sesegera mungkin! 🙏`,u=`
                         </button>
                     </div>
                 </div>
-            `,e.scrollTop=e.scrollHeight)},3e5),document.addEventListener(`click`,e=>{let t=document.querySelector(`.nav-links`),n=document.querySelector(`.mobile-menu-btn`);t&&t.classList.contains(`active`)&&!t.contains(e.target)&&!n?.contains(e.target)&&t.classList.remove(`active`)}),I()});var P=null,F=null;function I(){window.location.pathname.includes(`/admin`)||(L(),R())}function L(){let e=document.querySelector(`.nav-links`);if(!e||document.getElementById(`nav-refresh-control-item`))return;let t=document.createElement(`li`);t.id=`nav-refresh-control-item`,t.className=`nav-refresh-item`,t.innerHTML=`
-        <div class="nav-rf-box">
-            <div class="nav-rf-header">
-                <div class="nav-rf-title">
-                    <i class="fa-solid fa-arrows-rotate"></i>
-                    <span>Refresh Halaman</span>
-                </div>
-                <span id="nav-rf-badge" class="nav-rf-badge">Off</span>
+            `,e.scrollTop=e.scrollHeight)},3e5),document.addEventListener(`click`,e=>{let t=document.querySelector(`.nav-links`),n=document.querySelector(`.mobile-menu-btn`);t&&t.classList.contains(`active`)&&!t.contains(e.target)&&!n?.contains(e.target)&&t.classList.remove(`active`)}),z()});var P=`tl_public_refresh_mode`,F=null,I=null,L=1,R=!1;function z(){window.location.pathname.includes(`/admin`)||(B(),V(),K(),J())}function B(){let e=document.querySelector(`.nav-links`);if(!e||document.getElementById(`nav-refresh-nav-item`))return;let t=document.createElement(`li`);t.id=`nav-refresh-nav-item`,t.className=`nav-item nav-refresh-nav-item`,t.innerHTML=`
+        <a href="javascript:void(0)" onclick="window.bukaModalPengaturanRefresh()" class="nav-refresh-trigger" title="Pengaturan Refresh Halaman (1s, 2m, Manual)">
+            <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
+            <span>Refresh</span>
+            <span class="refresh-nav-badge" id="navRefreshCounterBadge">1s</span>
+        </a>
+    `,e.appendChild(t)}function V(){if(document.getElementById(`modalPengaturanRefresh`))return;let e=document.createElement(`div`);e.id=`modalPengaturanRefresh`,e.className=`settings-modal-overlay`,e.style.display=`none`,e.setAttribute(`role`,`dialog`),e.setAttribute(`aria-modal`,`true`),e.innerHTML=`
+      <div class="settings-modal-window">
+        <!-- Modal Header -->
+        <div class="settings-modal-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="settings-header-icon">
+              <i class="fa-solid fa-sliders"></i>
             </div>
-            <div class="nav-rf-buttons">
-                <button type="button" class="btn-rf-choice active" id="rf-btn-off" onclick="window.setAutoRefresh('off')">
-                    <i class="fa-solid fa-power-off"></i> Off
-                </button>
-                <button type="button" class="btn-rf-choice" id="rf-btn-1s" onclick="window.setAutoRefresh('1s')">
-                    <i class="fa-solid fa-bolt"></i> 1 Detik
-                </button>
-                <button type="button" class="btn-rf-choice" id="rf-btn-2m" onclick="window.setAutoRefresh('2m')">
-                    <i class="fa-solid fa-clock"></i> 2 Menit
-                </button>
+            <div>
+              <h3 class="settings-header-title">Pengaturan Refresh Halaman</h3>
+              <span class="settings-header-subtitle">Travel Lombok Airport &bull; Real-Time System</span>
             </div>
-            <button type="button" class="btn-rf-manual" onclick="window.manualRefreshPage()">
-                <i class="fa-solid fa-rotate"></i> Refresh Sekarang
-            </button>
+          </div>
+          <button type="button" class="btn-close-settings" onclick="window.tutupModalPengaturanRefresh()" title="Tutup">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
         </div>
-    `,e.appendChild(t)}function R(){let e=sessionStorage.getItem(`tl_auto_refresh_mode`)||`off`;z(e),e===`1s`?H():e===`2m`&&U()}function z(e){let t=document.getElementById(`nav-rf-badge`),n=document.getElementById(`rf-btn-off`),r=document.getElementById(`rf-btn-1s`),i=document.getElementById(`rf-btn-2m`);[n,r,i].forEach(e=>e?.classList.remove(`active`,`active-1s`,`active-2m`)),t&&(t.classList.remove(`active-1s`,`active-2m`),e===`1s`?(t.textContent=`1 Detik`,t.classList.add(`active-1s`)):e===`2m`?(t.textContent=`2 Menit`,t.classList.add(`active-2m`)):t.textContent=`Off`),e===`1s`?(r?.classList.add(`active`,`active-1s`),B(`1s`,`1 Detik`)):e===`2m`?(i?.classList.add(`active`,`active-2m`),B(`2m`,`2 Menit`)):(n?.classList.add(`active`),V())}function B(e,t){let n=document.getElementById(`tl-refresh-pill`);n?n.className=`tl-refresh-pill ${e===`1s`?`mode-1s`:`mode-2m`}`:(n=document.createElement(`div`),n.id=`tl-refresh-pill`,n.className=`tl-refresh-pill ${e===`1s`?`mode-1s`:`mode-2m`}`,document.body.appendChild(n)),n.innerHTML=`
-        <span class="rf-dot"></span>
-        <i class="fa-solid fa-arrows-rotate rf-icon"></i>
-        <span id="tl-rf-pill-text">Auto Refresh: ${t}</span>
-        <button type="button" class="btn-pill-stop" onclick="window.setAutoRefresh('off')">
-            <i class="fa-solid fa-stop"></i> Stop
-        </button>
-    `}function V(){let e=document.getElementById(`tl-refresh-pill`);e&&e.remove()}function H(){W(),P=setTimeout(()=>{window.location.reload()},1e3)}function U(){W();let e=Date.now()+12e4;sessionStorage.setItem(`tl_rf_target_2m`,e.toString());let t=()=>{let t=Math.max(0,Math.round((e-Date.now())/1e3)),n=Math.floor(t/60),r=t%60,i=`${n}:${r<10?`0`:``}${r}`,a=document.getElementById(`tl-rf-pill-text`);a&&(a.textContent=`Auto Refresh: ${i}`);let o=document.getElementById(`nav-rf-badge`);o&&sessionStorage.getItem(`tl_auto_refresh_mode`)===`2m`&&(o.textContent=i),t<=0&&(W(),window.location.reload())};t(),F=setInterval(t,1e3)}function W(){P&&clearTimeout(P),F&&clearInterval(F),P=null,F=null}window.setAutoRefresh=function(e){e===`off`?(sessionStorage.setItem(`tl_auto_refresh_mode`,`off`),sessionStorage.removeItem(`tl_rf_target_2m`),W(),z(`off`)):e===`1s`?(sessionStorage.setItem(`tl_auto_refresh_mode`,`1s`),z(`1s`),H()):e===`2m`&&(sessionStorage.setItem(`tl_auto_refresh_mode`,`2m`),z(`2m`),U())},window.manualRefreshPage=function(){window.location.reload()};
+
+        <!-- Modal Body -->
+        <div class="settings-modal-body">
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <div>
+                <strong>Pembaruan Halaman (Auto-Refresh)</strong>
+                <span class="settings-section-desc">Pilih interval pembaruan data paket wisata, rental armada, dan promo secara otomatis</span>
+              </div>
+            </div>
+
+            <!-- Status Card Refresh -->
+            <div class="settings-refresh-status-box">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span class="refresh-pulse-dot" id="pubRefreshPulseDot"></span>
+                <div>
+                  <div id="pubRefreshStatusLabel" style="font-size:13px; font-weight:800; color:#0f172a;">
+                    Mode: <span style="color:#059669;">1 Detik (Default / Real-Time)</span>
+                  </div>
+                  <div style="font-size:11.5px; color:#64748b;">
+                    Pembaruan terakhir: <span id="pubRefreshLastTime" style="font-weight:700;">Memuat...</span>
+                  </div>
+                </div>
+              </div>
+              <span class="refresh-countdown-pill" id="pubRefreshCountdownPill" title="Hitung mundur refresh">1s</span>
+            </div>
+
+            <!-- Mode Selector Radio Cards -->
+            <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
+              <label style="font-size:12.5px; font-weight:700; color:#334155;">
+                Pilih Mode Refresh:
+              </label>
+              <div class="refresh-radio-group">
+                <label class="refresh-radio-card active" id="labelRadio1s">
+                  <input type="radio" name="publicRefreshRadio" value="1s" checked onchange="window.changePublicRefreshMode(this.value)">
+                  <div class="radio-content">
+                    <div class="radio-title"><i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> 1 Detik (Default / Real-Time)</div>
+                    <div class="radio-sub">Data ketersediaan armada, status pemesanan, dan promo terupdate seketika tanpa delay</div>
+                  </div>
+                </label>
+                <label class="refresh-radio-card" id="labelRadio2m">
+                  <input type="radio" name="publicRefreshRadio" value="2m" onchange="window.changePublicRefreshMode(this.value)">
+                  <div class="radio-content">
+                    <div class="radio-title"><i class="fa-solid fa-clock" style="color:#0284c7;"></i> 2 Menit (Santai)</div>
+                    <div class="radio-sub">Pembaruan berkala hemat kuota internet dan daya baterai</div>
+                  </div>
+                </label>
+                <label class="refresh-radio-card" id="labelRadioManual">
+                  <input type="radio" name="publicRefreshRadio" value="manual" onchange="window.changePublicRefreshMode(this.value)">
+                  <div class="radio-content">
+                    <div class="radio-title"><i class="fa-solid fa-circle-pause" style="color:#64748b;"></i> Manual / Jeda</div>
+                    <div class="radio-sub">Auto-refresh dinonaktifkan, hanya update saat tombol ditekan</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <!-- Tombol Refresh Manual -->
+            <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <button type="button" class="btn-settings-manual-sync" onclick="window.triggerPublicManualRefresh()" id="btnPubManualRefresh">
+                <i class="fa-solid fa-sync-alt" id="iconPubManualRefresh"></i>
+                <span>Refresh Halaman Sekarang</span>
+              </button>
+              <span style="font-size:11.5px; color:#64748b; font-style:italic;">
+                <i class="fa-solid fa-shield-halved"></i> Tanpa layar berkedip (Seamless Fetch)
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal Footer -->
+        <div class="settings-modal-footer">
+          <span style="font-size:12px; color:#64748b;">
+            <i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Pengaturan otomatis tersimpan di perangkat ini.
+          </span>
+          <button type="button" class="btn btn-primary" onclick="window.tutupModalPengaturanRefresh()" style="padding:8px 20px; font-size:13px; font-weight:700; border-radius:8px;">
+            Tutup
+          </button>
+        </div>
+      </div>
+    `,document.body.appendChild(e)}function H(){return localStorage.getItem(P)||`1s`}function U(e){localStorage.setItem(P,e)}function W(e){[`1s`,`2m`,`manual`].forEach(t=>{let n=document.getElementById(`labelRadio${t.toUpperCase()}`)||document.getElementById(`labelRadio${t}`),r=n?.querySelector(`input[type="radio"]`);n&&r&&(t===e?(n.classList.add(`active`),r.checked=!0):(n.classList.remove(`active`),r.checked=!1))})}function G(e){let t=document.getElementById(`pubRefreshPulseDot`),n=document.getElementById(`pubRefreshStatusLabel`),r=document.getElementById(`pubRefreshCountdownPill`),i=document.getElementById(`navRefreshCounterBadge`);if(W(e),e===`1s`)t&&(t.className=`refresh-pulse-dot`),n&&(n.innerHTML=`Mode: <span style="color:#059669;">1 Detik (Default / Real-Time)</span>`),r&&(r.innerText=`${L}s`),i&&(i.innerText=`1s`);else if(e===`2m`){t&&(t.className=`refresh-pulse-dot`),n&&(n.innerHTML=`Mode: <span style="color:#0284c7;">2 Menit (Santai)</span>`);let e=Math.floor(L/60),a=L%60,o=`${e}m ${a<10?`0`:``}${a}s`;r&&(r.innerText=o),i&&(i.innerText=o)}else t&&(t.className=`refresh-pulse-dot paused`),n&&(n.innerHTML=`Mode: <span style="color:#64748b;">Manual / Jeda</span>`),r&&(r.innerText=`OFF`),i&&(i.innerText=`OFF`)}function K(){let e=document.getElementById(`pubRefreshLastTime`);e&&(e.innerText=new Date().toLocaleTimeString(`id-ID`,{hour:`2-digit`,minute:`2-digit`,second:`2-digit`,timeZone:`Asia/Makassar`})+` WITA`)}async function q(e=!1){if(R)return;let t=document.activeElement;if(t&&(t.tagName===`INPUT`||t.tagName===`TEXTAREA`||t.tagName===`SELECT`))return;let n=document.getElementById(`modalPengaturanRefresh`);if(n&&n.style.display===`flex`&&!e)return;R=!0;let r=document.getElementById(`pubRefreshPulseDot`),i=document.getElementById(`btnPubManualRefresh`);r&&r.classList.add(`updating`),i&&i.classList.add(`loading`);try{typeof window.loadStats==`function`&&await window.loadStats();let e=await fetch(window.location.href,{headers:{"X-Requested-With":`XMLHttpRequest`,"Cache-Control":`no-cache`}});if(e.ok){let t=await e.text(),n=new DOMParser().parseFromString(t,`text/html`),r=document.getElementById(`event-mode-banner`),i=n.getElementById(`event-mode-banner`);r&&i&&r.innerHTML!==i.innerHTML&&(r.innerHTML=i.innerHTML);let a=document.querySelector(`.hero-stats, .about-stats-grid`),o=n.querySelector(`.hero-stats, .about-stats-grid`);a&&o&&a.innerHTML!==o.innerHTML&&(a.innerHTML=o.innerHTML)}K()}catch(e){console.warn(`Public background update:`,e.message)}finally{R=!1,r&&r.classList.remove(`updating`),i&&i.classList.remove(`loading`),G(H())}}function J(){F&&clearInterval(F),I&&clearInterval(I);let e=H();if(e===`manual`){L=0,G(`manual`);return}let t=e===`1s`?1:120;L=t,G(e),I=setInterval(()=>{e===`1s`?(L=1,G(`1s`)):(L--,L<=0&&(L=t),G(`2m`))},1e3),F=setInterval(()=>{q(!1)},t*1e3)}window.bukaModalPengaturanRefresh=function(){V();let e=document.getElementById(`modalPengaturanRefresh`);e&&(e.style.display=`flex`,document.body.style.overflow=`hidden`,K(),G(H()))},window.tutupModalPengaturanRefresh=function(){let e=document.getElementById(`modalPengaturanRefresh`);e&&(e.style.display=`none`,document.body.style.overflow=``)},window.changePublicRefreshMode=function(e){U(e),J()},window.triggerPublicManualRefresh=function(){q(!0)},document.addEventListener(`keydown`,e=>{e.key===`Escape`&&window.tutupModalPengaturanRefresh()});

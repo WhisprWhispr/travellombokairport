@@ -9946,198 +9946,350 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Inisialisasi Fitur Auto-Refresh di Navbar
-    initAutoRefreshModule();
+    // Inisialisasi Fitur Auto-Refresh Persis Seperti Proyek bapas_medan_node
+    initBapasAutoRefreshModule();
 });
 
 /* ==========================================================================
-   MODUL AUTO REFRESH (NAVBAR & HALAMAN WEB)
+   MODUL AUTO REFRESH PUBLIK (PERSIS PROYEK BAPAS_MEDAN_NODE)
+   - Menu Navbar & Hamburger "Refresh Halaman"
+   - Modal Pengaturan Auto-Refresh (1 Detik Default, 2 Menit Santai, Manual)
+   - Seamless Update (Background Fetch Tanpa Layar Berkedip)
    ========================================================================== */
-let _tlAutoRefreshTimer = null;
-let _tlCountdownInterval = null;
+const STORAGE_PUB_REFRESH_KEY = 'tl_public_refresh_mode';
+let pubRefreshTimer = null;
+let pubCountdownTimer = null;
+let pubRemainingSeconds = 1;
+let isPubUpdating = false;
 
-function initAutoRefreshModule() {
-    // Jangan inisialisasi modul publik di panel admin (panel admin memiliki kontrol sendiri)
+function initBapasAutoRefreshModule() {
     if (window.location.pathname.includes('/admin')) return;
 
-    injectNavbarRefreshItem();
-    applyStoredAutoRefresh();
+    injectNavbarRefreshLink();
+    injectModalPengaturanRefresh();
+    
+    // Inisialisasi timers saat halaman dimuat
+    updatePubLastTime();
+    startPubTimers();
 }
 
-function injectNavbarRefreshItem() {
+function injectNavbarRefreshLink() {
     const navLinks = document.querySelector('.nav-links');
-    if (!navLinks || document.getElementById('nav-refresh-control-item')) return;
+    if (!navLinks || document.getElementById('nav-refresh-nav-item')) return;
 
     const li = document.createElement('li');
-    li.id = 'nav-refresh-control-item';
-    li.className = 'nav-refresh-item';
+    li.id = 'nav-refresh-nav-item';
+    li.className = 'nav-item nav-refresh-nav-item';
     li.innerHTML = `
-        <div class="nav-rf-box">
-            <div class="nav-rf-header">
-                <div class="nav-rf-title">
-                    <i class="fa-solid fa-arrows-rotate"></i>
-                    <span>Refresh Halaman</span>
-                </div>
-                <span id="nav-rf-badge" class="nav-rf-badge">Off</span>
-            </div>
-            <div class="nav-rf-buttons">
-                <button type="button" class="btn-rf-choice active" id="rf-btn-off" onclick="window.setAutoRefresh('off')">
-                    <i class="fa-solid fa-power-off"></i> Off
-                </button>
-                <button type="button" class="btn-rf-choice" id="rf-btn-1s" onclick="window.setAutoRefresh('1s')">
-                    <i class="fa-solid fa-bolt"></i> 1 Detik
-                </button>
-                <button type="button" class="btn-rf-choice" id="rf-btn-2m" onclick="window.setAutoRefresh('2m')">
-                    <i class="fa-solid fa-clock"></i> 2 Menit
-                </button>
-            </div>
-            <button type="button" class="btn-rf-manual" onclick="window.manualRefreshPage()">
-                <i class="fa-solid fa-rotate"></i> Refresh Sekarang
-            </button>
-        </div>
+        <a href="javascript:void(0)" onclick="window.bukaModalPengaturanRefresh()" class="nav-refresh-trigger" title="Pengaturan Refresh Halaman (1s, 2m, Manual)">
+            <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
+            <span>Refresh</span>
+            <span class="refresh-nav-badge" id="navRefreshCounterBadge">1s</span>
+        </a>
     `;
 
-    // Pasang di bagian bawah menu navigasi
     navLinks.appendChild(li);
 }
 
-function applyStoredAutoRefresh() {
-    const mode = sessionStorage.getItem('tl_auto_refresh_mode') || 'off';
-    updateRefreshUI(mode);
+function injectModalPengaturanRefresh() {
+    if (document.getElementById('modalPengaturanRefresh')) return;
 
-    if (mode === '1s') {
-        start1sAutoRefresh();
-    } else if (mode === '2m') {
-        start2mAutoRefresh();
-    }
-}
+    const modalDiv = document.createElement('div');
+    modalDiv.id = 'modalPengaturanRefresh';
+    modalDiv.className = 'settings-modal-overlay';
+    modalDiv.style.display = 'none';
+    modalDiv.setAttribute('role', 'dialog');
+    modalDiv.setAttribute('aria-modal', 'true');
+    modalDiv.innerHTML = `
+      <div class="settings-modal-window">
+        <!-- Modal Header -->
+        <div class="settings-modal-header">
+          <div style="display:flex; align-items:center; gap:10px;">
+            <div class="settings-header-icon">
+              <i class="fa-solid fa-sliders"></i>
+            </div>
+            <div>
+              <h3 class="settings-header-title">Pengaturan Refresh Halaman</h3>
+              <span class="settings-header-subtitle">Travel Lombok Airport &bull; Real-Time System</span>
+            </div>
+          </div>
+          <button type="button" class="btn-close-settings" onclick="window.tutupModalPengaturanRefresh()" title="Tutup">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
 
-function updateRefreshUI(mode) {
-    const badge = document.getElementById('nav-rf-badge');
-    const btnOff = document.getElementById('rf-btn-off');
-    const btn1s = document.getElementById('rf-btn-1s');
-    const btn2m = document.getElementById('rf-btn-2m');
+        <!-- Modal Body -->
+        <div class="settings-modal-body">
+          <div class="settings-section">
+            <div class="settings-section-title">
+              <i class="fa-solid fa-arrows-rotate"></i>
+              <div>
+                <strong>Pembaruan Halaman (Auto-Refresh)</strong>
+                <span class="settings-section-desc">Pilih interval pembaruan data paket wisata, rental armada, dan promo secara otomatis</span>
+              </div>
+            </div>
 
-    [btnOff, btn1s, btn2m].forEach(b => b?.classList.remove('active', 'active-1s', 'active-2m'));
+            <!-- Status Card Refresh -->
+            <div class="settings-refresh-status-box">
+              <div style="display:flex; align-items:center; gap:10px;">
+                <span class="refresh-pulse-dot" id="pubRefreshPulseDot"></span>
+                <div>
+                  <div id="pubRefreshStatusLabel" style="font-size:13px; font-weight:800; color:#0f172a;">
+                    Mode: <span style="color:#059669;">1 Detik (Default / Real-Time)</span>
+                  </div>
+                  <div style="font-size:11.5px; color:#64748b;">
+                    Pembaruan terakhir: <span id="pubRefreshLastTime" style="font-weight:700;">Memuat...</span>
+                  </div>
+                </div>
+              </div>
+              <span class="refresh-countdown-pill" id="pubRefreshCountdownPill" title="Hitung mundur refresh">1s</span>
+            </div>
 
-    if (badge) {
-        badge.classList.remove('active-1s', 'active-2m');
-        if (mode === '1s') {
-            badge.textContent = '1 Detik';
-            badge.classList.add('active-1s');
-        } else if (mode === '2m') {
-            badge.textContent = '2 Menit';
-            badge.classList.add('active-2m');
-        } else {
-            badge.textContent = 'Off';
-        }
-    }
+            <!-- Mode Selector Radio Cards -->
+            <div style="margin-top:14px; display:flex; flex-direction:column; gap:8px;">
+              <label style="font-size:12.5px; font-weight:700; color:#334155;">
+                Pilih Mode Refresh:
+              </label>
+              <div class="refresh-radio-group">
+                <label class="refresh-radio-card active" id="labelRadio1s">
+                  <input type="radio" name="publicRefreshRadio" value="1s" checked onchange="window.changePublicRefreshMode(this.value)">
+                  <div class="radio-content">
+                    <div class="radio-title"><i class="fa-solid fa-bolt" style="color:#f59e0b;"></i> 1 Detik (Default / Real-Time)</div>
+                    <div class="radio-sub">Data ketersediaan armada, status pemesanan, dan promo terupdate seketika tanpa delay</div>
+                  </div>
+                </label>
+                <label class="refresh-radio-card" id="labelRadio2m">
+                  <input type="radio" name="publicRefreshRadio" value="2m" onchange="window.changePublicRefreshMode(this.value)">
+                  <div class="radio-content">
+                    <div class="radio-title"><i class="fa-solid fa-clock" style="color:#0284c7;"></i> 2 Menit (Santai)</div>
+                    <div class="radio-sub">Pembaruan berkala hemat kuota internet dan daya baterai</div>
+                  </div>
+                </label>
+                <label class="refresh-radio-card" id="labelRadioManual">
+                  <input type="radio" name="publicRefreshRadio" value="manual" onchange="window.changePublicRefreshMode(this.value)">
+                  <div class="radio-content">
+                    <div class="radio-title"><i class="fa-solid fa-circle-pause" style="color:#64748b;"></i> Manual / Jeda</div>
+                    <div class="radio-sub">Auto-refresh dinonaktifkan, hanya update saat tombol ditekan</div>
+                  </div>
+                </label>
+              </div>
+            </div>
 
-    if (mode === '1s') {
-        btn1s?.classList.add('active', 'active-1s');
-        renderFloatingRefreshPill('1s', '1 Detik');
-    } else if (mode === '2m') {
-        btn2m?.classList.add('active', 'active-2m');
-        renderFloatingRefreshPill('2m', '2 Menit');
-    } else {
-        btnOff?.classList.add('active');
-        removeFloatingRefreshPill();
-    }
-}
+            <!-- Tombol Refresh Manual -->
+            <div style="margin-top:14px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+              <button type="button" class="btn-settings-manual-sync" onclick="window.triggerPublicManualRefresh()" id="btnPubManualRefresh">
+                <i class="fa-solid fa-sync-alt" id="iconPubManualRefresh"></i>
+                <span>Refresh Halaman Sekarang</span>
+              </button>
+              <span style="font-size:11.5px; color:#64748b; font-style:italic;">
+                <i class="fa-solid fa-shield-halved"></i> Tanpa layar berkedip (Seamless Fetch)
+              </span>
+            </div>
+          </div>
+        </div>
 
-function renderFloatingRefreshPill(mode, initialText) {
-    let pill = document.getElementById('tl-refresh-pill');
-    if (!pill) {
-        pill = document.createElement('div');
-        pill.id = 'tl-refresh-pill';
-        pill.className = `tl-refresh-pill ${mode === '1s' ? 'mode-1s' : 'mode-2m'}`;
-        document.body.appendChild(pill);
-    } else {
-        pill.className = `tl-refresh-pill ${mode === '1s' ? 'mode-1s' : 'mode-2m'}`;
-    }
-
-    pill.innerHTML = `
-        <span class="rf-dot"></span>
-        <i class="fa-solid fa-arrows-rotate rf-icon"></i>
-        <span id="tl-rf-pill-text">Auto Refresh: ${initialText}</span>
-        <button type="button" class="btn-pill-stop" onclick="window.setAutoRefresh('off')">
-            <i class="fa-solid fa-stop"></i> Stop
-        </button>
+        <!-- Modal Footer -->
+        <div class="settings-modal-footer">
+          <span style="font-size:12px; color:#64748b;">
+            <i class="fa-solid fa-circle-check" style="color:#10b981;"></i> Pengaturan otomatis tersimpan di perangkat ini.
+          </span>
+          <button type="button" class="btn btn-primary" onclick="window.tutupModalPengaturanRefresh()" style="padding:8px 20px; font-size:13px; font-weight:700; border-radius:8px;">
+            Tutup
+          </button>
+        </div>
+      </div>
     `;
+
+    document.body.appendChild(modalDiv);
 }
 
-function removeFloatingRefreshPill() {
-    const pill = document.getElementById('tl-refresh-pill');
-    if (pill) pill.remove();
+function getPubStoredMode() {
+    return localStorage.getItem(STORAGE_PUB_REFRESH_KEY) || '1s';
 }
 
-function start1sAutoRefresh() {
-    clearRefreshTimers();
-    _tlAutoRefreshTimer = setTimeout(() => {
-        window.location.reload();
-    }, 1000);
+function setPubStoredMode(val) {
+    localStorage.setItem(STORAGE_PUB_REFRESH_KEY, val);
 }
 
-function start2mAutoRefresh() {
-    clearRefreshTimers();
-    let remaining = 120; // 2 menit = 120 detik
-    
-    // Simpan target waktu di sessionStorage agar presisi
-    const targetTime = Date.now() + (120 * 1000);
-    sessionStorage.setItem('tl_rf_target_2m', targetTime.toString());
-
-    const updateCountdown = () => {
-        const now = Date.now();
-        const diff = Math.max(0, Math.round((targetTime - now) / 1000));
-        const m = Math.floor(diff / 60);
-        const s = diff % 60;
-        const text = `${m}:${s < 10 ? '0' : ''}${s}`;
-
-        const pillText = document.getElementById('tl-rf-pill-text');
-        if (pillText) {
-            pillText.textContent = `Auto Refresh: ${text}`;
+function syncRadioCardUI(mode) {
+    ['1s', '2m', 'manual'].forEach(m => {
+        const card = document.getElementById(`labelRadio${m.toUpperCase()}`) || document.getElementById(`labelRadio${m}`);
+        const radio = card?.querySelector('input[type="radio"]');
+        if (card && radio) {
+            if (m === mode) {
+                card.classList.add('active');
+                radio.checked = true;
+            } else {
+                card.classList.remove('active');
+                radio.checked = false;
+            }
         }
-        const badge = document.getElementById('nav-rf-badge');
-        if (badge && sessionStorage.getItem('tl_auto_refresh_mode') === '2m') {
-            badge.textContent = text;
-        }
-
-        if (diff <= 0) {
-            clearRefreshTimers();
-            window.location.reload();
-        }
-    };
-
-    updateCountdown();
-    _tlCountdownInterval = setInterval(updateCountdown, 1000);
+    });
 }
 
-function clearRefreshTimers() {
-    if (_tlAutoRefreshTimer) clearTimeout(_tlAutoRefreshTimer);
-    if (_tlCountdownInterval) clearInterval(_tlCountdownInterval);
-    _tlAutoRefreshTimer = null;
-    _tlCountdownInterval = null;
-}
+function updatePubStatusDisplay(mode) {
+    const pulseDot = document.getElementById('pubRefreshPulseDot');
+    const statusLabel = document.getElementById('pubRefreshStatusLabel');
+    const badge = document.getElementById('pubRefreshCountdownPill');
+    const navBadge = document.getElementById('navRefreshCounterBadge');
 
-// Global actions
-window.setAutoRefresh = function(mode) {
-    if (mode === 'off') {
-        sessionStorage.setItem('tl_auto_refresh_mode', 'off');
-        sessionStorage.removeItem('tl_rf_target_2m');
-        clearRefreshTimers();
-        updateRefreshUI('off');
-    } else if (mode === '1s') {
-        sessionStorage.setItem('tl_auto_refresh_mode', '1s');
-        updateRefreshUI('1s');
-        start1sAutoRefresh();
+    syncRadioCardUI(mode);
+
+    if (mode === '1s') {
+        if (pulseDot) pulseDot.className = 'refresh-pulse-dot';
+        if (statusLabel) statusLabel.innerHTML = 'Mode: <span style="color:#059669;">1 Detik (Default / Real-Time)</span>';
+        if (badge) badge.innerText = `${pubRemainingSeconds}s`;
+        if (navBadge) navBadge.innerText = '1s';
     } else if (mode === '2m') {
-        sessionStorage.setItem('tl_auto_refresh_mode', '2m');
-        updateRefreshUI('2m');
-        start2mAutoRefresh();
+        if (pulseDot) pulseDot.className = 'refresh-pulse-dot';
+        if (statusLabel) statusLabel.innerHTML = 'Mode: <span style="color:#0284c7;">2 Menit (Santai)</span>';
+        const mins = Math.floor(pubRemainingSeconds / 60);
+        const secs = pubRemainingSeconds % 60;
+        const text = `${mins}m ${secs < 10 ? '0' : ''}${secs}s`;
+        if (badge) badge.innerText = text;
+        if (navBadge) navBadge.innerText = text;
+    } else {
+        if (pulseDot) pulseDot.className = 'refresh-pulse-dot paused';
+        if (statusLabel) statusLabel.innerHTML = 'Mode: <span style="color:#64748b;">Manual / Jeda</span>';
+        if (badge) badge.innerText = 'OFF';
+        if (navBadge) navBadge.innerText = 'OFF';
+    }
+}
+
+function updatePubLastTime() {
+    const el = document.getElementById('pubRefreshLastTime');
+    if (el) {
+        const now = new Date();
+        el.innerText = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', timeZone: 'Asia/Makassar' }) + ' WITA';
+    }
+}
+
+async function performPublicUpdate(isManual = false) {
+    if (isPubUpdating) return;
+    
+    // Jangan interupsi jika pengguna sedang mengetik form booking atau chat AIRA terbuka
+    const active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) {
+        return;
+    }
+    const settingsModal = document.getElementById('modalPengaturanRefresh');
+    if (settingsModal && settingsModal.style.display === 'flex' && !isManual) {
+        return;
+    }
+
+    isPubUpdating = true;
+    const pulseDot = document.getElementById('pubRefreshPulseDot');
+    const btnManual = document.getElementById('btnPubManualRefresh');
+    if (pulseDot) pulseDot.classList.add('updating');
+    if (btnManual) btnManual.classList.add('loading');
+
+    try {
+        // Panggil refresh data dinamis jika tersedia (misal reload status armada/stats)
+        if (typeof window.loadStats === 'function') {
+            await window.loadStats();
+        }
+
+        // Fetch seamless background DOM
+        const res = await fetch(window.location.href, {
+            headers: { 'X-Requested-With': 'XMLHttpRequest', 'Cache-Control': 'no-cache' }
+        });
+        if (res.ok) {
+            const text = await res.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(text, 'text/html');
+
+            // 1. Update Promo Banner / Event Mode Banner jika ada perubahan
+            const curEvent = document.getElementById('event-mode-banner');
+            const newEvent = doc.getElementById('event-mode-banner');
+            if (curEvent && newEvent && curEvent.innerHTML !== newEvent.innerHTML) {
+                curEvent.innerHTML = newEvent.innerHTML;
+            }
+
+            // 2. Update stats grid jika ada
+            const curStats = document.querySelector('.hero-stats, .about-stats-grid');
+            const newStats = doc.querySelector('.hero-stats, .about-stats-grid');
+            if (curStats && newStats && curStats.innerHTML !== newStats.innerHTML) {
+                curStats.innerHTML = newStats.innerHTML;
+            }
+        }
+
+        updatePubLastTime();
+    } catch (err) {
+        console.warn('Public background update:', err.message);
+    } finally {
+        isPubUpdating = false;
+        if (pulseDot) pulseDot.classList.remove('updating');
+        if (btnManual) btnManual.classList.remove('loading');
+        updatePubStatusDisplay(getPubStoredMode());
+    }
+}
+
+function startPubTimers() {
+    if (pubRefreshTimer) clearInterval(pubRefreshTimer);
+    if (pubCountdownTimer) clearInterval(pubCountdownTimer);
+
+    const mode = getPubStoredMode();
+    if (mode === 'manual') {
+        pubRemainingSeconds = 0;
+        updatePubStatusDisplay('manual');
+        return;
+    }
+
+    const intervalSeconds = mode === '1s' ? 1 : 120;
+    pubRemainingSeconds = intervalSeconds;
+    updatePubStatusDisplay(mode);
+
+    pubCountdownTimer = setInterval(() => {
+        if (mode === '1s') {
+            pubRemainingSeconds = 1;
+            updatePubStatusDisplay('1s');
+        } else {
+            pubRemainingSeconds--;
+            if (pubRemainingSeconds <= 0) {
+                pubRemainingSeconds = intervalSeconds;
+            }
+            updatePubStatusDisplay('2m');
+        }
+    }, 1000);
+
+    pubRefreshTimer = setInterval(() => {
+        performPublicUpdate(false);
+    }, intervalSeconds * 1000);
+}
+
+// Global modal triggers
+window.bukaModalPengaturanRefresh = function() {
+    injectModalPengaturanRefresh();
+    const modal = document.getElementById('modalPengaturanRefresh');
+    if (modal) {
+        modal.style.display = 'flex';
+        document.body.style.overflow = 'hidden';
+        updatePubLastTime();
+        updatePubStatusDisplay(getPubStoredMode());
     }
 };
 
-window.manualRefreshPage = function() {
-    window.location.reload();
+window.tutupModalPengaturanRefresh = function() {
+    const modal = document.getElementById('modalPengaturanRefresh');
+    if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = '';
+    }
 };
+
+window.changePublicRefreshMode = function(val) {
+    setPubStoredMode(val);
+    startPubTimers();
+};
+
+window.triggerPublicManualRefresh = function() {
+    performPublicUpdate(true);
+};
+
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        window.tutupModalPengaturanRefresh();
+    }
+});
+
 

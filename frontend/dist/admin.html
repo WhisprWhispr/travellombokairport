@@ -15,10 +15,10 @@
     <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
-  <script type="module" crossorigin src="/assets/admin-9I27Gj6i.js"></script>
+  <script type="module" crossorigin src="/assets/admin-XjDIoU7R.js"></script>
   <link rel="modulepreload" crossorigin href="/assets/modulepreload-polyfill-P2Xu9kJm.js">
   <link rel="modulepreload" crossorigin href="/assets/pwa-so6uG9fO.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-DF5E1YKK.css">
+  <link rel="stylesheet" crossorigin href="/assets/main-DGE0xv3m.css">
 </head>
   <body class="admin-body bg-light">
     
@@ -93,22 +93,6 @@
           <li style="margin-top: 20px;"><a href="#" onclick="installPWA(event)" style="background: #10b981; color: white; border-radius: 8px;"><i class="fa-solid fa-download"></i> Unduh App Admin</a></li>
           <li style="margin-top: 5px;"><a href="#" id="reset-password-btn" style="background: var(--primary-blue); color: white; border-radius: 8px;"><i class="fa-solid fa-key"></i> Ubah Sandi Saya</a></li>
           <li style="margin-top: 5px;"><a href="#" id="logout-btn" class="text-danger"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
-
-          <!-- Mobile Sidebar Auto Refresh Widget -->
-          <li style="margin-top: 15px; padding: 10px 12px; background: rgba(15, 23, 42, 0.4); border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-              <span style="font-size: 0.78rem; font-weight: 700; color: #cbd5e1;"><i class="fa-solid fa-arrows-rotate" style="color: #38bdf8;"></i> Auto Refresh</span>
-              <span id="sidebar-rf-badge" class="nav-rf-badge">Off</span>
-            </div>
-            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px;">
-              <button type="button" class="btn-rf-choice active" id="sb-rf-off" onclick="setAdminAutoRefresh('off')">Off</button>
-              <button type="button" class="btn-rf-choice" id="sb-rf-1s" onclick="setAdminAutoRefresh('1s')">1s</button>
-              <button type="button" class="btn-rf-choice" id="sb-rf-2m" onclick="setAdminAutoRefresh('2m')">2m</button>
-            </div>
-            <button type="button" class="btn-rf-manual" style="margin-top: 6px; padding: 6px 10px;" onclick="manualRefreshAdmin()">
-              <i class="fa-solid fa-rotate"></i> Refresh Sekarang
-            </button>
-          </li>
         </ul>
       </aside>
 
@@ -120,17 +104,6 @@
             <h1 style="margin: 0;">Dashboard</h1>
           </div>
           <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-            <!-- Auto Refresh Widget Desktop -->
-            <div class="admin-rf-toolbar" title="Otomatis muat ulang data">
-              <span style="font-size: 0.76rem; font-weight: 700; color: #94a3b8; display: flex; align-items: center; gap: 4px; padding: 0 4px;">
-                <i class="fa-solid fa-arrows-rotate" style="color: #38bdf8;"></i> Refresh:
-              </span>
-              <button type="button" class="admin-rf-btn active" id="admin-rf-off" onclick="setAdminAutoRefresh('off')">Off</button>
-              <button type="button" class="admin-rf-btn" id="admin-rf-1s" onclick="setAdminAutoRefresh('1s')"><i class="fa-solid fa-bolt"></i> 1s</button>
-              <button type="button" class="admin-rf-btn" id="admin-rf-2m" onclick="setAdminAutoRefresh('2m')"><i class="fa-solid fa-clock"></i> 2m</button>
-              <button type="button" class="admin-rf-btn" id="admin-rf-manual" onclick="manualRefreshAdmin()" title="Refresh Sekarang"><i class="fa-solid fa-rotate"></i></button>
-            </div>
-
             <button class="btn btn-outline" style="border-color: #10b981; color: #10b981;" onclick="showAdminTutorial()"><i class="fa-solid fa-circle-question"></i> Panduan</button>
             <button id="guide-item-btn" class="btn btn-outline" style="border-color: #3b82f6; color: #3b82f6; display:none;" onclick="showManageItemTutorial()"><i class="fa-solid fa-info-circle"></i> Panduan Item</button>
             <button id="add-item-btn" class="btn btn-primary"><i class="fa-solid fa-plus"></i> Add New Item</button>
@@ -141,6 +114,41 @@
             <button id="add-blog-btn" class="btn btn-primary" style="display: none;"><i class="fa-solid fa-plus"></i> Tambah Artikel Blog</button>
           </div>
         </header>
+
+        <!-- =======================================================
+             PANEL KONTROL REFRESH OTOMATIS (REAL-TIME SEAMLESS)
+             Mengadopsi Sistem bapas_medan_node (1 Detik & 2 Menit)
+             ======================================================= -->
+        <div class="admin-refresh-panel no-print" id="adminRefreshPanel">
+          <div class="refresh-panel-left">
+            <div class="refresh-live-indicator">
+              <span class="refresh-pulse-dot" id="refreshPulseDot"></span>
+              <span class="refresh-status-text" id="refreshStatusText">Mode: <strong style="color:#059669;">1 Detik (Real-Time)</strong></span>
+            </div>
+            <span class="refresh-counter-badge" id="refreshCounterBadge" title="Hitung mundur refresh berikutnya">1s</span>
+            <span class="refresh-last-time" id="refreshLastTime" title="Waktu pembaruan data terakhir">
+              <i class="fa-regular fa-clock"></i> <span id="refreshLastTimeText">Memuat...</span>
+            </span>
+          </div>
+
+          <div class="refresh-panel-right">
+            <div class="refresh-mode-selector">
+              <label for="adminRefreshModeSelect">
+                <i class="fa-solid fa-sliders" style="color:#0284c7;"></i> Interval:
+              </label>
+              <select id="adminRefreshModeSelect" class="refresh-select" onchange="changeAdminRefreshMode(this.value)">
+                <option value="1s" selected>⚡ Otomatis 1 Detik (Default)</option>
+                <option value="2m">⏱️ Otomatis 2 Menit</option>
+                <option value="manual">⏸️ Manual / Jeda</option>
+              </select>
+            </div>
+
+            <button type="button" class="btn-refresh-manual" onclick="triggerManualRefresh()" id="btnManualRefresh" title="Segarkan data sekarang secara instan tanpa reload browser">
+              <i class="fa-solid fa-sync-alt" id="iconManualRefresh"></i>
+              <span class="btn-refresh-text">Refresh Sekarang</span>
+            </button>
+          </div>
+        </div>
 
         <section id="items-section" class="admin-content glass-panel mt-4">
           <div class="table-responsive">
