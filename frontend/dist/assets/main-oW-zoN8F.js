@@ -2962,4 +2962,35 @@ Mohon bantuan darurat dan arahan tim siaga sesegera mungkin! 🙏`,u=`
                         </button>
                     </div>
                 </div>
-            `,e.scrollTop=e.scrollHeight)},3e5),document.addEventListener(`click`,e=>{let t=document.querySelector(`.nav-links`),n=document.querySelector(`.mobile-menu-btn`);t&&t.classList.contains(`active`)&&!t.contains(e.target)&&!n?.contains(e.target)&&t.classList.remove(`active`)})});
+            `,e.scrollTop=e.scrollHeight)},3e5),document.addEventListener(`click`,e=>{let t=document.querySelector(`.nav-links`),n=document.querySelector(`.mobile-menu-btn`);t&&t.classList.contains(`active`)&&!t.contains(e.target)&&!n?.contains(e.target)&&t.classList.remove(`active`)}),I()});var P=null,F=null;function I(){window.location.pathname.includes(`/admin`)||(L(),R())}function L(){let e=document.querySelector(`.nav-links`);if(!e||document.getElementById(`nav-refresh-control-item`))return;let t=document.createElement(`li`);t.id=`nav-refresh-control-item`,t.className=`nav-refresh-item`,t.innerHTML=`
+        <div class="nav-rf-box">
+            <div class="nav-rf-header">
+                <div class="nav-rf-title">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span>Refresh Halaman</span>
+                </div>
+                <span id="nav-rf-badge" class="nav-rf-badge">Off</span>
+            </div>
+            <div class="nav-rf-buttons">
+                <button type="button" class="btn-rf-choice active" id="rf-btn-off" onclick="window.setAutoRefresh('off')">
+                    <i class="fa-solid fa-power-off"></i> Off
+                </button>
+                <button type="button" class="btn-rf-choice" id="rf-btn-1s" onclick="window.setAutoRefresh('1s')">
+                    <i class="fa-solid fa-bolt"></i> 1 Detik
+                </button>
+                <button type="button" class="btn-rf-choice" id="rf-btn-2m" onclick="window.setAutoRefresh('2m')">
+                    <i class="fa-solid fa-clock"></i> 2 Menit
+                </button>
+            </div>
+            <button type="button" class="btn-rf-manual" onclick="window.manualRefreshPage()">
+                <i class="fa-solid fa-rotate"></i> Refresh Sekarang
+            </button>
+        </div>
+    `,e.appendChild(t)}function R(){let e=sessionStorage.getItem(`tl_auto_refresh_mode`)||`off`;z(e),e===`1s`?H():e===`2m`&&U()}function z(e){let t=document.getElementById(`nav-rf-badge`),n=document.getElementById(`rf-btn-off`),r=document.getElementById(`rf-btn-1s`),i=document.getElementById(`rf-btn-2m`);[n,r,i].forEach(e=>e?.classList.remove(`active`,`active-1s`,`active-2m`)),t&&(t.classList.remove(`active-1s`,`active-2m`),e===`1s`?(t.textContent=`1 Detik`,t.classList.add(`active-1s`)):e===`2m`?(t.textContent=`2 Menit`,t.classList.add(`active-2m`)):t.textContent=`Off`),e===`1s`?(r?.classList.add(`active`,`active-1s`),B(`1s`,`1 Detik`)):e===`2m`?(i?.classList.add(`active`,`active-2m`),B(`2m`,`2 Menit`)):(n?.classList.add(`active`),V())}function B(e,t){let n=document.getElementById(`tl-refresh-pill`);n?n.className=`tl-refresh-pill ${e===`1s`?`mode-1s`:`mode-2m`}`:(n=document.createElement(`div`),n.id=`tl-refresh-pill`,n.className=`tl-refresh-pill ${e===`1s`?`mode-1s`:`mode-2m`}`,document.body.appendChild(n)),n.innerHTML=`
+        <span class="rf-dot"></span>
+        <i class="fa-solid fa-arrows-rotate rf-icon"></i>
+        <span id="tl-rf-pill-text">Auto Refresh: ${t}</span>
+        <button type="button" class="btn-pill-stop" onclick="window.setAutoRefresh('off')">
+            <i class="fa-solid fa-stop"></i> Stop
+        </button>
+    `}function V(){let e=document.getElementById(`tl-refresh-pill`);e&&e.remove()}function H(){W(),P=setTimeout(()=>{window.location.reload()},1e3)}function U(){W();let e=Date.now()+12e4;sessionStorage.setItem(`tl_rf_target_2m`,e.toString());let t=()=>{let t=Math.max(0,Math.round((e-Date.now())/1e3)),n=Math.floor(t/60),r=t%60,i=`${n}:${r<10?`0`:``}${r}`,a=document.getElementById(`tl-rf-pill-text`);a&&(a.textContent=`Auto Refresh: ${i}`);let o=document.getElementById(`nav-rf-badge`);o&&sessionStorage.getItem(`tl_auto_refresh_mode`)===`2m`&&(o.textContent=i),t<=0&&(W(),window.location.reload())};t(),F=setInterval(t,1e3)}function W(){P&&clearTimeout(P),F&&clearInterval(F),P=null,F=null}window.setAutoRefresh=function(e){e===`off`?(sessionStorage.setItem(`tl_auto_refresh_mode`,`off`),sessionStorage.removeItem(`tl_rf_target_2m`),W(),z(`off`)):e===`1s`?(sessionStorage.setItem(`tl_auto_refresh_mode`,`1s`),z(`1s`),H()):e===`2m`&&(sessionStorage.setItem(`tl_auto_refresh_mode`,`2m`),z(`2m`),U())},window.manualRefreshPage=function(){window.location.reload()};

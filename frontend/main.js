@@ -9945,4 +9945,199 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // Inisialisasi Fitur Auto-Refresh di Navbar
+    initAutoRefreshModule();
 });
+
+/* ==========================================================================
+   MODUL AUTO REFRESH (NAVBAR & HALAMAN WEB)
+   ========================================================================== */
+let _tlAutoRefreshTimer = null;
+let _tlCountdownInterval = null;
+
+function initAutoRefreshModule() {
+    // Jangan inisialisasi modul publik di panel admin (panel admin memiliki kontrol sendiri)
+    if (window.location.pathname.includes('/admin')) return;
+
+    injectNavbarRefreshItem();
+    applyStoredAutoRefresh();
+}
+
+function injectNavbarRefreshItem() {
+    const navLinks = document.querySelector('.nav-links');
+    if (!navLinks || document.getElementById('nav-refresh-control-item')) return;
+
+    const li = document.createElement('li');
+    li.id = 'nav-refresh-control-item';
+    li.className = 'nav-refresh-item';
+    li.innerHTML = `
+        <div class="nav-rf-box">
+            <div class="nav-rf-header">
+                <div class="nav-rf-title">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span>Refresh Halaman</span>
+                </div>
+                <span id="nav-rf-badge" class="nav-rf-badge">Off</span>
+            </div>
+            <div class="nav-rf-buttons">
+                <button type="button" class="btn-rf-choice active" id="rf-btn-off" onclick="window.setAutoRefresh('off')">
+                    <i class="fa-solid fa-power-off"></i> Off
+                </button>
+                <button type="button" class="btn-rf-choice" id="rf-btn-1s" onclick="window.setAutoRefresh('1s')">
+                    <i class="fa-solid fa-bolt"></i> 1 Detik
+                </button>
+                <button type="button" class="btn-rf-choice" id="rf-btn-2m" onclick="window.setAutoRefresh('2m')">
+                    <i class="fa-solid fa-clock"></i> 2 Menit
+                </button>
+            </div>
+            <button type="button" class="btn-rf-manual" onclick="window.manualRefreshPage()">
+                <i class="fa-solid fa-rotate"></i> Refresh Sekarang
+            </button>
+        </div>
+    `;
+
+    // Pasang di bagian bawah menu navigasi
+    navLinks.appendChild(li);
+}
+
+function applyStoredAutoRefresh() {
+    const mode = sessionStorage.getItem('tl_auto_refresh_mode') || 'off';
+    updateRefreshUI(mode);
+
+    if (mode === '1s') {
+        start1sAutoRefresh();
+    } else if (mode === '2m') {
+        start2mAutoRefresh();
+    }
+}
+
+function updateRefreshUI(mode) {
+    const badge = document.getElementById('nav-rf-badge');
+    const btnOff = document.getElementById('rf-btn-off');
+    const btn1s = document.getElementById('rf-btn-1s');
+    const btn2m = document.getElementById('rf-btn-2m');
+
+    [btnOff, btn1s, btn2m].forEach(b => b?.classList.remove('active', 'active-1s', 'active-2m'));
+
+    if (badge) {
+        badge.classList.remove('active-1s', 'active-2m');
+        if (mode === '1s') {
+            badge.textContent = '1 Detik';
+            badge.classList.add('active-1s');
+        } else if (mode === '2m') {
+            badge.textContent = '2 Menit';
+            badge.classList.add('active-2m');
+        } else {
+            badge.textContent = 'Off';
+        }
+    }
+
+    if (mode === '1s') {
+        btn1s?.classList.add('active', 'active-1s');
+        renderFloatingRefreshPill('1s', '1 Detik');
+    } else if (mode === '2m') {
+        btn2m?.classList.add('active', 'active-2m');
+        renderFloatingRefreshPill('2m', '2 Menit');
+    } else {
+        btnOff?.classList.add('active');
+        removeFloatingRefreshPill();
+    }
+}
+
+function renderFloatingRefreshPill(mode, initialText) {
+    let pill = document.getElementById('tl-refresh-pill');
+    if (!pill) {
+        pill = document.createElement('div');
+        pill.id = 'tl-refresh-pill';
+        pill.className = `tl-refresh-pill ${mode === '1s' ? 'mode-1s' : 'mode-2m'}`;
+        document.body.appendChild(pill);
+    } else {
+        pill.className = `tl-refresh-pill ${mode === '1s' ? 'mode-1s' : 'mode-2m'}`;
+    }
+
+    pill.innerHTML = `
+        <span class="rf-dot"></span>
+        <i class="fa-solid fa-arrows-rotate rf-icon"></i>
+        <span id="tl-rf-pill-text">Auto Refresh: ${initialText}</span>
+        <button type="button" class="btn-pill-stop" onclick="window.setAutoRefresh('off')">
+            <i class="fa-solid fa-stop"></i> Stop
+        </button>
+    `;
+}
+
+function removeFloatingRefreshPill() {
+    const pill = document.getElementById('tl-refresh-pill');
+    if (pill) pill.remove();
+}
+
+function start1sAutoRefresh() {
+    clearRefreshTimers();
+    _tlAutoRefreshTimer = setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+}
+
+function start2mAutoRefresh() {
+    clearRefreshTimers();
+    let remaining = 120; // 2 menit = 120 detik
+    
+    // Simpan target waktu di sessionStorage agar presisi
+    const targetTime = Date.now() + (120 * 1000);
+    sessionStorage.setItem('tl_rf_target_2m', targetTime.toString());
+
+    const updateCountdown = () => {
+        const now = Date.now();
+        const diff = Math.max(0, Math.round((targetTime - now) / 1000));
+        const m = Math.floor(diff / 60);
+        const s = diff % 60;
+        const text = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+        const pillText = document.getElementById('tl-rf-pill-text');
+        if (pillText) {
+            pillText.textContent = `Auto Refresh: ${text}`;
+        }
+        const badge = document.getElementById('nav-rf-badge');
+        if (badge && sessionStorage.getItem('tl_auto_refresh_mode') === '2m') {
+            badge.textContent = text;
+        }
+
+        if (diff <= 0) {
+            clearRefreshTimers();
+            window.location.reload();
+        }
+    };
+
+    updateCountdown();
+    _tlCountdownInterval = setInterval(updateCountdown, 1000);
+}
+
+function clearRefreshTimers() {
+    if (_tlAutoRefreshTimer) clearTimeout(_tlAutoRefreshTimer);
+    if (_tlCountdownInterval) clearInterval(_tlCountdownInterval);
+    _tlAutoRefreshTimer = null;
+    _tlCountdownInterval = null;
+}
+
+// Global actions
+window.setAutoRefresh = function(mode) {
+    if (mode === 'off') {
+        sessionStorage.setItem('tl_auto_refresh_mode', 'off');
+        sessionStorage.removeItem('tl_rf_target_2m');
+        clearRefreshTimers();
+        updateRefreshUI('off');
+    } else if (mode === '1s') {
+        sessionStorage.setItem('tl_auto_refresh_mode', '1s');
+        updateRefreshUI('1s');
+        start1sAutoRefresh();
+    } else if (mode === '2m') {
+        sessionStorage.setItem('tl_auto_refresh_mode', '2m');
+        updateRefreshUI('2m');
+        start2mAutoRefresh();
+    }
+};
+
+window.manualRefreshPage = function() {
+    window.location.reload();
+};
+

@@ -452,6 +452,19 @@ const checkAuth = () => {
         adminDashboard.style.display = "";
         fetchAdminItems();
         fetchGlobalSettings();
+
+        // Restore active tab after reload if saved
+        const savedTab = sessionStorage.getItem('admin_active_tab');
+        if (savedTab && savedTab !== 'items') {
+            setTimeout(() => {
+                if (typeof window.showTab === 'function') {
+                    window.showTab(savedTab);
+                }
+            }, 100);
+        }
+
+        // Inisialisasi Admin Auto Refresh
+        initAdminAutoRefresh();
         
         if (!localStorage.getItem('adminTutorialSeen')) {
             setTimeout(showAdminTutorial, 1000);
@@ -1135,6 +1148,9 @@ window.deleteItem = async (id) => {
 
 // Stats & Bookings logic
 window.showTab = (tab) => {
+    // Simpan tab aktif di sessionStorage agar saat auto-refresh tidak mental ke tab awal
+    sessionStorage.setItem('admin_active_tab', tab);
+
     document.querySelectorAll(".sidebar-menu a").forEach(el => el.classList.remove("active"));
     
     try {
@@ -4518,3 +4534,154 @@ window.markReportDone = async (reportId) => {
         alert('Error: ' + e.message);
     }
 };
+
+/* ==========================================================================
+   FITUR AUTO REFRESH PANEL ADMIN (1 DETIK & 2 MENIT)
+   ========================================================================== */
+let _adminRefreshTimer = null;
+let _adminCountdownInterval = null;
+
+function initAdminAutoRefresh() {
+    const mode = sessionStorage.getItem('admin_auto_refresh_mode') || 'off';
+    updateAdminRefreshUI(mode);
+
+    if (mode === '1s') {
+        startAdmin1sRefresh();
+    } else if (mode === '2m') {
+        startAdmin2mRefresh();
+    }
+}
+
+function updateAdminRefreshUI(mode) {
+    const btnOff = document.getElementById('admin-rf-off');
+    const btn1s = document.getElementById('admin-rf-1s');
+    const btn2m = document.getElementById('admin-rf-2m');
+
+    const sbBtnOff = document.getElementById('sb-rf-off');
+    const sbBtn1s = document.getElementById('sb-rf-1s');
+    const sbBtn2m = document.getElementById('sb-rf-2m');
+    const sbBadge = document.getElementById('sidebar-rf-badge');
+
+    [btnOff, btn1s, btn2m].forEach(b => b?.classList.remove('active', 'mode-1s', 'mode-2m'));
+    [sbBtnOff, sbBtn1s, sbBtn2m].forEach(b => b?.classList.remove('active', 'active-1s', 'active-2m'));
+
+    if (sbBadge) {
+        sbBadge.classList.remove('active-1s', 'active-2m');
+        if (mode === '1s') {
+            sbBadge.textContent = '1 Detik';
+            sbBadge.classList.add('active-1s');
+        } else if (mode === '2m') {
+            sbBadge.textContent = '2 Menit';
+            sbBadge.classList.add('active-2m');
+        } else {
+            sbBadge.textContent = 'Off';
+        }
+    }
+
+    if (mode === '1s') {
+        btn1s?.classList.add('active', 'mode-1s');
+        sbBtn1s?.classList.add('active', 'active-1s');
+        renderAdminFloatingPill('1s', '1 Detik');
+    } else if (mode === '2m') {
+        btn2m?.classList.add('active', 'mode-2m');
+        sbBtn2m?.classList.add('active', 'active-2m');
+        renderAdminFloatingPill('2m', '2 Menit');
+    } else {
+        btnOff?.classList.add('active');
+        sbBtnOff?.classList.add('active');
+        removeAdminFloatingPill();
+    }
+}
+
+function renderAdminFloatingPill(mode, initialText) {
+    let pill = document.getElementById('tl-refresh-pill');
+    if (!pill) {
+        pill = document.createElement('div');
+        pill.id = 'tl-refresh-pill';
+        pill.className = `tl-refresh-pill ${mode === '1s' ? 'mode-1s' : 'mode-2m'}`;
+        document.body.appendChild(pill);
+    } else {
+        pill.className = `tl-refresh-pill ${mode === '1s' ? 'mode-1s' : 'mode-2m'}`;
+    }
+
+    pill.innerHTML = `
+        <span class="rf-dot"></span>
+        <i class="fa-solid fa-arrows-rotate rf-icon"></i>
+        <span id="tl-admin-rf-pill-text">Admin Auto Refresh: ${initialText}</span>
+        <button type="button" class="btn-pill-stop" onclick="setAdminAutoRefresh('off')">
+            <i class="fa-solid fa-stop"></i> Stop
+        </button>
+    `;
+}
+
+function removeAdminFloatingPill() {
+    const pill = document.getElementById('tl-refresh-pill');
+    if (pill) pill.remove();
+}
+
+function startAdmin1sRefresh() {
+    clearAdminRefreshTimers();
+    _adminRefreshTimer = setTimeout(() => {
+        window.location.reload();
+    }, 1000);
+}
+
+function startAdmin2mRefresh() {
+    clearAdminRefreshTimers();
+    const targetTime = Date.now() + (120 * 1000);
+    sessionStorage.setItem('admin_rf_target_2m', targetTime.toString());
+
+    const updateAdminCountdown = () => {
+        const now = Date.now();
+        const diff = Math.max(0, Math.round((targetTime - now) / 1000));
+        const m = Math.floor(diff / 60);
+        const s = diff % 60;
+        const text = `${m}:${s < 10 ? '0' : ''}${s}`;
+
+        const pillText = document.getElementById('tl-admin-rf-pill-text');
+        if (pillText) {
+            pillText.textContent = `Admin Auto Refresh: ${text}`;
+        }
+        const sbBadge = document.getElementById('sidebar-rf-badge');
+        if (sbBadge && sessionStorage.getItem('admin_auto_refresh_mode') === '2m') {
+            sbBadge.textContent = text;
+        }
+
+        if (diff <= 0) {
+            clearAdminRefreshTimers();
+            window.location.reload();
+        }
+    };
+
+    updateAdminCountdown();
+    _adminCountdownInterval = setInterval(updateAdminCountdown, 1000);
+}
+
+function clearAdminRefreshTimers() {
+    if (_adminRefreshTimer) clearTimeout(_adminRefreshTimer);
+    if (_adminCountdownInterval) clearInterval(_adminCountdownInterval);
+    _adminRefreshTimer = null;
+    _adminCountdownInterval = null;
+}
+
+window.setAdminAutoRefresh = function(mode) {
+    if (mode === 'off') {
+        sessionStorage.setItem('admin_auto_refresh_mode', 'off');
+        sessionStorage.removeItem('admin_rf_target_2m');
+        clearAdminRefreshTimers();
+        updateAdminRefreshUI('off');
+    } else if (mode === '1s') {
+        sessionStorage.setItem('admin_auto_refresh_mode', '1s');
+        updateAdminRefreshUI('1s');
+        startAdmin1sRefresh();
+    } else if (mode === '2m') {
+        sessionStorage.setItem('admin_auto_refresh_mode', '2m');
+        updateAdminRefreshUI('2m');
+        startAdmin2mRefresh();
+    }
+};
+
+window.manualRefreshAdmin = function() {
+    window.location.reload();
+};
+

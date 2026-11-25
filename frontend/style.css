@@ -5037,4 +5037,277 @@ body:has(#checkout-modal.active) #ai-chat-widget {
   border-radius: 20px;
 }
 
+/* ==========================================================================
+   FITUR REFRESH HALAMAN (NAVBAR & PANEL ADMIN)
+   ========================================================================== */
+.nav-refresh-item {
+  width: 100%;
+  padding: 10px 14px;
+  list-style: none;
+}
+
+.nav-rf-box {
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 12px 14px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.nav-rf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.nav-rf-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #f8fafc;
+  letter-spacing: 0.3px;
+}
+
+.nav-rf-title i {
+  color: #38bdf8;
+  font-size: 0.95rem;
+}
+
+.nav-rf-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: rgba(148, 163, 184, 0.2);
+  color: #94a3b8;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+.nav-rf-badge.active-1s {
+  background: rgba(239, 68, 68, 0.2);
+  color: #fca5a5;
+  border-color: rgba(239, 68, 68, 0.5);
+  animation: rfBadgePulse 1s infinite alternate;
+}
+
+.nav-rf-badge.active-2m {
+  background: rgba(16, 185, 129, 0.2);
+  color: #6ee7b7;
+  border-color: rgba(16, 185, 129, 0.5);
+}
+
+@keyframes rfBadgePulse {
+  0% { transform: scale(0.97); opacity: 0.85; }
+  100% { transform: scale(1.03); opacity: 1; }
+}
+
+.nav-rf-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.btn-rf-choice {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #cbd5e1;
+  padding: 7px 6px;
+  border-radius: 8px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.btn-rf-choice:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.btn-rf-choice.active {
+  background: linear-gradient(135deg, #0284c7, #0ea5e9);
+  color: #ffffff;
+  border-color: #38bdf8;
+  box-shadow: 0 4px 12px rgba(14, 165, 233, 0.35);
+  font-weight: 700;
+}
+
+.btn-rf-choice.active.active-1s {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+  border-color: #f87171;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35);
+}
+
+.btn-rf-choice.active.active-2m {
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-color: #34d399;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35);
+}
+
+.btn-rf-manual {
+  width: 100%;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  color: #38bdf8;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-rf-manual:hover {
+  background: #38bdf8;
+  color: #0f172a;
+}
+
+/* Floating Bottom-Left Pill for Auto-Refresh */
+.tl-refresh-pill {
+  position: fixed;
+  bottom: 22px;
+  left: 22px;
+  z-index: 999999;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 0 15px rgba(56, 189, 248, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 8px 14px 8px 12px;
+  border-radius: 50px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #f8fafc;
+  font-size: 0.8rem;
+  font-weight: 600;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  animation: pillSlideUp 0.3s ease-out;
+}
+
+@keyframes pillSlideUp {
+  0% { transform: translateY(20px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+.tl-refresh-pill .rf-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+  animation: rfDotBlink 1.5s infinite;
+}
+
+.tl-refresh-pill.mode-1s .rf-dot {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+  animation: rfDotBlink 0.5s infinite;
+}
+
+@keyframes rfDotBlink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.8); }
+}
+
+.tl-refresh-pill .rf-icon {
+  font-size: 0.88rem;
+  color: #38bdf8;
+  animation: rfSpin 2s linear infinite;
+}
+
+@keyframes rfSpin {
+  100% { transform: rotate(360deg); }
+}
+
+.tl-refresh-pill .btn-pill-stop {
+  background: rgba(239, 68, 68, 0.25);
+  border: 1px solid rgba(239, 68, 68, 0.6);
+  color: #fca5a5;
+  padding: 3px 9px;
+  border-radius: 20px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+}
+
+.tl-refresh-pill .btn-pill-stop:hover {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+/* Admin Header Refresh Control */
+.admin-rf-toolbar {
+  display: flex;
+  align-items: center;
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 4px 6px;
+  gap: 4px;
+}
+
+.admin-rf-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.2s ease;
+}
+
+.admin-rf-btn:hover {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.admin-rf-btn.active {
+  background: #0284c7;
+  color: #ffffff;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(2, 132, 199, 0.3);
+}
+
+.admin-rf-btn.active.mode-1s {
+  background: #dc2626;
+  box-shadow: 0 2px 8px rgba(220, 38, 38, 0.3);
+}
+
+.admin-rf-btn.active.mode-2m {
+  background: #059669;
+  box-shadow: 0 2px 8px rgba(5, 150, 105, 0.3);
+}
+
+
 
