@@ -5959,10 +5959,18 @@ const loadStats = async () => {
         const res = await fetch(`${API_URL}/stats?_t=${new Date().getTime()}`, { cache: 'no-store' });
         if (res.ok) {
             const stats = await res.json();
-            if (stats.customers) document.getElementById("stat-val-customers").innerText = stats.customers;
-            if (stats.fleet) document.getElementById("stat-val-fleet").innerText = stats.fleet;
-            if (stats.trips) document.getElementById("stat-val-trips").innerText = stats.trips;
-            if (stats.support) document.getElementById("stat-val-support").innerText = stats.support;
+            document.querySelectorAll("#stat-val-customers, .stat-val-customers").forEach(el => {
+                if (stats.customers) el.innerText = stats.customers;
+            });
+            document.querySelectorAll("#stat-val-fleet, .stat-val-fleet").forEach(el => {
+                if (stats.fleet) el.innerText = stats.fleet;
+            });
+            document.querySelectorAll("#stat-val-trips, .stat-val-trips").forEach(el => {
+                if (stats.trips) el.innerText = stats.trips;
+            });
+            document.querySelectorAll("#stat-val-support, .stat-val-support").forEach(el => {
+                if (stats.support) el.innerText = stats.support;
+            });
         }
     } catch (e) {
         console.error("Failed to load stats:", e);
