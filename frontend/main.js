@@ -9984,9 +9984,116 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // Inisialisasi Indikator Garis & Active Link Navbar
+    initNavbarActiveIndicator();
+
     // Inisialisasi Fitur Auto-Refresh Persis Seperti Proyek bapas_medan_node
     initBapasAutoRefreshModule();
 });
+
+/* ==========================================================================
+   MODUL INDIKATOR GARIS AKTIF & HOVER / TOUCH MENU NAVBAR
+   ========================================================================== */
+function initNavbarActiveIndicator() {
+    const navLinks = document.querySelectorAll('.nav-links a:not(.nav-refresh-trigger)');
+    if (!navLinks || !navLinks.length) return;
+
+    const currentPath = window.location.pathname.replace(/\/index\.html$/, '/');
+    const currentHash = window.location.hash;
+
+    function clearActive() {
+        navLinks.forEach(l => l.classList.remove('active'));
+    }
+
+    function setActive(link) {
+        if (!link) return;
+        clearActive();
+        link.classList.add('active');
+    }
+
+    // 1. Tentukan menu aktif awal berdasarkan URL halaman saat ini
+    let activeFound = false;
+    navLinks.forEach(link => {
+        const href = link.getAttribute('href') || '';
+        const cleanHref = href.split('#')[0].replace(/^\//, '');
+
+        if (cleanHref && currentPath.includes(cleanHref)) {
+            setActive(link);
+            activeFound = true;
+        } else if (currentHash && href.includes(currentHash)) {
+            setActive(link);
+            activeFound = true;
+        }
+    });
+
+    // Jika di homepage tanpa hash spesifik, aktifkan Home
+    if (!activeFound && (currentPath === '/' || currentPath === '' || currentPath.endsWith('index.html'))) {
+        const homeLink = Array.from(navLinks).find(l => {
+            const h = l.getAttribute('href') || '';
+            return h === '/#home' || h === '#home' || h === '/' || h.includes('#home');
+        });
+        if (homeLink) {
+            setActive(homeLink);
+        }
+    }
+
+    // 2. Event klik pada semua link navbar: langsung tampilkan garis pada menu yang disentuh/diklik
+    navLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            setActive(this);
+        });
+    });
+
+    // 3. Scroll spy untuk section di homepage (home, services, packages, cars)
+    const sectionIds = ['home', 'services', 'packages', 'cars'];
+    const sections = sectionIds
+        .map(id => document.getElementById(id))
+        .filter(Boolean);
+
+    if (sections.length > 0) {
+        let isTicking = false;
+        window.addEventListener('scroll', () => {
+            if (!isTicking) {
+                window.requestAnimationFrame(() => {
+                    const scrollPos = window.scrollY + 150;
+                    let currentSectionId = '';
+
+                    for (let i = sections.length - 1; i >= 0; i--) {
+                        const sec = sections[i];
+                        if (sec.offsetTop <= scrollPos) {
+                            currentSectionId = sec.id;
+                            break;
+                        }
+                    }
+
+                    if (currentSectionId) {
+                        const targetLink = Array.from(navLinks).find(l => {
+                            const href = l.getAttribute('href') || '';
+                            return href.includes('#' + currentSectionId);
+                        });
+                        if (targetLink && !targetLink.classList.contains('active')) {
+                            setActive(targetLink);
+                        }
+                    }
+                    isTicking = false;
+                });
+                isTicking = true;
+            }
+        }, { passive: true });
+    }
+
+    // 4. Update saat hash URL berubah (misalnya tombol back/forward browser)
+    window.addEventListener('hashchange', () => {
+        const newHash = window.location.hash;
+        if (newHash) {
+            const targetLink = Array.from(navLinks).find(l => {
+                const href = l.getAttribute('href') || '';
+                return href.includes(newHash);
+            });
+            if (targetLink) setActive(targetLink);
+        }
+    });
+}
 
 /* ==========================================================================
    MODUL AUTO REFRESH PUBLIK (PERSIS PROYEK BAPAS_MEDAN_NODE)
