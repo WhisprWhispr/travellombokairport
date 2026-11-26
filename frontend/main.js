@@ -10020,8 +10020,10 @@ function injectNavbarRefreshLink() {
     li.className = 'nav-item nav-refresh-nav-item';
     li.innerHTML = `
         <a href="javascript:void(0)" onclick="window.bukaModalPengaturanRefresh()" class="nav-refresh-trigger" title="Pengaturan Refresh Halaman (1s, 2m, Manual)">
-            <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
-            <span>Refresh</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-sliders" style="color:#0284c7;"></i>
+                <span>Pengaturan Refresh</span>
+            </div>
             <span class="refresh-nav-badge" id="navRefreshCounterBadge">1s</span>
         </a>
     `;

@@ -2961,8 +2961,10 @@ Mohon bantuan darurat dan arahan tim siaga sesegera mungkin! 🙏`,u=`
                 </div>
             `,e.scrollTop=e.scrollHeight)},3e5),document.addEventListener(`click`,e=>{let t=document.querySelector(`.nav-links`),n=document.querySelector(`.mobile-menu-btn`);t&&t.classList.contains(`active`)&&!t.contains(e.target)&&!n?.contains(e.target)&&t.classList.remove(`active`)}),z()});var P=`tl_public_refresh_mode`,F=null,I=null,L=1,R=!1;function z(){window.location.pathname.includes(`/admin`)||(B(),V(),K(),J())}function B(){let e=document.querySelector(`.nav-links`);if(!e||document.getElementById(`nav-refresh-nav-item`))return;let t=document.createElement(`li`);t.id=`nav-refresh-nav-item`,t.className=`nav-item nav-refresh-nav-item`,t.innerHTML=`
         <a href="javascript:void(0)" onclick="window.bukaModalPengaturanRefresh()" class="nav-refresh-trigger" title="Pengaturan Refresh Halaman (1s, 2m, Manual)">
-            <i class="fa-solid fa-sliders" style="color:#38bdf8;"></i>
-            <span>Refresh</span>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <i class="fa-solid fa-sliders" style="color:#0284c7;"></i>
+                <span>Pengaturan Refresh</span>
+            </div>
             <span class="refresh-nav-badge" id="navRefreshCounterBadge">1s</span>
         </a>
     `,e.appendChild(t)}function V(){if(document.getElementById(`modalPengaturanRefresh`))return;let e=document.createElement(`div`);e.id=`modalPengaturanRefresh`,e.className=`settings-modal-overlay`,e.style.display=`none`,e.setAttribute(`role`,`dialog`),e.setAttribute(`aria-modal`,`true`),e.innerHTML=`

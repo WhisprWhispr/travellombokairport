@@ -172,7 +172,8 @@ ul {
   display: flex;
   align-items: center;
   gap: 12px;
-  flex-shrink: 0;
+  flex-shrink: 0 !important;
+  min-width: max-content !important;
   white-space: nowrap;
 }
 
@@ -196,6 +197,9 @@ ul {
 .logo-text {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0 !important;
+  min-width: max-content !important;
+  white-space: nowrap;
 }
 
 .logo-title {
@@ -2065,14 +2069,32 @@ ul {
 /* Responsive */
   @media (max-width: 1450px) {
     .logo-img { height: 42px; }
-    .logo-title { font-size: 1.05rem; }
-    .logo { gap: 8px; }
-    .nav-links { margin-left: auto; margin-right: 10px; gap: 8px; }
-    .nav-actions { gap: 4px; }
+    .logo-title { font-size: 1.02rem; }
+    .logo { gap: 8px; flex-shrink: 0 !important; min-width: max-content !important; }
+    .logo-text { flex-shrink: 0 !important; min-width: max-content !important; }
+    .nav-links { margin-left: auto; margin-right: 10px; gap: 8px; flex-shrink: 0; }
+    .nav-actions { gap: 5px; flex-shrink: 0; }
     .nav-phone { padding: 5px 8px; font-size: 0.75rem; letter-spacing: -0.3px; }
     .nav-actions .btn-green { padding: 5px 10px; font-size: 0.75rem; }
     .nav-links a { font-size: 0.85rem; letter-spacing: -0.2px; }
     .lang-btn { padding: 5px 6px; font-size: 0.7rem; }
+  }
+
+  @media (max-width: 1320px) and (min-width: 1251px) {
+    .navbar .container {
+      width: 98% !important;
+      padding: 0 10px !important;
+    }
+    .logo-title { font-size: 0.95rem !important; }
+    .logo-subtitle { font-size: 0.7rem !important; }
+    .logo-img { height: 38px !important; }
+    .logo { gap: 6px !important; flex-shrink: 0 !important; min-width: max-content !important; }
+    .logo-text { flex-shrink: 0 !important; min-width: max-content !important; }
+    .nav-links { gap: 6px !important; margin-right: 6px !important; flex-shrink: 0 !important; }
+    .nav-links a { font-size: 0.82rem !important; padding: 2px 4px !important; }
+    .nav-actions { gap: 4px !important; flex-shrink: 0 !important; }
+    .nav-phone { padding: 4px 6px !important; font-size: 0.72rem !important; }
+    .nav-actions .btn-green { padding: 4px 8px !important; font-size: 0.72rem !important; }
   }
 
 @keyframes navMenuSlideDown {
@@ -3046,11 +3068,13 @@ body { -webkit-user-select: none; -moz-user-select: none; -ms-user-select: none;
 input:checked + .slider { background-color: #ef4444; }
 input:checked + .slider:before { transform: translateX(22px); }
 
-/* Mobile Menu Cut-off Fix */
-.nav-content { flex-wrap: nowrap !important; }
-.nav-actions { flex-shrink: 0 !important; }
-.logo { min-width: 0 !important; flex-shrink: 1 !important; }
-.logo-text { min-width: 0 !important; }
+/* Mobile Menu Cut-off Fix (Khusus mobile/layar kecil, BUKAN desktop) */
+@media (max-width: 576px) {
+  .nav-content { flex-wrap: nowrap !important; }
+  .nav-actions { flex-shrink: 0 !important; }
+  .logo { min-width: 0 !important; flex-shrink: 1 !important; }
+  .logo-text { min-width: 0 !important; }
+}
 @media (max-width: 480px) {
   .logo-title { font-size: 0.85rem !important; }
   .logo-img { height: 30px !important; }
@@ -5239,6 +5263,39 @@ body:has(#checkout-modal.active) #ai-chat-widget {
 }
 
 /* 2. NAVBAR TRIGGER ITEM & MODAL PENGATURAN REFRESH PUBLIK */
+/* Sembunyikan item refresh di baris navbar horizontal desktop agar tidak memakan ruang dan bertabrakan dengan logo */
+/* Hanya tampil di navbar garis tiga (hamburger / mobile drawer) sesuai instruksi */
+@media (min-width: 1251px) {
+  .nav-refresh-nav-item {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1250px) {
+  .nav-refresh-nav-item {
+    display: block !important;
+    margin-top: 6px !important;
+    border-top: 1px dashed #cbd5e1 !important;
+    padding-top: 6px !important;
+  }
+  .nav-refresh-nav-item a.nav-refresh-trigger {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 14px !important;
+    color: #0284c7 !important;
+    font-weight: 700 !important;
+    border-radius: 10px !important;
+    background: #f0f9ff !important;
+    transition: all 0.2s ease !important;
+    box-sizing: border-box !important;
+  }
+  .nav-refresh-nav-item a.nav-refresh-trigger:hover {
+    background: #e0f2fe !important;
+    color: #0369a1 !important;
+  }
+}
+
 .nav-refresh-trigger {
   display: inline-flex;
   align-items: center;
