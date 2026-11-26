@@ -30,13 +30,644 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
   <link rel="stylesheet" href="./style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="manifest" href="/manifest.json">
   <meta name="theme-color" content="#2563eb">
   <script src="/protect.js"></script>
+
+  <style>
+    /* KONTAK KAMI - MODERN LUXURY THEME */
+    :root {
+      --primary-blue: #0284c7;
+      --primary-green: #25d366;
+      --text-dark: #0f172a;
+    }
+
+    /* Hero Header */
+    .contact-hero {
+      background: linear-gradient(135deg, #091224 0%, #0c2044 50%, #06152b 100%);
+      padding: 140px 0 70px;
+      position: relative;
+      overflow: hidden;
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-align: center;
+    }
+    .contact-hero::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      right: -100px;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(37, 211, 102, 0.16) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .contact-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -150px;
+      left: -150px;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(2, 132, 199, 0.18) 0%, transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 18px;
+      background: rgba(37, 211, 102, 0.12);
+      border: 1px solid rgba(37, 211, 102, 0.35);
+      border-radius: 30px;
+      color: #34d399;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      margin-bottom: 18px;
+      backdrop-filter: blur(8px);
+    }
+
+    .contact-hero .hero-title {
+      font-size: 2.75rem;
+      font-weight: 800;
+      line-height: 1.25;
+      margin-bottom: 18px;
+      letter-spacing: -0.5px;
+    }
+
+    .highlight-green {
+      color: #34d399;
+      background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .highlight-blue {
+      color: #38bdf8;
+      background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .contact-hero .hero-desc {
+      font-size: 1.05rem;
+      color: #cbd5e1;
+      max-width: 680px;
+      margin: 0 auto 24px;
+      line-height: 1.7;
+    }
+
+    .breadcrumb-nav {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.86rem;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 6px 16px;
+      border-radius: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .breadcrumb-nav a {
+      color: #cbd5e1;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .breadcrumb-nav a:hover {
+      color: #34d399;
+    }
+
+    /* Quick Contact Cards (4 Grid) */
+    .contact-quick-section {
+      margin-top: -42px;
+      position: relative;
+      z-index: 10;
+      padding-bottom: 45px;
+    }
+
+    .quick-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+    }
+
+    .qc-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 24px 20px;
+      box-shadow: 0 12px 35px -5px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+      transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .qc-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: #e2e8f0;
+      transition: background 0.3s ease;
+    }
+
+    .qc-card.wa::before { background: linear-gradient(90deg, #25d366, #10b981); }
+    .qc-card.phone::before { background: linear-gradient(90deg, #0284c7, #38bdf8); }
+    .qc-card.email::before { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+    .qc-card.loc::before { background: linear-gradient(90deg, #8b5cf6, #a78bfa); }
+
+    .qc-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.12);
+      border-color: #cbd5e1;
+    }
+
+    .qc-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+    }
+
+    .qc-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+
+    .qc-card.wa .qc-icon { background: #dcfce7; color: #16a34a; }
+    .qc-card.phone .qc-icon { background: #e0f2fe; color: #0284c7; }
+    .qc-card.email .qc-icon { background: #fef3c7; color: #d97706; }
+    .qc-card.loc .qc-icon { background: #ede9fe; color: #7c3aed; }
+
+    .qc-badge {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 20px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .qc-badge.online { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
+    .qc-badge.blue { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+    .qc-badge.amber { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .qc-badge.purple { background: #f3e8ff; color: #6b21a8; border: 1px solid #e9d5ff; }
+
+    .pulse-dot-green {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #16a34a;
+      box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7);
+      animation: pulseGreen 1.6s infinite;
+    }
+    @keyframes pulseGreen {
+      0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.7); }
+      70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+      100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+    }
+
+    .qc-title {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #64748b;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 4px;
+    }
+
+    .qc-value {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+      word-break: break-word;
+    }
+
+    .qc-desc {
+      font-size: 0.85rem;
+      color: #64748b;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      flex-grow: 1;
+    }
+
+    .qc-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.25s ease;
+      cursor: pointer;
+      border: none;
+      box-sizing: border-box;
+    }
+    .qc-card.wa .qc-btn { background: #25d366; color: #fff; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25); }
+    .qc-card.wa .qc-btn:hover { background: #20ba5a; transform: translateY(-2px); }
+    .qc-card.phone .qc-btn { background: #0284c7; color: #fff; box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25); }
+    .qc-card.phone .qc-btn:hover { background: #0369a1; transform: translateY(-2px); }
+    .qc-card.email .qc-btn { background: #f8fafc; color: #334155; border: 1.5px solid #cbd5e1; }
+    .qc-card.email .qc-btn:hover { background: #f1f5f9; color: #0f172a; border-color: #94a3b8; }
+    .qc-card.loc .qc-btn { background: #f8fafc; color: #334155; border: 1.5px solid #cbd5e1; }
+    .qc-card.loc .qc-btn:hover { background: #f1f5f9; color: #0f172a; border-color: #94a3b8; }
+
+    /* Main Content Section */
+    .contact-main-section {
+      padding: 20px 0 80px;
+      background: #f8fafc;
+    }
+
+    .contact-main-grid {
+      display: grid;
+      grid-template-columns: 1.15fr 1fr;
+      gap: 36px;
+      align-items: start;
+    }
+
+    /* Form Card */
+    .contact-form-box {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 38px 34px;
+      box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.07);
+      border: 1px solid #e2e8f0;
+      position: relative;
+    }
+
+    .form-header-title {
+      font-size: 1.45rem;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .form-header-subtitle {
+      font-size: 0.92rem;
+      color: #64748b;
+      margin-bottom: 22px;
+      line-height: 1.6;
+    }
+
+    .quick-topic-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 22px;
+    }
+    .topic-pill {
+      background: #f1f5f9;
+      color: #334155;
+      border: 1px solid #e2e8f0;
+      padding: 6px 13px;
+      border-radius: 20px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .topic-pill:hover,
+    .topic-pill.active {
+      background: #e0f2fe;
+      color: #0369a1;
+      border-color: #bae6fd;
+    }
+
+    .form-grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .custom-form-group {
+      margin-bottom: 18px;
+    }
+    .custom-form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #334155;
+      margin-bottom: 6px;
+    }
+    .input-icon-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .input-icon-wrapper i {
+      position: absolute;
+      left: 15px;
+      color: #94a3b8;
+      font-size: 0.95rem;
+      pointer-events: none;
+      transition: color 0.2s;
+    }
+    .custom-input {
+      width: 100%;
+      padding: 12px 14px 12px 42px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      font-size: 0.94rem;
+      color: #0f172a;
+      font-family: inherit;
+      background: #fafbfc;
+      transition: all 0.2s ease;
+      box-sizing: border-box;
+    }
+    .custom-input:focus {
+      outline: none;
+      border-color: #0284c7;
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.12);
+    }
+    .input-icon-wrapper:focus-within i {
+      color: #0284c7;
+    }
+
+    textarea.custom-input {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .btn-submit-wa {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 14px 24px;
+      background: linear-gradient(135deg, #25d366 0%, #16a34a 100%);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 800;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(37, 211, 102, 0.35);
+      transition: all 0.3s ease;
+      letter-spacing: 0.3px;
+    }
+    .btn-submit-wa:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 25px rgba(37, 211, 102, 0.45);
+      background: linear-gradient(135deg, #20ba5a 0%, #15803d 100%);
+    }
+
+    .form-secure-notice {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Info & Map Side */
+    .contact-info-box {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .info-card-panel {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 32px 30px;
+      box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.07);
+      border: 1px solid #e2e8f0;
+    }
+
+    .status-banner-live {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+      border: 1px solid #bbf7d0;
+      border-radius: 14px;
+      padding: 12px 18px;
+      margin-bottom: 24px;
+    }
+    .status-live-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .status-live-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #166534;
+    }
+    .status-live-sub {
+      font-size: 0.76rem;
+      color: #15803d;
+    }
+
+    .info-list-group {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .info-item-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .info-item-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+      flex-shrink: 0;
+      color: #0284c7;
+    }
+
+    .info-item-content h5 {
+      margin: 0 0 4px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #0f172a;
+    }
+    .info-item-content p {
+      margin: 0;
+      font-size: 0.88rem;
+      color: #64748b;
+      line-height: 1.5;
+    }
+
+    /* Map Box */
+    .map-embed-wrapper {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+      margin-top: 18px;
+    }
+    .map-embed-wrapper iframe {
+      display: block;
+      width: 100%;
+      height: 220px;
+      border: 0;
+    }
+
+    .map-footer-action {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 14px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    /* FAQ Section */
+    .contact-faq-section {
+      padding: 60px 0 80px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .faq-accordion-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      max-width: 1100px;
+      margin: 35px auto 0;
+    }
+
+    .c-faq-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      overflow: hidden;
+      transition: all 0.25s ease;
+    }
+    .c-faq-card:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 6px 20px -4px rgba(0,0,0,0.06);
+    }
+    .c-faq-card.active {
+      border-color: #38bdf8;
+      background: #ffffff;
+      box-shadow: 0 8px 25px -5px rgba(2, 132, 199, 0.12);
+    }
+    .c-faq-header {
+      padding: 18px 20px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1e293b;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+      gap: 12px;
+    }
+    .c-faq-card.active .c-faq-header {
+      color: #0284c7;
+    }
+    .c-faq-icon {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .c-faq-card.active .c-faq-icon {
+      transform: rotate(180deg);
+      color: #0284c7;
+    }
+    .c-faq-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.35s ease;
+      padding: 0 20px;
+      color: #64748b;
+      font-size: 0.9rem;
+      line-height: 1.6;
+    }
+    .c-faq-card.active .c-faq-body {
+      padding-bottom: 18px;
+    }
+
+    /* Responsive */
+    @media (max-width: 1100px) {
+      .quick-contact-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .contact-main-grid {
+        grid-template-columns: 1fr;
+      }
+      .faq-accordion-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .contact-hero {
+        padding: 115px 0 50px;
+      }
+      .contact-hero .hero-title {
+        font-size: 1.95rem;
+      }
+      .contact-quick-section {
+        margin-top: -30px;
+      }
+      .quick-contact-grid {
+        grid-template-columns: 1fr;
+      }
+      .contact-form-box {
+        padding: 26px 20px;
+      }
+      .form-grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .info-card-panel {
+        padding: 24px 18px;
+      }
+      .status-banner-live {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
@@ -58,7 +689,7 @@
         <li><a href="/#cars">Rental</a></li>
         <li><a href="/galeri.html">Galeri</a></li>
         <li><a href="/tentang-kami.html">Tentang Kami</a></li>
-        <li><a href="/kontak.html">Kontak</a></li>
+        <li><a href="/kontak.html" class="active">Kontak</a></li>
       </ul>
       <div class="nav-actions">
         <div class="lang-switcher">
@@ -80,66 +711,412 @@
   </nav>
 
   
-  <section class="section">
-    <div class="container">
-      <div class="section-title text-center" style="margin-top: 80px;">
-        <span class="subtitle text-green">HUBUNGI KAMI</span>
-        <h2>Kontak Kami</h2>
-        <div class="title-divider"><i class="fa-solid fa-envelope"></i></div>
+  <!-- Hero Header Section -->
+  <header class="contact-hero">
+    <div class="container" style="position: relative; z-index: 2;">
+      <div data-aos="fade-down" data-aos-duration="800">
+        <div class="hero-badge">
+          <i class="fa-solid fa-headset"></i> Layanan Pelanggan 24/7 &bull; Fast Response
+        </div>
       </div>
       
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 40px;">
-        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-          <h3 style="color: var(--primary-blue); margin-bottom: 25px;">Informasi Kontak</h3>
-          
-          <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;">
-            <div style="background: #f1f5f9; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--primary-green);">
-              <i class="fa-brands fa-whatsapp"></i>
-            </div>
-            <div>
-              <h4 style="margin: 0; color: #1e293b;">WhatsApp / Telepon</h4>
-              <p style="margin: 5px 0 0; color: #64748b;">+62 896-7696-3255</p>
-            </div>
-          </div>
-          
-          <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;">
-            <div style="background: #f1f5f9; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--primary-blue);">
-              <i class="fa-solid fa-envelope"></i>
-            </div>
-            <div>
-              <h4 style="margin: 0; color: #1e293b;">Email</h4>
-              <p style="margin: 5px 0 0; color: #64748b;">lombokindah892@gmail.com</p>
-            </div>
-          </div>
+      <h1 class="hero-title" data-aos="fade-up" data-aos-duration="900" data-aos-delay="100">
+        Hubungi Kami Kapan Saja<br>
+        <span class="highlight-green">Siap Melayani Perjalanan</span> <span class="highlight-blue">Lombok Anda</span>
+      </h1>
+      
+      <p class="hero-desc" data-aos="fade-up" data-aos-duration="900" data-aos-delay="200">
+        Ada pertanyaan seputar antar jemput bandara, sewa mobil lepas kunci, atau rekomendasi paket wisata Lombok? Tim reservasi kami siaga 24 jam penuh untuk memberikan solusi perjalanan terbaik dan konsultasi gratis.
+      </p>
 
-          <div style="display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start;">
-            <div style="background: #f1f5f9; width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: var(--primary-green);">
-              <i class="fa-solid fa-location-dot"></i>
-            </div>
-            <div>
-              <h4 style="margin: 0; color: #1e293b;">Alamat Kantor</h4>
-              <p style="margin: 5px 0 0; color: #64748b; line-height: 1.6;">Jl. Raya Tanak Awu, Ketara, Kec. Pujut,<br>Kabupaten Lombok Tengah,<br>Nusa Tenggara Barat 83573</p>
-            </div>
-          </div>
+      <div data-aos="fade-up" data-aos-duration="900" data-aos-delay="300">
+        <div class="breadcrumb-nav">
+          <a href="/"><i class="fa-solid fa-house"></i> Home</a>
+          <span>/</span>
+          <span style="color: #ffffff; font-weight: 700;">Kontak Kami</span>
         </div>
-        
-        <div style="background: white; padding: 40px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);">
-          <h3 style="color: var(--primary-blue); margin-bottom: 25px;">Kirim Pesan</h3>
-          <form onsubmit="event.preventDefault(); window.open('https://wa.me/6289676963255?text=Halo%20Admin,%20saya%20punya%20pertanyaan:%20' + document.getElementById('msg').value, '_blank');">
-            <div class="form-group mb-3">
-              <label>Nama Anda</label>
-              <input type="text" class="form-control" placeholder="Nama lengkap" required>
-            </div>
-            <div class="form-group mb-3">
-              <label>Pesan Pertanyaan</label>
-              <textarea id="msg" class="form-control" rows="4" placeholder="Tuliskan pertanyaan Anda..." required></textarea>
-            </div>
-            <button type="submit" class="btn btn-green w-100">KIRIM VIA WHATSAPP</button>
-          </form>
+      </div>
+    </div>
+  </header>
+
+  <!-- 4 Quick Contact Channels Grid -->
+  <section class="contact-quick-section">
+    <div class="container">
+      <div class="quick-contact-grid">
+        <!-- 1. WhatsApp Utama -->
+        <div class="qc-card wa" data-aos="fade-up" data-aos-duration="800" data-aos-delay="100">
+          <div class="qc-header">
+            <div class="qc-icon"><i class="fa-brands fa-whatsapp"></i></div>
+            <span class="qc-badge online"><span class="pulse-dot-green"></span> Online 24 Jam</span>
+          </div>
+          <div class="qc-title">WhatsApp Resmi</div>
+          <div class="qc-value">+62 896-7696-3255</div>
+          <p class="qc-desc">Chat langsung untuk tanya harga terbaru, ketersediaan unit, dan booking cepat tanpa ribet.</p>
+          <a href="https://wa.me/6289676963255?text=Halo%20Admin%20Travel%20Lombok%20Airport,%20saya%20ingin%20konsultasi%20perjalanan" target="_blank" class="qc-btn">
+            <i class="fa-brands fa-whatsapp"></i> Chat WhatsApp
+          </a>
+        </div>
+
+        <!-- 2. Telepon / Hotline -->
+        <div class="qc-card phone" data-aos="fade-up" data-aos-duration="800" data-aos-delay="200">
+          <div class="qc-header">
+            <div class="qc-icon"><i class="fa-solid fa-phone-volume"></i></div>
+            <span class="qc-badge blue"><i class="fa-solid fa-bolt"></i> Siaga 24 Jam</span>
+          </div>
+          <div class="qc-title">Customer Service</div>
+          <div class="qc-value">+62 896-7696-3255</div>
+          <p class="qc-desc">Panggilan langsung untuk kebutuhan mendesak, penjemputan airport malam hari, atau emergency.</p>
+          <a href="tel:+6289676963255" class="qc-btn">
+            <i class="fa-solid fa-phone"></i> Hubungi Telepon
+          </a>
+        </div>
+
+        <!-- 3. Email Resmi -->
+        <div class="qc-card email" data-aos="fade-up" data-aos-duration="800" data-aos-delay="300">
+          <div class="qc-header">
+            <div class="qc-icon"><i class="fa-solid fa-envelope-open-text"></i></div>
+            <span class="qc-badge amber"><i class="fa-solid fa-briefcase"></i> Corporate / B2B</span>
+          </div>
+          <div class="qc-title">Email Dukungan</div>
+          <div class="qc-value" style="font-size: 0.95rem;">lombokindah892@gmail.com</div>
+          <p class="qc-desc">Untuk penawaran perjalanan dinas instansi, kerjasama tour rombongan, dan pengiriman invoice.</p>
+          <a href="mailto:lombokindah892@gmail.com?subject=Tanya%20Layanan%20Travel%20Lombok%20Airport" class="qc-btn">
+            <i class="fa-solid fa-envelope"></i> Kirim Email
+          </a>
+        </div>
+
+        <!-- 4. Lokasi Kantor Bandara -->
+        <div class="qc-card loc" data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+          <div class="qc-header">
+            <div class="qc-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+            <span class="qc-badge purple"><i class="fa-solid fa-plane-arrival"></i> Bandara BIL</span>
+          </div>
+          <div class="qc-title">Kantor Operasional</div>
+          <div class="qc-value">Lombok Tengah, NTB</div>
+          <p class="qc-desc">Jl. Raya Tanak Awu, Ketara, Kec. Pujut (5 Menit dari Bandara Internasional Lombok).</p>
+          <a href="https://maps.app.goo.gl/8M5r53HeFcBwMmVL6?g_st=iwb" target="_blank" class="qc-btn">
+            <i class="fa-solid fa-location-arrow"></i> Petunjuk Arah
+          </a>
         </div>
       </div>
     </div>
   </section>
+
+  <!-- Main Content: Form & Office Detail -->
+  <section class="contact-main-section">
+    <div class="container">
+      <div class="contact-main-grid">
+        
+        <!-- Sisi Kiri: Form Kirim Pesan & Konsultasi Cepat -->
+        <div class="contact-form-box" data-aos="fade-right" data-aos-duration="900">
+          <div class="form-header-title">
+            <i class="fa-solid fa-paper-plane" style="color: var(--primary-green);"></i>
+            <span>Kirim Pesan / Konsultasi Gratis</span>
+          </div>
+          <p class="form-header-subtitle">
+            Punya kebutuhan khusus atau ingin rekomendasi paket? Tulis pesan di bawah ini, tim kami akan merespons melalui WhatsApp dalam waktu singkat.
+          </p>
+
+          <!-- Quick Topic Selector Pills -->
+          <div style="margin-bottom: 10px;">
+            <label style="font-size: 0.82rem; font-weight: 700; color: #475569; display: block; margin-bottom: 6px;">Pilih Topik Cepat:</label>
+            <div class="quick-topic-pills">
+              <span class="topic-pill active" onclick="setContactTopic('Antar Jemput Bandara', this)"><i class="fa-solid fa-plane-arrival"></i> Antar Jemput Bandara</span>
+              <span class="topic-pill" onclick="setContactTopic('Sewa Mobil Lepas Kunci', this)"><i class="fa-solid fa-key"></i> Lepas Kunci</span>
+              <span class="topic-pill" onclick="setContactTopic('Sewa Mobil + Supir & BBM', this)"><i class="fa-solid fa-user-tie"></i> Mobil + Supir</span>
+              <span class="topic-pill" onclick="setContactTopic('Paket Wisata Tour Lombok', this)"><i class="fa-solid fa-umbrella-beach"></i> Paket Wisata</span>
+              <span class="topic-pill" onclick="setContactTopic('Dokumentasi Drone & Kamera', this)"><i class="fa-solid fa-camera"></i> Drone Tour</span>
+              <span class="topic-pill" onclick="setContactTopic('Pertanyaan Umum / Lainnya', this)"><i class="fa-solid fa-circle-question"></i> Pertanyaan Umum</span>
+            </div>
+          </div>
+
+          <form id="contactForm" onsubmit="handleContactSubmit(event)">
+            <div class="form-grid-2">
+              <div class="custom-form-group">
+                <label for="contactName">Nama Lengkap <span style="color: #ef4444;">*</span></label>
+                <div class="input-icon-wrapper">
+                  <input type="text" id="contactName" class="custom-input" placeholder="Contoh: Budi Santoso" required>
+                  <i class="fa-solid fa-user"></i>
+                </div>
+              </div>
+
+              <div class="custom-form-group">
+                <label for="contactPhone">Nomor WhatsApp / HP <span style="color: #ef4444;">*</span></label>
+                <div class="input-icon-wrapper">
+                  <input type="tel" id="contactPhone" class="custom-input" placeholder="Contoh: 081234567890" required>
+                  <i class="fa-brands fa-whatsapp"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid-2">
+              <div class="custom-form-group">
+                <label for="contactService">Layanan yang Diminati</label>
+                <div class="input-icon-wrapper">
+                  <select id="contactService" class="custom-input">
+                    <option value="Antar Jemput Bandara">✈️ Antar Jemput Bandara (Airport Transfer)</option>
+                    <option value="Sewa Mobil Lepas Kunci">🚗 Rental Mobil Lepas Kunci (24 Jam)</option>
+                    <option value="Sewa Mobil + Supir & BBM">👨‍✈️ Rental Mobil + Supir + BBM</option>
+                    <option value="Paket Wisata Tour Lombok">🏝️ Paket Tour Wisata Lombok (Private)</option>
+                    <option value="Sewa Sepeda Motor">🛵 Sewa Sepeda Motor Matic</option>
+                    <option value="Dokumentasi Drone & Kamera">🚁 Dokumentasi Drone 4K Liburan</option>
+                    <option value="Pertanyaan Umum / Lainnya">💬 Pertanyaan Umum / Lainnya</option>
+                  </select>
+                  <i class="fa-solid fa-list-check"></i>
+                </div>
+              </div>
+
+              <div class="custom-form-group">
+                <label for="contactDate">Rencana Tanggal Perjalanan</label>
+                <div class="input-icon-wrapper">
+                  <input type="date" id="contactDate" class="custom-input">
+                  <i class="fa-solid fa-calendar-day"></i>
+                </div>
+              </div>
+            </div>
+
+            <div class="custom-form-group">
+              <label for="contactMsg">Pesan / Rincian Pertanyaan <span style="color: #ef4444;">*</span></label>
+              <div class="input-icon-wrapper">
+                <textarea id="contactMsg" class="custom-input" rows="4" placeholder="Tuliskan pertanyaan Anda, rute perjalanan yang diinginkan, atau jumlah peserta rombongan..." required></textarea>
+                <i class="fa-solid fa-comment-dots" style="top: 15px;"></i>
+              </div>
+            </div>
+
+            <button type="submit" class="btn-submit-wa">
+              <i class="fa-brands fa-whatsapp" style="font-size: 1.25rem;"></i>
+              <span>KIRIM VIA WHATSAPP RESMI</span>
+            </button>
+
+            <div class="form-secure-notice">
+              <i class="fa-solid fa-shield-halved" style="color: #10b981;"></i>
+              <span>Privasi Anda terjaga 100%. Data langsung terhubung ke sistem customer support kami.</span>
+            </div>
+          </form>
+        </div>
+
+        <!-- Sisi Kanan: Status Operasional, Detail Kantor, & Peta Lokasi -->
+        <div class="contact-info-box" data-aos="fade-left" data-aos-duration="900">
+          
+          <!-- Panel Jam Layanan & Fasilitas -->
+          <div class="info-card-panel">
+            <!-- Status Live Banner -->
+            <div class="status-banner-live">
+              <div class="status-live-left">
+                <span class="pulse-dot-green"></span>
+                <div>
+                  <div class="status-live-title">BUKA SEKARANG &bull; 24 JAM NON-STOP</div>
+                  <div class="status-live-sub">Siap melayani penerbangan pagi pertama hingga malam hari</div>
+                </div>
+              </div>
+              <span style="font-size: 0.72rem; font-weight: 800; background: #fff; padding: 4px 10px; border-radius: 20px; color: #15803d; border: 1px solid #bbf7d0;">
+                WITA (GMT+8)
+              </span>
+            </div>
+
+            <div class="info-list-group">
+              <div class="info-item-row">
+                <div class="info-item-icon"><i class="fa-solid fa-plane-arrival"></i></div>
+                <div class="info-item-content">
+                  <h5>Titik Penjemputan Bandara (Arrival Gate)</h5>
+                  <p>Driver kami menyambut tamu di depan pintu keluar kedatangan domestik / internasional dengan membawa papan nama (signboard) resmi atas nama Anda.</p>
+                </div>
+              </div>
+
+              <div class="info-item-row">
+                <div class="info-item-icon" style="color: var(--primary-green);"><i class="fa-solid fa-building"></i></div>
+                <div class="info-item-content">
+                  <h5>Alamat Pool &amp; Kantor Operasional</h5>
+                  <p>Bandara Internasional Lombok (BIL), Jl. Raya Tanak Awu, Ketara, Kec. Pujut, Kabupaten Lombok Tengah, Nusa Tenggara Barat 83573.</p>
+                </div>
+              </div>
+
+              <div class="info-item-row">
+                <div class="info-item-icon" style="color: #f59e0b;"><i class="fa-solid fa-clock-rotate-left"></i></div>
+                <div class="info-item-content">
+                  <h5>Jadwal Pelayanan Armada</h5>
+                  <p>Layanan Drop/Pick-Up Airport: <strong>24 Jam Setiap Hari</strong><br>Sewa Mobil &amp; Motor: <strong>06.00 – 23.00 WITA</strong> (Pengantaran unit fleksibel sesuai jadwal penerbangan Anda).</p>
+                </div>
+              </div>
+
+              <div class="info-item-row">
+                <div class="info-item-icon" style="color: #8b5cf6;"><i class="fa-solid fa-medal"></i></div>
+                <div class="info-item-content">
+                  <h5>Jaminan Layanan Eksekutif</h5>
+                  <p>Semua armada ber-AC dingin, bersih, wangi, supir lokal berpengalaman dan ramah, serta bebas biaya delay pesawat.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Peta Google Maps Embed -->
+            <div class="map-embed-wrapper">
+              <iframe 
+                src="https://maps.google.com/maps?q=Travel+Lombok+Airport,+Jl.+Raya+Tanak+Awu,+Ketara,+Kec.+Pujut,+Kabupaten+Lombok+Tengah,+Nusa+Tenggara+Bar.+83573&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+                title="Peta Lokasi Kantor Travel Lombok Airport"
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+
+            <div class="map-footer-action">
+              <span style="font-size: 0.82rem; color: #64748b;">
+                <i class="fa-solid fa-location-dot" style="color: #ef4444;"></i> Posisi strategis 5 menit dari Bandara BIL
+              </span>
+              <a href="https://maps.app.goo.gl/8M5r53HeFcBwMmVL6?g_st=iwb" target="_blank" class="btn btn-primary" style="padding: 7px 14px; font-size: 0.8rem; border-radius: 8px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                <i class="fa-solid fa-diamond-turn-right"></i> Buka Google Maps
+              </a>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section Bantuan Cepat -->
+  <section class="contact-faq-section">
+    <div class="container">
+      <div class="section-title text-center" style="margin-bottom: 25px;" data-aos="fade-up">
+        <span class="subtitle text-green">PERTANYAAN UMUM</span>
+        <h2>Bantuan Cepat &amp; FAQ Kontak</h2>
+        <div class="title-divider"><i class="fa-solid fa-circle-question"></i></div>
+      </div>
+
+      <div class="faq-accordion-grid">
+        <div class="c-faq-card" data-aos="fade-up" data-aos-delay="100">
+          <div class="c-faq-header" onclick="toggleContactFaq(this)">
+            <span>Bagaimana jika pesawat saya mengalami delay saat jadwal penjemputan?</span>
+            <i class="fa-solid fa-chevron-down c-faq-icon"></i>
+          </div>
+          <div class="c-faq-body">
+            Anda tidak perlu khawatir. Tim dispatcher kami memantau nomor penerbangan Anda secara real-time. Driver kami akan tetap setia menunggu di bandara tanpa ada biaya denda keterlambatan (free waiting time).
+          </div>
+        </div>
+
+        <div class="c-faq-card" data-aos="fade-up" data-aos-delay="150">
+          <div class="c-faq-header" onclick="toggleContactFaq(this)">
+            <span>Apakah saya bisa berkonsultasi itinerary dan rute liburan secara gratis?</span>
+            <i class="fa-solid fa-chevron-down c-faq-icon"></i>
+          </div>
+          <div class="c-faq-body">
+            Sangat bisa! Anda cukup menghubungi customer service kami melalui WhatsApp. Tim kami dengan senang hati membantu menyusun jadwal liburan terbaik di Lombok sesuai durasi, preferensi tempat, serta anggaran Anda tanpa biaya apa pun.
+          </div>
+        </div>
+
+        <div class="c-faq-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="c-faq-header" onclick="toggleContactFaq(this)">
+            <span>Metode pembayaran apa saja yang diterima oleh Travel Lombok Airport?</span>
+            <i class="fa-solid fa-chevron-down c-faq-icon"></i>
+          </div>
+          <div class="c-faq-body">
+            Kami menyediakan kemudahan pembayaran melalui Transfer Bank Resmi (BCA, Mandiri, BRI, BNI), QRIS instan dari semua e-wallet (GoPay, OVO, Dana, ShopeePay), Virtual Account, serta pembayaran tunai saat penjemputan.
+          </div>
+        </div>
+
+        <div class="c-faq-card" data-aos="fade-up" data-aos-delay="250">
+          <div class="c-faq-header" onclick="toggleContactFaq(this)">
+            <span>Berapa minimal waktu untuk melakukan reservasi sebelum kedatangan?</span>
+            <i class="fa-solid fa-chevron-down c-faq-icon"></i>
+          </div>
+          <div class="c-faq-body">
+            Untuk memastikan ketersediaan tipe unit kendaraan yang Anda inginkan (terutama saat musim liburan/high season), disarankan memesan minimal H-1 sebelum kedatangan. Namun untuk kebutuhan mendesak di hari H, silakan hubungi WhatsApp kami langsung untuk pengecekan armada tercepat.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive Script Kontak Kami -->
+  <script>
+    // Init Animate On Scroll jika library tersedia
+    document.addEventListener('DOMContentLoaded', () => {
+      if (typeof AOS !== 'undefined') {
+        AOS.init({
+          once: true,
+          duration: 800,
+          easing: 'ease-out-cubic'
+        });
+      }
+    });
+
+    // Pilihan Cepat Topik
+    function setContactTopic(topic, pillEl) {
+      document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+      if (pillEl) pillEl.classList.add('active');
+      
+      const select = document.getElementById('contactService');
+      if (select) {
+        select.value = topic;
+      }
+
+      const textarea = document.getElementById('contactMsg');
+      if (textarea && !textarea.value) {
+        textarea.value = `Halo Admin, saya ingin menanyakan informasi dan ketersediaan untuk layanan: ${topic}.`;
+      }
+    }
+
+    // Toggle FAQ Accordion
+    function toggleContactFaq(headerEl) {
+      const card = headerEl.parentElement;
+      const body = card.querySelector('.c-faq-body');
+      const isActive = card.classList.contains('active');
+
+      // Tutup semua FAQ lainnya untuk tampilan yang rapi
+      document.querySelectorAll('.c-faq-card').forEach(c => {
+        c.classList.remove('active');
+        const b = c.querySelector('.c-faq-body');
+        if (b) b.style.maxHeight = null;
+      });
+
+      if (!isActive) {
+        card.classList.add('active');
+        body.style.maxHeight = body.scrollHeight + 'px';
+      }
+    }
+
+    // Form Submit Handler via WhatsApp
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      const name = document.getElementById('contactName')?.value.trim() || '-';
+      const phone = document.getElementById('contactPhone')?.value.trim() || '-';
+      const service = document.getElementById('contactService')?.value || 'Layanan Umum';
+      const date = document.getElementById('contactDate')?.value || '-';
+      const msg = document.getElementById('contactMsg')?.value.trim() || '';
+
+      const waText = 
+`*PESAN KONTAK DARI WEBSITE*
+---------------------------------------
+👤 *Nama Lengkap:* ${name}
+📱 *No. WhatsApp / HP:* ${phone}
+🛎️ *Kebutuhan Layanan:* ${service}
+📅 *Rencana Tanggal:* ${date}
+---------------------------------------
+💬 *Pesan / Pertanyaan:*
+${msg}
+---------------------------------------
+_Dikirim via Formulir Kontak Resmi Travel Lombok Airport_`;
+
+      const waUrl = `https://wa.me/6289676963255?text=${encodeURIComponent(waText)}`;
+
+      if (typeof Swal !== 'undefined') {
+        Swal.fire({
+          icon: 'success',
+          title: 'Mengarahkan ke WhatsApp...',
+          text: 'Pesan Anda telah kami siapkan dengan rapi. Silakan kirimkan langsung ke Admin kami di WhatsApp.',
+          showConfirmButton: true,
+          confirmButtonText: '<i class="fa-brands fa-whatsapp"></i> Buka WhatsApp Sekarang',
+          confirmButtonColor: '#25d366'
+        }).then(() => {
+          window.open(waUrl, '_blank');
+        });
+      } else {
+        window.open(waUrl, '_blank');
+      }
+    }
+  </script>
 <!-- Footer -->
   <footer class="footer">
     <div class="container">
