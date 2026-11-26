@@ -2477,10 +2477,14 @@ const createPackageCard = (item, index = 0) => {
     
     const ratingBadge = item.rating 
         ? `<span style="position:absolute; ${(isParent || isHoneymoon) ? 'top:45px;' : 'top:10px;'} left:10px; background:rgba(255,255,255,0.95); color:#f59e0b; font-weight:800; font-size:0.8rem; padding:4px 10px; border-radius:20px; z-index:2; box-shadow:0 2px 4px rgba(0,0,0,0.1);"><i class="fa-solid fa-star" style="margin-right:4px;"></i>${item.rating}</span>` : '';
+    const packageSharePrice = (isParent && (!item.price || Number(item.price) === 0))
+        ? 'Berbagai Pilihan Paket Menarik'
+        : (item.price && Number(item.price) > 0 ? formatPrice(item.price) : 'Hubungi Kami');
+
     return `
     <div class="card package-card" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}" style="${parentBorder} ${isHoneymoon ? 'background: linear-gradient(to bottom, #fff, #fdf2f8);' : ''}">
         <div class="img-wrapper" style="position:relative;">
-            <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${packageSharePrice.replace(/'/g, "\\'")}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
             <span class="tag" style="${isHoneymoon ? 'background:#fce7f3; color:#db2777;' : ''}"><i class="fa-regular fa-clock" style="margin-right: 4px;"></i> ${item.duration || '1 HARI'}</span>
             ${badgeHtml}
@@ -2664,6 +2668,39 @@ const createFleetCard = (item, index = 0) => {
     const categoryIcon = item.category === 'motorcycle' ? 'fa-motorcycle' : 'fa-car';
     const categoryLabel = item.category === 'motorcycle' ? 'Motor' : 'Mobil';
 
+    // Hitung harga cerdas untuk mobil/motor (Hiace Commuter & Premio biasanya include driver, bukan lepas kunci)
+    const isCar = (item.category === 'car');
+    const hasLepas = Boolean(item.price && Number(item.price) > 0);
+    const hasDriver = isCar && Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
+
+    let displayPrice = item.price;
+    let displayUnit = item.duration || (isCar ? '24 Jam' : 'hari');
+    let priceLabel = 'Mulai dari';
+    let sharePriceText = '';
+
+    if (isCar) {
+        if (!hasLepas && hasDriver) {
+            displayPrice = item.priceWithDriver;
+            displayUnit = '12 Jam';
+            priceLabel = 'Tarif + Supir & BBM';
+            sharePriceText = `${formatPrice(item.priceWithDriver)} / 12 Jam (Include Supir & BBM)`;
+        } else if (hasLepas && hasDriver) {
+            displayPrice = item.price;
+            displayUnit = '24 Jam';
+            priceLabel = 'Tarif Lepas Kunci';
+            sharePriceText = `${formatPrice(item.price)} / 24 Jam (Lepas Kunci)`;
+        } else if (hasLepas) {
+            displayPrice = item.price;
+            displayUnit = '24 Jam';
+            priceLabel = 'Tarif Lepas Kunci';
+            sharePriceText = `${formatPrice(item.price)} / 24 Jam`;
+        } else {
+            sharePriceText = 'Hubungi Kami';
+        }
+    } else {
+        sharePriceText = (item.price && Number(item.price) > 0) ? `${formatPrice(item.price)} / ${displayUnit}` : 'Hubungi Kami';
+    }
+
     // Build feature tags
     let featureTags = '';
     if (item.seats) {
@@ -2692,7 +2729,7 @@ const createFleetCard = (item, index = 0) => {
     return `
     <div class="card package-card fleet-card-v2" data-aos="fade-up" data-aos-delay="${(index % 3) * 100}">
         <div class="img-wrapper" style="position:relative;">
-            <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${formatPrice(item.price)}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
+            <button onclick="window.shareItem('${item.id}', '${item.title.replace(/'/g, "\\'")}', '${sharePriceText.replace(/'/g, "\\'")}')" style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.9); color:var(--primary-blue); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Bagikan"><i class="fa-solid fa-share-nodes"></i></button>
             <button id="btn-wishlist-${item.id}" onclick="event.stopPropagation(); window.toggleWishlist('${item.id}')" style="position:absolute; top:10px; right:50px; background:rgba(255,255,255,0.9); color:var(--text-gray); border:none; width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; cursor:pointer; box-shadow:0 2px 4px rgba(0,0,0,0.1); z-index:2; transition:all 0.2s;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Simpan ke Wishlist"><i class="${window.isInWishlist && window.isInWishlist(item.id) ? 'fa-solid' : 'fa-regular'} fa-heart" ${window.isInWishlist && window.isInWishlist(item.id) ? 'style="color:#ef4444;"' : ''}></i></button>
             <span class="tag"><i class="fa-solid ${categoryIcon}" style="margin-right: 4px;"></i> ${categoryLabel}</span>
             ${ratingBadge}
@@ -2702,44 +2739,19 @@ const createFleetCard = (item, index = 0) => {
             <h3 class="notranslate">${item.title}</h3>
             ${featureTags ? `<div class="fleet-tags-row">${featureTags}</div>` : ''}
             ${includeHtml ? `<ul>${includeHtml}</ul>` : ''}
-            ${(() => {
-                const isCar = (item.category === 'car');
-                const hasLepas = Boolean(item.price && Number(item.price) > 0);
-                const hasDriver = isCar && Boolean(item.priceWithDriver && Number(item.priceWithDriver) > 0);
-                
-                let displayPrice = item.price;
-                let displayUnit = item.duration || 'hari';
-                let priceLabel = 'Mulai dari';
-                
-                if (isCar) {
-                    if (!hasLepas && hasDriver) {
-                        displayPrice = item.priceWithDriver;
-                        displayUnit = '12 Jam';
-                        priceLabel = 'Tarif + Supir & BBM';
-                    } else if (hasLepas && !hasDriver) {
-                        displayPrice = item.price;
-                        displayUnit = '24 Jam';
-                        priceLabel = 'Tarif Lepas Kunci';
-                    }
-                }
-                
-                return `
-                <div class="price-row">
-                      <div class="price" style="flex: 1; min-width: 0;">
-                          <div style="display: flex; flex-direction: column; gap: 2px;">
-                                      <div style="font-size: 0.7rem; color: #64748b;">${priceLabel}</div>
-                                      <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(displayPrice)}</div>
-                                      <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${displayUnit}</div>
-                          </div>
-                      </div>
-                    <div class="action-buttons">
-                        <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
-                        <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${Number(displayPrice) || 0}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
+            <div class="price-row">
+                <div class="price" style="flex: 1; min-width: 0;">
+                    <div style="display: flex; flex-direction: column; gap: 2px;">
+                        <div style="font-size: 0.7rem; color: #64748b;">${priceLabel}</div>
+                        <div style="color: var(--primary-blue); font-weight: 800; font-size: 1.05rem; white-space: nowrap;">${formatPrice(displayPrice)}</div>
+                        <div style="font-size: 0.65rem; color: #64748b; font-weight: 500;">/ ${displayUnit}</div>
                     </div>
                 </div>
-                `;
-            })()}
-
+                <div class="action-buttons">
+                    <button onclick="openTourModal('${item.id}')" class="btn" style="background: var(--bg-light); color: var(--primary-blue); border: none; font-size: 0.85rem; padding: 8px 16px; border-radius: 20px; font-weight: 700;">DETAIL</button>
+                    <button onclick="openCheckoutModal('${item.title.replace(/'/g, "\\'")}', ${Number(displayPrice) || 0}, 'wa')" class="btn btn-green" style="padding: 8px 16px; border-radius: 20px; font-weight: 700; font-size: 0.85rem; box-shadow: 0 4px 6px rgba(5,150,105,0.2);"><i class="fa-brands fa-whatsapp"></i></button>
+                </div>
+            </div>
         </div>
     </div>
     `;
@@ -6991,6 +7003,32 @@ window.shareItem = (id, title, priceStr) => {
     id = id || '';
     title = title || 'Penawaran Spesial Lombok';
     priceStr = priceStr || '';
+
+    // Validasi harga otomatis jika bernilai 'Rp 0', '0', atau kosong (misal unit Hiace yang hanya include driver)
+    if (!priceStr || priceStr === 'Rp 0' || priceStr === 'Rp0' || priceStr === '0' || priceStr.startsWith('Rp 0 /')) {
+        const found = (typeof globalItems !== 'undefined' && Array.isArray(globalItems))
+            ? globalItems.find(i => String(i.id) === String(id))
+            : null;
+        if (found) {
+            const isCar = (found.category === 'car');
+            const hasLepas = Boolean(found.price && Number(found.price) > 0);
+            const hasDriver = isCar && Boolean(found.priceWithDriver && Number(found.priceWithDriver) > 0);
+
+            if (isCar && !hasLepas && hasDriver) {
+                priceStr = `${formatPrice(found.priceWithDriver)} / 12 Jam (Include Supir & BBM)`;
+            } else if (isCar && hasLepas && hasDriver) {
+                priceStr = `${formatPrice(found.price)} / 24 Jam (Lepas Kunci)`;
+            } else if (hasLepas) {
+                priceStr = `${formatPrice(found.price)} / ${found.duration || '24 Jam'}`;
+            } else if (hasDriver) {
+                priceStr = `${formatPrice(found.priceWithDriver)} / 12 Jam (Include Supir & BBM)`;
+            } else if (found.isParent) {
+                priceStr = 'Berbagai Pilihan Paket Menarik';
+            } else {
+                priceStr = 'Hubungi Kami';
+            }
+        }
+    }
 
     const url = window.location.origin + window.location.pathname + '?item=' + encodeURIComponent(id);
     const textWa = `Halo! 👋\n\nSaya menemukan penawaran menarik dari *Travel Lombok Airport* nih:\n\n📌 *${title}*` + (priceStr ? `\n💰 *${priceStr}*` : '') + `\n\nYuk, cek detail lengkapnya dan booking sekarang melalui link di bawah ini:\n📍 ${url}`;
